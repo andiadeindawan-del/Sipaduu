@@ -9,7 +9,19 @@
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Pertanyaan Quiz</h1>
+            <p class="text-muted mb-0">Kelola pertanyaan untuk quiz: {{ $quiz->judul ?? 'Semua Quiz' }}</p>
         </div>
+    </div>
+    <div class="heading-actions d-flex gap-2">
+        <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Kembali
+        </a>
+        <button type="button" class="btn btn-outline-secondary btn-sm d-none" id="bulkDeleteBtn">
+            <i class="bi bi-trash"></i> Hapus Terpilih
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+            <i class="bi bi-plus-circle"></i> Tambah Pertanyaan
+        </button>
     </div>
 </div>
 @endsection
@@ -95,10 +107,13 @@
             <div>
                 <h5 class="section-title"><i class="bi bi-table"></i> Daftar Pertanyaan</h5>
             </div>
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ route('admin.quiz.questions.create', $quiz->id ?? '') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle"></i> Tambah
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+                <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Kembali
                 </a>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <i class="bi bi-plus-circle"></i> Tambah
+                </button>
             </div>
         </div>
         <div class="table-responsive">
@@ -111,9 +126,6 @@
                         </th>
                         <th style="width: 50px;">#</th>
                         <th>Pertanyaan</th>
-                        @if(!isset($quiz))
-                        <th>Quiz</th>
-                        @endif
                         <th>Tipe</th>
                         <th>Nilai</th>
                         <th>Urutan</th>
@@ -130,10 +142,13 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ Str::limit($question->question ?? $question->pertanyaan, 60) }}</p>
-                                @if(isset($question->type) && $question->type == 'multiple_choice' && isset($question->options))
+                                @if(isset($question->type) && $question->type == 'multiple_choice')
                                 <div class="text-muted small">
-                                    @if(is_array($question->options))
-                                        @foreach($question->options as $key => $option)
+                                    @php
+                                        $options = is_array($question->options) ? $question->options : json_decode($question->options, true);
+                                    @endphp
+                                    @if(is_array($options))
+                                        @foreach($options as $key => $option)
                                         <span class="badge text-bg-light me-1">
                                             {{ chr(65 + $key) }}: {{ Str::limit($option, 20) }}
                                             @if($question->correct_answer == chr(65 + $key))
@@ -141,42 +156,16 @@
                                             @endif
                                         </span>
                                         @endforeach
-                                    @elseif(is_string($question->options))
-                                        @php
-                                            $options = json_decode($question->options, true);
-                                        @endphp
-                                        @if(is_array($options))
-                                            @foreach($options as $key => $option)
-                                            <span class="badge text-bg-light me-1">
-                                                {{ chr(65 + $key) }}: {{ Str::limit($option, 20) }}
-                                                @if($question->correct_answer == chr(65 + $key))
-                                                <i class="bi bi-check-circle text-success"></i>
-                                                @endif
-                                            </span>
-                                            @endforeach
-                                        @endif
+                                        <span class="badge text-bg-success">Jawaban: {{ $question->correct_answer }}</span>
                                     @endif
-                                    <span class="badge text-bg-success">Jawaban: {{ $question->correct_answer }}</span>
-                                </div>
-                                @elseif(isset($question->type) && $question->type == 'true_false')
-                                <div class="text-muted small">
-                                    <span class="badge text-bg-light me-1">Benar</span>
-                                    <span class="badge text-bg-light me-1">Salah</span>
-                                    <span class="badge text-bg-success">Jawaban: {{ $question->correct_answer == 'true' ? 'Benar' : 'Salah' }}</span>
                                 </div>
                                 @endif
                             </div>
                         </td>
-                        @if(!isset($quiz))
-                        <td>
-                            <span class="badge text-bg-info">{{ $question->quiz->judul ?? '-' }}</span>
-                        </td>
-                        @endif
                         <td>
                             @php
                                 $typeMap = [
                                     'multiple_choice' => ['label' => 'Pilihan Ganda', 'class' => 'text-bg-primary'],
-                                    'true_false' => ['label' => 'Benar/Salah', 'class' => 'text-bg-success'],
                                     'essay' => ['label' => 'Essay', 'class' => 'text-bg-warning'],
                                 ];
                                 $type = $typeMap[$question->type] ?? ['label' => $question->type, 'class' => 'text-bg-secondary'];
@@ -188,22 +177,23 @@
                         <td>
                             <span class="badge text-bg-secondary">
                                 <i class="bi bi-star me-1"></i>
-                                {{ $question->score ?? $question->nilai ?? 1 }}
+                                {{ $question->points ?? $question->score ?? $question->nilai ?? 1 }}
                             </span>
                         </td>
                         <td>
                             <span class="badge text-bg-light">{{ $question->order ?? $loop->iteration }}</span>
                         </td>
                         <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
-                                <a href="{{ route('admin.quiz.questions.edit', ['quiz' => $question->quiz_id, 'question' => $question->id]) }}" 
-                                   class="badge bg-warning text-dark text-decoration-none p-2" title="Edit">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <button type="button" class="badge bg-danger text-white border-0 p-2" 
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-warning" 
+                                        data-bs-toggle="modal" data-bs-target="#editModal{{ $question->id }}" 
+                                        title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" 
                                         data-bs-toggle="modal" data-bs-target="#deleteModal{{ $question->id }}" 
                                         title="Hapus">
-                                    <i class="bi bi-trash"></i> Hapus
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -223,9 +213,9 @@
                             Mulai dengan menambahkan pertanyaan baru.
                         @endif
                     </p>
-                    <a href="{{ route('admin.quiz.questions.create', $quiz->id ?? '') }}" class="btn btn-primary btn-sm mt-2">
+                    <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
                         <i class="bi bi-plus-circle"></i> Tambah Pertanyaan
-                    </a>
+                    </button>
                 </div>
             </div>
             @endif
@@ -244,18 +234,271 @@
     </div>
 </div>
 
-<!-- Delete Modals -->
+<!-- ============================================================
+     CREATE MODAL
+============================================================ -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="{{ route('admin.quiz.questions.store', $quiz->id ?? '') }}" method="POST" id="createForm">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Pertanyaan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Tipe Pertanyaan -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Tipe Pertanyaan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                <select class="form-select" name="type" id="createType" required>
+                                    <option value="multiple_choice">Pilihan Ganda</option>
+                                    <option value="essay">Essay</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Nilai <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-star"></i></span>
+                                <input type="number" class="form-control" name="points" value="1" min="1" max="100" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Pertanyaan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+                                <textarea class="form-control" name="question" rows="3" placeholder="Masukkan pertanyaan..." required></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Multiple Choice Options -->
+                        <div class="col-12" id="createOptionsWrapper">
+                            <hr>
+                            <label class="form-label fw-semibold">Pilihan Jawaban <span class="text-danger">*</span></label>
+                            <div id="createOptionsContainer">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-10">
+                                        <div class="input-group">
+                                            <span class="input-group-text">A.</span>
+                                            <input type="text" class="form-control" name="options[]" placeholder="Masukkan pilihan A" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-outline-success btn-sm" onclick="addCreateOption()">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-10">
+                                        <div class="input-group">
+                                            <span class="input-group-text">B.</span>
+                                            <input type="text" class="form-control" name="options[]" placeholder="Masukkan pilihan B" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeCreateOption(this)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <small class="text-muted">Minimal 2 pilihan jawaban.</small>
+                        </div>
+                        
+                        <!-- Jawaban Benar -->
+                        <div class="col-12" id="createCorrectWrapper">
+                            <label class="form-label fw-semibold">Jawaban Benar <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-check-circle"></i></span>
+                                <select class="form-select" name="correct_answer" id="createCorrectAnswer" required>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Essay Key -->
+                        <div class="col-12" id="createEssayWrapper" style="display: none;">
+                            <label class="form-label fw-semibold">Kunci Jawaban Essay (Opsional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-file-text"></i></span>
+                                <textarea class="form-control" name="essay_answer_key" rows="3" placeholder="Masukkan kunci jawaban untuk essay..."></textarea>
+                            </div>
+                            <small class="text-muted">Kunci jawaban akan digunakan sebagai panduan penilaian.</small>
+                        </div>
+                        
+                        <!-- Urutan -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Urutan</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-list-ol"></i></span>
+                                <input type="number" class="form-control" name="order" value="{{ $questions->count() + 1 }}" min="0">
+                            </div>
+                            <small class="text-muted">Urutan tampil pertanyaan. Kosongkan untuk otomatis.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     EDIT MODALS
+============================================================ -->
 @foreach($questions ?? [] as $question)
-<div class="modal fade" id="deleteModal{{ $question->id }}" tabindex="-1" 
-     aria-labelledby="deleteModalLabel{{ $question->id }}" aria-hidden="true">
+<div class="modal fade" id="editModal{{ $question->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="{{ route('admin.quiz.questions.update', ['quiz' => $question->quiz_id, 'question' => $question->id]) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square text-warning me-2"></i>Edit Pertanyaan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Tipe Pertanyaan (readonly) -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Tipe Pertanyaan</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                <select class="form-select" name="type" id="editType{{ $question->id }}" disabled>
+                                    <option value="multiple_choice" {{ $question->type == 'multiple_choice' ? 'selected' : '' }}>Pilihan Ganda</option>
+                                    <option value="essay" {{ $question->type == 'essay' ? 'selected' : '' }}>Essay</option>
+                                </select>
+                            </div>
+                            <small class="text-muted">Tipe tidak dapat diubah setelah dibuat.</small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Nilai <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-star"></i></span>
+                                <input type="number" class="form-control" name="points" value="{{ $question->points ?? $question->score ?? 1 }}" min="1" max="100" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Pertanyaan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+                                <textarea class="form-control" name="question" rows="3" required>{{ $question->question ?? $question->pertanyaan }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Multiple Choice Options -->
+                        @if($question->type == 'multiple_choice')
+                        @php
+                            $options = is_array($question->options) ? $question->options : json_decode($question->options, true);
+                            $optionLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+                        @endphp
+                        <div class="col-12">
+                            <hr>
+                            <label class="form-label fw-semibold">Pilihan Jawaban <span class="text-danger">*</span></label>
+                            <div id="editOptionsContainer{{ $question->id }}">
+                                @foreach($options as $key => $option)
+                                <div class="row g-2 mb-2">
+                                    <div class="col-10">
+                                        <div class="input-group">
+                                            <span class="input-group-text">{{ $optionLetters[$key] }}.</span>
+                                            <input type="text" class="form-control" name="options[]" value="{{ $option }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        @if($loop->first)
+                                        <button type="button" class="btn btn-outline-success btn-sm" onclick="addEditOption({{ $question->id }})">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        @else
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditOption(this, {{ $question->id }})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            <small class="text-muted">Minimal 2 pilihan jawaban.</small>
+                        </div>
+                        
+                        <!-- Jawaban Benar -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Jawaban Benar <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-check-circle"></i></span>
+                                <select class="form-select" name="correct_answer" required>
+                                    @foreach($options as $key => $option)
+                                    <option value="{{ $optionLetters[$key] }}" {{ $question->correct_answer == $optionLetters[$key] ? 'selected' : '' }}>
+                                        {{ $optionLetters[$key] }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @else
+                        <!-- Essay Key -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Kunci Jawaban Essay (Opsional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-file-text"></i></span>
+                                <textarea class="form-control" name="essay_answer_key" rows="3">{{ $question->essay_answer_key ?? '' }}</textarea>
+                            </div>
+                            <small class="text-muted">Kunci jawaban akan digunakan sebagai panduan penilaian.</small>
+                        </div>
+                        @endif
+                        
+                        <!-- Urutan -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Urutan</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-list-ol"></i></span>
+                                <input type="number" class="form-control" name="order" value="{{ $question->order ?? $loop->iteration }}" min="0">
+                            </div>
+                            <small class="text-muted">Urutan tampil pertanyaan.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save me-1"></i> Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
+<!-- ============================================================
+     DELETE MODALS
+============================================================ -->
+@foreach($questions ?? [] as $question)
+<div class="modal fade" id="deleteModal{{ $question->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel{{ $question->id }}">
+                <h5 class="modal-title">
                     <i class="bi bi-exclamation-triangle text-danger me-2"></i>
                     Konfirmasi Hapus
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Apakah Anda yakin ingin menghapus pertanyaan ini?</p>
@@ -265,7 +508,7 @@
                 @if(isset($question->type) && $question->type == 'multiple_choice')
                 <div class="alert alert-warning">
                     <i class="bi bi-exclamation-triangle me-2"></i>
-                    Pertanyaan ini memiliki <strong>{{ is_array($question->options) ? count($question->options) : 0 }}</strong> pilihan jawaban.
+                    Pertanyaan ini memiliki pilihan jawaban.
                 </div>
                 @endif
                 <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
@@ -294,7 +537,7 @@
                     <i class="bi bi-exclamation-triangle text-danger me-2"></i>
                     Konfirmasi Hapus Massal
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Apakah Anda yakin ingin menghapus <span id="bulkDeleteCount">0</span> pertanyaan yang dipilih?</p>
@@ -322,6 +565,170 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
+    // CREATE - TOGGLE TYPE
+    // ============================================================
+    const createType = document.getElementById('createType');
+    const createOptionsWrapper = document.getElementById('createOptionsWrapper');
+    const createCorrectWrapper = document.getElementById('createCorrectWrapper');
+    const createEssayWrapper = document.getElementById('createEssayWrapper');
+
+    function toggleCreateFields() {
+        if (createType.value === 'essay') {
+            createOptionsWrapper.style.display = 'none';
+            createCorrectWrapper.style.display = 'none';
+            createEssayWrapper.style.display = 'block';
+            document.querySelectorAll('#createOptionsContainer input').forEach(input => input.removeAttribute('required'));
+            document.getElementById('createCorrectAnswer').removeAttribute('required');
+        } else {
+            createOptionsWrapper.style.display = 'block';
+            createCorrectWrapper.style.display = 'block';
+            createEssayWrapper.style.display = 'none';
+            document.querySelectorAll('#createOptionsContainer input').forEach(input => input.setAttribute('required', 'required'));
+            document.getElementById('createCorrectAnswer').setAttribute('required', 'required');
+        }
+    }
+
+    createType.addEventListener('change', toggleCreateFields);
+    toggleCreateFields();
+
+    // ============================================================
+    // CREATE - ADD OPTION
+    // ============================================================
+    window.addCreateOption = function() {
+        const container = document.getElementById('createOptionsContainer');
+        const count = container.querySelectorAll('.row').length;
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        
+        if (count >= 6) {
+            alert('Maksimal 6 pilihan jawaban!');
+            return;
+        }
+        
+        const div = document.createElement('div');
+        div.className = 'row g-2 mb-2';
+        div.innerHTML = `
+            <div class="col-10">
+                <div class="input-group">
+                    <span class="input-group-text">${letters[count]}.</span>
+                    <input type="text" class="form-control" name="options[]" placeholder="Masukkan pilihan ${letters[count]}" required>
+                </div>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeCreateOption(this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+        
+        // Update correct answer options
+        updateCreateCorrectOptions();
+    };
+
+    window.removeCreateOption = function(btn) {
+        const row = btn.closest('.row');
+        const container = document.getElementById('createOptionsContainer');
+        if (container.querySelectorAll('.row').length <= 2) {
+            alert('Minimal 2 pilihan jawaban!');
+            return;
+        }
+        row.remove();
+        updateCreateCorrectOptions();
+        // Re-index letters
+        const rows = container.querySelectorAll('.row');
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        rows.forEach((row, index) => {
+            row.querySelector('.input-group-text').textContent = letters[index] + '.';
+        });
+    };
+
+    function updateCreateCorrectOptions() {
+        const container = document.getElementById('createOptionsContainer');
+        const rows = container.querySelectorAll('.row');
+        const select = document.getElementById('createCorrectAnswer');
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        const currentValue = select.value;
+        select.innerHTML = '';
+        rows.forEach((row, index) => {
+            const option = document.createElement('option');
+            option.value = letters[index];
+            option.textContent = letters[index];
+            if (letters[index] === currentValue) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    }
+
+    // ============================================================
+    // EDIT - ADD OPTION
+    // ============================================================
+    window.addEditOption = function(questionId) {
+        const container = document.getElementById('editOptionsContainer' + questionId);
+        const count = container.querySelectorAll('.row').length;
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        
+        if (count >= 6) {
+            alert('Maksimal 6 pilihan jawaban!');
+            return;
+        }
+        
+        const div = document.createElement('div');
+        div.className = 'row g-2 mb-2';
+        div.innerHTML = `
+            <div class="col-10">
+                <div class="input-group">
+                    <span class="input-group-text">${letters[count]}.</span>
+                    <input type="text" class="form-control" name="options[]" placeholder="Masukkan pilihan ${letters[count]}" required>
+                </div>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditOption(this, ${questionId})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+        updateEditCorrectOptions(questionId);
+    };
+
+    window.removeEditOption = function(btn, questionId) {
+        const row = btn.closest('.row');
+        const container = document.getElementById('editOptionsContainer' + questionId);
+        if (container.querySelectorAll('.row').length <= 2) {
+            alert('Minimal 2 pilihan jawaban!');
+            return;
+        }
+        row.remove();
+        updateEditCorrectOptions(questionId);
+        // Re-index letters
+        const rows = container.querySelectorAll('.row');
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        rows.forEach((row, index) => {
+            row.querySelector('.input-group-text').textContent = letters[index] + '.';
+        });
+    };
+
+    function updateEditCorrectOptions(questionId) {
+        const container = document.getElementById('editOptionsContainer' + questionId);
+        const rows = container.querySelectorAll('.row');
+        const select = container.closest('form').querySelector('select[name="correct_answer"]');
+        if (!select) return;
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        const currentValue = select.value;
+        select.innerHTML = '';
+        rows.forEach((row, index) => {
+            const option = document.createElement('option');
+            option.value = letters[index];
+            option.textContent = letters[index];
+            if (letters[index] === currentValue) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    }
+
+    // ============================================================
     // SELECT ALL CHECKBOX
     // ============================================================
     const selectAll = document.getElementById('selectAll');
@@ -346,10 +753,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const count = checked.length;
 
         if (count > 0) {
-            bulkDeleteBtn.style.display = 'inline-block';
-            bulkDeleteBtn.textContent = '🗑️ Hapus ' + count + ' Terpilih';
+            bulkDeleteBtn.classList.remove('d-none');
+            bulkDeleteBtn.innerHTML = '<i class="bi bi-trash"></i> Hapus ' + count + ' Terpilih';
         } else {
-            bulkDeleteBtn.style.display = 'none';
+            bulkDeleteBtn.classList.add('d-none');
         }
     }
 
@@ -377,29 +784,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bsAlert.close();
         });
     }, 5000);
-
-    // ============================================================
-    // FILTER AUTO SUBMIT
-    // ============================================================
-    const typeFilter = document.querySelector('select[name="type"]');
-    if (typeFilter) {
-        typeFilter.addEventListener('change', function() {
-            this.closest('form').submit();
-        });
-    }
-
-    // ============================================================
-    // SEARCH WITH ENTER KEY
-    // ============================================================
-    const searchInput = document.querySelector('input[name="search"]');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.closest('form').submit();
-            }
-        });
-    }
 });
 </script>
 @endpush

@@ -9,7 +9,6 @@
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Quiz</h1>
-            <p class="text-muted mb-0">Kelola quiz untuk pelatihan dan materi.</p>
         </div>
     </div>
 </div>
@@ -129,7 +128,25 @@
             <div>
                 <h5 class="section-title"><i class="bi bi-table"></i> Daftar Quiz</h5>
             </div>
-            <div class="d-flex gap-2 flex-wrap">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+                <!-- SEARCH -->
+                <form action="{{ route('admin.quiz.index') }}" method="GET" class="d-flex gap-2">
+                    <div class="input-group" style="width: 220px;">
+                        <input class="form-control form-control-sm" type="search" name="search" 
+                               placeholder="Cari quiz..." value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                    
+                    {{-- TOMBOL RESET FILTER --}}
+                    @if(request('search') || request('status') || request('materi_id'))
+                    <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </a>
+                    @endif
+                </form>
+                
                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
                     <i class="bi bi-plus-circle"></i> Tambah Quiz
                 </button>
@@ -211,46 +228,44 @@
                                 {{ $status['label'] }}
                             </span>
                         </td>
-                       <td class="text-end">
-    <div class="btn-group btn-group-sm" role="group">
-        <!-- Lihat -->
-        <button type="button" class="btn btn-info" 
-                data-bs-toggle="modal" data-bs-target="#showModal{{ $quiz->id }}" 
-                title="Lihat Detail">
-            <i class="bi bi-eye"></i>
-        </button>
-        
-        <!-- Edit -->
-        <button type="button" class="btn btn-warning" 
-                data-bs-toggle="modal" data-bs-target="#editModal{{ $quiz->id }}" 
-                title="Edit Quiz">
-            <i class="bi bi-pencil"></i>
-        </button>
-        
-        <!-- Pertanyaan -->
-        <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" 
-           class="btn btn-success" title="Kelola Pertanyaan">
-            <i class="bi bi-list-ol"></i>
-        </a>
-        
-        <!-- Materi -->
-        @if($quiz->materi)
-        <a href="{{ route('admin.materi.show', $quiz->materi->id) }}" 
-           class="btn btn-primary" title="Lihat Materi">
-            <i class="bi bi-book"></i>
-        </a>
-        @endif
-        
-       
-        
-        <!-- Hapus -->
-        <button type="button" class="btn btn-danger" 
-                data-bs-toggle="modal" data-bs-target="#deleteModal{{ $quiz->id }}" 
-                title="Hapus Quiz">
-            <i class="bi bi-trash"></i>
-        </button>
-    </div>
-</td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <!-- Lihat -->
+                                <button type="button" class="btn btn-info" 
+                                        data-bs-toggle="modal" data-bs-target="#showModal{{ $quiz->id }}" 
+                                        title="Lihat Detail">
+                                    <i class="bi bi-eye"></i> Lihat
+                                </button>
+                                
+                                <!-- Edit -->
+                                <button type="button" class="btn btn-warning" 
+                                        data-bs-toggle="modal" data-bs-target="#editModal{{ $quiz->id }}" 
+                                        title="Edit Quiz">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                
+                                <!-- Pertanyaan -->
+                                <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" 
+                                   class="btn btn-success" title="Kelola Pertanyaan">
+                                    <i class="bi bi-list-ol"></i> Pertanyaan
+                                </a>
+                                
+                                <!-- Materi -->
+                                @if($quiz->materi)
+                                <a href="{{ route('admin.materi.show', $quiz->materi->id) }}" 
+                                   class="btn btn-primary" title="Lihat Materi">
+                                    <i class="bi bi-book"></i> Materi
+                                </a>
+                                @endif
+                                
+                                <!-- Hapus -->
+                                <button type="button" class="btn btn-danger" 
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ $quiz->id }}" 
+                                        title="Hapus Quiz">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -259,15 +274,29 @@
             <div class="text-center py-5">
                 <div class="text-muted">
                     <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                    <p class="h5">Belum ada quiz</p>
-                    <p class="small">
-                        @if(request('materi_id') && isset($selectedMateri))
-                            Belum ada quiz untuk materi <strong>{{ $selectedMateri->judul }}</strong>.
-                            <br>Klik tombol di bawah untuk membuat quiz pertama.
+                    <p class="h5">
+                        @if(request('search') || request('status') || request('materi_id'))
+                            Tidak ada quiz yang sesuai dengan filter
                         @else
-                            Mulai dengan menambahkan quiz baru.
+                            Belum ada quiz
                         @endif
                     </p>
+                    <p class="small">
+                        @if(request('search') || request('status') || request('materi_id'))
+                            Coba ubah kriteria pencarian atau reset filter
+                        @else
+                            @if(request('materi_id') && isset($selectedMateri))
+                                Belum ada quiz untuk materi <strong>{{ $selectedMateri->judul }}</strong>.
+                            @else
+                                Mulai dengan menambahkan quiz baru.
+                            @endif
+                        @endif
+                    </p>
+                    @if(request('search') || request('status') || request('materi_id'))
+                    <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm mt-2">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
+                    </a>
+                    @endif
                     <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
                         <i class="bi bi-plus-circle"></i> 
                         @if(request('materi_id') && isset($selectedMateri))

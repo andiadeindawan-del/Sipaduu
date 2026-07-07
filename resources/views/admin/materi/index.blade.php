@@ -11,14 +11,6 @@
             <h1 class="h3 mb-0">Materi</h1>
         </div>
     </div>
-    <div class="heading-actions">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
-            <i class="bi bi-plus-circle"></i> Tambah Materi
-        </button>
-        <a href="" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-download"></i> Export
-        </a>
-    </div>
 </div>
 @endsection
 
@@ -94,6 +86,17 @@
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
+                
+                {{-- TOMBOL RESET FILTER --}}
+                @if(request('search'))
+                <a href="{{ route('admin.materi.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </a>
+                @endif
+                
+                <a href="{{ route('admin.materi.create') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> Tambah
+                </a>
             </div>
         </div>
         <div class="table-responsive">
@@ -202,8 +205,25 @@
             <div class="text-center py-5">
                 <div class="text-muted">
                     <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                    <p class="h5">Belum ada materi</p>
-                    <p class="small">Mulai dengan menambahkan materi baru</p>
+                    <p class="h5">
+                        @if(request('search'))
+                            Tidak ada materi yang sesuai dengan pencarian "{{ request('search') }}"
+                        @else
+                            Belum ada materi
+                        @endif
+                    </p>
+                    <p class="small">
+                        @if(request('search'))
+                            Coba ubah kata kunci pencarian atau reset filter
+                        @else
+                            Mulai dengan menambahkan materi baru
+                        @endif
+                    </p>
+                    @if(request('search'))
+                    <a href="{{ route('admin.materi.index') }}" class="btn btn-outline-secondary btn-sm mt-2">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
+                    </a>
+                    @endif
                     <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
                         <i class="bi bi-plus-circle"></i> Tambah Materi
                     </button>
