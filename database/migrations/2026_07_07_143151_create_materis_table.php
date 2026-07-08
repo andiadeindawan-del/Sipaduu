@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+        
         // ============================================================
         // TABEL MATERIS
         // ============================================================
@@ -76,6 +78,8 @@ return new class extends Migration
             $table->index('progress');
             $table->index(['materi_id', 'user_id']);
         });
+        
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

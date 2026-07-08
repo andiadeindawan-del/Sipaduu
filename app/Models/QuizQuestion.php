@@ -8,41 +8,56 @@ class QuizQuestion extends Model
 {
     protected $table = 'quiz_questions';
 
+    
     protected $fillable = [
         'quiz_id',
-        'question',         
-        'pertanyaan',        
-        'type',              
-        'tipe_soal',         
-        'score',             
-        'nilai',             
-        'options',           
-        'opsi_a',            
-        'opsi_b',            
-        'opsi_c',            
-        'opsi_d',            
-        'opsi_e',            
-        'correct_answer',    
-        'jawaban_benar',     
+        'question',          // Field utama untuk pertanyaan
+        'type',              // Field utama untuk tipe (multiple_choice, essay, true_false)
+        'points',            // Field utama untuk nilai
+        'options',           // Field utama untuk pilihan (JSON)
+        'correct_answer',    // Field utama untuk jawaban benar
         'order',
+        // Legacy fields (untuk kompatibilitas jika masih ada)
+        'pertanyaan',
+        'tipe_soal',
+        'nilai',
+        'score',
+        'opsi_a',
+        'opsi_b',
+        'opsi_c',
+        'opsi_d',
+        'opsi_e',
+        'jawaban_benar',
+        'essay_answer_key',
     ];
 
+    // ============================================================
+    // CASTS
+    // ============================================================
     protected $casts = [
-        'score' => 'integer',
+        'points' => 'integer',
         'nilai' => 'integer',
+        'score' => 'integer',
         'order' => 'integer',
         'options' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
+    // ============================================================
+    // APPENDS - Field tambahan untuk view
+    // ============================================================
     protected $appends = [
-        'type_label',
-        'type_badge',
         'question_text',
         'score_value',
+        'type_label',
+        'type_badge',
+        'type_display',
         'formatted_options',
         'correct_answer_value',
+        'is_multiple_choice',
+        'is_essay',
+        'is_true_false',
     ];
 
     // ============================================================
@@ -62,7 +77,7 @@ class QuizQuestion extends Model
     // ============================================================
 
     /**
-     * Get question text (prioritaskan field baru)
+     * Get question text (prioritaskan 'question', fallback ke 'pertanyaan')
      */
     public function getQuestionTextAttribute()
     {
@@ -70,29 +85,29 @@ class QuizQuestion extends Model
     }
 
     /**
-     * Get score value (prioritaskan field baru)
+     * Get score value (prioritaskan 'points', fallback ke 'score' atau 'nilai')
      */
     public function getScoreValueAttribute()
     {
-        return $this->score ?? $this->nilai ?? 1;
+        return $this->points ?? $this->score ?? $this->nilai ?? 1;
     }
 
     /**
-     * Get type label
+     * Get type label with icon
      */
     public function getTypeLabelAttribute()
     {
-        $type = $this->type ?? $this->tipe_soal ?? 'multiple_choice';
+        $type = $this->getTypeValue();
         
         $labels = [
             'multiple_choice' => '📝 Pilihan Ganda',
             'pilihan' => '📝 Pilihan Ganda',
+            'pilihan_ganda' => '📝 Pilihan Ganda',
             'true_false' => '✅ Benar/Salah',
             'essay' => '✍️ Essay',
-            'pilihan_ganda' => '📝 Pilihan Ganda',
         ];
         
-        return $labels[$type] ?? ucfirst($type);
+        return $labels[$type] ?? '📝 ' . ucfirst($type);
     }
 
     /**
@@ -100,36 +115,56 @@ class QuizQuestion extends Model
      */
     public function getTypeBadgeAttribute()
     {
-        $type = $this->type ?? $this->tipe_soal ?? 'multiple_choice';
+        $type = $this->getTypeValue();
         
         $classes = [
             'multiple_choice' => 'text-bg-primary',
             'pilihan' => 'text-bg-primary',
+            'pilihan_ganda' => 'text-bg-primary',
             'true_false' => 'text-bg-success',
             'essay' => 'text-bg-warning',
-            'pilihan_ganda' => 'text-bg-primary',
         ];
         
         return $classes[$type] ?? 'text-bg-secondary';
     }
 
     /**
-     * Get formatted options array
+     * Get type display (tanpa icon)
+     */
+    public function getTypeDisplayAttribute()
+    {
+        $type = $this->getTypeValue();
+        
+        $labels = [
+            'multiple_choice' => 'Pilihan Ganda',
+            'pilihan' => 'Pilihan Ganda',
+            'pilihan_ganda' => 'Pilihan Ganda',
+            'true_false' => 'Benar/Salah',
+            'essay' => 'Essay',
+        ];
+        
+        return $labels[$type] ?? ucfirst($type);
+    }
+
+    /**
+     * Get formatted options as associative array (letter => value)
      */
     public function getFormattedOptionsAttribute()
     {
-        // Cek dari field options (JSON)
+        $options = [];
+
+        // 1. Coba dari field 'options' (JSON)
         if ($this->options && is_array($this->options)) {
-            $result = [];
             foreach ($this->options as $index => $option) {
-                $letter = chr(65 + $index); // A, B, C, D, E
-                $result[$letter] = $option;
+                if (!empty($option)) {
+                    $letter = chr(65 + $index); // A, B, C, D, E, F
+                    $options[$letter] = $option;
+                }
             }
-            return $result;
+            return $options;
         }
 
-        // Cek dari field legacy (opsi_a, opsi_b, dll)
-        $options = [];
+        // 2. Coba dari field legacy (opsi_a, opsi_b, dll)
         $letters = ['A', 'B', 'C', 'D', 'E'];
         $fields = ['opsi_a', 'opsi_b', 'opsi_c', 'opsi_d', 'opsi_e'];
         
@@ -143,151 +178,11 @@ class QuizQuestion extends Model
     }
 
     /**
-     * Get correct answer value (prioritaskan field baru)
+     * Get correct answer value (prioritaskan 'correct_answer', fallback ke 'jawaban_benar')
      */
     public function getCorrectAnswerValueAttribute()
     {
         return $this->correct_answer ?? $this->jawaban_benar ?? '';
-    }
-
-    /**
-     * Check if question type is multiple choice
-     */
-    public function getIsMultipleChoiceAttribute()
-    {
-        $type = $this->type ?? $this->tipe_soal ?? '';
-        return in_array($type, ['multiple_choice', 'pilihan', 'pilihan_ganda']);
-    }
-
-    /**
-     * Check if question type is true/false
-     */
-    public function getIsTrueFalseAttribute()
-    {
-        $type = $this->type ?? $this->tipe_soal ?? '';
-        return $type === 'true_false';
-    }
-
-    /**
-     * Check if question type is essay
-     */
-    public function getIsEssayAttribute()
-    {
-        $type = $this->type ?? $this->tipe_soal ?? '';
-        return $type === 'essay';
-    }
-
-    // ============================================================
-    // MUTATORS - SETTERS
-    // ============================================================
-
-    /**
-     * Set options (auto convert to array)
-     */
-    public function setOptionsAttribute($value)
-    {
-        if (is_array($value)) {
-            $this->attributes['options'] = json_encode(array_values($value));
-        } else {
-            $this->attributes['options'] = $value;
-        }
-    }
-
-    /**
-     * Set type (auto convert from legacy format)
-     */
-    public function setTypeAttribute($value)
-    {
-        // Konversi dari format lama ke format baru
-        $map = [
-            'pilihan' => 'multiple_choice',
-            'pilihan_ganda' => 'multiple_choice',
-            'essay' => 'essay',
-            'true_false' => 'true_false',
-        ];
-        
-        $this->attributes['type'] = $map[$value] ?? $value;
-    }
-
-    // ============================================================
-    // HELPER METHODS
-    // ============================================================
-
-    /**
-     * Check if question has options
-     */
-    public function hasOptions()
-    {
-        return count($this->formatted_options) > 0;
-    }
-
-    /**
-     * Get total options count
-     */
-    public function getOptionsCountAttribute()
-    {
-        return count($this->formatted_options);
-    }
-
-    /**
-     * Check if answer is correct
-     */
-    public function isAnswerCorrect($answer)
-    {
-        $correct = $this->correct_answer_value;
-        
-        // Untuk multiple choice, bandingkan huruf (A, B, C, D)
-        if ($this->is_multiple_choice) {
-            return strtoupper($answer) === strtoupper($correct);
-        }
-        
-        // Untuk true/false
-        if ($this->is_true_false) {
-            return strtolower($answer) === strtolower($correct);
-        }
-        
-        // Untuk essay, cek kata kunci
-        if ($this->is_essay) {
-            return stripos($answer, $correct) !== false;
-        }
-        
-        return false;
-    }
-
-    /**
-     * Get display label for question type
-     */
-    public function getTypeDisplayAttribute()
-    {
-        $type = $this->type ?? $this->tipe_soal ?? 'multiple_choice';
-        
-        $labels = [
-            'multiple_choice' => 'Pilihan Ganda',
-            'pilihan' => 'Pilihan Ganda',
-            'true_false' => 'Benar/Salah',
-            'essay' => 'Essay',
-            'pilihan_ganda' => 'Pilihan Ganda',
-        ];
-        
-        return $labels[$type] ?? ucfirst($type);
-    }
-
-    /**
-     * Get icon for question type
-     */
-    public function getTypeIconAttribute()
-    {
-        $type = $this->type ?? $this->tipe_soal ?? 'multiple_choice';
-        
-        $icons = [
-            'multiple_choice' => 'bi-list-check',
-            'pilihan' => 'bi-list-check',
-            'true_false' => 'bi-check-circle',
-            'essay' => 'bi-pencil',
-            'pilihan_ganda' => 'bi-list-check',
-        ];
-        
-        return $icons[$type] ?? 'bi-question';
     }
 
     /**
@@ -305,7 +200,182 @@ class QuizQuestion extends Model
     }
 
     /**
-     * Check if this question type is multiple choice
+     * Check if question type is multiple choice
+     */
+    public function getIsMultipleChoiceAttribute()
+    {
+        $type = $this->getTypeValue();
+        return in_array($type, ['multiple_choice', 'pilihan', 'pilihan_ganda']);
+    }
+
+    /**
+     * Check if question type is true/false
+     */
+    public function getIsTrueFalseAttribute()
+    {
+        $type = $this->getTypeValue();
+        return $type === 'true_false';
+    }
+
+    /**
+     * Check if question type is essay
+     */
+    public function getIsEssayAttribute()
+    {
+        $type = $this->getTypeValue();
+        return $type === 'essay';
+    }
+
+    /**
+     * Get type icon
+     */
+    public function getTypeIconAttribute()
+    {
+        $type = $this->getTypeValue();
+        
+        $icons = [
+            'multiple_choice' => 'bi-list-check',
+            'pilihan' => 'bi-list-check',
+            'pilihan_ganda' => 'bi-list-check',
+            'true_false' => 'bi-check-circle',
+            'essay' => 'bi-pencil',
+        ];
+        
+        return $icons[$type] ?? 'bi-question';
+    }
+
+    /**
+     * Get options count
+     */
+    public function getOptionsCountAttribute()
+    {
+        return count($this->formatted_options);
+    }
+
+    /**
+     * Check if question has options
+     */
+    public function getHasOptionsAttribute()
+    {
+        return $this->options_count > 0;
+    }
+
+    // ============================================================
+    // MUTATORS - SETTERS
+    // ============================================================
+
+    /**
+     * Set options (auto convert to JSON)
+     */
+    public function setOptionsAttribute($value)
+    {
+        if (is_array($value)) {
+            // Filter empty values
+            $filtered = array_filter(array_values($value), function($item) {
+                return !empty(trim($item));
+            });
+            $this->attributes['options'] = !empty($filtered) ? json_encode($filtered) : null;
+        } else {
+            $this->attributes['options'] = $value;
+        }
+    }
+
+    /**
+     * Set type (auto convert from legacy format)
+     */
+    public function setTypeAttribute($value)
+    {
+        $map = [
+            'pilihan' => 'multiple_choice',
+            'pilihan_ganda' => 'multiple_choice',
+            'benar_salah' => 'true_false',
+            'essay' => 'essay',
+        ];
+        
+        $this->attributes['type'] = $map[$value] ?? $value;
+    }
+
+    /**
+     * Set points (auto convert from legacy values)
+     */
+    public function setPointsAttribute($value)
+    {
+        $this->attributes['points'] = $value;
+        // Juga set legacy fields untuk kompatibilitas
+        $this->attributes['nilai'] = $value;
+        $this->attributes['score'] = $value;
+    }
+
+    /**
+     * Set question (auto convert to legacy fields)
+     */
+    public function setQuestionAttribute($value)
+    {
+        $this->attributes['question'] = $value;
+        // Juga set legacy field untuk kompatibilitas
+        $this->attributes['pertanyaan'] = $value;
+    }
+
+    /**
+     * Set correct_answer (auto convert to legacy fields)
+     */
+    public function setCorrectAnswerAttribute($value)
+    {
+        $this->attributes['correct_answer'] = $value;
+        // Juga set legacy field untuk kompatibilitas
+        $this->attributes['jawaban_benar'] = $value;
+    }
+
+    // ============================================================
+    // HELPER METHODS
+    // ============================================================
+
+    /**
+     * Get normalized type value
+     */
+    private function getTypeValue()
+    {
+        return $this->type ?? $this->tipe_soal ?? 'multiple_choice';
+    }
+
+    /**
+     * Check if answer is correct
+     */
+    public function isAnswerCorrect($answer)
+    {
+        $correct = $this->correct_answer_value;
+        
+        if (empty($correct)) {
+            return false;
+        }
+        
+        // Untuk multiple choice, bandingkan huruf (A, B, C, D)
+        if ($this->is_multiple_choice) {
+            return strtoupper(trim($answer)) === strtoupper(trim($correct));
+        }
+        
+        // Untuk true/false
+        if ($this->is_true_false) {
+            return strtolower(trim($answer)) === strtolower(trim($correct));
+        }
+        
+        // Untuk essay, cek kata kunci
+        if ($this->is_essay) {
+            $keywords = explode('|', $correct);
+            $answerLower = strtolower(trim($answer));
+            foreach ($keywords as $keyword) {
+                if (strpos($answerLower, strtolower(trim($keyword))) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Check if question is multiple choice (alias)
      */
     public function isPilihanGanda()
     {
@@ -313,7 +383,7 @@ class QuizQuestion extends Model
     }
 
     /**
-     * Check if this question type is essay
+     * Check if question is essay (alias)
      */
     public function isEssay()
     {
@@ -321,7 +391,7 @@ class QuizQuestion extends Model
     }
 
     /**
-     * Check if this question type is true/false
+     * Check if question is true/false (alias)
      */
     public function isTrueFalse()
     {
@@ -342,5 +412,21 @@ class QuizQuestion extends Model
     public function getTipeSoalLabelAttribute()
     {
         return $this->type_display;
+    }
+
+    /**
+     * Get raw options from database
+     */
+    public function getRawOptionsAttribute()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Check if question has options
+     */
+    public function hasOptions()
+    {
+        return $this->has_options;
     }
 }

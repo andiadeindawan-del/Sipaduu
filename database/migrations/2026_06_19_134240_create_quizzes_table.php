@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();  // ← Tambahkan ini
+        
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
             
@@ -24,15 +23,15 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             
             // Pengaturan
-            $table->integer('durasi')->nullable()->comment('Durasi dalam menit');
-            $table->decimal('passing_score', 5, 2)->default(70.00)->comment('Nilai minimal lulus');
-            $table->integer('max_attempt')->default(1)->comment('Maksimal percobaan');
-            $table->boolean('is_random')->default(false)->comment('Acak pertanyaan');
-            $table->boolean('show_result')->default(true)->comment('Tampilkan hasil setelah selesai');
+            $table->integer('durasi')->nullable();
+            $table->decimal('passing_score', 5, 2)->default(70.00);
+            $table->integer('max_attempt')->default(1);
+            $table->boolean('is_random')->default(false);
+            $table->boolean('show_result')->default(true);
             
             // Status & Urutan
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
-            $table->integer('order')->default(0)->comment('Urutan quiz');
+            $table->integer('order')->default(0);
             
             // Jadwal
             $table->timestamp('start_date')->nullable();
@@ -48,11 +47,10 @@ return new class extends Migration
             $table->index('created_by');
             $table->index(['status', 'start_date', 'end_date']);
         });
+        
+        Schema::enableForeignKeyConstraints();  // ← Tambahkan ini
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::disableForeignKeyConstraints();

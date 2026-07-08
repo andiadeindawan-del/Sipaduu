@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\QuizQuestion;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
@@ -28,24 +29,30 @@ class QuizQuestionController extends Controller
                 $quiz = Quiz::find($request->quiz_id);
             }
 
+            // PERBAIKI: Search menggunakan 'question' saja
             if ($request->filled('search')) {
                 $search = $request->search;
                 $query->where(function ($q) use ($search) {
-                    $q->where('question', 'like', "%$search%")
-                      ->orWhere('pertanyaan', 'like', "%$search%");
+                    $q->where('question', 'like', "%$search%");
                 });
             }
 
             if ($request->filled('type')) {
-                $query->where('type', $request->type);
+                $type = $request->type;
+                if ($type === 'multiple_choice') {
+                    $query->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda']);
+                } else {
+                    $query->where('type', $type);
+                }
             }
 
             $questions = $query->orderBy('order', 'asc')->paginate(10)->withQueryString();
 
+            // Statistik - PERBAIKI: gunakan 'score' atau 'points'
             $totalQuestions = $query->count();
             $multipleChoiceCount = (clone $query)->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda'])->count();
             $essayCount = (clone $query)->where('type', 'essay')->count();
-            $totalScore = (clone $query)->sum('score');
+            $totalScore = (clone $query)->sum('score') ?: (clone $query)->sum('points') ?? 0;
 
             $quizzes = Quiz::orderBy('judul')->get();
 
@@ -111,7 +118,6 @@ class QuizQuestionController extends Controller
                 'question' => 'required|string|max:5000',
                 'type' => ['required', Rule::in(['multiple_choice', 'essay', 'pilihan', 'pilihan_ganda'])],
                 'points' => 'nullable|integer|min:1|max:100',
-                'score' => 'nullable|integer|min:1|max:100',
                 'options' => 'nullable|array',
                 'options.*' => 'nullable|string|max:1000',
                 'correct_answer' => 'nullable|string|max:255',
@@ -119,8 +125,8 @@ class QuizQuestionController extends Controller
                 'order' => 'nullable|integer|min:0',
             ]);
 
-            // Konversi points ke score
-            $validated['score'] = $validated['points'] ?? $validated['score'] ?? 1;
+            // Konversi points ke score (untuk kompatibilitas)
+            $validated['score'] = $validated['points'] ?? 1;
             unset($validated['points']);
 
             // Set order jika kosong
@@ -144,13 +150,11 @@ class QuizQuestionController extends Controller
                                  ->withInput();
                 }
                 
-                // Validasi correct_answer harus ada
                 if (empty($validated['correct_answer'])) {
                     return back()->withErrors(['correct_answer' => 'Jawaban benar wajib dipilih untuk soal pilihan ganda.'])
                                  ->withInput();
                 }
                 
-                // Pastikan correct_answer valid
                 $letters = ['A', 'B', 'C', 'D', 'E', 'F'];
                 if (!in_array($validated['correct_answer'], array_slice($letters, 0, count($validated['options'])))) {
                     return back()->withErrors(['correct_answer' => 'Jawaban benar tidak valid.'])
@@ -160,6 +164,7 @@ class QuizQuestionController extends Controller
                 // Essay
                 $validated['options'] = null;
                 $validated['correct_answer'] = null;
+                $validated['type'] = 'essay';
             }
 
             // Simpan ke database
@@ -230,7 +235,7 @@ class QuizQuestionController extends Controller
                 abort(404, 'Pertanyaan tidak ditemukan dalam quiz ini.');
             }
             
-            // Pastikan options dalam format yang benar
+            // Pastikan options dalam format array
             if ($question->options && !is_array($question->options)) {
                 $question->options = json_decode($question->options, true) ?? [];
             }
@@ -261,8 +266,6 @@ class QuizQuestionController extends Controller
     public function update(Request $request, $quizId, $questionId)
     {
         try {
-            Log::info('UPDATE REQUEST DATA:', $request->all());
-
             $question = QuizQuestion::findOrFail($questionId);
             $quiz = Quiz::findOrFail($quizId);
             
@@ -270,12 +273,10 @@ class QuizQuestionController extends Controller
                 abort(404, 'Pertanyaan tidak ditemukan dalam quiz ini.');
             }
 
-            // Validasi input
             $validated = $request->validate([
                 'question' => 'required|string|max:5000',
                 'type' => ['required', Rule::in(['multiple_choice', 'essay', 'pilihan', 'pilihan_ganda'])],
                 'points' => 'nullable|integer|min:1|max:100',
-                'score' => 'nullable|integer|min:1|max:100',
                 'options' => 'nullable|array',
                 'options.*' => 'nullable|string|max:1000',
                 'correct_answer' => 'nullable|string|max:255',
@@ -284,7 +285,7 @@ class QuizQuestionController extends Controller
             ]);
 
             // Konversi points ke score
-            $validated['score'] = $validated['points'] ?? $validated['score'] ?? $question->score ?? 1;
+            $validated['score'] = $validated['points'] ?? $question->score ?? 1;
             unset($validated['points']);
 
             // Proses berdasarkan tipe
@@ -302,40 +303,37 @@ class QuizQuestionController extends Controller
                                  ->withInput();
                 }
                 
-                // Validasi correct_answer
                 if (empty($validated['correct_answer'])) {
                     return back()->withErrors(['correct_answer' => 'Jawaban benar wajib dipilih untuk soal pilihan ganda.'])
                                  ->withInput();
                 }
                 
-                // Pastikan correct_answer valid
                 $letters = ['A', 'B', 'C', 'D', 'E', 'F'];
                 if (!in_array($validated['correct_answer'], array_slice($letters, 0, count($validated['options'])))) {
                     return back()->withErrors(['correct_answer' => 'Jawaban benar tidak valid.'])
                                  ->withInput();
                 }
             } else {
-                // Essay
                 $validated['options'] = null;
                 $validated['correct_answer'] = null;
+                $validated['type'] = 'essay';
             }
 
-            // Set order jika kosong
             if (empty($validated['order'])) {
                 $validated['order'] = $question->order ?? 0;
             }
 
-            // Update data
             DB::beginTransaction();
             
-            $question->question = $validated['question'];
-            $question->type = $validated['type'];
-            $question->score = (int) $validated['score'];
-            $question->options = $validated['options'];
-            $question->correct_answer = $validated['correct_answer'] ?? null;
-            $question->essay_answer_key = $validated['essay_answer_key'] ?? null;
-            $question->order = (int) $validated['order'];
-            $question->save();
+            $question->update([
+                'question' => $validated['question'],
+                'type' => $validated['type'],
+                'score' => (int) $validated['score'],
+                'options' => $validated['options'],
+                'correct_answer' => $validated['correct_answer'] ?? null,
+                'essay_answer_key' => $validated['essay_answer_key'] ?? null,
+                'order' => (int) $validated['order'],
+            ]);
             
             DB::commit();
 
@@ -377,13 +375,10 @@ class QuizQuestionController extends Controller
             }
 
             $quizId = $question->quiz_id;
-            
-            // Hapus pertanyaan
             $question->delete();
 
             Log::info('QUESTION DELETED:', ['id' => $questionId, 'quiz_id' => $quizId]);
 
-            // Reorder remaining questions
             $this->reorderQuestions($quizId);
 
             return redirect()->route('admin.quiz.questions.index', $quizId)
@@ -424,7 +419,6 @@ class QuizQuestionController extends Controller
                                  ->delete();
 
             if ($deleted > 0) {
-                // Reorder remaining questions
                 $this->reorderQuestions($quizId);
                 
                 Log::info('BULK DELETE:', [
@@ -435,10 +429,10 @@ class QuizQuestionController extends Controller
 
                 return redirect()->route('admin.quiz.questions.index', $quizId)
                                 ->with('success', "✅ {$deleted} pertanyaan berhasil dihapus.");
-            } else {
-                return redirect()->route('admin.quiz.questions.index', $quizId)
-                                ->with('warning', '⚠️ Tidak ada pertanyaan yang dihapus.');
             }
+
+            return redirect()->route('admin.quiz.questions.index', $quizId)
+                            ->with('warning', '⚠️ Tidak ada pertanyaan yang dihapus.');
             
         } catch (\Exception $e) {
             Log::error('ERROR IN BULK DELETE:', [
@@ -516,7 +510,7 @@ class QuizQuestionController extends Controller
             }
             
         } catch (\Exception $e) {
-            Log::error('ERROR REORDERING QUESTIONS AFTER OPERATION:', [
+            Log::error('ERROR REORDERING QUESTIONS:', [
                 'quiz_id' => $quizId,
                 'message' => $e->getMessage()
             ]);
@@ -540,14 +534,14 @@ class QuizQuestionController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('ERROR GETTING QUESTIONS BY QUIZ:', [
+            Log::error('ERROR GETTING QUESTIONS:', [
                 'quiz_id' => $quizId,
                 'message' => $e->getMessage()
             ]);
             
             return response()->json([
                 'success' => false,
-                'message' => '❌ Gagal mengambil data pertanyaan: ' . $e->getMessage()
+                'message' => '❌ Gagal mengambil data: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -565,7 +559,6 @@ class QuizQuestionController extends Controller
                 abort(404, 'Pertanyaan tidak ditemukan dalam quiz ini.');
             }
 
-            // Duplicate question
             $newQuestion = $question->replicate();
             $newQuestion->quiz_id = $quizId;
             $newQuestion->order = QuizQuestion::where('quiz_id', $quizId)->max('order') + 1;
@@ -582,7 +575,7 @@ class QuizQuestionController extends Controller
                             ->with('success', '✅ Pertanyaan berhasil diduplikasi.');
                             
         } catch (\Exception $e) {
-            Log::error('ERROR DUPLICATING QUESTION:', [
+            Log::error('ERROR DUPLICATING:', [
                 'quiz_id' => $quizId,
                 'question_id' => $questionId,
                 'message' => $e->getMessage(),
@@ -615,9 +608,6 @@ class QuizQuestionController extends Controller
             $headers = [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => "attachment; filename=\"$fileName\"",
-                'Pragma' => 'no-cache',
-                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-                'Expires' => '0',
             ];
 
             $columns = ['Order', 'Question', 'Type', 'Score', 'Options', 'Correct Answer'];
@@ -629,11 +619,11 @@ class QuizQuestionController extends Controller
                 foreach ($questions as $question) {
                     $row = [
                         $question->order,
-                        $question->question_text,
-                        $question->type_display,
-                        $question->score_value,
-                        implode('; ', $question->formatted_options),
-                        $question->correct_answer_value,
+                        $question->question,
+                        $question->type_display ?? $question->type,
+                        $question->score ?? 1,
+                        is_array($question->options) ? implode('; ', $question->options) : '',
+                        $question->correct_answer ?? '',
                     ];
                     fputcsv($file, $row);
                 }
@@ -644,14 +634,14 @@ class QuizQuestionController extends Controller
             return response()->stream($callback, 200, $headers);
             
         } catch (\Exception $e) {
-            Log::error('ERROR EXPORTING QUESTIONS:', [
+            Log::error('ERROR EXPORTING:', [
                 'quiz_id' => $quizId,
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
             return redirect()->route('admin.quiz.questions.index', $quizId)
-                            ->with('error', '❌ Gagal mengexport pertanyaan: ' . $e->getMessage());
+                            ->with('error', '❌ Gagal mengexport: ' . $e->getMessage());
         }
     }
 
@@ -670,25 +660,20 @@ class QuizQuestionController extends Controller
             $file = $request->file('file');
             $path = $file->getRealPath();
             
-            if (!file_exists($path)) {
-                return back()->with('error', '❌ File tidak ditemukan.');
-            }
-
             $data = array_map('str_getcsv', file($path));
             
             if (count($data) < 2) {
                 return back()->with('error', '❌ File CSV kosong atau tidak valid.');
             }
 
-            // Skip header
-            $header = array_shift($data);
+            array_shift($data);
             $imported = 0;
             $errors = [];
 
             DB::beginTransaction();
 
             foreach ($data as $row) {
-                if (count($row) < 5) {
+                if (count($row) < 4) {
                     $errors[] = 'Baris tidak lengkap: ' . implode(',', $row);
                     continue;
                 }
@@ -713,19 +698,17 @@ class QuizQuestionController extends Controller
                     $imported++;
                     
                 } catch (\Exception $e) {
-                    $errors[] = 'Error pada baris: ' . implode(',', $row) . ' - ' . $e->getMessage();
+                    $errors[] = 'Error: ' . implode(',', $row) . ' - ' . $e->getMessage();
                 }
             }
 
             DB::commit();
 
-            // Reorder after import
             $this->reorderQuestions($quizId);
 
             $message = "✅ Berhasil mengimport {$imported} pertanyaan.";
             if (!empty($errors)) {
                 $message .= " Terdapat " . count($errors) . " error.";
-                Log::warning('IMPORT ERRORS:', $errors);
             }
 
             return redirect()->route('admin.quiz.questions.index', $quizId)
@@ -735,13 +718,13 @@ class QuizQuestionController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             
-            Log::error('ERROR IMPORTING QUESTIONS:', [
+            Log::error('ERROR IMPORTING:', [
                 'quiz_id' => $quizId,
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
-            return back()->with('error', '❌ Gagal mengimport pertanyaan: ' . $e->getMessage());
+            return back()->with('error', '❌ Gagal mengimport: ' . $e->getMessage());
         }
     }
 
@@ -776,7 +759,6 @@ class QuizQuestionController extends Controller
             return [];
         }
 
-        // Split by semicolon or comma
         $options = preg_split('/[;,]/', $optionsString);
         return array_values(array_filter(array_map('trim', $options)));
     }
@@ -794,10 +776,8 @@ class QuizQuestionController extends Controller
                 'multiple_choice' => QuizQuestion::where('quiz_id', $quizId)
                                                 ->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda'])
                                                 ->count(),
-                'essay' => QuizQuestion::where('quiz_id', $quizId)
-                                       ->where('type', 'essay')
-                                       ->count(),
-                'total_score' => QuizQuestion::where('quiz_id', $quizId)->sum('score'),
+                'essay' => QuizQuestion::where('quiz_id', $quizId)->where('type', 'essay')->count(),
+                'total_score' => QuizQuestion::where('quiz_id', $quizId)->sum('score') ?? 0,
                 'avg_score' => QuizQuestion::where('quiz_id', $quizId)->avg('score') ?? 0,
                 'min_score' => QuizQuestion::where('quiz_id', $quizId)->min('score') ?? 0,
                 'max_score' => QuizQuestion::where('quiz_id', $quizId)->max('score') ?? 0,

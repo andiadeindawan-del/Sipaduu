@@ -327,19 +327,19 @@
             <!-- ========================================================== -->
             <div class="nav-label">📋 AKTIVITAS</div>
             
-            <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
+            <!-- <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
                     <i class="bi bi-list-check"></i> Pendaftaran
+            </a> -->
+            
+             <a href="{{ route('admin.absen.index') }}" class="nav-link {{ request()->routeIs('admin.absen.*') ? 'active' : '' }}">
+                    <i class="bi bi-list-check"></i> Absen
             </a>
             
-            <a href="#" class="nav-link">
-                <i class="bi bi-check-circle"></i> Kehadiran
-            </a>
-            
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.agenda.index') }}" class="nav-link {{ request()->routeIs('admin.agenda.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-event"></i> Agenda
             </a>
             
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.pengumuman.index') }}" class="nav-link {{ request()->routeIs('admin.pengumuman.*') ? 'active' : '' }}">
                 <i class="bi bi-megaphone"></i> Pengumuman
             </a>
 
@@ -348,15 +348,15 @@
             <!-- ========================================================== -->
             <div class="nav-label">📊 LAPORAN</div>
             
-            <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+            <a href="{{ route('admin.laporan.index') }}" class="nav-link {{ request()->routeIs('admin.laporan.index') ? 'active' : '' }}">
                 <i class="bi bi-bar-chart"></i> Laporan Pelatihan
             </a>
             
-            <a href="{{ route('admin.reports.users') }}" class="nav-link {{ request()->routeIs('admin.reports.users') ? 'active' : '' }}">
+            <a href="{{ route('admin.laporan.users') }}" class="nav-link {{ request()->routeIs('admin.laporan.users') ? 'active' : '' }}">
                 <i class="bi bi-person-lines-fill"></i> Laporan Peserta
             </a>
             
-            <a href="{{ route('admin.reports.certificates') }}" class="nav-link {{ request()->routeIs('admin.reports.certificates') ? 'active' : '' }}">
+            <a href="{{ route('admin.laporan.certificates') }}" class="nav-link {{ request()->routeIs('admin.laporan.certificates') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-check"></i> Laporan Sertifikat
             </a>
 

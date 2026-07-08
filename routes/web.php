@@ -6,14 +6,17 @@ use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\QuizQuestionController;
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\SertifikatController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\TrainingRegistrationController;  // ← PERBAIKAN: Ganti RegistrationController
+use App\Http\Controllers\TrainingRegistrationController; 
 use App\Http\Controllers\CertificateController;
 use Illuminate\Support\Facades\Route;
 
@@ -116,6 +119,26 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     Route::get('/sertifikat', [SertifikatController::class, 'pesertaIndex'])->name('sertifikat.index');
     Route::get('/sertifikat/{sertifikat}', [SertifikatController::class, 'pesertaShow'])->name('sertifikat.show');
     Route::get('/sertifikat/{sertifikat}/download', [SertifikatController::class, 'download'])->name('sertifikat.download');
+    
+    // ============================================================
+    // PENDAFTARAN PESERTA
+    // ============================================================
+    Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
+        Route::get('/', [TrainingRegistrationController::class, 'pesertaIndex'])->name('index');
+        Route::post('/store', [TrainingRegistrationController::class, 'pesertaStore'])->name('store');
+        Route::put('/{id}/cancel', [TrainingRegistrationController::class, 'pesertaCancel'])->name('cancel');
+        Route::get('/export', [TrainingRegistrationController::class, 'pesertaExport'])->name('export');
+    });
+    
+    // ============================================================
+    // ABSENSI PESERTA
+    // ============================================================
+    Route::prefix('absen')->name('absen.')->group(function () {
+        Route::get('/', [AbsensiController::class, 'pesertaIndex'])->name('index');
+        Route::post('/store', [AbsensiController::class, 'pesertaStore'])->name('store');
+        Route::get('/export', [AbsensiController::class, 'pesertaExport'])->name('export');
+        Route::get('/check-status', [AbsensiController::class, 'checkStatus'])->name('check-status');
+    });
 });
 
 /*
@@ -197,16 +220,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::put('/{question}', [QuizQuestionController::class, 'update'])->name('update');
         Route::delete('/{question}', [QuizQuestionController::class, 'destroy'])->name('destroy');
         
-        // Bulk Delete
         Route::post('/bulk-delete', [QuizQuestionController::class, 'bulkDelete'])->name('bulk-delete');
-        
-        // Reorder Questions
         Route::post('/reorder', [QuizQuestionController::class, 'reorder'])->name('reorder');
-        
-        // Duplicate Question
         Route::post('/{question}/duplicate', [QuizQuestionController::class, 'duplicate'])->name('duplicate');
-        
-        // Export Questions
         Route::get('/export', [QuizQuestionController::class, 'export'])->name('export');
     });
 
@@ -222,7 +238,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::put('/{attempt}', [QuizAttemptController::class, 'update'])->name('update');
         Route::delete('/{attempt}', [QuizAttemptController::class, 'destroy'])->name('destroy');
         
-        // Custom routes
         Route::post('/{attempt}/complete', [QuizAttemptController::class, 'completeAttempt'])->name('complete');
         Route::post('/bulk-delete', [QuizAttemptController::class, 'bulkDelete'])->name('bulk-delete');
         Route::get('/export', [QuizAttemptController::class, 'export'])->name('export');
@@ -239,21 +254,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('sertifikat/bulk-delete', [SertifikatController::class, 'bulkDelete'])->name('sertifikat.bulk-delete');
 
     // ============================================================
-    // REGISTRATION MANAGEMENT (PENDAFTARAN) - PERBAIKAN
+    // REGISTRATION MANAGEMENT (PENDAFTARAN) - ADMIN MONITORING
     // ============================================================
     Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
-        Route::get('/', [TrainingRegistrationController::class, 'index'])->name('index');  // ← PERBAIKAN
-        Route::get('/create', [TrainingRegistrationController::class, 'create'])->name('create');  // ← PERBAIKAN
-        Route::post('/', [TrainingRegistrationController::class, 'store'])->name('store');  // ← PERBAIKAN
-        Route::get('/{id}', [TrainingRegistrationController::class, 'show'])->name('show');  // ← PERBAIKAN
-        Route::get('/{id}/edit', [TrainingRegistrationController::class, 'edit'])->name('edit');  // ← PERBAIKAN
-        Route::put('/{id}', [TrainingRegistrationController::class, 'update'])->name('update');  // ← PERBAIKAN
-        Route::delete('/{id}', [TrainingRegistrationController::class, 'destroy'])->name('destroy');  // ← PERBAIKAN
-        Route::put('/{id}/approve', [TrainingRegistrationController::class, 'approve'])->name('approve');  // ← PERBAIKAN
-        Route::put('/{id}/reject', [TrainingRegistrationController::class, 'reject'])->name('reject');  // ← PERBAIKAN
-        Route::put('/{id}/cancel', [TrainingRegistrationController::class, 'cancel'])->name('cancel');  // ← PERBAIKAN
-        Route::post('/bulk-approve', [TrainingRegistrationController::class, 'bulkApprove'])->name('bulk-approve');  // ← PERBAIKAN
-        Route::get('/export', [TrainingRegistrationController::class, 'export'])->name('export');  // ← PERBAIKAN
+        Route::get('/', [TrainingRegistrationController::class, 'index'])->name('index');
+        Route::get('/create', [TrainingRegistrationController::class, 'create'])->name('create');
+        Route::post('/', [TrainingRegistrationController::class, 'store'])->name('store');
+        Route::get('/{id}', [TrainingRegistrationController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [TrainingRegistrationController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [TrainingRegistrationController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TrainingRegistrationController::class, 'destroy'])->name('destroy');
+        Route::put('/{id}/approve', [TrainingRegistrationController::class, 'approve'])->name('approve');
+        Route::put('/{id}/reject', [TrainingRegistrationController::class, 'reject'])->name('reject');
+        Route::put('/{id}/cancel', [TrainingRegistrationController::class, 'cancel'])->name('cancel');
+        Route::post('/bulk-approve', [TrainingRegistrationController::class, 'bulkApprove'])->name('bulk-approve');
+        Route::get('/export', [TrainingRegistrationController::class, 'export'])->name('export');
+        Route::get('/training-info/{id}', [TrainingRegistrationController::class, 'getTrainingInfo'])->name('training-info');
     });
 
     // ============================================================
@@ -273,16 +289,52 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 
     // ============================================================
+    // ABSENSI MANAGEMENT - ADMIN MONITORING
+    // ============================================================
+    Route::prefix('absen')->name('absen.')->group(function () {
+        Route::get('/', [AbsensiController::class, 'index'])->name('index');
+        Route::get('/create', [AbsensiController::class, 'create'])->name('create');
+        Route::post('/', [AbsensiController::class, 'store'])->name('store');
+        Route::get('/{absen}', [AbsensiController::class, 'show'])->name('show');
+        Route::get('/{absen}/edit', [AbsensiController::class, 'edit'])->name('edit');
+        Route::put('/{absen}', [AbsensiController::class, 'update'])->name('update');
+        Route::delete('/{absen}', [AbsensiController::class, 'destroy'])->name('destroy');
+        
+        Route::post('/check-duplicate', [AbsensiController::class, 'checkDuplicate'])->name('check-duplicate');
+        Route::get('/export', [AbsensiController::class, 'export'])->name('export');
+        Route::post('/bulk-delete', [AbsensiController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::get('/summary', [AbsensiController::class, 'summary'])->name('summary');
+        Route::get('/today-stats', [AbsensiController::class, 'todayStats'])->name('today-stats');
+        Route::get('/by-date-range', [AbsensiController::class, 'getByDateRange'])->name('by-date-range');
+        Route::get('/by-user/{userId}', [AbsensiController::class, 'getByUser'])->name('by-user');
+        Route::get('/user-history/{userId}', [AbsensiController::class, 'userHistory'])->name('user-history');
+        Route::get('/calendar', [AbsensiController::class, 'calendar'])->name('calendar');
+    });
+
+    // ============================================================
     // REPORTS
     // ============================================================
-    Route::prefix('reports')->name('reports.')->group(function () {
+   Route::prefix('laporan')->name('laporan.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/trainings', [ReportController::class, 'trainings'])->name('trainings');
         Route::get('/users', [ReportController::class, 'users'])->name('users');
+        Route::get('/participants', [ReportController::class, 'users'])->name('participants'); // Alias
         Route::get('/certificates', [ReportController::class, 'certificates'])->name('certificates');
         Route::get('/materi', [ReportController::class, 'materi'])->name('materi');
         Route::get('/quiz', [ReportController::class, 'quiz'])->name('quiz');
+        Route::get('/registrations', [ReportController::class, 'registrations'])->name('registrations');
         Route::get('/export/{type}', [ReportController::class, 'export'])->name('export');
+});
+
+     // AGENDA MANAGEMENT
+    Route::resource('agenda', AgendaController::class);
+    Route::prefix('agenda')->name('agenda.')->group(function () {
+        Route::get('/export', [AgendaController::class, 'export'])->name('export');
+        Route::get('/calendar', [AgendaController::class, 'calendar'])->name('calendar');
+        Route::post('/bulk-delete', [AgendaController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/update-statuses', [AgendaController::class, 'updateStatuses'])->name('update-statuses');
+        Route::get('/by-date-range', [AgendaController::class, 'getByDateRange'])->name('by-date-range');
+        Route::get('/upcoming', [AgendaController::class, 'getUpcoming'])->name('upcoming');
     });
 
     // ============================================================
@@ -295,10 +347,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::put('/notifications', [SettingController::class, 'updateNotifications'])->name('notifications');
     });
 
+    // Pengumuman Management
+     Route::prefix('pengumuman')->name('pengumuman.')->group(function () {
+        Route::get('/', [PengumumanController::class, 'index'])->name('index');
+        Route::get('/create', [PengumumanController::class, 'create'])->name('create');
+        Route::get('/export', [PengumumanController::class, 'export'])->name('export');
+        Route::get('/store', [PengumumanController::class, 'store'])->name('store');
+    });
+
     // ============================================================
     // SEARCH
     // ============================================================
     Route::get('/search', [DashboardController::class, 'search'])->name('search');
+
 });
 
 require __DIR__.'/auth.php';

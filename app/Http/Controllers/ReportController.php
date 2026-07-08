@@ -8,6 +8,9 @@ use App\Models\Sertifikat;
 use App\Models\TrainingRegistration;
 use App\Models\QuizAttempt;
 use App\Models\Materi;
+use App\Models\Quiz;
+use App\Models\Category;
+use App\Models\Certificate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,37 +19,72 @@ class ReportController extends Controller
     /**
      * Dashboard Laporan
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Total data
         $totalTrainings = Training::count();
-        $totalUsers = User::where('role', 'peserta')->count();
+        $totalParticipants = User::where('role', 'peserta')->count();
         $totalCertificates = Sertifikat::count();
-        $totalRegistrations = TrainingRegistration::count();
-        $totalQuizAttempts = QuizAttempt::count();
-        
-        $trainingsByStatus = Training::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
-        
-        $registrationsPerMonth = TrainingRegistration::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('count(*) as total')
-            )
-            ->whereYear('created_at', date('Y'))
-            ->groupBy('year', 'month')
-            ->orderBy('month')
+        $totalQuizzes = Quiz::count();
+        $totalMateri = Materi::count();
+
+        // Growth data
+        $lastMonth = now()->subMonth();
+        $trainingGrowth = Training::where('created_at', '>=', $lastMonth)->count();
+        $participantGrowth = User::where('role', 'peserta')->where('created_at', '>=', $lastMonth)->count();
+        $certificateGrowth = Sertifikat::where('created_at', '>=', $lastMonth)->count();
+        $quizGrowth = Quiz::where('created_at', '>=', $lastMonth)->count();
+
+        // Data untuk chart
+        $chartData = [
+            'trainings' => $this->getMonthlyData(Training::class, 'created_at'),
+            'participants' => $this->getMonthlyData(User::class, 'created_at', [['role', 'peserta']]),
+            'certificates' => $this->getMonthlyData(Sertifikat::class, 'created_at'),
+            'totalTrainings' => $totalTrainings,
+            'totalParticipants' => $totalParticipants,
+            'totalCertificates' => $totalCertificates,
+            'totalMateri' => $totalMateri,
+            'totalQuizzes' => $totalQuizzes,
+        ];
+
+        // Data untuk tabel
+        $trainings = Training::with(['kategori', 'registrations'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
             ->get();
-        
-        return view('admin.pendaftaran.index', compact(
+
+        // PERBAIKAN: Menggunakan select raw untuk menghitung jumlah pelatihan
+        $participants = User::where('role', 'peserta')
+            ->select('users.*', DB::raw('(SELECT COUNT(*) FROM training_registrations WHERE training_registrations.user_id = users.id) as trainings_count'))
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $certificates = Sertifikat::with(['user', 'training'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $registrations = TrainingRegistration::with(['user', 'training'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('admin.laporan.index', compact(
             'totalTrainings',
-            'totalUsers',
+            'totalParticipants',
             'totalCertificates',
-            'totalRegistrations',
-            'totalQuizAttempts',
-            'trainingsByStatus',
-            'registrationsPerMonth'
+            'totalQuizzes',
+            'totalMateri',
+            'trainingGrowth',
+            'participantGrowth',
+            'certificateGrowth',
+            'quizGrowth',
+            'chartData',
+            'trainings',
+            'participants',
+            'certificates',
+            'registrations'
         ));
     }
 
@@ -55,24 +93,24 @@ class ReportController extends Controller
      */
     public function trainings(Request $request)
     {
-        $query = Training::with(['category', 'registrations', 'creator']);
+        $query = Training::with(['kategori', 'registrations', 'creator']);
 
         // Filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
         if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $query->where('kategori_id', $request->category_id);
         }
         if ($request->filled('date_from')) {
-            $query->whereDate('start_date', '>=', $request->date_from);
+            $query->whereDate('tanggal_mulai', '>=', $request->date_from);
         }
         if ($request->filled('date_to')) {
-            $query->whereDate('end_date', '<=', $request->date_to);
+            $query->whereDate('tanggal_selesai', '<=', $request->date_to);
         }
 
         $trainings = $query->orderBy('created_at', 'desc')->paginate(15);
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
 
         return view('admin.reports.trainings', compact('trainings', 'categories'));
     }
@@ -91,13 +129,14 @@ class ReportController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('email', 'LIKE', "%{$search}%");
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('nama', 'LIKE', "%{$search}%");
             });
         }
 
         $users = $query->orderBy('created_at', 'desc')->paginate(15);
 
-        return view('admin.reports.users', compact('users'));
+        return view('admin.laporan.users', compact('users'));
     }
 
     /**
@@ -105,7 +144,7 @@ class ReportController extends Controller
      */
     public function certificates(Request $request)
     {
-        $query = Certificates::with(['user', 'training']);
+        $query = Sertifikat::with(['user', 'training']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -114,16 +153,16 @@ class ReportController extends Controller
             $query->where('training_id', $request->training_id);
         }
         if ($request->filled('date_from')) {
-            $query->whereDate('issued_at', '>=', $request->date_from);
+            $query->whereDate('tanggal_terbit', '>=', $request->date_from);
         }
         if ($request->filled('date_to')) {
-            $query->whereDate('issued_at', '<=', $request->date_to);
+            $query->whereDate('tanggal_terbit', '<=', $request->date_to);
         }
 
-        $certificates = $query->orderBy('issued_at', 'desc')->paginate(15);
+        $certificates = $query->orderBy('tanggal_terbit', 'desc')->paginate(15);
         $trainings = Training::all();
 
-        return view('admin.reports.certificates', compact('certificates', 'trainings'));
+        return view('admin.laporan.certificates', compact('certificates', 'trainings'));
     }
 
     /**
@@ -151,7 +190,7 @@ class ReportController extends Controller
      */
     public function quiz(Request $request)
     {
-        $query = QuizAttempts::with(['user', 'quiz']);
+        $query = QuizAttempt::with(['user', 'quiz']);
 
         if ($request->filled('quiz_id')) {
             $query->where('quiz_id', $request->quiz_id);
@@ -161,9 +200,35 @@ class ReportController extends Controller
         }
 
         $attempts = $query->orderBy('created_at', 'desc')->paginate(15);
-        $quizzes = \App\Models\Quizzes::all();
+        $quizzes = Quiz::all();
 
         return view('admin.reports.quiz', compact('attempts', 'quizzes'));
+    }
+
+    /**
+     * Laporan Pendaftaran
+     */
+    public function registrations(Request $request)
+    {
+        $query = TrainingRegistration::with(['user', 'training']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('training_id')) {
+            $query->where('training_id', $request->training_id);
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $registrations = $query->orderBy('created_at', 'desc')->paginate(15);
+        $trainings = Training::all();
+
+        return view('admin.reports.registrations', compact('registrations', 'trainings'));
     }
 
     /**
@@ -179,27 +244,28 @@ class ReportController extends Controller
         switch ($type) {
             case 'trainings':
                 $headers = ['No', 'Judul', 'Kategori', 'Status', 'Peserta', 'Tanggal Mulai', 'Tanggal Selesai'];
-                $items = Training::with(['category'])->get();
+                $items = Training::with(['kategori'])->get();
                 foreach ($items as $index => $item) {
                     $data[] = [
                         $index + 1,
-                        $item->title,
-                        $item->category->name ?? '-',
-                        $item->status,
+                        $item->judul,
+                        $item->kategori->nama ?? '-',
+                        $item->status ?? 'draft',
                         $item->registrations()->count(),
-                        $item->start_date ? $item->start_date->format('d/m/Y') : '-',
-                        $item->end_date ? $item->end_date->format('d/m/Y') : '-'
+                        $item->tanggal_mulai ? $item->tanggal_mulai->format('d/m/Y') : '-',
+                        $item->tanggal_selesai ? $item->tanggal_selesai->format('d/m/Y') : '-'
                     ];
                 }
                 break;
 
+            case 'participants':
             case 'users':
                 $headers = ['No', 'Nama', 'Email', 'Status', 'Terdaftar'];
                 $items = User::where('role', 'peserta')->get();
                 foreach ($items as $index => $item) {
                     $data[] = [
                         $index + 1,
-                        $item->name,
+                        $item->nama ?? $item->name,
                         $item->email,
                         $item->status ?? 'active',
                         $item->created_at ? $item->created_at->format('d/m/Y') : '-'
@@ -209,17 +275,112 @@ class ReportController extends Controller
 
             case 'certificates':
                 $headers = ['No', 'Peserta', 'Pelatihan', 'Nomor Sertifikat', 'Tanggal Terbit', 'Status'];
-                $items = Certificates::with(['user', 'training'])->get();
+                $items = Sertifikat::with(['user', 'training'])->get();
                 foreach ($items as $index => $item) {
                     $data[] = [
                         $index + 1,
-                        $item->user->name ?? '-',
-                        $item->training->title ?? '-',
-                        $item->certificate_number,
-                        $item->issued_at ? $item->issued_at->format('d/m/Y') : '-',
-                        $item->status
+                        $item->user->nama ?? $item->user->name ?? '-',
+                        $item->training->judul ?? '-',
+                        $item->nomor_sertifikat,
+                        $item->tanggal_terbit ? $item->tanggal_terbit->format('d/m/Y') : '-',
+                        $item->status ?? 'active'
                     ];
                 }
+                break;
+
+            case 'registrations':
+                $headers = ['No', 'Peserta', 'Pelatihan', 'Tanggal Daftar', 'Status'];
+                $items = TrainingRegistration::with(['user', 'training'])->get();
+                foreach ($items as $index => $item) {
+                    $data[] = [
+                        $index + 1,
+                        $item->user->nama ?? $item->user->name ?? '-',
+                        $item->training->judul ?? '-',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-',
+                        $item->status ?? 'pending'
+                    ];
+                }
+                break;
+
+            case 'materi':
+                $headers = ['No', 'Judul Materi', 'Pelatihan', 'Tipe', 'Tanggal Dibuat'];
+                $items = Materi::with(['training'])->get();
+                foreach ($items as $index => $item) {
+                    $data[] = [
+                        $index + 1,
+                        $item->judul ?? $item->title,
+                        $item->training->judul ?? '-',
+                        $item->type ?? 'file',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-'
+                    ];
+                }
+                break;
+
+            case 'quiz':
+                $headers = ['No', 'Quiz', 'Peserta', 'Skor', 'Lulus', 'Tanggal'];
+                $items = QuizAttempt::with(['user', 'quiz'])->get();
+                foreach ($items as $index => $item) {
+                    $data[] = [
+                        $index + 1,
+                        $item->quiz->judul ?? '-',
+                        $item->user->nama ?? $item->user->name ?? '-',
+                        $item->score ?? 0,
+                        $item->is_passed ? 'Ya' : 'Tidak',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-'
+                    ];
+                }
+                break;
+
+            case 'all':
+                $headers = ['No', 'Jenis', 'Judul/Nama', 'Status', 'Tanggal'];
+                $allData = [];
+                $counter = 1;
+
+                $trainings = Training::all();
+                foreach ($trainings as $item) {
+                    $allData[] = [
+                        $counter++,
+                        'Pelatihan',
+                        $item->judul,
+                        $item->status ?? 'draft',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-'
+                    ];
+                }
+
+                $users = User::where('role', 'peserta')->get();
+                foreach ($users as $item) {
+                    $allData[] = [
+                        $counter++,
+                        'Peserta',
+                        $item->nama ?? $item->name,
+                        $item->status ?? 'active',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-'
+                    ];
+                }
+
+                $certificates = Sertifikat::all();
+                foreach ($certificates as $item) {
+                    $allData[] = [
+                        $counter++,
+                        'Sertifikat',
+                        $item->nomor_sertifikat,
+                        $item->status ?? 'active',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-'
+                    ];
+                }
+
+                $registrations = TrainingRegistration::all();
+                foreach ($registrations as $item) {
+                    $allData[] = [
+                        $counter++,
+                        'Pendaftaran',
+                        $item->user->nama ?? $item->user->name ?? '-',
+                        $item->status ?? 'pending',
+                        $item->created_at ? $item->created_at->format('d/m/Y') : '-'
+                    ];
+                }
+
+                $data = $allData;
                 break;
 
             default:
@@ -240,5 +401,43 @@ class ReportController extends Controller
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
+    }
+
+    /**
+     * Get monthly data for chart
+     */
+    private function getMonthlyData($model, $column = 'created_at', $conditions = [])
+    {
+        $data = [];
+        $months = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $months[] = now()->subMonths($i)->format('Y-m');
+        }
+
+        $query = $model::query();
+        foreach ($conditions as $condition) {
+            if (count($condition) == 2) {
+                $query->where($condition[0], $condition[1]);
+            } elseif (count($condition) == 3) {
+                $query->where($condition[0], $condition[1], $condition[2]);
+            }
+        }
+
+        $results = $query->select(
+                DB::raw("DATE_FORMAT({$column}, '%Y-%m') as month"),
+                DB::raw('count(*) as total')
+            )
+            ->where($column, '>=', now()->subMonths(6))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+
+        foreach ($months as $month) {
+            $data[] = $results[$month] ?? 0;
+        }
+
+        return $data;
     }
 }

@@ -461,7 +461,7 @@
                             <i class="bi bi-speedometer2 me-1"></i> Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm px-3 me-2">
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-sm px-3 me-2">
                             <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
                         </a>
                         <a href="{{ route('register') }}" class="btn btn-primary btn-sm px-3">

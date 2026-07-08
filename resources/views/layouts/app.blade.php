@@ -549,9 +549,9 @@
             <!-- Sidebar Backdrop for Mobile -->
             <div class="sidebar-backdrop" data-sidebar-close></div>
 
-            <!-- ========================================================== -->
+           
             <!-- SIDEBAR -->
-            <!-- ========================================================== -->
+           
             <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
                 <!-- Brand -->
                 <div class="sidebar-header">
@@ -574,9 +574,9 @@
                         <span class="nav-text">Dashboard</span>
                     </a>
 
-                    <!-- ========================================================== -->
+                   
                     <!-- MASTER DATA -->
-                    <!-- ========================================================== -->
+                   
                     <div class="nav-label">MASTER DATA</div>
 
                     <a href="{{ route('admin.kategori.index') }}" class="nav-link {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
@@ -594,9 +594,9 @@
                         <span class="nav-text">Pengguna</span>
                     </a>
 
-                    <!-- ========================================================== -->
+                   
                     <!-- PELATIHAN -->
-                    <!-- ========================================================== -->
+                   
                     <div class="nav-label">PELATIHAN</div>
 
                     <a href="{{ route('admin.materi.index') }}" class="nav-link {{ request()->routeIs('admin.materi.*') ? 'active' : '' }}">
@@ -624,37 +624,37 @@
                         <span class="nav-text">Sertifikat</span>
                     </a>
 
-                    <!-- ========================================================== -->
+                   
                     <!-- AKTIVITAS -->
-                    <!-- ========================================================== -->
+                   
                     <div class="nav-label">AKTIVITAS</div>
 
-                    <a href="#" class="nav-link">
+                   <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
                         <span class="nav-text">Pendaftaran</span>
                     </a>
 
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('admin.absen.index') }}" class="nav-link {{ request()->routeIs('admin.absen.*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-check-circle"></i></span>
                         <span class="nav-text">Kehadiran</span>
                     </a>
 
-                    <a href="#" class="nav-link">
+                     <a href="{{ route('admin.agenda.index') }}" class="nav-link {{ request()->routeIs('admin.agenda.*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-calendar-event"></i></span>
                         <span class="nav-text">Agenda</span>
                     </a>
 
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('admin.pengumuman.index') }}" class="nav-link {{ request()->routeIs('admin.pengumuman.*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-megaphone"></i></span>
                         <span class="nav-text">Pengumuman</span>
                     </a>
 
-                    <!-- ========================================================== -->
+                   
                     <!-- LAPORAN -->
-                    <!-- ========================================================== -->
+                   
                     <div class="nav-label">LAPORAN</div>
 
-                    <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.laporan.index') }}" class="nav-link {{ request()->routeIs('admin.laporan.index') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-bar-chart"></i></span>
                         <span class="nav-text">Laporan Pelatihan</span>
                     </a>
@@ -669,9 +669,9 @@
                         <span class="nav-text">Laporan Sertifikat</span>
                     </a>
 
-                    <!-- ========================================================== -->
+                   
                     <!-- PENGATURAN -->
-                    <!-- ========================================================== -->
+                   
                     <div class="nav-label">PENGATURAN</div>
 
                     <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
@@ -698,9 +698,9 @@
                 </div>
             </aside>
 
-            <!-- ========================================================== -->
+           
             <!-- MAIN CONTENT -->
-            <!-- ========================================================== -->
+           
             <div class="admin-main">
                 <!-- Topbar -->
                 <nav class="navbar admin-navbar navbar-expand">
@@ -824,9 +824,9 @@
         </div>
     </div>
 
-    <!-- ========================================================== -->
+   
     <!-- SCRIPTS -->
-    <!-- ========================================================== -->
+   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @vite(['resources/js/app.js'])
 
