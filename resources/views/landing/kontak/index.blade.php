@@ -3,32 +3,7 @@
 @section('title', 'Kontak Kami')
 
 @section('content')
-<!-- ============================================================
-     HERO KONTAK
-============================================================ -->
-<section class="hero d-flex align-items-center justify-content-center" style="min-height: 90vh; padding: 0; background: linear-gradient(135deg, #0f1724 0%, #1a2236 50%, #0f1724 100%);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3">
-                    <i class="bi bi-envelope me-1"></i> Kontak
-                </span>
-                <h1 class="display-3 fw-bold mb-3">Hubungi Kami</h1>
-                <p class="text-white-50 mb-4 fs-5 mx-auto" style="max-width: 600px;">
-                    Kami siap membantu Anda. Silakan hubungi kami melalui formulir di bawah ini.
-                </p>
-                <div class="d-flex flex-wrap gap-3 justify-content-center">
-                    <a href="#contact-form" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-chat-dots me-2"></i> Kirim Pesan
-                    </a>
-                    <a href="{{ route('landing.faq.index') }}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="bi bi-question-circle me-2"></i> FAQ
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <!-- ============================================================
      CONTACT SECTION

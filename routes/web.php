@@ -53,14 +53,14 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 */
 Route::middleware('auth')->group(function () {
     
-    // Profile Routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
-    Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/profile/statistics', [ProfileController::class, 'getStatistics'])->name('profile.statistics');
+    // Profile Routes - HAPUS INI (pindahkan ke admin)
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    // Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+    // Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Route::get('/profile/statistics', [ProfileController::class, 'getStatistics'])->name('profile.statistics');
 
     // Sertifikat User
     Route::get('/sertifikat/my-certificates', [SertifikatController::class, 'userCertificates'])->name('sertifikat.user');
@@ -77,8 +77,10 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     // Dashboard Peserta
     Route::get('/dashboard', [DashboardController::class, 'pesertaDashboard'])->name('dashboard');
     
-    // Profile Peserta
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.index');
+    // ============================================================
+    // PROFILE PESERTA - PERBAIKAN
+    // ============================================================
+    Route::get('/profile', [ProfileController::class, 'pesertaEdit'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
@@ -93,6 +95,7 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     Route::post('/trainings/{training}/complete', [TrainingController::class, 'complete'])->name('trainings.complete');
     Route::get('/trainings/{training}/progress', [TrainingController::class, 'progress'])->name('trainings.progress');
     Route::delete('/trainings/{training}/unenroll', [TrainingController::class, 'unenroll'])->name('trainings.unenroll');
+    Route::get('/trainings/history', [TrainingController::class, 'history'])->name('trainings.history');
     
     // ============================================================
     // MATERI PESERTA
@@ -139,6 +142,22 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
         Route::get('/export', [AbsensiController::class, 'pesertaExport'])->name('export');
         Route::get('/check-status', [AbsensiController::class, 'checkStatus'])->name('check-status');
     });
+
+    // ============================================================
+    // AGENDA PESERTA
+    // ============================================================
+    Route::prefix('agenda')->name('agenda.')->group(function () {
+        Route::get('/', [AgendaController::class, 'pesertaIndex'])->name('index');
+        Route::get('/{id}', [AgendaController::class, 'pesertaShow'])->name('show');
+    });
+
+    // ============================================================
+    // PENGUMUMAN PESERTA
+    // ============================================================
+    Route::prefix('pengumuman')->name('pengumuman.')->group(function () {
+        Route::get('/', [PengumumanController::class, 'pesertaIndex'])->name('index');
+        Route::get('/{id}', [PengumumanController::class, 'pesertaShow'])->name('show');
+    });
 });
 
 /*
@@ -154,7 +173,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
 
     // ============================================================
-    // PROFILE ADMIN
+    // PROFILE ADMIN - PERBAIKAN
     // ============================================================
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -314,7 +333,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // ============================================================
     // REPORTS
     // ============================================================
-   Route::prefix('laporan')->name('laporan.')->group(function () {
+    Route::prefix('laporan')->name('laporan.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/trainings', [ReportController::class, 'trainings'])->name('trainings');
         Route::get('/users', [ReportController::class, 'users'])->name('users');
@@ -324,9 +343,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/quiz', [ReportController::class, 'quiz'])->name('quiz');
         Route::get('/registrations', [ReportController::class, 'registrations'])->name('registrations');
         Route::get('/export/{type}', [ReportController::class, 'export'])->name('export');
-});
+    });
 
-     // AGENDA MANAGEMENT
+    // ============================================================
+    // AGENDA MANAGEMENT
+    // ============================================================
     Route::resource('agenda', AgendaController::class);
     Route::prefix('agenda')->name('agenda.')->group(function () {
         Route::get('/export', [AgendaController::class, 'export'])->name('export');
@@ -347,8 +368,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::put('/notifications', [SettingController::class, 'updateNotifications'])->name('notifications');
     });
 
-    // Pengumuman Management
-     Route::prefix('pengumuman')->name('pengumuman.')->group(function () {
+    // ============================================================
+    // PENGUMUMAN MANAGEMENT
+    // ============================================================
+    Route::prefix('pengumuman')->name('pengumuman.')->group(function () {
         Route::get('/', [PengumumanController::class, 'index'])->name('index');
         Route::get('/create', [PengumumanController::class, 'create'])->name('create');
         Route::get('/export', [PengumumanController::class, 'export'])->name('export');

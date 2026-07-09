@@ -14,7 +14,7 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Display the user's profile form for ADMIN.
      */
     public function edit(Request $request): View
     {
@@ -36,7 +36,29 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Display the user's profile form for PESERTA.
+     */
+    public function pesertaEdit(Request $request): View
+    {
+        $user = $request->user();
+        
+        // Statistics for peserta
+        $totalQuizAttempts = $user->quizAttempts()->count() ?? 0;
+        $totalCertificates = $user->certificates()->count() ?? 0;
+        $totalTrainings = $user->trainings()->count() ?? 0;
+        $averageQuizScore = $user->quizAttempts()->where('status', 'completed')->avg('score') ?? 0;
+        
+        return view('peserta.profile.index', compact(
+            'user',
+            'totalQuizAttempts',
+            'totalCertificates',
+            'totalTrainings',
+            'averageQuizScore'
+        ));
+    }
+
+    /**
+     * Update the user's profile information (Admin & Peserta).
      */
     public function update(Request $request): RedirectResponse
     {
@@ -47,6 +69,9 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'nik' => 'nullable|string|max:50',
             'phone' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'nullable|date',
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -68,12 +93,18 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('profile.edit')
+        // Redirect based on user role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.profile.edit')
+                            ->with('success', '✅ Profil berhasil diperbarui.');
+        }
+
+        return redirect()->route('peserta.profile.index')
                         ->with('success', '✅ Profil berhasil diperbarui.');
     }
 
     /**
-     * Update the user's password.
+     * Update the user's password (Admin & Peserta).
      */
     public function updatePassword(Request $request): RedirectResponse
     {
@@ -93,12 +124,18 @@ class ProfileController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('profile.edit')
+        // Redirect based on user role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.profile.edit')
+                            ->with('success', '✅ Password berhasil diubah.');
+        }
+
+        return redirect()->route('peserta.profile.index')
                         ->with('success', '✅ Password berhasil diubah.');
     }
 
     /**
-     * Upload avatar only.
+     * Upload avatar only (Admin & Peserta).
      */
     public function uploadAvatar(Request $request): RedirectResponse
     {
@@ -116,12 +153,18 @@ class ProfileController extends Controller
         $path = $request->file('avatar')->store('avatars', 'public');
         $user->update(['avatar' => $path]);
 
-        return redirect()->route('profile.edit')
+        // Redirect based on user role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.profile.edit')
+                            ->with('success', '✅ Foto profil berhasil diperbarui.');
+        }
+
+        return redirect()->route('peserta.profile.index')
                         ->with('success', '✅ Foto profil berhasil diperbarui.');
     }
 
     /**
-     * Remove avatar.
+     * Remove avatar (Admin & Peserta).
      */
     public function removeAvatar(Request $request): RedirectResponse
     {
@@ -133,7 +176,13 @@ class ProfileController extends Controller
 
         $user->update(['avatar' => null]);
 
-        return redirect()->route('profile.edit')
+        // Redirect based on user role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.profile.edit')
+                            ->with('success', '✅ Foto profil berhasil dihapus.');
+        }
+
+        return redirect()->route('peserta.profile.index')
                         ->with('success', '✅ Foto profil berhasil dihapus.');
     }
 
@@ -164,7 +213,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Get user statistics for AJAX.
+     * Get user statistics for AJAX (Admin & Peserta).
      */
     public function getStatistics(Request $request)
     {

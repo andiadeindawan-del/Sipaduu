@@ -3,32 +3,7 @@
 @section('title', 'Daftar Pelatihan')
 
 @section('content')
-<!-- ============================================================
-     HERO SECTION
-============================================================ -->
-<section class="hero d-flex align-items-center justify-content-center" style="min-height: 90vh; padding: 0;">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3">
-                    <i class="bi bi-journal-bookmark me-1"></i> Pelatihan
-                </span>
-                <h1 class="display-3 fw-bold mb-3">Daftar Pelatihan</h1>
-                <p class="text-white-50 mb-4 fs-5 mx-auto" style="max-width: 600px;">
-                    Temukan pelatihan yang sesuai dengan kebutuhan pengembangan kompetensi Anda.
-                </p>
-                <div class="d-flex flex-wrap gap-3 justify-content-center">
-                    <a href="#trainings" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-search me-2"></i> Lihat Pelatihan
-                    </a>
-                    <a href="{{ route('landing.kontak.index') }}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="bi bi-headset me-2"></i> Konsultasi
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 <!-- ============================================================
      FILTER SECTION
 ============================================================ -->

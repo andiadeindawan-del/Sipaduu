@@ -14,8 +14,8 @@
         /* ===== Sidebar ===== */
         #sidebar {
             width: var(--sidebar-width);
-            min-height: 100vh;
-            background: #16241c;
+            height: 100vh;
+            background: #0d1b15;
             position: fixed;
             top: 0;
             left: 0;
@@ -24,31 +24,48 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            overflow-x: hidden;
         }
         #sidebar::-webkit-scrollbar { width: 4px; }
-        #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 4px; }
+        #sidebar::-webkit-scrollbar-track { background: transparent; }
+        #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
+        #sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.25); }
+
+        #sidebar .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            flex: 1;
+        }
 
         #sidebar .brand {
-            padding: 1.25rem 1.5rem;
+            padding: 1.25rem 1.5rem .75rem;
             color: #fff;
             font-weight: 700;
-            font-size: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,.08);
-            text-decoration: none;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,.06);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
+            flex-shrink: 0;
         }
-        #sidebar .brand i { font-size: 1.4rem; color: var(--accent); }
+        #sidebar .brand i { font-size: 1.5rem; color: var(--accent); }
         #sidebar .brand span { color: var(--accent); }
 
+        /* ===== Sidebar Navigation ===== */
+        #sidebar .sidebar-nav {
+            flex: 1;
+            padding: 0.5rem 0 1rem;
+        }
+
         #sidebar .nav-label {
-            color: rgba(255,255,255,.38);
-            font-size: .68rem;
+            color: rgba(255,255,255,.25);
+            font-size: .62rem;
             font-weight: 600;
-            letter-spacing: .08em;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            padding: .85rem 1.5rem .35rem;
+            padding: .85rem 1.5rem .25rem;
             display: flex;
             align-items: center;
             gap: .5rem;
@@ -61,35 +78,42 @@
             background: rgba(255,255,255,.06);
         }
 
-        /* ===== Sidebar Menu ===== */
         #sidebar .nav-link {
-            color: rgba(255,255,255,.72);
+            color: rgba(255,255,255,.7);
             padding: .55rem 1.5rem;
             border-radius: 0;
             display: flex;
             align-items: center;
-            gap: .6rem;
+            gap: .7rem;
             text-decoration: none;
             transition: all .15s;
             cursor: pointer;
+            font-size: .88rem;
             border-left: 3px solid transparent;
             position: relative;
         }
         #sidebar .nav-link:hover {
             color: #fff;
-            background: rgba(29,168,83,.18);
-            border-left-color: rgba(29,168,83,.4);
+            background: rgba(29,168,83,.12);
+            border-left-color: rgba(29,168,83,.3);
         }
         #sidebar .nav-link.active {
             color: #fff;
-            background: rgba(29,168,83,.25);
+            background: rgba(29,168,83,.18);
             border-left-color: var(--accent);
         }
-        #sidebar .nav-link i {
-            font-size: 1rem;
-            width: 22px;
+        #sidebar .nav-link i { 
+            font-size: 1.05rem; 
+            width: 24px; 
             text-align: center;
             flex-shrink: 0;
+        }
+        #sidebar .nav-link .badge {
+            margin-left: auto;
+            background: rgba(255,255,255,.12);
+            color: #fff;
+            font-size: .65rem;
+            padding: .15rem .6rem;
         }
         #sidebar .nav-link .chevron {
             margin-left: auto;
@@ -101,54 +125,96 @@
             transform: rotate(90deg);
         }
 
-        /* ===== Submenu ===== */
+        /* ===== Submenu Level 1 ===== */
         #sidebar .submenu {
             max-height: 0;
             overflow: hidden;
             transition: max-height .3s ease;
-            background: rgba(0,0,0,.15);
+            background: rgba(0,0,0,.2);
         }
         #sidebar .submenu.open {
             max-height: 500px;
         }
         #sidebar .submenu .nav-link {
-            padding-left: 3.2rem;
+            padding-left: 3.5rem;
             font-size: .82rem;
             border-left-color: transparent;
+            color: rgba(255,255,255,.55);
         }
         #sidebar .submenu .nav-link::before {
             content: '▸ ';
-            color: rgba(255,255,255,.25);
+            color: rgba(255,255,255,.2);
             font-size: .7rem;
         }
         #sidebar .submenu .nav-link:hover {
-            background: rgba(29,168,83,.1);
+            color: #fff;
+            background: rgba(29,168,83,.08);
             border-left-color: rgba(29,168,83,.2);
         }
         #sidebar .submenu .nav-link.active {
-            background: rgba(29,168,83,.15);
+            color: #fff;
+            background: rgba(29,168,83,.12);
             border-left-color: var(--accent);
         }
 
-        #sidebar .user-info {
-            margin-top: auto;
-            padding: 1rem 1.5rem;
-            border-top: 1px solid rgba(255,255,255,.08);
-            color: rgba(255,255,255,.7);
-            font-size: .82rem;
+        /* ===== Submenu Level 2 (Pelatihan Saya) ===== */
+        #sidebar .submenu-level2 {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease;
+            background: rgba(0,0,0,.15);
         }
-        #sidebar .user-info .user-name { color: #fff; font-weight: 600; }
+        #sidebar .submenu-level2.open {
+            max-height: 400px;
+        }
+        #sidebar .submenu-level2 .nav-link {
+            padding-left: 4.5rem !important;
+            font-size: .78rem;
+            border-left-color: transparent;
+            color: rgba(255,255,255,.45);
+        }
+        #sidebar .submenu-level2 .nav-link::before {
+            content: '• ';
+            color: rgba(255,255,255,.15);
+            font-size: .8rem;
+        }
+        #sidebar .submenu-level2 .nav-link:hover {
+            color: #fff;
+            background: rgba(29,168,83,.06);
+            border-left-color: rgba(29,168,83,.15);
+        }
+        #sidebar .submenu-level2 .nav-link.active {
+            color: #fff;
+            background: rgba(29,168,83,.1);
+            border-left-color: var(--accent);
+        }
+
+        /* ===== User Info ===== */
+        #sidebar .user-info {
+            padding: .9rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,.06);
+            color: rgba(255,255,255,.6);
+            font-size: .82rem;
+            flex-shrink: 0;
+        }
+        #sidebar .user-info .user-name { color: #fff; font-weight: 600; font-size: .9rem; }
         #sidebar .user-info .user-role { font-size: .72rem; opacity: .6; }
+        #sidebar .user-info .badge {
+            background: var(--accent);
+            font-weight: 400;
+            font-size: .65rem;
+            padding: .2rem .6rem;
+        }
         #sidebar .user-info .btn-outline-secondary {
-            color: rgba(255,255,255,.7);
-            border-color: rgba(255,255,255,.15);
+            color: rgba(255,255,255,.6);
+            border-color: rgba(255,255,255,.1);
             font-size: .78rem;
             transition: all .15s;
         }
         #sidebar .user-info .btn-outline-secondary:hover {
-            background: rgba(255,255,255,.1);
+            background: rgba(255,255,255,.08);
             color: #fff;
-            border-color: rgba(255,255,255,.3);
+            border-color: rgba(255,255,255,.2);
         }
         #sidebar .user-info .btn-outline-secondary i { font-size: .9rem; }
 
@@ -157,7 +223,7 @@
         #topbar {
             background: #fff;
             border-bottom: 1px solid #e8ecf1;
-            padding: .6rem 1.5rem;
+            padding: .5rem 1.5rem;
             position: sticky;
             top: 0;
             z-index: 99;
@@ -166,8 +232,6 @@
             justify-content: flex-end;
             gap: .75rem;
         }
-        #topbar .topbar-brand { font-weight: 600; color: #16241c; }
-        #topbar .topbar-brand span { color: var(--accent); }
 
         /* ===== Page heading ===== */
         .page-heading {
@@ -176,25 +240,25 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 1rem;
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
             background: #fff;
             border-bottom: 1px solid #e8ecf1;
         }
         .page-heading-copy { display: flex; align-items: center; gap: 1rem; }
         .page-icon {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: .75rem;
             background: #e7f7ed;
             color: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             flex-shrink: 0;
         }
         .eyebrow {
-            font-size: .72rem;
+            font-size: .7rem;
             text-transform: uppercase;
             letter-spacing: .07em;
             color: #9aa3b2;
@@ -221,10 +285,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: .5rem;
+            margin-bottom: .4rem;
         }
         .metric-label {
-            font-size: .78rem;
+            font-size: .75rem;
             color: #8a93a3;
             font-weight: 600;
             text-transform: uppercase;
@@ -232,12 +296,12 @@
         }
         .metric-icon { color: #c3cad6; font-size: 1.3rem; }
         .metric-value {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #16241c;
+            color: #0d1b15;
         }
         .metric-meta {
-            font-size: .78rem;
+            font-size: .75rem;
             color: #8a93a3;
             display: flex;
             gap: .35rem;
@@ -251,7 +315,7 @@
             overflow: hidden;
         }
         .panel-header {
-            padding: 1rem 1.25rem;
+            padding: .9rem 1.25rem;
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
@@ -278,17 +342,27 @@
             font-weight: 600;
         }
         .table td { vertical-align: middle; }
+        .avatar-img { border-radius: 50%; object-fit: cover; }
+        .avatar-sm { width: 34px; height: 34px; }
+        .avatar-text {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: .8rem;
+            color: #fff;
+            background: var(--accent);
+        }
 
-        /* ===== Badge status ===== */
+        /* ===== Badge ===== */
         .badge-draft      { background: #e9ecef; color: #495057; }
         .badge-published  { background: #d1e7dd; color: #0a7344; }
         .badge-berjalan   { background: #cff4fc; color: #0c5460; }
         .badge-selesai    { background: #d1ecf1; color: #0c5460; }
         .badge-dibatalkan { background: #f8d7da; color: #842029; }
-
-        /* ===== Button ===== */
-        .btn-success { background: var(--accent); border-color: var(--accent); }
-        .btn-success:hover { background: #1a9e4a; border-color: #1a9e4a; }
 
         /* ===== Content ===== */
         .page-content { flex: 1; padding-bottom: 2rem; }
@@ -304,81 +378,117 @@
 </head>
 <body>
 
+<!-- ========================================================== -->
 <!-- SIDEBAR -->
+<!-- ========================================================== -->
 <nav id="sidebar">
-    <!-- Brand -->
-    <a href="{{ route('peserta.dashboard') }}" class="brand">
-        <i class="bi bi-mortarboard-fill"></i>
-        S I P <span>A D U</span>
-    </a>
-
-    <!-- Menu Utama -->
-    <div class="nav-label">Menu Saya</div>
-    <a href="{{ route('peserta.dashboard') }}" class="nav-link {{ request()->routeIs('peserta.dashboard') ? 'active' : '' }}">
-        <i class="bi bi-grid-1x2"></i> Dashboard
-    </a>
-
-    <!-- ========================================================== -->
-    <!-- KONTEN PELATIHAN -->
-    <!-- ========================================================== -->
-    <div class="nav-label">Konten</div>
-    
-    <!-- Menu Konten -->
-    <a href="#" class="nav-link" onclick="toggleSubmenu('submenuKonten')">
-        <i class="bi bi-folder"></i> Konten Pelatihan
-        <span class="chevron" id="chevronKonten"><i class="bi bi-chevron-right"></i></span>
-    </a>
-    <div class="submenu" id="submenuKonten">
-        <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.*') ? 'active' : '' }}">
-            <i class="bi bi-journal-bookmark"></i> Pelatihan
+    <div class="sidebar-content">
+        <!-- Brand -->
+        <a href="{{ route('peserta.dashboard') }}" class="brand">
+            <i class="bi bi-mortarboard-fill"></i>
+            S I P <span>A D U</span>
         </a>
-        <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
-            <i class="bi bi-file-earmark-text"></i> Materi
-        </a>
-        <a href="{{ route('peserta.quiz.index') }}" class="nav-link {{ request()->routeIs('peserta.quiz.*') ? 'active' : '' }}">
-            <i class="bi bi-patch-question"></i> Quiz
-        </a>
-    </div>
 
-    <!-- ========================================================== -->
-    <!-- SERTIFIKAT -->
-    <!-- ========================================================== -->
-    <div class="nav-label">Penghargaan</div>
-    <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
-        <i class="bi bi-award"></i> Sertifikat Saya
-    </a>
+        <!-- ========================================================== -->
+        <!-- MENU PESERTA - SESUAI STRUKTUR -->
+        <!-- ========================================================== -->
+        <div class="sidebar-nav">
+            <!-- DASHBOARD -->
+            <div class="nav-label">MENU PESERTA</div>
+            
+            <a href="{{ route('peserta.dashboard') }}" class="nav-link {{ request()->routeIs('peserta.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
 
-    <!-- ========================================================== -->
-    <!-- AKUN -->
-    <!-- ========================================================== -->
-    <div class="nav-label">Akun</div>
-    <a href="{{ route('peserta.profile.index') }}" class="nav-link {{ request()->routeIs('peserta.profile.*') ? 'active' : '' }}">
-        <i class="bi bi-person"></i> Profil Saya
-    </a>
+            <!-- ========================================================== -->
+            <!-- PELATIHAN -->
+            <!-- ========================================================== -->
+            <div class="nav-label">PELATIHAN</div>
+            
+            <!-- Daftar Pelatihan -->
+            <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.index') ? 'active' : '' }}">
+                <i class="bi bi-list-check"></i> Daftar Pelatihan
+            </a>
 
-    <!-- User Info -->
-    <div class="user-info">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
-                <div class="user-name">{{ auth()->user()->nama ?? auth()->user()->name }}</div>
-                <div class="user-role">{{ auth()->user()->nik ?? '' }}</div>
+            <!-- Pelatihan Saya (dengan submenu) -->
+            <a href="#" class="nav-link" onclick="toggleSubmenu('submenuPelatihanSaya')">
+                <i class="bi bi-journal-bookmark"></i> Pelatihan Saya
+                <span class="chevron" id="chevronPelatihanSaya"><i class="bi bi-chevron-right"></i></span>
+            </a>
+            <div class="submenu" id="submenuPelatihanSaya">
+                <!-- Materi -->
+                <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
+                    Materi
+                </a>
+                <!-- Quiz -->
+                <a href="{{ route('peserta.quiz.index') }}" class="nav-link {{ request()->routeIs('peserta.quiz.*') ? 'active' : '' }}">
+                    Quiz
+                </a>
+                <!-- Kehadiran -->
+                <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
+                    Kehadiran
+                </a>
+                <!-- Sertifikat -->
+                <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
+                    Sertifikat
+                </a>
             </div>
-            <div>
-                <span class="badge" style="background: var(--accent);">Peserta</span>
-            </div>
+
+            <!-- Riwayat Pelatihan -->
+            <a href="{{ route('peserta.trainings.history') }}" class="nav-link {{ request()->routeIs('peserta.trainings.history') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i> Riwayat Pelatihan
+            </a>
+
+            <!-- ========================================================== -->
+            <!-- INFORMASI -->
+            <!-- ========================================================== -->
+            <div class="nav-label">INFORMASI</div>
+            
+            <!-- Agenda -->
+            <a href="{{ route('peserta.agenda.index') }}" class="nav-link {{ request()->routeIs('peserta.agenda.*') ? 'active' : '' }}">
+                <i class="bi bi-calendar-event"></i> Agenda
+            </a>
+            
+            <!-- Pengumuman -->
+            <a href="{{ route('peserta.pengumuman.index') }}" class="nav-link {{ request()->routeIs('peserta.pengumuman.*') ? 'active' : '' }}">
+                <i class="bi bi-megaphone"></i> Pengumuman
+            </a>
+
+            <!-- ========================================================== -->
+            <!-- AKUN -->
+            <!-- ========================================================== -->
+            <div class="nav-label">AKUN</div>
+            
+            <!-- Profil Saya -->
+            <a href="{{ route('peserta.profile.index') }}" class="nav-link {{ request()->routeIs('peserta.profile.*') ? 'active' : '' }}">
+                <i class="bi bi-person"></i> Profil Saya
+            </a>
         </div>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
-                <i class="bi bi-box-arrow-right me-1"></i> Keluar
-            </button>
-        </form>
+
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <div class="user-name">{{ auth()->user()->nama ?? auth()->user()->name }}</div>
+                    <div class="user-role">{{ auth()->user()->nik ?? 'Peserta' }}</div>
+                </div>
+                <div>
+                    <span class="badge">Peserta</span>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                </button>
+            </form>
+        </div>
     </div>
 </nav>
 
-<!-- ============================================================ -->
+<!-- ========================================================== -->
 <!-- MAIN CONTENT -->
-<!-- ============================================================ -->
+<!-- ========================================================== -->
 <div id="main">
     <!-- Topbar -->
     <div id="topbar" class="d-flex align-items-center justify-content-between">
@@ -469,9 +579,9 @@
     </div>
 </div>
 
-<!-- ============================================================ -->
+<!-- ========================================================== -->
 <!-- SCRIPTS -->
-<!-- ============================================================ -->
+<!-- ========================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -535,10 +645,10 @@
         // ============================================================
         document.querySelectorAll('.submenu .nav-link').forEach(function(link) {
             link.addEventListener('mouseenter', function() {
-                this.style.paddingLeft = '3.5rem';
+                this.style.paddingLeft = '3.8rem';
             });
             link.addEventListener('mouseleave', function() {
-                this.style.paddingLeft = '3.2rem';
+                this.style.paddingLeft = '3.5rem';
             });
         });
     });

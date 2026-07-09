@@ -3,36 +3,6 @@
 @section('title', 'FAQ - Pertanyaan yang Sering Diajukan')
 
 @section('content')
-<!-- ============================================================
-     HERO SECTION
-============================================================ -->
-
-<!-- ============================================================
-     HERO FAQ
-============================================================ -->
-<section class="hero d-flex align-items-center justify-content-center" style="min-height: 90vh; padding: 0; background: linear-gradient(135deg, #0f1724 0%, #1a2236 50%, #0f1724 100%);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3">
-                    <i class="bi bi-question-circle me-1"></i> FAQ
-                </span>
-                <h1 class="display-3 fw-bold mb-3">Pertanyaan yang Sering Diajukan</h1>
-                <p class="text-white-50 mb-4 fs-5 mx-auto" style="max-width: 600px;">
-                    Temukan jawaban atas pertanyaan-pertanyaan umum seputar platform pelatihan kami.
-                </p>
-                <div class="d-flex flex-wrap gap-3 justify-content-center">
-                    <a href="#faq-list" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-search me-2"></i> Lihat FAQ
-                    </a>
-                    <a href="{{ route('landing.kontak.index') }}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="bi bi-envelope me-2"></i> Hubungi Kami
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- ============================================================
      FAQ SECTION

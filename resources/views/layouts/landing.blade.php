@@ -528,9 +528,9 @@
             <div class="col-md-3">
                 <h6>Kontak</h6>
                 <ul class="list-unstyled small">
-                    <li class="mb-2"><i class="bi bi-envelope me-2"></i> info@pelatihan-sdm.com</li>
-                    <li class="mb-2"><i class="bi bi-telephone me-2"></i> (021) 1234-5678</li>
-                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Jakarta, Indonesia</li>
+                    <li class="mb-2"><i class="bi bi-envelope me-2"></i> andiadeindawan@gmail.com</li>
+                    <li class="mb-2"><i class="bi bi-telephone me-2"></i> 0822-9194-7554</li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Mamuju-Sulawesi Barat, Indonesia</li>
                 </ul>
             </div>
         </div>
