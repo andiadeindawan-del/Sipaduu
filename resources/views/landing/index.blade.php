@@ -10,9 +10,6 @@
     <div class="container position-relative">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">
-                    <i class="bi bi-rocket-takeoff me-1"></i> Platform Pelatihan Terbaik
-                </span>
                 <h1 class="mb-3">
                     Tingkatkan Kompetensi SDM <br>
                     <span style="color: #4e9af1;">Perusahaan Anda</span>
@@ -62,9 +59,6 @@
 <section id="features" class="section-pad">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                <i class="bi bi-stars me-1"></i> Keunggulan
-            </span>
             <h2 class="section-title">Mengapa Memilih Platform Kami?</h2>
             <p class="section-subtitle">
                 Kami menyediakan solusi pelatihan lengkap untuk pengembangan SDM perusahaan Anda.
@@ -171,9 +165,6 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                    <i class="bi bi-fire me-1"></i> Populer
-                </span>
                 <h2 class="section-title">Pelatihan Paling Populer</h2>
                 <p class="section-subtitle text-start">Pelatihan yang paling banyak diikuti oleh peserta.</p>
             </div>
@@ -253,9 +244,6 @@
 <section class="section-pad" style="background: #f8fafc;">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                <i class="bi bi-chat-quote me-1"></i> Testimoni
-            </span>
             <h2 class="section-title">Apa Kata Mereka?</h2>
             <p class="section-subtitle">Testimoni dari peserta yang telah mengikuti pelatihan kami.</p>
         </div>

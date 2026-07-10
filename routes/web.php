@@ -54,13 +54,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware('auth')->group(function () {
     
     // Profile Routes - HAPUS INI (pindahkan ke admin)
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    // Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
-    // Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // Route::get('/profile/statistics', [ProfileController::class, 'getStatistics'])->name('profile.statistics');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+    Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile/statistics', [ProfileController::class, 'getStatistics'])->name('profile.statistics');
 
     // Sertifikat User
     Route::get('/sertifikat/my-certificates', [SertifikatController::class, 'userCertificates'])->name('sertifikat.user');

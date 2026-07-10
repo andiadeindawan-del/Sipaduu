@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Training;
 use App\Models\Kategori;
 use App\Models\User;
+use App\Models\Absensi;
+use App\Models\QuizAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -32,7 +34,7 @@ class TrainingController extends Controller
 
         // Filter by status
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('trainings.status', $request->status);
         }
 
         // Filter by kategori
@@ -102,21 +104,21 @@ class TrainingController extends Controller
         if ($filter === 'ongoing') {
             $query->whereHas('participants', function($q) use ($userId) {
                 $q->where('user_id', $userId);
-            })->whereIn('status', ['published', 'berjalan']);
+            })->whereIn('trainings.status', ['published', 'berjalan']);
         } elseif ($filter === 'upcoming') {
             $query->whereHas('participants', function($q) use ($userId) {
                 $q->where('user_id', $userId);
-            })->where('tanggal_mulai', '>', now());
+            })->where('trainings.tanggal_mulai', '>', now());
         } elseif ($filter === 'completed') {
             $query->whereHas('participants', function($q) use ($userId) {
                 $q->where('user_id', $userId);
-            })->where('status', 'selesai');
+            })->where('trainings.status', 'selesai');
         } else {
             // Show all trainings that user can access
             $query->where(function($q) use ($userId) {
                 $q->whereHas('participants', function($q2) use ($userId) {
                     $q2->where('user_id', $userId);
-                })->orWhere('status', 'published');
+                })->orWhere('trainings.status', 'published');
             });
         }
 
@@ -129,15 +131,15 @@ class TrainingController extends Controller
 
         $ongoingTrainings = Training::whereHas('participants', function($q) use ($userId) {
             $q->where('user_id', $userId);
-        })->whereIn('status', ['published', 'berjalan'])->count();
+        })->whereIn('trainings.status', ['published', 'berjalan'])->count();
 
         $upcomingTrainings = Training::whereHas('participants', function($q) use ($userId) {
             $q->where('user_id', $userId);
-        })->where('tanggal_mulai', '>', now())->count();
+        })->where('trainings.tanggal_mulai', '>', now())->count();
 
         $completedTrainings = Training::whereHas('participants', function($q) use ($userId) {
             $q->where('user_id', $userId);
-        })->where('status', 'selesai')->count();
+        })->where('trainings.status', 'selesai')->count();
 
         // Kategori untuk filter
         $kategoris = Kategori::all();
@@ -150,6 +152,99 @@ class TrainingController extends Controller
             'completedTrainings',
             'kategoris'
         ));
+    }
+
+    /**
+     * Display riwayat pelatihan for peserta.
+     */
+    public function history(Request $request)
+    {
+        $user = auth()->user();
+        $userId = $user->id;
+
+        $query = Training::with(['kategori', 'trainer'])
+            ->whereHas('participants', function($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->whereIn('training_participants.status', ['completed', 'selesai', 'finished']);
+            });
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%$search%")
+                  ->orWhere('deskripsi', 'like', "%$search%");
+            });
+        }
+
+        // Filter by kategori
+        if ($request->filled('kategori_id')) {
+            $query->where('kategori_id', $request->kategori_id);
+        }
+
+        // Filter by tahun
+        if ($request->filled('tahun')) {
+            $query->whereYear('tanggal_selesai', $request->tahun);
+        }
+
+        $trainings = $query->orderBy('tanggal_selesai', 'desc')
+                          ->paginate(10)
+                          ->withQueryString();
+
+        // Statistics untuk riwayat
+        $totalHistory = Training::whereHas('participants', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('training_participants.status', ['completed', 'selesai', 'finished']);
+        })->count();
+
+        // Hitung rata-rata progress
+        $totalProgress = 0;
+        foreach ($trainings as $training) {
+            $totalProgress += $this->calculateProgress($training, $userId);
+        }
+        $avgProgress = $totalHistory > 0 ? round($totalProgress / $totalHistory) : 0;
+
+        // Ambil tahun untuk filter
+        $tahunList = Training::whereHas('participants', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('training_participants.status', ['completed', 'selesai', 'finished']);
+        })->selectRaw('YEAR(tanggal_selesai) as tahun')
+          ->distinct()
+          ->orderBy('tahun', 'desc')
+          ->pluck('tahun');
+
+        $kategoris = Kategori::all();
+
+        return view('peserta.trainings.history', compact(
+            'trainings',
+            'totalHistory',
+            'avgProgress',
+            'tahunList',
+            'kategoris'
+        ));
+    }
+
+    /**
+     * Calculate progress for a training.
+     */
+    private function calculateProgress($training, $userId)
+    {
+        $totalMaterials = $training->materis()->count();
+        $completedMaterials = $training->materis()
+            ->whereHas('progress', function($q) use ($userId) {
+                $q->where('user_id', $userId)->where('status', 'completed');
+            })->count();
+        
+        $totalQuizzes = $training->quizzes()->count();
+        $completedQuizzes = $training->quizzes()
+            ->whereHas('attempts', function($q) use ($userId) {
+                $q->where('user_id', $userId)->where('status', 'completed');
+            })->count();
+        
+        $totalItems = $totalMaterials + $totalQuizzes;
+        $completedItems = $completedMaterials + $completedQuizzes;
+        
+        return $totalItems > 0 ? round(($completedItems / $totalItems) * 100) : 0;
     }
 
     /**
@@ -177,24 +272,13 @@ class TrainingController extends Controller
         // Get progress
         $progress = 0;
         if ($isEnrolled) {
-            // Calculate progress based on materials and quiz
-            $totalMaterials = $training->materis()->count();
-            $completedMaterials = $training->materis()
-                ->whereHas('progress', function($q) use ($userId) {
-                    $q->where('user_id', $userId)->where('status', 'completed');
-                })->count();
-            
-            $totalQuizzes = $training->quizzes()->count();
-            $completedQuizzes = $training->quizzes()
-                ->whereHas('attempts', function($q) use ($userId) {
-                    $q->where('user_id', $userId)->where('status', 'completed');
-                })->count();
-            
-            $totalItems = $totalMaterials + $totalQuizzes;
-            $completedItems = $completedMaterials + $completedQuizzes;
-            
-            $progress = $totalItems > 0 ? round(($completedItems / $totalItems) * 100) : 0;
+            $progress = $this->calculateProgress($training, $userId);
         }
+
+        // Get absensi
+        $absensi = Absensi::where('user_id', $userId)
+            ->where('training_id', $training->id)
+            ->first();
 
         $training->load(['kategori', 'trainer', 'materis', 'quizzes']);
         
@@ -207,7 +291,8 @@ class TrainingController extends Controller
             'isCompleted',
             'progress',
             'participantsCount',
-            'availableSlots'
+            'availableSlots',
+            'absensi'
         ));
     }
 
@@ -490,7 +575,11 @@ class TrainingController extends Controller
         }
 
         // Check if all requirements are met
-        // e.g., all materials viewed, all quizzes passed, etc.
+        $progress = $this->calculateProgress($training, $user->id);
+        if ($progress < 100) {
+            return redirect()->back()
+                            ->with('error', '⚠️ Anda harus menyelesaikan semua materi dan quiz terlebih dahulu.');
+        }
 
         $training->participants()->updateExistingPivot($user->id, [
             'status' => 'completed',
@@ -517,30 +606,11 @@ class TrainingController extends Controller
             ], 403);
         }
 
-        $totalMaterials = $training->materis()->count();
-        $completedMaterials = $training->materis()
-            ->whereHas('progress', function($q) use ($user) {
-                $q->where('user_id', $user->id)->where('status', 'completed');
-            })->count();
-        
-        $totalQuizzes = $training->quizzes()->count();
-        $completedQuizzes = $training->quizzes()
-            ->whereHas('attempts', function($q) use ($user) {
-                $q->where('user_id', $user->id)->where('status', 'completed');
-            })->count();
-        
-        $totalItems = $totalMaterials + $totalQuizzes;
-        $completedItems = $completedMaterials + $completedQuizzes;
-        
-        $progress = $totalItems > 0 ? round(($completedItems / $totalItems) * 100) : 0;
+        $progress = $this->calculateProgress($training, $user->id);
 
         return response()->json([
             'success' => true,
             'progress' => $progress,
-            'total_materials' => $totalMaterials,
-            'completed_materials' => $completedMaterials,
-            'total_quizzes' => $totalQuizzes,
-            'completed_quizzes' => $completedQuizzes,
             'is_completed' => $progress >= 100
         ]);
     }

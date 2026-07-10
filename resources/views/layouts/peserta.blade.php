@@ -397,7 +397,7 @@
             <div class="nav-label">MENU PESERTA</div>
             
             <a href="{{ route('peserta.dashboard') }}" class="nav-link {{ request()->routeIs('peserta.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2"></i> Dashboard
+                <i class="bi bi-grid-1x2"></i> Beranda
             </a>
 
             <!-- ========================================================== -->

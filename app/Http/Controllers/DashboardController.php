@@ -175,14 +175,14 @@ class DashboardController extends Controller
         // Completed trainings
         $completedTrainings = Training::whereHas('participants', function ($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->where('status', 'selesai')->count();
+        })->where('trainings.status', 'selesai')->count();
 
         // Ongoing trainings
         $ongoingTrainings = Training::whereHas('participants', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })->where(function ($query) {
-            $query->where('status', 'berjalan')
-                  ->orWhere('status', 'published');
+            $query->where('trainings.status', 'berjalan')
+                  ->orWhere('trainings.status', 'published');
         })->count();
 
         // Total certificates
@@ -217,8 +217,8 @@ class DashboardController extends Controller
         // Upcoming trainings
         $upcomingTrainings = Training::whereHas('participants', function ($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->where('tanggal_mulai', '>=', now())
-            ->orderBy('tanggal_mulai', 'asc')
+        })->where('trainings.tanggal_mulai', '>=', now())
+            ->orderBy('trainings.tanggal_mulai', 'asc')
             ->limit(5)
             ->get();
 
@@ -237,7 +237,7 @@ class DashboardController extends Controller
 
         // Available trainings (not enrolled yet)
         $availableTrainings = Training::where('status', 'published')
-            ->where('tanggal_mulai', '>=', now())
+            ->where('trainings.tanggal_mulai', '>=', now())
             ->whereDoesntHave('participants', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
@@ -248,9 +248,9 @@ class DashboardController extends Controller
         $activeTrainings = Training::whereHas('participants', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })->where(function ($query) {
-            $query->where('status', 'berjalan')
-                  ->orWhere('status', 'published');
-        })->orderBy('tanggal_mulai', 'asc')
+            $query->where('trainings.status', 'berjalan')
+                  ->orWhere('trainings.status', 'published');
+        })->orderBy('trainings.tanggal_mulai', 'asc')
         ->limit(5)
         ->get();
 
@@ -265,7 +265,7 @@ class DashboardController extends Controller
         // ALL TRAININGS (untuk view peserta/index.blade.php)
         // ============================================================
         $trainings = Training::where('status', 'published')
-            ->orderBy('tanggal_mulai', 'asc')
+            ->orderBy('trainings.tanggal_mulai', 'asc')
             ->limit(6)
             ->get();
 
@@ -284,7 +284,7 @@ class DashboardController extends Controller
             'recentQuizAttempts',
             'availableTrainings',
             'activeTrainings',
-            'trainings' // Tambahkan variabel trainings
+            'trainings'
         ));
     }
 

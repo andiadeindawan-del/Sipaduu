@@ -5,16 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Agenda;
 use App\Models\Training;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AgendaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin).
      */
     public function index(Request $request)
     {
-        $query = Agenda::with('training');
+        $query = Agenda::with(['training', 'creator']);
+
+        // Filter by training
+        if ($request->filled('training_id')) {
+            $query->where('training_id', $request->training_id);
+        }
+
+        // PERBAIKAN: Gunakan 'tipe' bukan 'type'
+        if ($request->filled('type')) {
+            $query->where('tipe', $request->type);
+        }
+
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('tanggal', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('tanggal', '<=', $request->date_to);
+        }
 
         // Search
         if ($request->filled('search')) {
@@ -26,47 +44,102 @@ class AgendaController extends Controller
             });
         }
 
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        $agendas = $query->orderBy('tanggal', 'asc')
+                         ->orderBy('jam_mulai', 'asc')
+                         ->paginate(15)
+                         ->withQueryString();
+
+        $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+
+        // Statistics
+        $totalAgendas = Agenda::count();
+        $upcomingAgendas = Agenda::whereDate('tanggal', '>=', now())->count();
+        $todayAgendas = Agenda::whereDate('tanggal', now())->count();
+
+        return view('admin.agenda.index', compact(
+            'agendas',
+            'trainings',
+            'totalAgendas',
+            'upcomingAgendas',
+            'todayAgendas'
+        ));
+    }
+
+    /**
+     * Display a listing of agendas for peserta.
+     */
+    public function pesertaIndex(Request $request)
+    {
+        $user = Auth::user();
+        
+        $trainingIds = Training::whereHas('participants', function($query) use ($user) {
+            $query->where('user_id', $user->id)
+                  ->whereIn('training_participants.status', ['approved', 'active', 'completed']);
+        })->pluck('id');
+
+        $query = Agenda::with(['training', 'creator'])
+            ->whereIn('training_id', $trainingIds)
+            ->orWhere('training_id', null);
+
+        // PERBAIKAN: Gunakan 'tipe' bukan 'type'
+        if ($request->filled('type')) {
+            $query->where('tipe', $request->type);
         }
 
         // Filter by date range
         if ($request->filled('date_from')) {
-            $query->where('tanggal', '>=', $request->date_from);
+            $query->whereDate('tanggal', '>=', $request->date_from);
         }
-
         if ($request->filled('date_to')) {
-            $query->where('tanggal', '<=', $request->date_to);
+            $query->whereDate('tanggal', '<=', $request->date_to);
         }
 
-        // Filter by training
-        if ($request->filled('training_id')) {
-            $query->where('training_id', $request->training_id);
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%$search%")
+                  ->orWhere('deskripsi', 'like', "%$search%");
+            });
         }
 
-        $agendas = $query->orderBy('tanggal', 'desc')
-                        ->orderBy('waktu_mulai', 'desc')
-                        ->paginate(10)
-                        ->withQueryString();
+        $agendas = $query->orderBy('tanggal', 'asc')
+                         ->orderBy('jam_mulai', 'asc')
+                         ->paginate(15)
+                         ->withQueryString();
 
         // Statistics
-        $totalAgenda = Agenda::count();
-        $upcomingCount = Agenda::where('status', 'upcoming')->count();
-        $ongoingCount = Agenda::where('status', 'ongoing')->count();
-        $completedCount = Agenda::where('status', 'completed')->count();
+        $totalAgendas = $query->count();
+        $upcomingAgendas = (clone $query)->whereDate('tanggal', '>=', now())->count();
+        $todayAgendas = (clone $query)->whereDate('tanggal', now())->count();
 
-        // For filter dropdown
-        $trainings = Training::where('status', 'published')->orderBy('judul')->get();
-
-        return view('admin.agenda.index', compact(
+        return view('peserta.agenda.index', compact(
             'agendas',
-            'totalAgenda',
-            'upcomingCount',
-            'ongoingCount',
-            'completedCount',
-            'trainings'
+            'totalAgendas',
+            'upcomingAgendas',
+            'todayAgendas'
         ));
+    }
+
+    /**
+     * Display the specified agenda for peserta.
+     */
+    public function pesertaShow($id)
+    {
+        $agenda = Agenda::with(['training', 'creator'])->findOrFail($id);
+        
+        $user = Auth::user();
+        
+        $trainingIds = Training::whereHas('participants', function($query) use ($user) {
+            $query->where('user_id', $user->id)
+                  ->whereIn('training_participants.status', ['approved', 'active', 'completed']);
+        })->pluck('id');
+
+        if ($agenda->training_id && !$trainingIds->contains($agenda->training_id)) {
+            abort(403, 'Anda tidak memiliki akses ke agenda ini.');
+        }
+
+        return view('peserta.agenda.show', compact('agenda'));
     }
 
     /**
@@ -88,30 +161,21 @@ class AgendaController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
-            'waktu_mulai' => 'required|date_format:H:i',
-            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
             'lokasi' => 'nullable|string|max:255',
-            'status' => 'required|in:upcoming,ongoing,completed,cancelled,draft,published,selesai',
+            'link_meeting' => 'nullable|url|max:255',
+            // PERBAIKAN: Gunakan 'tipe' bukan 'type'
+            'tipe' => 'required|in:online,offline,hybrid',
+            'status' => 'required|in:draft,published,selesai,dibatalkan',
         ]);
 
-        // Jika status kosong, set default berdasarkan tanggal
-        if (empty($validated['status']) || $validated['status'] === 'draft') {
-            $tanggal = $validated['tanggal'];
-            $now = now();
-            
-            if ($tanggal < $now->subDay()) {
-                $validated['status'] = 'completed';
-            } elseif ($tanggal <= $now && $tanggal >= $now->subDay()) {
-                $validated['status'] = 'ongoing';
-            } else {
-                $validated['status'] = 'upcoming';
-            }
-        }
+        $validated['created_by'] = auth()->id();
 
         Agenda::create($validated);
 
         return redirect()->route('admin.agenda.index')
-                        ->with('success', '✅ Agenda berhasil ditambahkan!');
+                        ->with('success', '✅ Agenda berhasil ditambahkan.');
     }
 
     /**
@@ -119,7 +183,7 @@ class AgendaController extends Controller
      */
     public function show(Agenda $agenda)
     {
-        $agenda->load('training');
+        $agenda->load(['training', 'creator']);
         return view('admin.agenda.show', compact('agenda'));
     }
 
@@ -142,16 +206,19 @@ class AgendaController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
-            'waktu_mulai' => 'required|date_format:H:i',
-            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
             'lokasi' => 'nullable|string|max:255',
-            'status' => 'required|in:upcoming,ongoing,completed,cancelled,draft,published,selesai',
+            'link_meeting' => 'nullable|url|max:255',
+            // PERBAIKAN: Gunakan 'tipe' bukan 'type'
+            'tipe' => 'required|in:online,offline,hybrid',
+            'status' => 'required|in:draft,published,selesai,dibatalkan',
         ]);
 
         $agenda->update($validated);
 
         return redirect()->route('admin.agenda.index')
-                        ->with('success', '✅ Agenda berhasil diperbarui!');
+                        ->with('success', '✅ Agenda berhasil diperbarui.');
     }
 
     /**
@@ -162,34 +229,28 @@ class AgendaController extends Controller
         $agenda->delete();
 
         return redirect()->route('admin.agenda.index')
-                        ->with('success', '✅ Agenda berhasil dihapus!');
+                        ->with('success', '✅ Agenda berhasil dihapus.');
     }
 
-    // ============================================================
-    // ADDITIONAL METHODS
-    // ============================================================
-
     /**
-     * Export agenda to CSV.
+     * Export agendas to CSV.
      */
     public function export(Request $request)
     {
-        $query = Agenda::with('training');
+        $query = Agenda::with(['training', 'creator']);
 
-        // Apply filters
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($request->filled('training_id')) {
+            $query->where('training_id', $request->training_id);
         }
 
         if ($request->filled('date_from')) {
-            $query->where('tanggal', '>=', $request->date_from);
+            $query->whereDate('tanggal', '>=', $request->date_from);
         }
-
         if ($request->filled('date_to')) {
-            $query->where('tanggal', '<=', $request->date_to);
+            $query->whereDate('tanggal', '<=', $request->date_to);
         }
 
-        $agendas = $query->orderBy('tanggal', 'desc')->get();
+        $agendas = $query->orderBy('tanggal', 'asc')->get();
 
         if ($agendas->isEmpty()) {
             return redirect()->route('admin.agenda.index')
@@ -212,9 +273,10 @@ class AgendaController extends Controller
                 'Judul',
                 'Pelatihan',
                 'Tanggal',
-                'Waktu Mulai',
-                'Waktu Selesai',
+                'Jam Mulai',
+                'Jam Selesai',
                 'Lokasi',
+                'Tipe',
                 'Status'
             ]);
 
@@ -222,11 +284,12 @@ class AgendaController extends Controller
                 fputcsv($handle, [
                     $index + 1,
                     $agenda->judul,
-                    $agenda->training->judul ?? '-',
+                    $agenda->training->judul ?? 'Umum',
                     $agenda->tanggal ? $agenda->tanggal->format('d/m/Y') : '-',
-                    $agenda->waktu_mulai ? date('H:i', strtotime($agenda->waktu_mulai)) : '-',
-                    $agenda->waktu_selesai ? date('H:i', strtotime($agenda->waktu_selesai)) : '-',
-                    $agenda->lokasi ?? '-',
+                    $agenda->jam_mulai,
+                    $agenda->jam_selesai ?? '-',
+                    $agenda->lokasi ?? ($agenda->link_meeting ?? '-'),
+                    $agenda->tipe, // PERBAIKAN: gunakan tipe
                     $agenda->status
                 ]);
             }
@@ -238,16 +301,24 @@ class AgendaController extends Controller
     }
 
     /**
-     * Display calendar view.
+     * Get agenda for calendar.
      */
-    public function calendar()
+    public function calendar(Request $request)
     {
-        $agendas = Agenda::with('training')
-            ->whereIn('status', ['upcoming', 'ongoing', 'published'])
-            ->orderBy('tanggal', 'asc')
+        $year = $request->get('year', now()->year);
+        $month = $request->get('month', now()->month);
+
+        $agendas = Agenda::whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $month)
+            ->with(['training'])
             ->get();
 
-        return view('admin.agenda.calendar', compact('agendas'));
+        return response()->json([
+            'success' => true,
+            'data' => $agendas,
+            'year' => $year,
+            'month' => $month
+        ]);
     }
 
     /**
@@ -257,71 +328,73 @@ class AgendaController extends Controller
     {
         $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:agenda,id',
+            'ids.*' => 'exists:agendas,id',
         ]);
 
         $count = Agenda::whereIn('id', $request->ids)->delete();
 
         return redirect()->route('admin.agenda.index')
-            ->with('success', '✅ ' . $count . ' agenda berhasil dihapus!');
+            ->with('success', "✅ {$count} agenda berhasil dihapus.");
     }
 
     /**
-     * Update agenda status automatically.
+     * Update statuses (mass update).
      */
-    public function updateStatuses()
+    public function updateStatuses(Request $request)
     {
-        $agendas = Agenda::whereIn('status', ['upcoming', 'ongoing', 'published'])->get();
-        $updated = 0;
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:agendas,id',
+            'status' => 'required|in:draft,published,selesai,dibatalkan',
+        ]);
 
-        foreach ($agendas as $agenda) {
-            $agenda->updateStatus();
-            $updated++;
-        }
+        $count = Agenda::whereIn('id', $request->ids)
+            ->update(['status' => $request->status]);
 
         return redirect()->route('admin.agenda.index')
-            ->with('success', '✅ ' . $updated . ' agenda berhasil diperbarui statusnya!');
+            ->with('success', "✅ {$count} agenda berhasil diperbarui.");
     }
 
     /**
-     * Get agenda by date range (AJAX).
+     * Get agendas by date range (JSON).
      */
     public function getByDateRange(Request $request)
     {
         $request->validate([
-            'start' => 'required|date',
-            'end' => 'required|date|after_or_equal:start',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $agendas = Agenda::with('training')
-            ->whereBetween('tanggal', [$request->start, $request->end])
+        $agendas = Agenda::with(['training'])
+            ->whereBetween('tanggal', [$request->start_date, $request->end_date])
             ->orderBy('tanggal', 'asc')
             ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $agendas
+            'data' => $agendas,
+            'total' => $agendas->count()
         ]);
     }
 
     /**
-     * Get upcoming agendas (AJAX).
+     * Get upcoming agendas (JSON).
      */
-    public function getUpcoming()
+    public function getUpcoming(Request $request)
     {
-        $agendas = Agenda::with('training')
-            ->where('status', 'upcoming')
-            ->orWhere(function($q) {
-                $q->where('status', 'published')
-                  ->where('tanggal', '>=', now());
-            })
+        $limit = $request->get('limit', 10);
+
+        $agendas = Agenda::with(['training'])
+            ->whereDate('tanggal', '>=', now())
             ->orderBy('tanggal', 'asc')
-            ->limit(10)
+            ->orderBy('jam_mulai', 'asc')
+            ->limit($limit)
             ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $agendas
+            'data' => $agendas,
+            'total' => $agendas->count()
         ]);
     }
 }
