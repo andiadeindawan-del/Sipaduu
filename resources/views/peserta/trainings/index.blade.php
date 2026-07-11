@@ -9,7 +9,6 @@
         <div>
             <p class="eyebrow">Pelatihan</p>
             <h1 class="h3 mb-0">Daftar Pelatihan</h1>
-            <p class="text-muted mb-0">Kelola dan ikuti pelatihan yang tersedia.</p>
         </div>
     </div>
     <div class="heading-actions">
@@ -19,6 +18,7 @@
                        placeholder="Cari pelatihan..." value="{{ request('search') }}" style="width: 200px;">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-search"></i>
+                    
                 </button>
                 <a href="{{ route('peserta.trainings.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-counterclockwise"></i>

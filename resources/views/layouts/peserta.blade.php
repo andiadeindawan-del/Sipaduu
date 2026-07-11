@@ -11,7 +11,7 @@
         :root { --sidebar-width: 260px; --accent: #1da853; }
         body { background: #f4f6fb; font-size: 0.92rem; }
 
-        /* ===== Sidebar ===== */
+        /* ===== Sidebar - PERBAIKAN ===== */
         #sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -23,19 +23,14 @@
             transition: transform .25s;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden; /* PERBAIKAN: hidden agar scroll hanya di sidebar-nav */
         }
-        #sidebar::-webkit-scrollbar { width: 4px; }
-        #sidebar::-webkit-scrollbar-track { background: transparent; }
-        #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
-        #sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.25); }
 
         #sidebar .sidebar-content {
             display: flex;
             flex-direction: column;
-            min-height: 100%;
-            flex: 1;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #sidebar .brand {
@@ -48,15 +43,39 @@
             align-items: center;
             gap: 0.5rem;
             text-decoration: none;
-            flex-shrink: 0;
+            flex-shrink: 0; /* PERBAIKAN: tidak mengecil */
         }
         #sidebar .brand i { font-size: 1.5rem; color: var(--accent); }
         #sidebar .brand span { color: var(--accent); }
 
-        /* ===== Sidebar Navigation ===== */
+        /* ===== Sidebar Navigation - PERBAIKAN ===== */
         #sidebar .sidebar-nav {
-            flex: 1;
+            flex: 1 1 auto;
+            overflow-y: auto; /* PERBAIKAN: scroll di sini */
+            overflow-x: hidden;
             padding: 0.5rem 0 1rem;
+            min-height: 0; /* PERBAIKAN: penting untuk flex scroll */
+        }
+
+        /* PERBAIKAN: styling scrollbar untuk sidebar-nav */
+        #sidebar .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        #sidebar .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #sidebar .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.15);
+            border-radius: 4px;
+        }
+        #sidebar .sidebar-nav::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,.25);
+        }
+
+        /* Firefox scrollbar */
+        #sidebar .sidebar-nav {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,.15) transparent;
         }
 
         #sidebar .nav-label {
@@ -189,13 +208,14 @@
             border-left-color: var(--accent);
         }
 
-        /* ===== User Info ===== */
+        /* ===== User Info - PERBAIKAN ===== */
         #sidebar .user-info {
             padding: .9rem 1.5rem;
             border-top: 1px solid rgba(255,255,255,.06);
             color: rgba(255,255,255,.6);
             font-size: .82rem;
-            flex-shrink: 0;
+            flex-shrink: 0; /* PERBAIKAN: tidak mengecil */
+            background: #0d1b15;
         }
         #sidebar .user-info .user-name { color: #fff; font-weight: 600; font-size: .9rem; }
         #sidebar .user-info .user-role { font-size: .72rem; opacity: .6; }
@@ -390,7 +410,7 @@
         </a>
 
         <!-- ========================================================== -->
-        <!-- MENU PESERTA - SESUAI STRUKTUR -->
+        <!-- MENU PESERTA -->
         <!-- ========================================================== -->
         <div class="sidebar-nav">
             <!-- DASHBOARD -->
@@ -416,40 +436,35 @@
                 <span class="chevron" id="chevronPelatihanSaya"><i class="bi bi-chevron-right"></i></span>
             </a>
             <div class="submenu" id="submenuPelatihanSaya">
-                <!-- Materi -->
                 <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
                     Materi
                 </a>
-                <!-- Quiz -->
                 <a href="{{ route('peserta.quiz.index') }}" class="nav-link {{ request()->routeIs('peserta.quiz.*') ? 'active' : '' }}">
                     Quiz
                 </a>
-                <!-- Kehadiran -->
                 <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
                     Kehadiran
                 </a>
-                <!-- Sertifikat -->
                 <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
                     Sertifikat
                 </a>
             </div>
 
             <!-- Riwayat Pelatihan -->
+            <!-- <div class="nav-label">RIWAYAT</div>
             <a href="{{ route('peserta.trainings.history') }}" class="nav-link {{ request()->routeIs('peserta.trainings.history') ? 'active' : '' }}">
                 <i class="bi bi-clock-history"></i> Riwayat Pelatihan
-            </a>
+            </a> -->
 
             <!-- ========================================================== -->
             <!-- INFORMASI -->
             <!-- ========================================================== -->
             <div class="nav-label">INFORMASI</div>
             
-            <!-- Agenda -->
             <a href="{{ route('peserta.agenda.index') }}" class="nav-link {{ request()->routeIs('peserta.agenda.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-event"></i> Agenda
             </a>
             
-            <!-- Pengumuman -->
             <a href="{{ route('peserta.pengumuman.index') }}" class="nav-link {{ request()->routeIs('peserta.pengumuman.*') ? 'active' : '' }}">
                 <i class="bi bi-megaphone"></i> Pengumuman
             </a>
@@ -459,7 +474,6 @@
             <!-- ========================================================== -->
             <div class="nav-label">AKUN</div>
             
-            <!-- Profil Saya -->
             <a href="{{ route('peserta.profile.index') }}" class="nav-link {{ request()->routeIs('peserta.profile.*') ? 'active' : '' }}">
                 <i class="bi bi-person"></i> Profil Saya
             </a>
@@ -496,13 +510,11 @@
             <i class="bi bi-list fs-5"></i>
         </button>
         <div class="d-flex align-items-center gap-2 ms-auto">
-            <!-- Kalender Agenda -->
             <a href="#" class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" title="Agenda & Kalender">
                 <i class="bi bi-calendar3 text-primary"></i>
                 <span class="d-none d-md-inline fw-semibold text-dark">Kalender</span>
             </a>
             
-            <!-- User Profile Dropdown -->
             <div class="dropdown">
                 <button class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(auth()->user()->foto)

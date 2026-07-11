@@ -3,17 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SIPADU - Sistem Pelatihan Digital">
+    <meta name="description" content="SIPADU - Sistem Pengembangan SDM Usaha KOPERINDAG">
     <title>Register | SIPADU</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
         :root {
-            --primary-color: #1da853;
+            --primary: #1da853;
             --primary-dark: #1a8f47;
             --primary-light: #e7f7ed;
+            --primary-gradient: linear-gradient(135deg, #0d1b15 0%, #1a3a2a 50%, #2a5a3a 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
@@ -23,48 +32,54 @@
             align-items: center;
             justify-content: center;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 2rem 1rem;
+            padding: 1.5rem;
         }
 
+        /* ============================================================ */
+        /* AUTH CARD */
+        /* ============================================================ */
         .auth-card {
-            background: #fff;
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 60px rgba(29, 168, 83, 0.15);
+            background: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 30px 80px rgba(29, 168, 83, 0.12);
             overflow: hidden;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1120px;
             display: flex;
             flex-direction: column;
-            min-height: 600px;
+            min-height: 580px;
+            transition: all 0.3s ease;
         }
 
         @media (min-width: 992px) {
             .auth-card {
                 flex-direction: row;
-                min-height: 700px;
+                min-height: 680px;
             }
         }
 
-        /* Left Side - Brand & Visual */
+        /* ============================================================ */
+        /* LEFT SIDE - BRAND & VISUAL */
+        /* ============================================================ */
         .auth-brand-side {
-            background: linear-gradient(135deg, #0d1b15 0%, #1a3a2a 100%);
+            background: var(--primary-gradient);
             padding: 2.5rem 2.5rem 2rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            flex: 0 0 40%;
+            flex: 0 0 45%;
         }
 
         .auth-brand-side::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -30%;
-            width: 80%;
-            height: 80%;
-            background: radial-gradient(circle, rgba(29, 168, 83, 0.1) 0%, transparent 70%);
+            top: -40%;
+            right: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(29, 168, 83, 0.12) 0%, transparent 70%);
             border-radius: 50%;
         }
 
@@ -73,46 +88,44 @@
             z-index: 1;
         }
 
-        .auth-brand-side .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2.5rem;
+        /* ============================================================ */
+        /* BRAND TITLE - TANPA LOGO */
+        /* ============================================================ */
+        .auth-brand-side .brand-title {
+            margin-bottom: 2rem;
         }
 
-        .auth-brand-side .brand-logo .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(29, 168, 83, 0.2);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .auth-brand-side .brand-title .brand-name {
+            color: #ffffff;
+            font-weight: 800;
             font-size: 1.6rem;
-            color: #1da853;
-        }
-
-        .auth-brand-side .brand-logo .logo-text {
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.4rem;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .auth-brand-side .brand-logo .logo-text span {
+        .auth-brand-side .brand-title .brand-name span {
             color: #1da853;
         }
 
-        .auth-brand-side .brand-logo .logo-sub {
-            color: rgba(255,255,255,0.5);
+        .auth-brand-side .brand-title .brand-name .separator {
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 300;
+        }
+
+        .auth-brand-side .brand-title .brand-sub {
+            color: rgba(255, 255, 255, 0.4);
             font-size: 0.7rem;
             font-weight: 400;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            display: block;
-            margin-top: 2px;
+            margin-top: 0.15rem;
         }
 
+        /* ============================================================ */
+        /* BRAND CONTENT */
+        /* ============================================================ */
         .auth-brand-side .brand-content {
             position: relative;
             z-index: 1;
@@ -120,14 +133,15 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            padding: 0.5rem 0;
         }
 
         .auth-brand-side .brand-content h1 {
             color: #fff;
             font-size: 2.2rem;
             font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 0.5rem;
+            line-height: 1.15;
+            margin-bottom: 0.4rem;
         }
 
         .auth-brand-side .brand-content h1 .highlight {
@@ -135,52 +149,55 @@
         }
 
         .auth-brand-side .brand-content p {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.95rem;
-            max-width: 90%;
-            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.9rem;
+            max-width: 80%;
+            margin-bottom: 1.5rem;
         }
 
         .auth-brand-side .brand-features {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.6rem;
         }
 
         .auth-brand-side .brand-features .feature-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            color: rgba(255,255,255,0.7);
-            font-size: 0.85rem;
+            gap: 0.7rem;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.82rem;
         }
 
         .auth-brand-side .brand-features .feature-item i {
             color: #1da853;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
         .auth-brand-side .brand-footer {
             position: relative;
             z-index: 1;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 1.2rem;
         }
 
         .auth-brand-side .brand-footer .version {
-            color: rgba(255,255,255,0.3);
-            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
         }
 
-        /* Right Side - Form */
+        /* ============================================================ */
+        /* RIGHT SIDE - FORM */
+        /* ============================================================ */
         .auth-form-side {
-            padding: 2.5rem 2.5rem;
+            padding: 2.5rem 3rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            flex: 0 0 60%;
-            max-height: 700px;
+            flex: 0 0 55%;
+            max-height: 680px;
             overflow-y: auto;
         }
 
@@ -202,37 +219,37 @@
         }
 
         .auth-form-side .form-header .eyebrow {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #1da853;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
         }
 
         .auth-form-side .form-header h2 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #0d1b15;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.15rem;
         }
 
         .auth-form-side .form-header p {
             color: #8a93a3;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 0;
         }
 
         .auth-form-side .form-label {
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: #0d1b15;
             margin-bottom: 0.25rem;
         }
 
         .auth-form-side .input-group-custom {
             position: relative;
-            margin-bottom: 0.85rem;
+            margin-bottom: 0.9rem;
         }
 
         .auth-form-side .input-group-custom .input-icon {
@@ -245,71 +262,76 @@
             font-size: 0.95rem;
         }
 
+        .auth-form-side .input-group-custom .input-icon-textarea {
+            top: 16px;
+            transform: none;
+        }
+
         .auth-form-side .input-group-custom .form-control,
         .auth-form-side .input-group-custom .form-select,
         .auth-form-side .input-group-custom textarea {
-            padding: 0.65rem 0.75rem 0.65rem 2.8rem;
-            border: 2px solid #e8ecf1;
-            border-radius: 0.75rem;
+            padding: 0.6rem 0.75rem 0.6rem 2.8rem;
+            border: 1.5px solid #e8ecf1;
+            border-radius: 0.7rem;
             font-size: 0.85rem;
             transition: all 0.2s;
             background: #fafbfc;
             width: 100%;
+            height: 44px;
+        }
+
+        .auth-form-side .input-group-custom textarea {
+            height: auto;
+            min-height: 50px;
+            resize: vertical;
+            padding-top: 0.6rem;
+        }
+
+        .auth-form-side .input-group-custom .form-select {
+            padding-right: 2.5rem;
+            appearance: auto;
+            cursor: pointer;
         }
 
         .auth-form-side .input-group-custom .form-control:focus,
         .auth-form-side .input-group-custom .form-select:focus,
         .auth-form-side .input-group-custom textarea:focus {
             border-color: #1da853;
-            box-shadow: 0 0 0 4px rgba(29, 168, 83, 0.1);
-            background: #fff;
+            box-shadow: 0 0 0 3px rgba(29, 168, 83, 0.08);
+            background: #ffffff;
         }
 
         .auth-form-side .input-group-custom .form-control.is-invalid,
         .auth-form-side .input-group-custom .form-select.is-invalid,
         .auth-form-side .input-group-custom textarea.is-invalid {
             border-color: #ea5455;
-            box-shadow: 0 0 0 4px rgba(234, 84, 85, 0.1);
-        }
-
-        .auth-form-side .input-group-custom textarea {
-            padding-top: 0.65rem;
-            min-height: 60px;
-            resize: vertical;
-        }
-
-        .auth-form-side .input-group-custom .form-select {
-            padding-right: 2.5rem;
-            appearance: auto;
-        }
-
-        .auth-form-side .input-group-custom .input-icon-textarea {
-            top: 16px;
-            transform: none;
+            box-shadow: 0 0 0 3px rgba(234, 84, 85, 0.08);
         }
 
         .auth-form-side .row-custom {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.85rem;
+            gap: 0.9rem;
         }
 
         .auth-form-side .btn-register {
             background: linear-gradient(135deg, #1da853 0%, #1a8f47 100%);
             border: none;
-            padding: 0.75rem;
+            padding: 0.7rem;
             font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 0.75rem;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            border-radius: 0.7rem;
+            transition: all 0.25s;
             color: #fff;
             width: 100%;
-            margin-top: 0.5rem;
+            height: 48px;
+            letter-spacing: 0.3px;
+            margin-top: 0.3rem;
         }
 
         .auth-form-side .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(29, 168, 83, 0.35);
+            box-shadow: 0 8px 25px rgba(29, 168, 83, 0.3);
         }
 
         .auth-form-side .btn-register:active {
@@ -317,9 +339,9 @@
         }
 
         .auth-form-side .auth-footer {
-            margin-top: 1.25rem;
+            margin-top: 1.2rem;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #8a93a3;
         }
 
@@ -336,35 +358,40 @@
         }
 
         .alert {
-            border-radius: 0.75rem;
-            font-size: 0.85rem;
-            padding: 0.75rem 1rem;
+            border-radius: 0.7rem;
+            font-size: 0.82rem;
+            padding: 0.65rem 1rem;
+            border: none;
         }
 
         .alert-success {
             background: #e7f7ed;
-            border-color: #1da853;
             color: #0a7344;
         }
 
         .alert-danger {
             background: #fde8e8;
-            border-color: #ea5455;
             color: #842029;
+        }
+
+        .alert i {
+            font-size: 1rem;
         }
 
         .invalid-feedback {
             font-size: 0.75rem;
             color: #ea5455;
-            margin-top: 0.25rem;
+            margin-top: 0.2rem;
         }
 
-        /* Responsive */
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
         @media (max-width: 991px) {
             .auth-brand-side {
                 flex: 0 0 100%;
-                padding: 1.5rem;
-                min-height: 220px;
+                padding: 1.8rem;
+                min-height: 200px;
             }
 
             .auth-brand-side .brand-content h1 {
@@ -373,15 +400,20 @@
 
             .auth-brand-side .brand-content p {
                 max-width: 100%;
+                font-size: 0.85rem;
             }
 
             .auth-brand-side .brand-features {
                 display: none;
             }
 
+            .auth-brand-side .brand-title .brand-name {
+                font-size: 1.3rem;
+            }
+
             .auth-form-side {
                 flex: 0 0 100%;
-                padding: 1.5rem;
+                padding: 1.8rem;
                 max-height: none;
                 overflow-y: visible;
             }
@@ -389,10 +421,16 @@
             .auth-card {
                 margin: 0;
                 min-height: auto;
+                border-radius: 1.5rem;
+            }
+
+            body {
+                padding: 1rem;
             }
 
             .auth-form-side .row-custom {
                 grid-template-columns: 1fr;
+                gap: 0;
             }
         }
 
@@ -401,8 +439,8 @@
                 font-size: 1.4rem;
             }
 
-            .auth-brand-side .brand-logo .logo-text {
-                font-size: 1rem;
+            .auth-brand-side .brand-title .brand-name {
+                font-size: 1.1rem;
             }
 
             .auth-form-side .form-header h2 {
@@ -410,11 +448,54 @@
             }
 
             .auth-form-side {
-                padding: 1.25rem;
+                padding: 1.2rem;
             }
 
-            body {
-                padding: 0.5rem;
+            .auth-brand-side {
+                padding: 1.2rem;
+                min-height: 150px;
+            }
+
+            .auth-form-side .input-group-custom .form-control,
+            .auth-form-side .input-group-custom .form-select {
+                height: 40px;
+                font-size: 0.82rem;
+            }
+
+            .auth-form-side .input-group-custom textarea {
+                min-height: 40px;
+                font-size: 0.82rem;
+            }
+
+            .auth-form-side .btn-register {
+                height: 40px;
+                font-size: 0.85rem;
+            }
+
+            .auth-card {
+                border-radius: 1.2rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .auth-brand-side .brand-content h1 {
+                font-size: 1.2rem;
+            }
+
+            .auth-form-side .form-header h2 {
+                font-size: 1rem;
+            }
+
+            .auth-form-side {
+                padding: 1rem;
+            }
+
+            .auth-brand-side {
+                padding: 1rem;
+            }
+
+            .auth-brand-side .brand-title .brand-name {
+                font-size: 0.95rem;
             }
         }
     </style>
@@ -422,17 +503,21 @@
 <body>
 
     <div class="auth-card">
-        <!-- Left Side - Brand & Visual -->
+        <!-- ============================================================ -->
+        <!-- LEFT SIDE - BRAND & VISUAL -->
+        <!-- ============================================================ -->
         <div class="auth-brand-side">
             <div class="brand-top">
-                <div class="brand-logo">
-                    <div class="logo-icon">
-                        <i class="bi bi-mortarboard-fill"></i>
+                <!-- ========================================================== -->
+                <!-- BRAND TITLE - TANPA LOGO -->
+                <!-- ========================================================== -->
+                <div class="brand-title">
+                    <div class="brand-name">
+                        SIPADU
+                        <span class="separator">|</span>
+                        <span>KOPERINDAG</span>
                     </div>
-                    <div>
-                        <div class="logo-text">S I P <span>A D U</span></div>
-                        <span class="logo-sub">Sistem Pelatihan Digital</span>
-                    </div>
+                    <div class="brand-sub">Sistem Pengembangan SDM Usaha KOPERINDAG</div>
                 </div>
             </div>
 
@@ -442,7 +527,7 @@
                 <div class="brand-features">
                     <div class="feature-item">
                         <i class="bi bi-shield-check"></i>
-                        <span>Koneksi Aman & Terenkripsi</span>
+                        <span>Koneksi Aman &amp; Terenkripsi</span>
                     </div>
                     <div class="feature-item">
                         <i class="bi bi-mortarboard-fill"></i>
@@ -460,7 +545,9 @@
             </div>
         </div>
 
-        <!-- Right Side - Register Form -->
+        <!-- ============================================================ -->
+        <!-- RIGHT SIDE - REGISTER FORM -->
+        <!-- ============================================================ -->
         <div class="auth-form-side">
             <div class="form-header">
                 <p class="eyebrow">Daftar Akun</p>
