@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+   
     public function up(): void
     {
         Schema::create('kategoris', function (Blueprint $table) {
@@ -18,7 +16,7 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->string('icon')->nullable();
             $table->string('warna', 20)->nullable();
-            $table->timestamps();  // ← TAMBAHKAN INI!
+            $table->timestamps();  
             
             // Index untuk optimasi
             $table->index('nama');
@@ -26,9 +24,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('kategoris');

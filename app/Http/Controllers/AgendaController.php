@@ -21,7 +21,7 @@ class AgendaController extends Controller
             $query->where('training_id', $request->training_id);
         }
 
-        // PERBAIKAN: Gunakan 'tipe' bukan 'type'
+        // Filter by type
         if ($request->filled('type')) {
             $query->where('tipe', $request->type);
         }
@@ -72,6 +72,7 @@ class AgendaController extends Controller
     {
         $user = Auth::user();
         
+        // PERBAIKAN: Gunakan training_participants.status
         $trainingIds = Training::whereHas('participants', function($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->whereIn('training_participants.status', ['approved', 'active', 'completed']);
@@ -81,7 +82,7 @@ class AgendaController extends Controller
             ->whereIn('training_id', $trainingIds)
             ->orWhere('training_id', null);
 
-        // PERBAIKAN: Gunakan 'tipe' bukan 'type'
+        // Filter by type
         if ($request->filled('type')) {
             $query->where('tipe', $request->type);
         }
@@ -130,6 +131,7 @@ class AgendaController extends Controller
         
         $user = Auth::user();
         
+        // PERBAIKAN: Gunakan training_participants.status
         $trainingIds = Training::whereHas('participants', function($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->whereIn('training_participants.status', ['approved', 'active', 'completed']);
@@ -165,7 +167,6 @@ class AgendaController extends Controller
             'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
             'lokasi' => 'nullable|string|max:255',
             'link_meeting' => 'nullable|url|max:255',
-            // PERBAIKAN: Gunakan 'tipe' bukan 'type'
             'tipe' => 'required|in:online,offline,hybrid',
             'status' => 'required|in:draft,published,selesai,dibatalkan',
         ]);
@@ -210,7 +211,6 @@ class AgendaController extends Controller
             'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
             'lokasi' => 'nullable|string|max:255',
             'link_meeting' => 'nullable|url|max:255',
-            // PERBAIKAN: Gunakan 'tipe' bukan 'type'
             'tipe' => 'required|in:online,offline,hybrid',
             'status' => 'required|in:draft,published,selesai,dibatalkan',
         ]);
@@ -289,7 +289,7 @@ class AgendaController extends Controller
                     $agenda->jam_mulai,
                     $agenda->jam_selesai ?? '-',
                     $agenda->lokasi ?? ($agenda->link_meeting ?? '-'),
-                    $agenda->tipe, // PERBAIKAN: gunakan tipe
+                    $agenda->tipe,
                     $agenda->status
                 ]);
             }

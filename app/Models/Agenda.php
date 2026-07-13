@@ -3,33 +3,39 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Agenda extends Model
 {
+    use HasFactory;
+
     protected $table = 'agendas';
 
     protected $fillable = [
         'training_id',
+        'created_by',        // ← TAMBAHKAN
         'judul',
         'deskripsi',
         'tanggal',
-        'waktu_mulai',
-        'waktu_selesai',
+        'jam_mulai',         // ← PERBAIKAN: jam_mulai (bukan waktu_mulai)
+        'jam_selesai',       // ← PERBAIKAN: jam_selesai (bukan waktu_selesai)
         'lokasi',
+        'link_meeting',      // ← TAMBAHKAN
+        'tipe',              // ← TAMBAHKAN
         'status',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
-        'waktu_mulai' => 'datetime',
-        'waktu_selesai' => 'datetime',
+        'jam_mulai' => 'datetime',
+        'jam_selesai' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-   
+    // ============================================================
     // RELATIONSHIPS
-   
+    // ============================================================
 
     /**
      * Relasi ke Training
@@ -39,9 +45,25 @@ class Agenda extends Model
         return $this->belongsTo(Training::class);
     }
 
-   
+    /**
+     * Relasi ke User (Creator) - TAMBAHKAN
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Relasi ke User (Creator) - Alias
+     */
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // ============================================================
     // ACCESSORS
-   
+    // ============================================================
 
     /**
      * Get status label with icon
@@ -49,15 +71,12 @@ class Agenda extends Model
     public function getStatusLabelAttribute()
     {
         $labels = [
-            'upcoming' => '📅 Akan Datang',
-            'ongoing' => '⏳ Sedang Berlangsung',
-            'completed' => '✅ Selesai',
-            'cancelled' => '❌ Dibatalkan',
             'draft' => '📝 Draft',
             'published' => '📢 Published',
             'selesai' => '✅ Selesai',
+            'dibatalkan' => '❌ Dibatalkan',
         ];
-        return $labels[$this->status] ?? $this->status;
+        return $labels[$this->status] ?? ucfirst($this->status);
     }
 
     /**
@@ -66,15 +85,51 @@ class Agenda extends Model
     public function getStatusBadgeAttribute()
     {
         $classes = [
-            'upcoming' => 'text-bg-primary',
-            'ongoing' => 'text-bg-success',
-            'completed' => 'text-bg-secondary',
-            'cancelled' => 'text-bg-danger',
             'draft' => 'text-bg-secondary',
             'published' => 'text-bg-success',
-            'selesai' => 'text-bg-secondary',
+            'selesai' => 'text-bg-info',
+            'dibatalkan' => 'text-bg-danger',
         ];
         return $classes[$this->status] ?? 'text-bg-secondary';
+    }
+
+    /**
+     * Get tipe label
+     */
+    public function getTipeLabelAttribute()
+    {
+        $labels = [
+            'online' => '🌐 Online',
+            'offline' => '🏢 Offline',
+            'hybrid' => '🔄 Hybrid',
+        ];
+        return $labels[$this->tipe] ?? ucfirst($this->tipe);
+    }
+
+    /**
+     * Get tipe badge class
+     */
+    public function getTipeBadgeAttribute()
+    {
+        $classes = [
+            'online' => 'text-bg-primary',
+            'offline' => 'text-bg-success',
+            'hybrid' => 'text-bg-warning',
+        ];
+        return $classes[$this->tipe] ?? 'text-bg-secondary';
+    }
+
+    /**
+     * Get tipe icon
+     */
+    public function getTipeIconAttribute()
+    {
+        $icons = [
+            'online' => 'bi-wifi',
+            'offline' => 'bi-building',
+            'hybrid' => 'bi-arrows',
+        ];
+        return $icons[$this->tipe] ?? 'bi-question-circle';
     }
 
     /**
@@ -86,19 +141,19 @@ class Agenda extends Model
     }
 
     /**
-     * Get formatted waktu mulai (H:i)
+     * Get formatted jam mulai (H:i)
      */
-    public function getWaktuMulaiFormattedAttribute()
+    public function getJamMulaiFormattedAttribute()
     {
-        return $this->waktu_mulai ? date('H:i', strtotime($this->waktu_mulai)) : '-';
+        return $this->jam_mulai ? date('H:i', strtotime($this->jam_mulai)) : '-';
     }
 
     /**
-     * Get formatted waktu selesai (H:i)
+     * Get formatted jam selesai (H:i)
      */
-    public function getWaktuSelesaiFormattedAttribute()
+    public function getJamSelesaiFormattedAttribute()
     {
-        return $this->waktu_selesai ? date('H:i', strtotime($this->waktu_selesai)) : '-';
+        return $this->jam_selesai ? date('H:i', strtotime($this->jam_selesai)) : '-';
     }
 
     /**
@@ -107,8 +162,8 @@ class Agenda extends Model
     public function getDateTimeRangeAttribute()
     {
         $date = $this->tanggal_formatted;
-        $start = $this->waktu_mulai_formatted;
-        $end = $this->waktu_selesai_formatted;
+        $start = $this->jam_mulai_formatted;
+        $end = $this->jam_selesai_formatted;
         
         if ($start && $end) {
             return $date . ' ' . $start . ' - ' . $end;
@@ -117,53 +172,64 @@ class Agenda extends Model
     }
 
     /**
+     * Get creator name
+     */
+    public function getCreatorNameAttribute()
+    {
+        return $this->creator ? $this->creator->nama ?? $this->creator->name : 'Unknown';
+    }
+
+    /**
+     * Get training title
+     */
+    public function getTrainingTitleAttribute()
+    {
+        return $this->training ? $this->training->judul : 'Umum';
+    }
+
+    /**
+     * Check if agenda is today
+     */
+    public function getIsTodayAttribute()
+    {
+        return $this->tanggal && $this->tanggal->isToday();
+    }
+
+    /**
      * Check if agenda is upcoming
      */
     public function getIsUpcomingAttribute()
     {
-        return $this->status === 'upcoming' || ($this->status === 'published' && $this->tanggal > now());
+        return $this->tanggal && $this->tanggal->isFuture() && $this->status !== 'dibatalkan';
     }
 
     /**
-     * Check if agenda is ongoing
+     * Check if agenda is past
      */
-    public function getIsOngoingAttribute()
+    public function getIsPastAttribute()
     {
-        return $this->status === 'ongoing' || ($this->status === 'published' && $this->tanggal <= now() && $this->tanggal >= now()->subDay());
+        return $this->tanggal && $this->tanggal->isPast() && $this->status !== 'dibatalkan';
     }
 
-    /**
-     * Check if agenda is completed
-     */
-    public function getIsCompletedAttribute()
-    {
-        return $this->status === 'completed' || $this->status === 'selesai' || ($this->status === 'published' && $this->tanggal < now()->subDay());
-    }
-
-   
+    // ============================================================
     // SCOPES
-   
+    // ============================================================
 
     /**
      * Scope untuk agenda yang akan datang
      */
     public function scopeUpcoming($query)
     {
-        return $query->whereIn('status', ['upcoming', 'published'])
-                     ->where('tanggal', '>=', now());
+        return $query->where('status', 'published')
+                     ->whereDate('tanggal', '>=', now());
     }
 
     /**
-     * Scope untuk agenda yang sedang berlangsung
+     * Scope untuk agenda hari ini
      */
-    public function scopeOngoing($query)
+    public function scopeToday($query)
     {
-        return $query->where('status', 'ongoing')
-                     ->orWhere(function($q) {
-                         $q->where('status', 'published')
-                           ->where('tanggal', '<=', now())
-                           ->where('tanggal', '>=', now()->subDay());
-                     });
+        return $query->whereDate('tanggal', now());
     }
 
     /**
@@ -171,11 +237,7 @@ class Agenda extends Model
      */
     public function scopeCompleted($query)
     {
-        return $query->whereIn('status', ['completed', 'selesai'])
-                     ->orWhere(function($q) {
-                         $q->where('status', 'published')
-                           ->where('tanggal', '<', now()->subDay());
-                     });
+        return $query->where('status', 'selesai');
     }
 
     /**
@@ -183,7 +245,7 @@ class Agenda extends Model
      */
     public function scopeCancelled($query)
     {
-        return $query->where('status', 'cancelled');
+        return $query->where('status', 'dibatalkan');
     }
 
     /**
@@ -211,6 +273,22 @@ class Agenda extends Model
     }
 
     /**
+     * Scope untuk agenda berdasarkan tipe
+     */
+    public function scopeByType($query, $type)
+    {
+        return $query->where('tipe', $type);
+    }
+
+    /**
+     * Scope untuk agenda berdasarkan creator
+     */
+    public function scopeByCreator($query, $userId)
+    {
+        return $query->where('created_by', $userId);
+    }
+
+    /**
      * Scope untuk agenda berdasarkan rentang tanggal
      */
     public function scopeDateRange($query, $from, $to)
@@ -228,39 +306,16 @@ class Agenda extends Model
                      ->orWhere('lokasi', 'like', "%$search%");
     }
 
-   
+    // ============================================================
     // HELPER METHODS
-   
-
-    /**
-     * Update status based on date
-     */
-    public function updateStatus()
-    {
-        if ($this->status === 'cancelled') {
-            return;
-        }
-
-        $now = now();
-        $tanggal = $this->tanggal;
-
-        if ($tanggal < $now->subDay()) {
-            $this->status = 'completed';
-        } elseif ($tanggal <= $now && $tanggal >= $now->subDay()) {
-            $this->status = 'ongoing';
-        } else {
-            $this->status = 'upcoming';
-        }
-        
-        $this->save();
-    }
+    // ============================================================
 
     /**
      * Check if agenda is active
      */
     public function isActive()
     {
-        return in_array($this->status, ['upcoming', 'ongoing', 'published']);
+        return $this->status === 'published' && !$this->is_past;
     }
 
     /**
@@ -268,12 +323,12 @@ class Agenda extends Model
      */
     public function getDurationAttribute()
     {
-        if (!$this->waktu_mulai || !$this->waktu_selesai) {
+        if (!$this->jam_mulai || !$this->jam_selesai) {
             return null;
         }
 
-        $start = strtotime($this->waktu_mulai);
-        $end = strtotime($this->waktu_selesai);
+        $start = strtotime($this->jam_mulai);
+        $end = strtotime($this->jam_selesai);
         
         return round(($end - $start) / 3600, 1);
     }
@@ -298,5 +353,16 @@ class Agenda extends Model
         } else {
             return $minutes . ' menit';
         }
+    }
+
+    /**
+     * Get location display
+     */
+    public function getLocationDisplayAttribute()
+    {
+        if ($this->tipe === 'online') {
+            return $this->link_meeting ?? 'Link meeting belum tersedia';
+        }
+        return $this->lokasi ?? 'Lokasi belum ditentukan';
     }
 }

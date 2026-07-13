@@ -445,7 +445,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('landing.kontak*') ? 'active' : '' }}" 
                        href="{{ route('landing.kontak.index') }}">
-                        <i class="bi bi-envelope me-1 d-lg-none"></i> Kontak
+                        <i class="bi bi-envelope me-1 d-lg-none"></i> Kontak & Alamat
                     </a>
                 </li>
             </ul>

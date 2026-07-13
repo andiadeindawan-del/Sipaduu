@@ -13,10 +13,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-            --primary: #1da853;
-            --primary-dark: #1a8f47;
-            --primary-light: #e7f7ed;
-            --primary-gradient: linear-gradient(135deg, #0d1b15 0%, #1a3a2a 50%, #2a5a3a 100%);
+            --primary: #6c757d;
+            --primary-dark: #5a6268;
+            --primary-light: #e9ecef;
+            --primary-gradient: linear-gradient(135deg, #4a5568 0%, #6c757d 50%, #8a929a 100%);
         }
 
         * {
@@ -26,7 +26,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f0f7f2 0%, #e1eee4 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -41,7 +41,7 @@
         .auth-card {
             background: #ffffff;
             border-radius: 2rem;
-            box-shadow: 0 30px 80px rgba(29, 168, 83, 0.12);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             width: 100%;
             max-width: 1120px;
@@ -79,7 +79,7 @@
             right: -20%;
             width: 70%;
             height: 70%;
-            background: radial-gradient(circle, rgba(29, 168, 83, 0.12) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
             border-radius: 50%;
         }
 
@@ -89,7 +89,7 @@
         }
 
         /* ============================================================ */
-        /* BRAND TITLE - TANPA LOGO */
+        /* BRAND TITLE */
         /* ============================================================ */
         .auth-brand-side .brand-title {
             margin-bottom: 2rem;
@@ -106,7 +106,7 @@
         }
 
         .auth-brand-side .brand-title .brand-name span {
-            color: #1da853;
+            color: #a8b0b8;
         }
 
         .auth-brand-side .brand-title .brand-name .separator {
@@ -115,7 +115,7 @@
         }
 
         .auth-brand-side .brand-title .brand-sub {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 0.7rem;
             font-weight: 400;
             letter-spacing: 1.5px;
@@ -145,11 +145,11 @@
         }
 
         .auth-brand-side .brand-content h1 .highlight {
-            color: #1da853;
+            color: #a8b0b8;
         }
 
         .auth-brand-side .brand-content p {
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
             max-width: 80%;
             margin-bottom: 1.5rem;
@@ -165,12 +165,12 @@
             display: flex;
             align-items: center;
             gap: 0.7rem;
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.82rem;
         }
 
         .auth-brand-side .brand-features .feature-item i {
-            color: #1da853;
+            color: #a8b0b8;
             font-size: 0.95rem;
         }
 
@@ -178,12 +178,12 @@
             position: relative;
             z-index: 1;
             padding-top: 1.2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             margin-top: 1.2rem;
         }
 
         .auth-brand-side .brand-footer .version {
-            color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.3);
             font-size: 0.65rem;
             letter-spacing: 0.5px;
         }
@@ -222,7 +222,7 @@
             font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #1da853;
+            color: #6c757d;
             font-weight: 600;
             margin-bottom: 0.2rem;
         }
@@ -230,7 +230,7 @@
         .auth-form-side .form-header h2 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #0d1b15;
+            color: #2d3748;
             margin-bottom: 0.15rem;
         }
 
@@ -243,7 +243,7 @@
         .auth-form-side .form-label {
             font-weight: 600;
             font-size: 0.82rem;
-            color: #0d1b15;
+            color: #2d3748;
             margin-bottom: 0.25rem;
         }
 
@@ -296,8 +296,8 @@
         .auth-form-side .input-group-custom .form-control:focus,
         .auth-form-side .input-group-custom .form-select:focus,
         .auth-form-side .input-group-custom textarea:focus {
-            border-color: #1da853;
-            box-shadow: 0 0 0 3px rgba(29, 168, 83, 0.08);
+            border-color: #6c757d;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.08);
             background: #ffffff;
         }
 
@@ -315,7 +315,7 @@
         }
 
         .auth-form-side .btn-register {
-            background: linear-gradient(135deg, #1da853 0%, #1a8f47 100%);
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             border: none;
             padding: 0.7rem;
             font-weight: 600;
@@ -331,7 +331,7 @@
 
         .auth-form-side .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(29, 168, 83, 0.3);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
         }
 
         .auth-form-side .btn-register:active {
@@ -346,14 +346,14 @@
         }
 
         .auth-form-side .auth-footer a {
-            color: #1da853;
+            color: #6c757d;
             font-weight: 600;
             text-decoration: none;
             transition: color 0.15s;
         }
 
         .auth-form-side .auth-footer a:hover {
-            color: #1a8f47;
+            color: #5a6268;
             text-decoration: underline;
         }
 
@@ -365,8 +365,8 @@
         }
 
         .alert-success {
-            background: #e7f7ed;
-            color: #0a7344;
+            background: #e8f5e9;
+            color: #2e7d32;
         }
 
         .alert-danger {
@@ -509,7 +509,7 @@
         <div class="auth-brand-side">
             <div class="brand-top">
                 <!-- ========================================================== -->
-                <!-- BRAND TITLE - TANPA LOGO -->
+                <!-- BRAND TITLE -->
                 <!-- ========================================================== -->
                 <div class="brand-title">
                     <div class="brand-name">

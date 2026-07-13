@@ -4,125 +4,14 @@
 
 @section('content')
 
-
 <!-- ============================================================
      CONTACT SECTION
 ============================================================ -->
 <section class="section-pad">
     <div class="container">
-        <div class="row g-4">
-            <!-- Contact Form -->
-            <div class="col-lg-7">
-                <div class="panel">
-                    <div class="panel-header">
-                        <h5 class="section-title">
-                            <i class="bi bi-chat-dots me-2"></i> Kirim Pesan
-                        </h5>
-                    </div>
-                    <div class="p-4">
-                        @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-2"></i>
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        @endif
-
-                        @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-circle me-2"></i>
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        @endif
-
-                        <form action="{{ route('landing.kontak.send') }}" method="POST">
-                            @csrf
-
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6">
-                                    <label for="name" class="form-label fw-semibold">
-                                        Nama Lengkap <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                               id="name" name="name" value="{{ old('name') }}" 
-                                               placeholder="Masukkan nama lengkap" required>
-                                    </div>
-                                    @error('name')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-12 col-md-6">
-                                    <label for="email" class="form-label fw-semibold">
-                                        Email <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                               id="email" name="email" value="{{ old('email') }}" 
-                                               placeholder="Masukkan email" required>
-                                    </div>
-                                    @error('email')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="subject" class="form-label fw-semibold">
-                                        Subjek <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                                        <input type="text" class="form-control @error('subject') is-invalid @enderror" 
-                                               id="subject" name="subject" value="{{ old('subject') }}" 
-                                               placeholder="Masukkan subjek pesan" required>
-                                    </div>
-                                    @error('subject')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="message" class="form-label fw-semibold">
-                                        Pesan <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-file-text"></i></span>
-                                        <textarea class="form-control @error('message') is-invalid @enderror" 
-                                                  id="message" name="message" rows="5" 
-                                                  placeholder="Tulis pesan Anda di sini..." required>{{ old('message') }}</textarea>
-                                    </div>
-                                    @error('message')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="agree" required>
-                                        <label class="form-check-label small" for="agree">
-                                            Saya setuju dengan <a href="#" class="text-decoration-none">kebijakan privasi</a> dan 
-                                            <a href="#" class="text-decoration-none">syarat & ketentuan</a> yang berlaku.
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 mt-3">
-                                    <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
-                                        <i class="bi bi-send me-2"></i> Kirim Pesan
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
+        <div class="row g-4 justify-content-center">
             <!-- Contact Info -->
-            <div class="col-lg-5">
+            <div class="col-lg-10">
                 <div class="panel">
                     <div class="panel-header">
                         <h5 class="section-title">
@@ -130,102 +19,124 @@
                         </h5>
                     </div>
                     <div class="p-4">
-                        <div class="d-flex gap-3 mb-4">
-                            <div class="flex-shrink-0">
-                                <div class="icon icon-primary" style="width: 48px; height: 48px; border-radius: 12px; background: #eaf1fd; color: #4e9af1; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                                    <i class="bi bi-geo-alt"></i>
+                        <div class="row g-4">
+                            <!-- Alamat -->
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon icon-primary" style="width: 48px; height: 48px; border-radius: 12px; background: #eaf1fd; color: #4e9af1; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold">Alamat</h6>
+                                        <p class="text-muted small mb-0">
+                                            <strong>Gedung Gabungan Dinas (Gadis) Lantai 3</strong><br>
+                                            Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat<br>
+                                            Jalan Abdul Malik Pattana Endeng<br>
+                                            Mamuju, Sulawesi Barat 91511<br>
+                                            Indonesia
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <h6 class="fw-bold">Alamat</h6>
-                                <p class="text-muted small mb-0">
-                                    <strong>Gedung Gabungan Dinas (Gadis) Lantai 3</strong><br>
-                                    Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat<br>
-                                    Jalan Abdul Malik Pattana Endeng<br>
-                                    Mamuju, Sulawesi Barat 91511<br>
-                                    Indonesia
-                                </p>
-                            </div>
-                        </div>
 
-                        <div class="d-flex gap-3 mb-4">
-                            <div class="flex-shrink-0">
-                                <div class="icon icon-success" style="width: 48px; height: 48px; border-radius: 12px; background: #dff6e8; color: #28c76f; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                                    <i class="bi bi-envelope"></i>
+                            <!-- Email -->
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon icon-success" style="width: 48px; height: 48px; border-radius: 12px; background: #dff6e8; color: #28c76f; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                                            <i class="bi bi-envelope"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold">Email</h6>
+                                        <p class="text-muted small mb-0">
+                                            <a href="mailto:koperindag@sulbarprov.go.id" class="text-decoration-none">
+                                                koperindag@sulbarprov.go.id
+                                            </a>
+                                        </p>
+                                        <p class="text-muted small mb-0">
+                                            <a href="mailto:info@pelatihan-sdm.com" class="text-decoration-none">
+                                                info@pelatihan-sdm.com
+                                            </a>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <h6 class="fw-bold">Email</h6>
-                                <p class="text-muted small mb-0">
-                                    <a href="mailto:koperindag@sulbarprov.go.id" class="text-decoration-none">
-                                        koperindag@sulbarprov.go.id
-                                    </a>
-                                </p>
-                                <p class="text-muted small mb-0">
-                                    <a href="mailto:info@pelatihan-sdm.com" class="text-decoration-none">
-                                        info@pelatihan-sdm.com
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
 
-                        <div class="d-flex gap-3 mb-4">
-                            <div class="flex-shrink-0">
-                                <div class="icon icon-warning" style="width: 48px; height: 48px; border-radius: 12px; background: #fef3e2; color: #ff9f43; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                                    <i class="bi bi-telephone"></i>
+                            <!-- Telepon -->
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon icon-warning" style="width: 48px; height: 48px; border-radius: 12px; background: #fef3e2; color: #ff9f43; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                                            <i class="bi bi-telephone"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold">Telepon</h6>
+                                        <p class="text-muted small mb-0">
+                                            <a href="tel:+6285185656443" class="text-decoration-none">
+                                                +62 851-8565-6443
+                                            </a>
+                                        </p>
+                                        <p class="text-muted small mb-0">
+                                            <a href="tel:+62422612345" class="text-decoration-none">
+                                                (0426) 612345
+                                            </a>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <h6 class="fw-bold">Telepon</h6>
-                                <p class="text-muted small mb-0">
-                                    <a href="tel:+6285185656443" class="text-decoration-none">
-                                        +62 851-8565-6443
-                                    </a>
-                                </p>
-                                <p class="text-muted small mb-0">
-                                    <a href="tel:+62422612345" class="text-decoration-none">
-                                        (0426) 612345
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
 
-                        <div class="d-flex gap-3">
-                            <div class="flex-shrink-0">
-                                <div class="icon icon-info" style="width: 48px; height: 48px; border-radius: 12px; background: #e0f4fe; color: #17a2b8; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                                    <i class="bi bi-clock"></i>
+                            <!-- Jam Operasional -->
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon icon-info" style="width: 48px; height: 48px; border-radius: 12px; background: #e0f4fe; color: #17a2b8; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                                            <i class="bi bi-clock"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold">Jam Operasional</h6>
+                                        <p class="text-muted small mb-0">
+                                            Senin - Jumat: 08:00 - 17:00 WITA
+                                        </p>
+                                        <p class="text-muted small mb-0">
+                                            Sabtu - Minggu: Tutup
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold">Jam Operasional</h6>
-                                <p class="text-muted small mb-0">
-                                    Senin - Jumat: 08:00 - 17:00 WITA
-                                </p>
-                                <p class="text-muted small mb-0">
-                                    Sabtu - Minggu: Tutup
-                                </p>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <h6 class="fw-bold mb-3">Ikuti Kami</h6>
-                        <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-outline-primary btn-sm" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-facebook"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-twitter-x"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-youtube"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
+                        <!-- Sosial Media -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="fw-bold mb-3">Ikuti Kami</h6>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <i class="bi bi-facebook fs-5"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <i class="bi bi-twitter-x fs-5"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <i class="bi bi-instagram fs-5"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <i class="bi bi-youtube fs-5"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <i class="bi bi-linkedin fs-5"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <i class="bi bi-whatsapp fs-5"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -349,6 +260,16 @@
         color: #fff;
     }
     
+    .btn-outline-primary.btn-sm {
+        transition: all 0.3s ease;
+    }
+    .btn-outline-primary.btn-sm:hover {
+        background: var(--primary);
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(78, 154, 241, 0.3);
+    }
+    
     .ratio {
         border-radius: 0 0 1rem 1rem;
         overflow: hidden;
@@ -364,32 +285,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
-    // SUBMIT BUTTON LOADING STATE
-    // ============================================================
-    const form = document.querySelector('form');
-    const submitBtn = document.getElementById('submitBtn');
-
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            // Validasi checkbox agree
-            const agree = document.getElementById('agree');
-            if (!agree.checked) {
-                e.preventDefault();
-                alert('⚠️ Silakan setuju dengan kebijakan privasi dan syarat & ketentuan.');
-                agree.focus();
-                return false;
-            }
-
-            // Loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `
-                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                Mengirim...
-            `;
-        });
-    }
-
-    // ============================================================
     // AUTO CLOSE ALERTS
     // ============================================================
     setTimeout(function() {
@@ -400,15 +295,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 5000);
 
     // ============================================================
-    // AUTO RESIZE TEXTAREA
+    // SMOOTH SCROLL FOR SOCIAL MEDIA BUTTONS
     // ============================================================
-    const textarea = document.getElementById('message');
-    if (textarea) {
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+    document.querySelectorAll('.btn-outline-primary.btn-sm').forEach(function(btn) {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
         });
-    }
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
 });
 </script>
 @endpush

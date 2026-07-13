@@ -8,22 +8,49 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        :root { --sidebar-width: 260px; --accent: #1da853; }
-        body { background: #f4f6fb; font-size: 0.92rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-        /* ===== Sidebar - PERBAIKAN ===== */
+        :root { 
+            --sidebar-width: 260px; 
+            --accent: #4a6cf7; 
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #e8edf5;
+            --sidebar-hover: rgba(74, 108, 247, 0.06);
+            --sidebar-active: rgba(74, 108, 247, 0.1);
+            --sidebar-text: #6b7a8f;
+            --sidebar-text-hover: #1a2332;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f7f9fc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.92rem;
+            color: #1a2332;
+        }
+
+        /* ============================================================ */
+        /* SIDEBAR - PUTIH */
+        /* ============================================================ */
         #sidebar {
             width: var(--sidebar-width);
             height: 100vh;
-            background: #0d1b15;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
             position: fixed;
             top: 0;
             left: 0;
             z-index: 100;
-            transition: transform .25s;
+            transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* PERBAIKAN: hidden agar scroll hanya di sidebar-nav */
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
         }
 
         #sidebar .sidebar-content {
@@ -31,219 +58,264 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            padding: 1.25rem 0.75rem;
         }
 
+        /* ============================================================ */
+        /* BRAND */
+        /* ============================================================ */
         #sidebar .brand {
-            padding: 1.25rem 1.5rem .75rem;
-            color: #fff;
+            padding: 0 0.75rem 1.25rem;
+            color: #1a2332;
             font-weight: 700;
             font-size: 1.1rem;
-            border-bottom: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid var(--sidebar-border);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             text-decoration: none;
-            flex-shrink: 0; /* PERBAIKAN: tidak mengecil */
+            flex-shrink: 0;
         }
-        #sidebar .brand i { font-size: 1.5rem; color: var(--accent); }
-        #sidebar .brand span { color: var(--accent); }
 
-        /* ===== Sidebar Navigation - PERBAIKAN ===== */
+        #sidebar .brand i { 
+            font-size: 1.4rem; 
+            color: var(--accent);
+            background: rgba(74, 108, 247, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        #sidebar .brand .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #sidebar .brand .brand-text .brand-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+            color: #1a2332;
+        }
+
+        #sidebar .brand .brand-text .brand-name span {
+            color: var(--accent);
+        }
+
+        #sidebar .brand .brand-text .brand-sub {
+            font-size: 0.55rem;
+            font-weight: 400;
+            color: #a0aec0;
+            letter-spacing: 0.5px;
+            margin-top: -1px;
+        }
+
+        /* ============================================================ */
+        /* SIDEBAR NAVIGATION */
+        /* ============================================================ */
         #sidebar .sidebar-nav {
             flex: 1 1 auto;
-            overflow-y: auto; /* PERBAIKAN: scroll di sini */
+            overflow-y: auto;
             overflow-x: hidden;
             padding: 0.5rem 0 1rem;
-            min-height: 0; /* PERBAIKAN: penting untuk flex scroll */
+            min-height: 0;
         }
 
-        /* PERBAIKAN: styling scrollbar untuk sidebar-nav */
         #sidebar .sidebar-nav::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
         }
         #sidebar .sidebar-nav::-webkit-scrollbar-track {
             background: transparent;
         }
         #sidebar .sidebar-nav::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,.15);
+            background: var(--sidebar-border);
             border-radius: 4px;
         }
-        #sidebar .sidebar-nav::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,.25);
-        }
 
-        /* Firefox scrollbar */
-        #sidebar .sidebar-nav {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,.15) transparent;
-        }
-
+        /* ============================================================ */
+        /* NAV LABEL */
+        /* ============================================================ */
         #sidebar .nav-label {
-            color: rgba(255,255,255,.25);
-            font-size: .62rem;
+            color: #a0aec0;
+            font-size: .6rem;
             font-weight: 600;
-            letter-spacing: .1em;
+            letter-spacing: .08em;
             text-transform: uppercase;
-            padding: .85rem 1.5rem .25rem;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-        }
-        #sidebar .nav-label::before,
-        #sidebar .nav-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255,255,255,.06);
+            padding: .6rem 0.75rem .3rem;
         }
 
+        /* ============================================================ */
+        /* NAV LINK */
+        /* ============================================================ */
         #sidebar .nav-link {
-            color: rgba(255,255,255,.7);
-            padding: .55rem 1.5rem;
-            border-radius: 0;
+            color: var(--sidebar-text);
+            padding: .5rem 0.75rem;
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: .7rem;
+            gap: .75rem;
             text-decoration: none;
-            transition: all .15s;
+            transition: all .15s ease;
             cursor: pointer;
             font-size: .88rem;
-            border-left: 3px solid transparent;
+            font-weight: 500;
             position: relative;
         }
+
         #sidebar .nav-link:hover {
-            color: #fff;
-            background: rgba(29,168,83,.12);
-            border-left-color: rgba(29,168,83,.3);
+            color: var(--sidebar-text-hover);
+            background: var(--sidebar-hover);
         }
+
         #sidebar .nav-link.active {
-            color: #fff;
-            background: rgba(29,168,83,.18);
-            border-left-color: var(--accent);
+            color: var(--accent);
+            background: var(--sidebar-active);
         }
+
         #sidebar .nav-link i { 
             font-size: 1.05rem; 
-            width: 24px; 
+            width: 22px; 
             text-align: center;
             flex-shrink: 0;
+            color: #a0aec0;
+            transition: color 0.2s ease;
         }
-        #sidebar .nav-link .badge {
-            margin-left: auto;
-            background: rgba(255,255,255,.12);
-            color: #fff;
-            font-size: .65rem;
-            padding: .15rem .6rem;
+
+        #sidebar .nav-link:hover i,
+        #sidebar .nav-link.active i {
+            color: var(--accent);
         }
+
         #sidebar .nav-link .chevron {
             margin-left: auto;
-            transition: transform .25s;
+            transition: transform .25s ease;
             font-size: .7rem;
-            color: rgba(255,255,255,.3);
+            color: #a0aec0;
         }
+
         #sidebar .nav-link .chevron.open {
             transform: rotate(90deg);
         }
 
-        /* ===== Submenu Level 1 ===== */
+        /* ============================================================ */
+        /* SUBMENU */
+        /* ============================================================ */
         #sidebar .submenu {
             max-height: 0;
             overflow: hidden;
-            transition: max-height .3s ease;
-            background: rgba(0,0,0,.2);
+            transition: max-height .35s ease;
         }
+
         #sidebar .submenu.open {
             max-height: 500px;
         }
+
         #sidebar .submenu .nav-link {
-            padding-left: 3.5rem;
+            padding: .4rem 0.75rem .4rem 2.75rem;
             font-size: .82rem;
-            border-left-color: transparent;
-            color: rgba(255,255,255,.55);
+            font-weight: 400;
+            color: var(--sidebar-text);
         }
+
         #sidebar .submenu .nav-link::before {
-            content: '▸ ';
-            color: rgba(255,255,255,.2);
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #a0aec0;
+            display: inline-block;
+            margin-right: 0.6rem;
+            opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+
+        #sidebar .submenu .nav-link:hover {
+            color: var(--sidebar-text-hover);
+            background: var(--sidebar-hover);
+        }
+
+        #sidebar .submenu .nav-link.active {
+            color: var(--accent);
+            background: var(--sidebar-active);
+        }
+
+        #sidebar .submenu .nav-link.active::before {
+            background: var(--accent);
+            opacity: 1;
+        }
+
+        /* ============================================================ */
+        /* USER INFO */
+        /* ============================================================ */
+        #sidebar .user-info {
+            padding: .9rem 0.75rem 0;
+            border-top: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+        }
+
+        #sidebar .user-info .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(74, 108, 247, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        #sidebar .user-info .user-name {
+            color: #1a2332;
+            font-weight: 600;
+            font-size: .85rem;
+        }
+
+        #sidebar .user-info .user-role {
+            color: #a0aec0;
             font-size: .7rem;
         }
-        #sidebar .submenu .nav-link:hover {
-            color: #fff;
-            background: rgba(29,168,83,.08);
-            border-left-color: rgba(29,168,83,.2);
-        }
-        #sidebar .submenu .nav-link.active {
-            color: #fff;
-            background: rgba(29,168,83,.12);
-            border-left-color: var(--accent);
-        }
 
-        /* ===== Submenu Level 2 (Pelatihan Saya) ===== */
-        #sidebar .submenu-level2 {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height .3s ease;
-            background: rgba(0,0,0,.15);
-        }
-        #sidebar .submenu-level2.open {
-            max-height: 400px;
-        }
-        #sidebar .submenu-level2 .nav-link {
-            padding-left: 4.5rem !important;
-            font-size: .78rem;
-            border-left-color: transparent;
-            color: rgba(255,255,255,.45);
-        }
-        #sidebar .submenu-level2 .nav-link::before {
-            content: '• ';
-            color: rgba(255,255,255,.15);
-            font-size: .8rem;
-        }
-        #sidebar .submenu-level2 .nav-link:hover {
-            color: #fff;
-            background: rgba(29,168,83,.06);
-            border-left-color: rgba(29,168,83,.15);
-        }
-        #sidebar .submenu-level2 .nav-link.active {
-            color: #fff;
-            background: rgba(29,168,83,.1);
-            border-left-color: var(--accent);
-        }
-
-        /* ===== User Info - PERBAIKAN ===== */
-        #sidebar .user-info {
-            padding: .9rem 1.5rem;
-            border-top: 1px solid rgba(255,255,255,.06);
-            color: rgba(255,255,255,.6);
-            font-size: .82rem;
-            flex-shrink: 0; /* PERBAIKAN: tidak mengecil */
-            background: #0d1b15;
-        }
-        #sidebar .user-info .user-name { color: #fff; font-weight: 600; font-size: .9rem; }
-        #sidebar .user-info .user-role { font-size: .72rem; opacity: .6; }
         #sidebar .user-info .badge {
             background: var(--accent);
             font-weight: 400;
-            font-size: .65rem;
-            padding: .2rem .6rem;
-        }
-        #sidebar .user-info .btn-outline-secondary {
-            color: rgba(255,255,255,.6);
-            border-color: rgba(255,255,255,.1);
-            font-size: .78rem;
-            transition: all .15s;
-        }
-        #sidebar .user-info .btn-outline-secondary:hover {
-            background: rgba(255,255,255,.08);
+            font-size: .6rem;
+            padding: .15rem .6rem;
+            border-radius: 20px;
             color: #fff;
-            border-color: rgba(255,255,255,.2);
         }
-        #sidebar .user-info .btn-outline-secondary i { font-size: .9rem; }
 
-        /* ===== Main ===== */
-        #main { margin-left: var(--sidebar-width); min-height: 100vh; display: flex; flex-direction: column; }
+        #sidebar .user-info .btn-logout {
+            color: var(--sidebar-text);
+            border-color: var(--sidebar-border);
+            font-size: .75rem;
+            padding: .35rem .75rem;
+            border-radius: 8px;
+            transition: all .2s ease;
+        }
+
+        #sidebar .user-info .btn-logout:hover {
+            color: #ea5455;
+            border-color: #ea5455;
+            background: rgba(234, 84, 85, 0.06);
+        }
+
+        /* ============================================================ */
+        /* MAIN CONTENT */
+        /* ============================================================ */
+        #main {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         #topbar {
             background: #fff;
-            border-bottom: 1px solid #e8ecf1;
-            padding: .5rem 1.5rem;
+            border-bottom: 1px solid var(--sidebar-border);
+            padding: .5rem 2rem;
             position: sticky;
             top: 0;
             z-index: 99;
@@ -253,7 +325,9 @@
             gap: .75rem;
         }
 
-        /* ===== Page heading ===== */
+        /* ============================================================ */
+        /* PAGE HEADING */
+        /* ============================================================ */
         .page-heading {
             display: flex;
             align-items: center;
@@ -262,14 +336,14 @@
             gap: 1rem;
             padding: 1.25rem 1.5rem;
             background: #fff;
-            border-bottom: 1px solid #e8ecf1;
+            border-bottom: 1px solid var(--sidebar-border);
         }
         .page-heading-copy { display: flex; align-items: center; gap: 1rem; }
         .page-icon {
             width: 44px;
             height: 44px;
             border-radius: .75rem;
-            background: #e7f7ed;
+            background: rgba(74, 108, 247, 0.1);
             color: var(--accent);
             display: flex;
             align-items: center;
@@ -287,7 +361,9 @@
         }
         .heading-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
 
-        /* ===== Metric cards ===== */
+        /* ============================================================ */
+        /* METRIC CARDS */
+        /* ============================================================ */
         .metric-card {
             background: #fff;
             border-radius: .75rem;
@@ -296,8 +372,8 @@
             border-left: 4px solid transparent;
             height: 100%;
         }
-        .metric-success { border-left-color: var(--accent); }
-        .metric-primary { border-left-color: #4e9af1; }
+        .metric-success { border-left-color: #28c76f; }
+        .metric-primary { border-left-color: var(--accent); }
         .metric-warning { border-left-color: #ff9f43; }
         .metric-info { border-left-color: #17a2b8; }
         .metric-danger { border-left-color: #ea5455; }
@@ -318,7 +394,7 @@
         .metric-value {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #0d1b15;
+            color: #1a2236;
         }
         .metric-meta {
             font-size: .75rem;
@@ -327,7 +403,9 @@
             gap: .35rem;
         }
 
-        /* ===== Panel ===== */
+        /* ============================================================ */
+        /* PANEL */
+        /* ============================================================ */
         .panel {
             background: #fff;
             border-radius: .75rem;
@@ -352,7 +430,9 @@
         }
         .section-title i { color: var(--accent); }
 
-        /* ===== Table ===== */
+        /* ============================================================ */
+        /* TABLE */
+        /* ============================================================ */
         .table th {
             font-size: .75rem;
             text-transform: uppercase;
@@ -377,21 +457,28 @@
             background: var(--accent);
         }
 
-        /* ===== Badge ===== */
+        /* ============================================================ */
+        /* BADGE */
+        /* ============================================================ */
         .badge-draft      { background: #e9ecef; color: #495057; }
         .badge-published  { background: #d1e7dd; color: #0a7344; }
         .badge-berjalan   { background: #cff4fc; color: #0c5460; }
         .badge-selesai    { background: #d1ecf1; color: #0c5460; }
         .badge-dibatalkan { background: #f8d7da; color: #842029; }
 
-        /* ===== Content ===== */
+        /* ============================================================ */
+        /* CONTENT */
+        /* ============================================================ */
         .page-content { flex: 1; padding-bottom: 2rem; }
 
-        /* ===== Responsive ===== */
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
         @media (max-width: 768px) {
-            #sidebar { transform: translateX(-100%); }
-            #sidebar.open { transform: translateX(0); box-shadow: 0 0 30px rgba(0,0,0,.3); }
+            #sidebar { transform: translateX(-100%); border-radius: 0; }
+            #sidebar.open { transform: translateX(0); box-shadow: 0 0 30px rgba(0,0,0,.1); }
             #main { margin-left: 0; }
+            #topbar { padding: .5rem 1rem; }
         }
     </style>
     @stack('styles')
@@ -406,7 +493,10 @@
         <!-- Brand -->
         <a href="{{ route('peserta.dashboard') }}" class="brand">
             <i class="bi bi-mortarboard-fill"></i>
-            S I P <span>A D U</span>
+            <div class="brand-text">
+                <span class="brand-name">S I P <span>A D U</span></span>
+                <span class="brand-sub">Sistem Pelatihan SDM usaha KOPERINDAG</span>
+            </div>
         </a>
 
         <!-- ========================================================== -->
@@ -414,20 +504,17 @@
         <!-- ========================================================== -->
         <div class="sidebar-nav">
             <!-- DASHBOARD -->
-            <div class="nav-label">MENU PESERTA</div>
+            <div class="nav-label">Menu</div>
             
             <a href="{{ route('peserta.dashboard') }}" class="nav-link {{ request()->routeIs('peserta.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2"></i> Beranda
+                <i class="bi bi-grid-1x2"></i> Dashboard
             </a>
 
             <!-- ========================================================== -->
             <!-- PELATIHAN -->
             <!-- ========================================================== -->
-            <div class="nav-label">PELATIHAN</div>
-            
-            <!-- Daftar Pelatihan -->
             <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.index') ? 'active' : '' }}">
-                <i class="bi bi-list-check"></i> Daftar Pelatihan
+                <i class="bi bi-list-check"></i> Pelatihan
             </a>
 
             <!-- Pelatihan Saya (dengan submenu) -->
@@ -450,17 +537,11 @@
                 </a>
             </div>
 
-            <!-- Riwayat Pelatihan -->
-            <!-- <div class="nav-label">RIWAYAT</div>
-            <a href="{{ route('peserta.trainings.history') }}" class="nav-link {{ request()->routeIs('peserta.trainings.history') ? 'active' : '' }}">
-                <i class="bi bi-clock-history"></i> Riwayat Pelatihan
-            </a> -->
-
             <!-- ========================================================== -->
             <!-- INFORMASI -->
             <!-- ========================================================== -->
-            <div class="nav-label">INFORMASI</div>
-            
+            <div class="nav-label">Informasi</div>
+
             <a href="{{ route('peserta.agenda.index') }}" class="nav-link {{ request()->routeIs('peserta.agenda.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-event"></i> Agenda
             </a>
@@ -472,27 +553,28 @@
             <!-- ========================================================== -->
             <!-- AKUN -->
             <!-- ========================================================== -->
-            <div class="nav-label">AKUN</div>
-            
+            <div class="nav-label">Akun</div>
+
             <a href="{{ route('peserta.profile.index') }}" class="nav-link {{ request()->routeIs('peserta.profile.*') ? 'active' : '' }}">
-                <i class="bi bi-person"></i> Profil Saya
+                <i class="bi bi-person"></i> Profil
             </a>
         </div>
 
         <!-- User Info -->
         <div class="user-info">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="user-avatar">
+                    {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'U', 0, 2)) }}
+                </div>
+                <div class="flex-grow-1">
                     <div class="user-name">{{ auth()->user()->nama ?? auth()->user()->name }}</div>
                     <div class="user-role">{{ auth()->user()->nik ?? 'Peserta' }}</div>
                 </div>
-                <div>
-                    <span class="badge">Peserta</span>
-                </div>
+                <span class="badge">Peserta</span>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                <button type="submit" class="btn btn-sm btn-logout w-100">
                     <i class="bi bi-box-arrow-right me-1"></i> Keluar
                 </button>
             </form>
@@ -506,28 +588,28 @@
 <div id="main">
     <!-- Topbar -->
     <div id="topbar" class="d-flex align-items-center justify-content-between">
-        <button class="btn btn-sm btn-light d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <button class="btn btn-sm btn-light d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')" style="border-radius: 10px; border: 1px solid #e8edf5;">
             <i class="bi bi-list fs-5"></i>
         </button>
         <div class="d-flex align-items-center gap-2 ms-auto">
-            <a href="#" class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" title="Agenda & Kalender">
+            <a href="#" class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" title="Agenda & Kalender" style="background: #f7f9fc;">
                 <i class="bi bi-calendar3 text-primary"></i>
                 <span class="d-none d-md-inline fw-semibold text-dark">Kalender</span>
             </a>
             
             <div class="dropdown">
-                <button class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #f7f9fc;">
                     @if(auth()->user()->foto)
                     <img class="rounded-circle" src="{{ asset('storage/' . auth()->user()->foto) }}" alt="{{ auth()->user()->nama }}" style="width: 24px; height: 24px; object-fit: cover;">
                     @else
-                    <div class="avatar-img avatar-xs bg-primary text-white d-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; background: rgba(74, 108, 247, 0.1); color: var(--accent); font-weight: 600; font-size: 0.7rem;">
                         {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'U', 0, 2)) }}
                     </div>
                     @endif
                     <span class="d-none d-sm-inline fw-semibold text-dark">{{ auth()->user()->nama ?? auth()->user()->name }}</span>
                     <i class="bi bi-chevron-down text-muted small"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
                     <li>
                         <div class="dropdown-header">
                             <span class="d-block fw-semibold text-dark">{{ auth()->user()->nama ?? auth()->user()->name }}</span>
@@ -537,7 +619,7 @@
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('peserta.profile.index') }}">
-                            <i class="bi bi-person text-muted"></i> Profil Saya
+                            <i class="bi bi-person text-muted"></i> Profil
                         </a>
                     </li>
                     <li>
@@ -568,19 +650,19 @@
     <div class="page-content">
         <div class="container-fluid px-3 px-lg-4 pt-3">
             @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; background: #e8f5e9;">
                 <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             @endif
             @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; background: #fde8e8;">
                 <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             @endif
             @if(session('warning'))
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; background: #fff8e1;">
                 <i class="bi bi-exclamation-triangle me-2"></i>{{ session('warning') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
@@ -651,18 +733,6 @@
 
         // Jalankan saat halaman dimuat
         openActiveSubmenu();
-
-        // ============================================================
-        // HOVER EFEK UNTUK SUBMENU
-        // ============================================================
-        document.querySelectorAll('.submenu .nav-link').forEach(function(link) {
-            link.addEventListener('mouseenter', function() {
-                this.style.paddingLeft = '3.8rem';
-            });
-            link.addEventListener('mouseleave', function() {
-                this.style.paddingLeft = '3.5rem';
-            });
-        });
     });
 </script>
 @stack('scripts')

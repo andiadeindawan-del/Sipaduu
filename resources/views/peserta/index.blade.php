@@ -13,7 +13,7 @@
     </div>
     <div class="heading-actions">
         <div class="d-flex gap-2">
-            <span class="badge bg-success" style="font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 50px;">
+            <span class="badge" style="font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 50px; background: #6c757d; color: #fff;">
                 <i class="bi bi-calendar-check me-1"></i>
                 {{ now()->translatedFormat('d F Y') }}
             </span>
@@ -27,110 +27,179 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
-    <!-- Welcome Banner -->
-    <div class="panel mb-4 border-0" style="background: linear-gradient(135deg, #0d1b15 0%, #1a3a2a 50%, #2a5a3a 100%); border-radius: 1rem; overflow: hidden;">
-        <div class="p-4 p-md-5">
-            <div class="row align-items-center">
-                <div class="col-12 col-md-8">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-success bg-opacity-25 text-white px-3 py-1 rounded-pill">
-                            <i class="bi bi-check-circle me-1"></i> Aktif
-                        </span>
-                        <span class="badge bg-warning bg-opacity-25 text-white px-3 py-1 rounded-pill">
-                            <i class="bi bi-mortarboard me-1"></i> Peserta
-                        </span>
-                    </div>
-                    <h2 class="text-white mb-2 display-6 fw-bold">Selamat Datang, {{ auth()->user()->nama ?? auth()->user()->name }}! 👋</h2>
-                    <p class="text-white-50 mb-0" style="font-size: 1.05rem;">
-                        Teruslah belajar dan tingkatkan kemampuan Anda melalui pelatihan yang tersedia.
-                        <br>
-                        <i class="bi bi-check-circle text-success me-1"></i>
-                        <span class="text-white-50">Anda telah menyelesaikan <strong class="text-white">{{ $totalCertificates ?? 0 }}</strong> sertifikat</span>
-                        <span class="text-white-50 mx-2">•</span>
-                        <i class="bi bi-journal-bookmark text-primary me-1"></i>
-                        <span class="text-white-50">Mengikuti <strong class="text-white">{{ $totalTrainings ?? 0 }}</strong> pelatihan</span>
-                    </p>
-                </div>
-                <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
-                    @if(auth()->user()->foto)
-                        <img src="{{ asset('storage/' . auth()->user()->foto) }}" 
-                             alt="Foto" class="rounded-circle border border-3 border-light shadow-lg"
-                             style="width: 90px; height: 90px; object-fit: cover;">
-                    @else
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center border border-3 border-light shadow-lg"
-                             style="width: 90px; height: 90px; background: rgba(255,255,255,0.15); color: #fff; font-size: 36px; font-weight: 700;">
-                            {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'U', 0, 2)) }}
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Statistics Cards -->
     <section class="row g-3 mb-4" aria-label="Dashboard metrics">
         <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card metric-primary">
+            <article class="metric-card" style="border-left-color: #6c757d;">
                 <div class="metric-top">
                     <span class="metric-label">Total Pelatihan</span>
-                    <span class="metric-icon"><i class="bi bi-journal-bookmark"></i></span>
+                    <span class="metric-icon" style="color: #6c757d;"><i class="bi bi-journal-bookmark"></i></span>
                 </div>
                 <div class="metric-value">{{ $totalTrainings ?? 0 }}</div>
                 <div class="metric-meta">
-                    <span class="text-primary">Semua</span>
+                    <span style="color: #6c757d;">Semua</span>
                     <span>pelatihan</span>
                 </div>
             </article>
         </div>
 
         <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card metric-success">
+            <article class="metric-card" style="border-left-color: #28c76f;">
                 <div class="metric-top">
                     <span class="metric-label">Sertifikat Diperoleh</span>
-                    <span class="metric-icon"><i class="bi bi-award"></i></span>
+                    <span class="metric-icon" style="color: #28c76f;"><i class="bi bi-award"></i></span>
                 </div>
                 <div class="metric-value">{{ $totalCertificates ?? 0 }}</div>
                 <div class="metric-meta">
-                    <span class="text-success">Selesai</span>
+                    <span style="color: #28c76f;">Selesai</span>
                     <span>sertifikat</span>
                 </div>
             </article>
         </div>
 
         <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card metric-warning">
+            <article class="metric-card" style="border-left-color: #ff9f43;">
                 <div class="metric-top">
                     <span class="metric-label">Quiz Dikerjakan</span>
-                    <span class="metric-icon"><i class="bi bi-question-circle"></i></span>
+                    <span class="metric-icon" style="color: #ff9f43;"><i class="bi bi-question-circle"></i></span>
                 </div>
                 <div class="metric-value">{{ $totalQuizAttempts ?? 0 }}</div>
                 <div class="metric-meta">
-                    <span class="text-warning">Total</span>
+                    <span style="color: #ff9f43;">Total</span>
                     <span>quiz</span>
                 </div>
             </article>
         </div>
 
         <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card metric-info">
+            <article class="metric-card" style="border-left-color: #17a2b8;">
                 <div class="metric-top">
                     <span class="metric-label">Rata-rata Nilai Quiz</span>
-                    <span class="metric-icon"><i class="bi bi-star"></i></span>
+                    <span class="metric-icon" style="color: #17a2b8;"><i class="bi bi-star"></i></span>
                 </div>
                 <div class="metric-value">{{ number_format($averageQuizScore ?? 0, 1) }}</div>
                 <div class="metric-meta">
-                    <span class="text-info">Keseluruhan</span>
+                    <span style="color: #17a2b8;">Keseluruhan</span>
                     <span>nilai</span>
                 </div>
             </article>
         </div>
     </section>
 
+    <!-- ============================================================ -->
+    <!-- METODE PEMBELAJARAN -->
+    <!-- ============================================================ -->
+    <div class="panel mb-4 border-0 shadow-sm">
+        <div class="panel-header bg-light bg-opacity-50">
+            <h5 class="section-title"><i class="bi bi-book" style="color: #6c757d;"></i> Metode Pembelajaran</h5>
+            <span class="badge" style="background: #6c757d; color: #fff;">Panduan Belajar</span>
+        </div>
+        <div class="p-4">
+            <div class="row g-4">
+                <!-- Metode 1: Materi -->
+                <div class="col-12 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 1rem; transition: all 0.3s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: #e9ecef; color: #6c757d;">
+                                <i class="bi bi-file-earmark-text fs-2"></i>
+                            </div>
+                            <h6 class="fw-bold">1. Materi</h6>
+                            <p class="text-muted small">Pelajari materi pelatihan secara mandiri melalui video, PDF, dan artikel.</p>
+                            <a href="{{ route('peserta.materi.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill mt-2">
+                                Mulai Belajar <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metode 2: Quiz -->
+                <div class="col-12 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 1rem; transition: all 0.3s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: #fff3e0; color: #ff9f43;">
+                                <i class="bi bi-question-circle fs-2"></i>
+                            </div>
+                            <h6 class="fw-bold">2. Quiz</h6>
+                            <p class="text-muted small">Uji pemahaman Anda dengan mengerjakan quiz setelah mempelajari materi.</p>
+                            <a href="{{ route('peserta.quiz.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill mt-2">
+                                Kerjakan Quiz <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metode 3: Kehadiran -->
+                <div class="col-12 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 1rem; transition: all 0.3s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: #e8f5e9; color: #28c76f;">
+                                <i class="bi bi-check2-square fs-2"></i>
+                            </div>
+                            <h6 class="fw-bold">3. Kehadiran</h6>
+                            <p class="text-muted small">Lakukan absensi untuk mencatat kehadiran Anda dalam setiap pelatihan.</p>
+                            <a href="{{ route('peserta.absen.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill mt-2">
+                                Absen Sekarang <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metode 4: Sertifikat -->
+                <div class="col-12 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 1rem; transition: all 0.3s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: #e3f2fd; color: #17a2b8;">
+                                <i class="bi bi-award fs-2"></i>
+                            </div>
+                            <h6 class="fw-bold">4. Sertifikat</h6>
+                            <p class="text-muted small">Dapatkan sertifikat resmi setelah menyelesaikan seluruh rangkaian pelatihan.</p>
+                            <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill mt-2">
+                                Lihat Sertifikat <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Ringkasan -->
+            <div class="row mt-4 pt-3 border-top">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge" style="background: #e9ecef; color: #6c757d; padding: 0.5rem 1rem;">
+                                <i class="bi bi-check-circle me-1" style="color: #28c76f;"></i>
+                                Materi: <strong>{{ $completedMaterials ?? 0 }}</strong>/{{ $totalMaterials ?? 0 }}
+                            </span>
+                            <span class="badge" style="background: #fff3e0; color: #ff9f43; padding: 0.5rem 1rem;">
+                                <i class="bi bi-check-circle me-1" style="color: #28c76f;"></i>
+                                Quiz: <strong>{{ $completedQuizzes ?? 0 }}</strong>/{{ $totalQuizzes ?? 0 }}
+                            </span>
+                            <span class="badge" style="background: #e8f5e9; color: #28c76f; padding: 0.5rem 1rem;">
+                                <i class="bi bi-check-circle me-1" style="color: #28c76f;"></i>
+                                Kehadiran: <strong>{{ $totalHadir ?? 0 }}</strong>
+                            </span>
+                            <span class="badge" style="background: #e3f2fd; color: #17a2b8; padding: 0.5rem 1rem;">
+                                <i class="bi bi-award me-1"></i>
+                                Sertifikat: <strong>{{ $totalCertificates ?? 0 }}</strong>
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-muted small">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Selesaikan semua langkah untuk mendapatkan sertifikat
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Progress Overview -->
     @if(isset($totalTrainings) && $totalTrainings > 0)
     <div class="panel mb-4 border-0 shadow-sm">
         <div class="panel-header bg-light bg-opacity-50">
-            <h5 class="section-title"><i class="bi bi-graph-up-arrow text-success"></i> Progress Keseluruhan</h5>
+            <h5 class="section-title"><i class="bi bi-graph-up-arrow" style="color: #6c757d;"></i> Progress Keseluruhan</h5>
         </div>
         <div class="p-4">
             <div class="row g-4 align-items-center">
@@ -141,29 +210,29 @@
                 <div class="col-12 col-md-8">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted small fw-semibold">Progress Belajar</span>
-                        <span class="fw-bold text-success">{{ $completedPercent }}%</span>
+                        <span class="fw-bold" style="color: #6c757d;">{{ $completedPercent }}%</span>
                     </div>
                     <div class="progress" style="height: 14px; background-color: #e9ecef; border-radius: 50px;">
-                        <div class="progress-bar bg-success" style="width: {{ $completedPercent }}%; border-radius: 50px; transition: width 1.5s ease;"></div>
+                        <div class="progress-bar" style="width: {{ $completedPercent }}%; border-radius: 50px; transition: width 1.5s ease; background: linear-gradient(90deg, #6c757d, #a8b0b8);"></div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">
                         <span class="text-muted small">
-                            <i class="bi bi-check-circle text-success me-1"></i>
+                            <i class="bi bi-check-circle" style="color: #28c76f;"></i>
                             Selesai: <strong>{{ $totalCertificates ?? 0 }}</strong> pelatihan
                         </span>
                         <span class="text-muted small">
-                            <i class="bi bi-clock text-warning me-1"></i>
+                            <i class="bi bi-clock" style="color: #ff9f43;"></i>
                             Berjalan: <strong>{{ ($totalTrainings ?? 0) - ($totalCertificates ?? 0) }}</strong> pelatihan
                         </span>
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-end">
-                        <span class="badge bg-success px-3 py-2 rounded-pill" style="font-size: 0.85rem;">
+                        <span class="badge px-3 py-2 rounded-pill" style="font-size: 0.85rem; background: #6c757d; color: #fff;">
                             <i class="bi bi-check-circle me-1"></i> {{ $completedPercent }}% Selesai
                         </span>
                         @if($inProgressPercent > 0)
-                        <span class="badge bg-warning px-3 py-2 rounded-pill" style="font-size: 0.85rem;">
+                        <span class="badge px-3 py-2 rounded-pill" style="font-size: 0.85rem; background: #ff9f43; color: #fff;">
                             <i class="bi bi-clock me-1"></i> {{ $inProgressPercent }}% Berjalan
                         </span>
                         @endif
@@ -179,30 +248,30 @@
         <div class="col-12">
             <div class="panel border-0 shadow-sm">
                 <div class="panel-header bg-light bg-opacity-50">
-                    <h5 class="section-title"><i class="bi bi-lightning text-warning"></i> Aksi Cepat</h5>
+                    <h5 class="section-title"><i class="bi bi-lightning" style="color: #ff9f43;"></i> Aksi Cepat</h5>
                 </div>
                 <div class="p-4">
                     <div class="row g-3">
                         <div class="col-6 col-md-3">
-                            <a href="{{ route('peserta.trainings.index') }}" class="btn btn-primary w-100 py-3 rounded-3" style="transition: all 0.3s;">
+                            <a href="{{ route('peserta.trainings.index') }}" class="btn w-100 py-3 rounded-3" style="transition: all 0.3s; background: #6c757d; color: #fff;">
                                 <i class="bi bi-journal-bookmark fs-3 d-block mb-1"></i>
                                 <span class="fw-semibold">Lihat Pelatihan</span>
                             </a>
                         </div>
                         <div class="col-6 col-md-3">
-                            <a href="{{ route('peserta.quiz.index') }}" class="btn btn-success w-100 py-3 rounded-3" style="transition: all 0.3s;">
+                            <a href="{{ route('peserta.quiz.index') }}" class="btn w-100 py-3 rounded-3" style="transition: all 0.3s; background: #28c76f; color: #fff;">
                                 <i class="bi bi-question-circle fs-3 d-block mb-1"></i>
                                 <span class="fw-semibold">Ikuti Quiz</span>
                             </a>
                         </div>
                         <div class="col-6 col-md-3">
-                            <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-info text-white w-100 py-3 rounded-3" style="transition: all 0.3s;">
+                            <a href="{{ route('peserta.sertifikat.index') }}" class="btn w-100 py-3 rounded-3" style="transition: all 0.3s; background: #17a2b8; color: #fff;">
                                 <i class="bi bi-award fs-3 d-block mb-1"></i>
                                 <span class="fw-semibold">Lihat Sertifikat</span>
                             </a>
                         </div>
                         <div class="col-6 col-md-3">
-                            <a href="{{ route('peserta.profile.index') }}" class="btn btn-warning w-100 py-3 rounded-3" style="transition: all 0.3s;">
+                            <a href="{{ route('peserta.profile.index') }}" class="btn w-100 py-3 rounded-3" style="transition: all 0.3s; background: #ff9f43; color: #fff;">
                                 <i class="bi bi-person fs-3 d-block mb-1"></i>
                                 <span class="fw-semibold">Update Profil</span>
                             </a>
@@ -219,8 +288,8 @@
         <div class="col-12 col-lg-6">
             <div class="panel h-100 border-0 shadow-sm">
                 <div class="panel-header bg-light bg-opacity-50">
-                    <h5 class="section-title"><i class="bi bi-journal-bookmark text-primary"></i> Pelatihan Aktif</h5>
-                    <a href="{{ route('peserta.trainings.index', ['filter' => 'ongoing']) }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                    <h5 class="section-title"><i class="bi bi-journal-bookmark" style="color: #6c757d;"></i> Pelatihan Aktif</h5>
+                    <a href="{{ route('peserta.trainings.index', ['filter' => 'ongoing']) }}" class="btn btn-sm btn-outline-secondary rounded-pill">
                         Lihat Semua <i class="bi bi-chevron-right"></i>
                     </a>
                 </div>
@@ -240,21 +309,21 @@
                                                     - {{ $training->tanggal_selesai->format('d/m/Y') }}
                                                 @endif
                                             </p>
-                                            <span class="badge bg-success rounded-pill">Aktif</span>
+                                            <span class="badge rounded-pill" style="background: #6c757d; color: #fff;">Aktif</span>
                                             @php
                                                 $progress = method_exists($training, 'getProgress') ? $training->getProgress() : 0;
                                             @endphp
-                                            <span class="badge bg-info rounded-pill">{{ $progress }}%</span>
+                                            <span class="badge rounded-pill" style="background: #28c76f; color: #fff;">{{ $progress }}%</span>
                                         </div>
                                         @if($progress > 0)
                                         <div class="mt-2" style="width: 100%; max-width: 200px;">
                                             <div class="progress" style="height: 4px; border-radius: 50px;">
-                                                <div class="progress-bar bg-success" style="width: {{ $progress }}%; border-radius: 50px;"></div>
+                                                <div class="progress-bar" style="width: {{ $progress }}%; border-radius: 50px; background: linear-gradient(90deg, #6c757d, #a8b0b8);"></div>
                                             </div>
                                         </div>
                                         @endif
                                     </div>
-                                    <a href="{{ route('peserta.trainings.show', $training->id) }}" class="btn btn-sm btn-primary rounded-circle" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                    <a href="{{ route('peserta.trainings.show', $training->id) }}" class="btn btn-sm rounded-circle" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: #6c757d; color: #fff;">
                                         <i class="bi bi-arrow-right"></i>
                                     </a>
                                 </div>
@@ -265,7 +334,7 @@
                         <div class="text-center py-4">
                             <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
                             <p class="text-muted">Belum ada pelatihan aktif</p>
-                            <a href="{{ route('peserta.trainings.index') }}" class="btn btn-sm btn-primary rounded-pill">
+                            <a href="{{ route('peserta.trainings.index') }}" class="btn btn-sm rounded-pill" style="background: #6c757d; color: #fff;">
                                 <i class="bi bi-plus-circle me-1"></i> Cari Pelatihan
                             </a>
                         </div>
@@ -278,8 +347,8 @@
         <div class="col-12 col-lg-6">
             <div class="panel h-100 border-0 shadow-sm">
                 <div class="panel-header bg-light bg-opacity-50">
-                    <h5 class="section-title"><i class="bi bi-award text-success"></i> Sertifikat Terbaru</h5>
-                    <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                    <h5 class="section-title"><i class="bi bi-award" style="color: #28c76f;"></i> Sertifikat Terbaru</h5>
+                    <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
                         Lihat Semua <i class="bi bi-chevron-right"></i>
                     </a>
                 </div>
@@ -295,13 +364,13 @@
                                             <i class="bi bi-calendar-check me-1"></i>
                                             Diterbitkan: {{ $certificate->tanggal_terbit ? $certificate->tanggal_terbit->format('d/m/Y') : '-' }}
                                         </p>
-                                        <span class="badge bg-success rounded-pill">Tersedia</span>
+                                        <span class="badge rounded-pill" style="background: #28c76f; color: #fff;">Tersedia</span>
                                     </div>
                                     <div class="btn-group">
                                         <a href="{{ route('peserta.sertifikat.show', $certificate->id) }}" class="btn btn-sm btn-light rounded-circle" title="Lihat" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="{{ route('peserta.sertifikat.download', $certificate->id) }}" class="btn btn-sm btn-success rounded-circle" title="Download" target="_blank" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <a href="{{ route('peserta.sertifikat.download', $certificate->id) }}" class="btn btn-sm rounded-circle" title="Download" target="_blank" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: #28c76f; color: #fff;">
                                             <i class="bi bi-download"></i>
                                         </a>
                                     </div>
@@ -313,7 +382,7 @@
                         <div class="text-center py-4">
                             <i class="bi bi-award fs-1 text-muted d-block mb-3"></i>
                             <p class="text-muted">Belum ada sertifikat</p>
-                            <a href="{{ route('peserta.trainings.index') }}" class="btn btn-sm btn-primary rounded-pill">
+                            <a href="{{ route('peserta.trainings.index') }}" class="btn btn-sm rounded-pill" style="background: #6c757d; color: #fff;">
                                 <i class="bi bi-plus-circle me-1"></i> Mulai Pelatihan
                             </a>
                         </div>
@@ -328,8 +397,8 @@
         <div class="col-12">
             <div class="panel border-0 shadow-sm">
                 <div class="panel-header bg-light bg-opacity-50">
-                    <h5 class="section-title"><i class="bi bi-clock-history text-warning"></i> Riwayat Quiz</h5>
-                    <a href="{{ route('peserta.quiz.index') }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                    <h5 class="section-title"><i class="bi bi-clock-history" style="color: #ff9f43;"></i> Riwayat Quiz</h5>
+                    <a href="{{ route('peserta.quiz.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
                         Lihat Semua <i class="bi bi-chevron-right"></i>
                     </a>
                 </div>
@@ -364,7 +433,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="badge {{ $attempt->status == 'completed' ? 'bg-success' : ($attempt->status == 'in_progress' ? 'bg-warning' : 'bg-secondary') }} rounded-pill">
+                                        <span class="badge rounded-pill {{ $attempt->status == 'completed' ? 'bg-success' : ($attempt->status == 'in_progress' ? 'bg-warning' : 'bg-secondary') }}">
                                             @if($attempt->status == 'completed')
                                                 <i class="bi bi-check-circle me-1"></i>
                                             @elseif($attempt->status == 'in_progress')
@@ -390,13 +459,13 @@
                                         <div class="btn-group">
                                             @if($attempt->status == 'completed')
                                                 <a href="{{ route('peserta.quiz.result', ['quiz' => $attempt->quiz_id, 'attempt' => $attempt->id]) }}" 
-                                                   class="btn btn-sm btn-info text-white rounded-circle" title="Lihat Hasil" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;">
+                                                   class="btn btn-sm rounded-circle text-white" title="Lihat Hasil" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; background: #17a2b8;">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                             @endif
                                             @if($attempt->status != 'completed')
                                                 <a href="{{ route('peserta.quiz.show', $attempt->quiz_id) }}" 
-                                                   class="btn btn-sm btn-primary rounded-circle" title="Lanjutkan" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;">
+                                                   class="btn btn-sm rounded-circle text-white" title="Lanjutkan" style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; background: #6c757d;">
                                                     <i class="bi bi-play-circle"></i>
                                                 </a>
                                             @endif
@@ -410,7 +479,7 @@
                         <div class="text-center py-4">
                             <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
                             <p class="text-muted">Belum ada riwayat quiz</p>
-                            <a href="{{ route('peserta.quiz.index') }}" class="btn btn-sm btn-primary rounded-pill">
+                            <a href="{{ route('peserta.quiz.index') }}" class="btn btn-sm rounded-pill" style="background: #6c757d; color: #fff;">
                                 <i class="bi bi-plus-circle me-1"></i> Ikuti Quiz
                             </a>
                         </div>
@@ -445,10 +514,10 @@
         box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important;
     }
     
-    .btn-primary, .btn-success, .btn-info, .btn-warning {
+    .btn {
         transition: all 0.3s ease;
     }
-    .btn-primary:hover, .btn-success:hover, .btn-info:hover, .btn-warning:hover {
+    .btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
@@ -472,6 +541,14 @@
         letter-spacing: 0.5px;
         color: #6c757d;
     }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08) !important;
+    }
 </style>
 @endpush
 
@@ -493,16 +570,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             bar.style.width = width;
         }, 300);
-    });
-
-    // Add hover effect to quick action buttons
-    document.querySelectorAll('.quick-action-btn').forEach(function(btn) {
-        btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-        btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
     });
 });
 </script>
