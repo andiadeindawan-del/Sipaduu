@@ -54,26 +54,7 @@
                                 @enderror
                             </div>
 
-                            <!-- Trainer -->
-                            <!-- <div class="col-12 col-md-6">
-                                <label for="trainer_id" class="form-label fw-semibold">Trainer</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                                    <select class="form-select @error('trainer_id') is-invalid @enderror" 
-                                            id="trainer_id" name="trainer_id">
-                                        <option value="">Pilih Trainer (Opsional)</option>
-                                        @foreach($trainers ?? [] as $trainer)
-                                        <option value="{{ $trainer->id }}" {{ old('trainer_id') == $trainer->id ? 'selected' : '' }}>
-                                            {{ $trainer->nama }} - {{ $trainer->email }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @error('trainer_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div> -->
-
+                          
                             <!-- Judul -->
                             <div class="col-12">
                                 <label for="judul" class="form-label fw-semibold">Judul Pelatihan <span class="text-danger">*</span></label>

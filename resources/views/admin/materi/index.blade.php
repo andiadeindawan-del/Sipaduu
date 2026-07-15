@@ -87,16 +87,16 @@
                     </button>
                 </form>
                 
-                {{-- TOMBOL RESET FILTER --}}
                 @if(request('search'))
                 <a href="{{ route('admin.materi.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
                     <i class="bi bi-arrow-counterclockwise"></i> Reset
                 </a>
                 @endif
                 
-                <a href="{{ route('admin.materi.create') }}" class="btn btn-primary btn-sm">
+                {{-- Tombol Tambah dengan modal --}}
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
                     <i class="bi bi-plus-circle"></i> Tambah
-                </a>
+                </button>
             </div>
         </div>
         <div class="table-responsive">
@@ -121,32 +121,26 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ $materi->judul }}</p>
-                                @if($materi->deskripsi)
-                                <p class="text-muted small mb-0">{{ Str::limit($materi->deskripsi, 50) }}</p>
-                                @endif
+                               
                             </div>
                         </td>
                         <td>
                             @if($materi->kategori)
-                            <span class="badge" style="background-color: {{ $materi->kategori->warna ?? '#6c757d' }}; color: #fff;">
-                                <i class="bi {{ $materi->kategori->icon ?? 'bi-tag' }} me-1"></i>
-                                {{ $materi->kategori->nama }}
-                            </span>
+                            <span class="text-muted">{{ $materi->kategori->nama }}</span>
                             @else
                             <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
                             @if($materi->training)
-                            <span class="badge text-bg-info">{{ $materi->training->judul }}</span>
+                            <span class="text-muted">{{ $materi->training->judul }}</span>
                             @else
                             <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
                             @if($materi->durasi)
-                            <span class="badge text-bg-secondary">
-                                <i class="bi bi-clock me-1"></i>
+                            <span class="text-muted">
                                 {{ $materi->durasi }} menit
                             </span>
                             @else
@@ -155,45 +149,59 @@
                         </td>
                         <td>
                             @if($materi->hasFile())
-                            <span class="badge text-bg-success">
+                            <span class="text-success">
                                 <i class="bi bi-check-circle me-1"></i>
                                 Ada
                             </span>
                             @else
-                            <span class="badge text-bg-secondary">
+                            <span class="text-muted">
                                 <i class="bi bi-x-circle me-1"></i>
                                 Tidak
                             </span>
                             @endif
                         </td>
                         <td>
-                            <span class="badge {{ $materi->status_badge }}">
+                            @php
+                                $statusMap = [
+                                    'draft' => ['label' => 'Draft', 'class' => 'badge-draft'],
+                                    'published' => ['label' => 'Published', 'class' => 'badge-published'],
+                                    'archived' => ['label' => 'Archived', 'class' => 'badge-secondary'],
+                                ];
+                                $status = $statusMap[$materi->status] ?? ['label' => $materi->status, 'class' => 'badge-draft'];
+                            @endphp
+                            <span class="badge {{ $status['class'] }}">
                                 <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
-                                {{ $materi->status_label }}
+                                {{ $status['label'] }}
                             </span>
                         </td>
                         <td class="text-end">
                             <div class="d-flex gap-1 justify-content-end">
+                                {{-- Tombol Show dengan modal --}}
                                 <button type="button" class="badge bg-info text-white border-0 p-2" 
                                         data-bs-toggle="modal" data-bs-target="#showModal{{ $materi->id }}" 
                                         title="Lihat">
-                                    <i class="bi bi-eye"></i> Lihat
+                                    <i class="bi bi-eye"></i> 
                                 </button>
+                                
+                                {{-- Tombol Edit dengan modal --}}
                                 <button type="button" class="badge bg-warning text-dark border-0 p-2" 
                                         data-bs-toggle="modal" data-bs-target="#editModal{{ $materi->id }}" 
                                         title="Edit">
-                                    <i class="bi bi-pencil"></i> Edit
+                                    <i class="bi bi-pencil"></i> 
                                 </button>
+                                
                                 @if($materi->hasFile())
                                 <a href="{{ route('admin.materi.download', $materi->id) }}" 
                                    class="badge bg-success text-white text-decoration-none p-2" title="Download">
-                                    <i class="bi bi-download"></i> Download
+                                    <i class="bi bi-download"></i> 
                                 </a>
                                 @endif
+                                
+                                {{-- Tombol Delete dengan modal --}}
                                 <button type="button" class="badge bg-danger text-white border-0 p-2" 
                                         data-bs-toggle="modal" data-bs-target="#deleteModal{{ $materi->id }}" 
                                         title="Hapus">
-                                    <i class="bi bi-trash"></i> Hapus
+                                    <i class="bi bi-trash"></i> 
                                 </button>
                             </div>
                         </td>
@@ -246,7 +254,7 @@
 </div>
 
 <!-- ============================================================
-     CREATE MODAL
+     MODAL CREATE
 ============================================================ -->
 <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -367,9 +375,115 @@
 </div>
 
 <!-- ============================================================
-     EDIT MODALS
+     MODAL SHOW
 ============================================================ -->
 @foreach($materis ?? [] as $materi)
+<div class="modal fade" id="showModal{{ $materi->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-eye text-info me-2"></i>Detail Materi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold">Judul</label>
+                        <p class="fw-semibold fs-5">{{ $materi->judul }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Slug</label>
+                        <p><code>{{ $materi->slug }}</code></p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Kategori</label>
+                        <p>{{ $materi->kategori->nama ?? '-' }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Training</label>
+                        <p>{{ $materi->training->judul ?? '-' }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Durasi</label>
+                        <p>{{ $materi->durasi ? $materi->durasi . ' menit' : '-' }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Urutan</label>
+                        <p>{{ $materi->order ?? 0 }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Status</label>
+                        <p><span class="badge {{ $statusMap[$materi->status]['class'] ?? 'badge-draft' }}">{{ $statusMap[$materi->status]['label'] ?? $materi->status }}</span></p>
+                    </div>
+                    @if($materi->deskripsi)
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold">Deskripsi</label>
+                        <p>{{ $materi->deskripsi }}</p>
+                    </div>
+                    @endif
+                    @if($materi->hasFile())
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold">File</label>
+                        <div class="table-responsive mt-2">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nama File</th>
+                                        <th>Tipe</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($materi->files as $idx => $file)
+                                    <tr>
+                                        <td>{{ $idx + 1 }}</td>
+                                        <td>{{ $file['name'] ?? basename($file['path'] ?? $file['url'] ?? '') }}</td>
+                                        <td><span class="badge bg-info">{{ $materi->getFileTypeLabel($file['type'] ?? 'other') }}</span></td>
+                                        <td>
+                                            @if(!empty($file['path']))
+                                            <a href="{{ route('admin.materi.download', ['materi' => $materi->id, 'index' => $idx]) }}" 
+                                               class="btn btn-sm btn-success" target="_blank">
+                                                <i class="bi bi-download"></i>
+                                            </a>
+                                            @elseif(!empty($file['url']))
+                                            <a href="{{ $file['url'] }}" class="btn btn-sm btn-info" target="_blank">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Dibuat</label>
+                        <p>{{ $materi->created_at ? $materi->created_at->format('d/m/Y H:i') : '-' }}</p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold">Diperbarui</label>
+                        <p>{{ $materi->updated_at ? $materi->updated_at->format('d/m/Y H:i') : '-' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $materi->id }}" data-bs-dismiss="modal">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL EDIT
+============================================================ -->
 <div class="modal fade" id="editModal{{ $materi->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -528,128 +642,7 @@
 @endforeach
 
 <!-- ============================================================
-     SHOW MODALS
-============================================================ -->
-@foreach($materis ?? [] as $materi)
-<div class="modal fade" id="showModal{{ $materi->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-eye text-info me-2"></i>Detail Materi
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="text-muted small fw-semibold">Judul</label>
-                        <p class="fw-semibold fs-5">{{ $materi->judul }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Slug</label>
-                        <p><code>{{ $materi->slug }}</code></p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Kategori</label>
-                        @if($materi->kategori)
-                        <p>
-                            <span class="badge" style="background-color: {{ $materi->kategori->warna ?? '#6c757d' }}; color: #fff;">
-                                <i class="bi {{ $materi->kategori->icon ?? 'bi-tag' }} me-1"></i>
-                                {{ $materi->kategori->nama }}
-                            </span>
-                        </p>
-                        @else
-                        <p class="text-muted">-</p>
-                        @endif
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Training</label>
-                        @if($materi->training)
-                        <p class="fw-semibold">{{ $materi->training->judul }}</p>
-                        @else
-                        <p class="text-muted">-</p>
-                        @endif
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Durasi</label>
-                        <p>{{ $materi->durasi ? $materi->durasi . ' menit' : '-' }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Urutan</label>
-                        <p>{{ $materi->order ?? 0 }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Status</label>
-                        <p><span class="badge {{ $materi->status_badge }}">{{ $materi->status_label }}</span></p>
-                    </div>
-                    @if($materi->deskripsi)
-                    <div class="col-12">
-                        <label class="text-muted small fw-semibold">Deskripsi</label>
-                        <p>{{ $materi->deskripsi }}</p>
-                    </div>
-                    @endif
-                    @if($materi->hasFile())
-                    <div class="col-12">
-                        <label class="text-muted small fw-semibold">File</label>
-                        <div class="table-responsive mt-2">
-                            <table class="table table-sm table-bordered">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Nama File</th>
-                                        <th>Tipe</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($materi->files as $idx => $file)
-                                    <tr>
-                                        <td>{{ $idx + 1 }}</td>
-                                        <td>{{ $file['name'] ?? basename($file['path'] ?? $file['url'] ?? '') }}</td>
-                                        <td><span class="badge bg-info">{{ $materi->getFileTypeLabel($file['type'] ?? 'other') }}</span></td>
-                                        <td>
-                                            @if(!empty($file['path']))
-                                            <a href="{{ route('admin.materi.download', ['materi' => $materi->id, 'index' => $idx]) }}" 
-                                               class="btn btn-sm btn-success" target="_blank">
-                                                <i class="bi bi-download"></i>
-                                            </a>
-                                            @elseif(!empty($file['url']))
-                                            <a href="{{ $file['url'] }}" class="btn btn-sm btn-info" target="_blank">
-                                                <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    @endif
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Dibuat</label>
-                        <p>{{ $materi->created_at ? $materi->created_at->format('d/m/Y H:i') : '-' }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Diperbarui</label>
-                        <p>{{ $materi->updated_at ? $materi->updated_at->format('d/m/Y H:i') : '-' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $materi->id }}" data-bs-dismiss="modal">
-                    <i class="bi bi-pencil"></i> Edit
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
-<!-- ============================================================
-     DELETE MODALS
+     MODAL DELETE
 ============================================================ -->
 @foreach($materis ?? [] as $materi)
 <div class="modal fade" id="deleteModal{{ $materi->id }}" tabindex="-1" aria-hidden="true">
@@ -698,7 +691,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const slug = this.value.toLowerCase()
                 .replace(/[^a-z0-9]+/g, '-')
                 .replace(/^-+|-+$/g, '');
-            // Add hidden slug input if not exists
             if (!document.querySelector('input[name="slug"]')) {
                 const slugInput = document.createElement('input');
                 slugInput.type = 'hidden';

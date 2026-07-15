@@ -60,6 +60,8 @@ class QuizController extends Controller
         $publishedQuiz = Quiz::where('status', 'published')->count();
         $draftQuiz = Quiz::where('status', 'draft')->count();
         $archivedQuiz = Quiz::where('status', 'archived')->count();
+        
+        // PERBAIKAN: Gunakan 'score' bukan 'points'
         $totalQuestions = QuizQuestion::count();
         $totalAttempts = QuizAttempt::count();
 
@@ -151,23 +153,19 @@ class QuizController extends Controller
      */
     public function create(Request $request)
     {
-        // Ambil semua training yang tersedia (published, berjalan, selesai)
         $trainings = Training::whereIn('status', ['published', 'berjalan', 'selesai'])
                              ->orderBy('judul')
                              ->get();
         
-        // Ambil semua materi yang published
         $materis = Materi::where('status', 'published')
                          ->orderBy('judul')
                          ->get();
         
-        // Pre-select materi if parameter is passed
         $selectedMateri = null;
         if ($request->filled('materi_id')) {
             $selectedMateri = Materi::find($request->materi_id);
         }
 
-        // Pre-select training if parameter is passed
         $selectedTraining = null;
         if ($request->filled('training_id')) {
             $selectedTraining = Training::find($request->training_id);
@@ -202,11 +200,9 @@ class QuizController extends Controller
             'order' => 'nullable|integer|min:0',
         ]);
 
-        // Set default values untuk checkbox
         $validated['is_random'] = $request->has('is_random') ? 1 : 0;
         $validated['show_result'] = $request->has('show_result') ? 1 : 0;
 
-        // Set default order jika tidak ada
         if (!isset($validated['order']) || $validated['order'] === null) {
             $validated['order'] = (Quiz::max('order') ?? 0) + 1;
         }
@@ -253,12 +249,13 @@ class QuizController extends Controller
         
         $totalQuestions = $quiz->questions()->count();
         $totalParticipants = $quiz->attempts()->distinct('user_id')->count() ?? 0;
+        
+        // PERBAIKAN: Gunakan 'score' bukan 'points'
         $averageScore = $quiz->attempts()->where('status', 'completed')->avg('score') ?? 0;
         $highestScore = $quiz->attempts()->where('status', 'completed')->max('score') ?? 0;
         $lowestScore = $quiz->attempts()->where('status', 'completed')->min('score') ?? 0;
         $passingRate = $quiz->passing_rate ?? 0;
         
-        // Get results with user
         $results = $quiz->attempts()->with('user')->latest()->get();
         
         return view('admin.quiz.show', compact(
@@ -278,7 +275,6 @@ class QuizController extends Controller
      */
     public function pesertaShow(Quiz $quiz)
     {
-        // Check if quiz is published
         if ($quiz->status !== 'published') {
             abort(404);
         }
@@ -290,7 +286,6 @@ class QuizController extends Controller
         $remainingAttempts = max(0, $quiz->max_attempt - $userAttempts);
         $userBestScore = $quiz->attempts()->where('user_id', auth()->id())->max('score');
         
-        // Check if user already has a completed attempt
         $userAttempt = $quiz->attempts()
             ->where('user_id', auth()->id())
             ->where('status', 'completed')
@@ -310,12 +305,10 @@ class QuizController extends Controller
      */
     public function edit(Quiz $quiz)
     {
-        // Ambil semua training yang tersedia (published, berjalan, selesai)
         $trainings = Training::whereIn('status', ['published', 'berjalan', 'selesai'])
                              ->orderBy('judul')
                              ->get();
         
-        // Ambil semua materi yang published
         $materis = Materi::where('status', 'published')
                          ->orderBy('judul')
                          ->get();
@@ -344,11 +337,9 @@ class QuizController extends Controller
             'order' => 'nullable|integer|min:0',
         ]);
 
-        // Set default values untuk checkbox
         $validated['is_random'] = $request->has('is_random') ? 1 : 0;
         $validated['show_result'] = $request->has('show_result') ? 1 : 0;
 
-        // Set default order jika tidak ada
         if (!isset($validated['order']) || $validated['order'] === null) {
             $validated['order'] = $quiz->order ?? 0;
         }
@@ -392,14 +383,12 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
-        // Check if quiz has questions
         $questionsCount = $quiz->questions()->count();
         if ($questionsCount > 0) {
             return redirect()->route('admin.quiz.index')
                             ->with('error', "⚠️ Quiz tidak dapat dihapus karena masih memiliki {$questionsCount} pertanyaan. Hapus pertanyaan terlebih dahulu.");
         }
 
-        // Check if quiz has attempts
         $attemptsCount = $quiz->attempts()->count();
         if ($attemptsCount > 0) {
             return redirect()->route('admin.quiz.index')
@@ -454,7 +443,6 @@ class QuizController extends Controller
             $newQuiz->order = (Quiz::max('order') ?? 0) + 1;
             $newQuiz->save();
 
-            // Duplicate questions
             $duplicatedCount = 0;
             foreach ($quiz->questions as $question) {
                 $newQuestion = $question->replicate();
@@ -494,7 +482,6 @@ class QuizController extends Controller
         foreach ($request->ids as $id) {
             $quiz = Quiz::find($id);
             if ($quiz) {
-                // Check if quiz has questions or attempts
                 if ($quiz->questions()->count() > 0 || $quiz->attempts()->count() > 0) {
                     $errors[] = "Quiz '{$quiz->judul}' tidak dapat dihapus karena memiliki pertanyaan atau peserta.";
                     continue;
@@ -553,11 +540,12 @@ class QuizController extends Controller
             $publishedQuiz = Quiz::where('status', 'published')->count();
             $draftQuiz = Quiz::where('status', 'draft')->count();
             $archivedQuiz = Quiz::where('status', 'archived')->count();
+            
+            // PERBAIKAN: Gunakan 'score' bukan 'points'
             $totalQuestions = QuizQuestion::count();
             $totalAttempts = QuizAttempt::count();
             $averageScore = QuizAttempt::where('status', 'completed')->avg('score') ?? 0;
             
-            // Get quiz with most participants
             $mostPopularQuiz = Quiz::withCount('attempts')
                                   ->orderBy('attempts_count', 'desc')
                                   ->first();

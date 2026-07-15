@@ -78,26 +78,13 @@
                                 @enderror
                             </div>
 
-                            <!-- Warna -->
-                            <div class="col-12 col-md-6">
-                                <label for="warna" class="form-label fw-semibold">Warna</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-palette"></i></span>
-                                    <input type="color" class="form-control @error('warna') is-invalid @enderror" 
-                                           id="warna" name="warna" value="{{ old('warna', $kategori->warna ?? '#4e9af1') }}" 
-                                           style="padding: 2px; height: 38px;">
-                                </div>
-                                <small class="text-muted">Pilih warna untuk kategori.</small>
-                                @error('warna')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            <!-- Warna - DIHAPUS -->
 
                             <!-- Preview -->
                             <div class="col-12">
                                 <label class="form-label fw-semibold">Preview</label>
                                 <div class="p-3 border rounded bg-light">
-                                    <span id="previewBadge" class="badge" style="background-color: {{ $kategori->warna ?? '#4e9af1' }}; color: #fff; font-size: 1rem; padding: 8px 16px;">
+                                    <span id="previewBadge" class="badge text-bg-secondary" style="font-size: 1rem; padding: 8px 16px;">
                                         <i class="bi {{ $kategori->icon ?? 'bi-tag' }} me-1"></i>
                                         {{ $kategori->nama }}
                                     </span>
@@ -129,21 +116,17 @@
         // Preview Kategori
         const namaInput = document.getElementById('nama');
         const iconInput = document.getElementById('icon');
-        const warnaInput = document.getElementById('warna');
         const previewBadge = document.getElementById('previewBadge');
 
         function updatePreview() {
             const nama = namaInput.value || 'Nama Kategori';
             const icon = iconInput.value || 'bi-tag';
-            const warna = warnaInput.value || '#4e9af1';
             
             previewBadge.innerHTML = `<i class="bi ${icon} me-1"></i> ${nama}`;
-            previewBadge.style.backgroundColor = warna;
         }
 
         if (namaInput) namaInput.addEventListener('input', updatePreview);
         if (iconInput) iconInput.addEventListener('input', updatePreview);
-        if (warnaInput) warnaInput.addEventListener('input', updatePreview);
     });
 </script>
 @endpush

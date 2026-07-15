@@ -87,15 +87,16 @@
                 </button>
             </form>
             
-            {{-- TOMBOL RESET FILTER --}}
             @if(request('search'))
             <a href="{{ route('admin.kategori.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
                 <i class="bi bi-arrow-counterclockwise"></i> Reset
             </a>
             @endif
-            <a href="{{ route('admin.kategori.create') }}" class="btn btn-primary btn-sm">
+            
+            {{-- Tombol Tambah dengan modal --}}
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
                 <i class="bi bi-plus-circle"></i> Tambah
-            </a>
+            </button>
         </div>
     </div>
     <div class="table-responsive">
@@ -109,7 +110,7 @@
                     <th>Deskripsi</th>
                     <th>Materi</th>
                     <th>Pelatihan</th>
-                    <th class="text-end" style="width: 120px;">Aksi</th>
+                    <th class="text-end" style="width: 160px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -119,17 +120,8 @@
                     <td>
                         <div>
                             <p class="fw-semibold mb-0">
-                                @if($kategori->warna)
-                                <span class="badge" style="background-color: {{ $kategori->warna }}; color: #fff;">
-                                    <i class="bi {{ $kategori->icon ?? 'bi-tag' }} me-1"></i>
                                     {{ $kategori->nama }}
                                 </span>
-                                @else
-                                <span class="badge text-bg-secondary">
-                                    <i class="bi {{ $kategori->icon ?? 'bi-tag' }} me-1"></i>
-                                    {{ $kategori->nama }}
-                                </span>
-                                @endif
                             </p>
                         </div>
                     </td>
@@ -149,14 +141,21 @@
                     </td>
                     <td class="text-end">
                         <div class="d-flex gap-1 justify-content-end">
-                            <a href="{{ route('admin.kategori.show', $kategori->id) }}" 
-                               class="badge bg-info text-white text-decoration-none p-2" title="Lihat">
+                            {{-- Tombol Show dengan modal --}}
+                            <button type="button" class="badge bg-info text-white border-0 p-2" 
+                                    data-bs-toggle="modal" data-bs-target="#showModal{{ $kategori->id }}" 
+                                    title="Lihat">
                                 <i class="bi bi-eye"></i> Lihat
-                            </a>
-                            <a href="{{ route('admin.kategori.edit', $kategori->id) }}" 
-                               class="badge bg-warning text-dark text-decoration-none p-2" title="Edit">
+                            </button>
+                            
+                            {{-- Tombol Edit dengan modal --}}
+                            <button type="button" class="badge bg-warning text-dark border-0 p-2" 
+                                    data-bs-toggle="modal" data-bs-target="#editModal{{ $kategori->id }}" 
+                                    title="Edit">
                                 <i class="bi bi-pencil"></i> Edit
-                            </a>
+                            </button>
+                            
+                            {{-- Tombol Delete dengan modal --}}
                             <button type="button" class="badge bg-danger text-white border-0 p-2" 
                                     data-bs-toggle="modal" data-bs-target="#deleteModal{{ $kategori->id }}" 
                                     title="Hapus">
@@ -185,9 +184,9 @@
                     <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
                 </a>
                 @endif
-                <a href="{{ route('admin.kategori.create') }}" class="btn btn-primary btn-sm mt-2">
+                <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
                     <i class="bi bi-plus-circle"></i> Tambah Kategori
-                </a>
+                </button>
             </div>
         </div>
         @endif
@@ -204,10 +203,187 @@
     </div>
     @endif
 </div>
+
+<!-- ============================================================ -->
+<!-- MODAL CREATE -->
+<!-- ============================================================ -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.kategori.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Kategori
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nama" class="form-label fw-semibold">Nama Kategori <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama" name="nama" 
+                               placeholder="Masukkan nama kategori" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" 
+                                  placeholder="Masukkan deskripsi kategori"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="icon" class="form-label fw-semibold">Icon (Bootstrap Icons)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                            <input type="text" class="form-control" id="icon" name="icon" 
+                                   placeholder="bi-tag" value="bi-tag">
+                        </div>
+                        <small class="text-muted">Masukkan class icon Bootstrap Icons (contoh: bi-tag, bi-folder, bi-book)</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<!-- Delete Modals -->
+<!-- ============================================================ -->
+<!-- MODAL SHOW -->
+<!-- ============================================================ -->
 @foreach($kategoris ?? [] as $kategori)
+<div class="modal fade" id="showModal{{ $kategori->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-info-circle text-info me-2"></i>Detail Kategori
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <span class="badge text-bg-secondary" style="font-size: 1.2rem; padding: 0.75rem 1.5rem;">
+                        <i class="bi {{ $kategori->icon ?? 'bi-tag' }} me-2"></i>
+                        {{ $kategori->nama }}
+                    </span>
+                </div>
+                
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Slug</label>
+                        <p class="fw-semibold mb-0">{{ $kategori->slug }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Icon</label>
+                        <p class="fw-semibold mb-0">
+                            <i class="bi {{ $kategori->icon ?? 'bi-tag' }} me-1"></i>
+                            {{ $kategori->icon ?? 'bi-tag' }}
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Total Materi</label>
+                        <p class="fw-semibold mb-0">{{ $kategori->materis_count ?? 0 }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Total Pelatihan</label>
+                        <p class="fw-semibold mb-0">{{ $kategori->trainings_count ?? 0 }}</p>
+                    </div>
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold">Deskripsi</label>
+                        <p class="mb-0">{{ $kategori->deskripsi ?? 'Tidak ada deskripsi' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Dibuat</label>
+                        <p class="fw-semibold mb-0">{{ $kategori->created_at ? $kategori->created_at->format('d/m/Y H:i') : '-' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Diperbarui</label>
+                        <p class="fw-semibold mb-0">{{ $kategori->updated_at ? $kategori->updated_at->format('d/m/Y H:i') : '-' }}</p>
+                    </div>
+                    @if(($kategori->materis_count ?? 0) > 0 || ($kategori->trainings_count ?? 0) > 0)
+                    <div class="col-12">
+                        <hr>
+                        <div class="d-flex gap-3">
+                            @if(($kategori->materis_count ?? 0) > 0)
+                            <span class="badge text-bg-info">
+                                <i class="bi bi-book me-1"></i>
+                                {{ $kategori->materis_count }} Materi
+                            </span>
+                            @endif
+                            @if(($kategori->trainings_count ?? 0) > 0)
+                            <span class="badge text-bg-primary">
+                                <i class="bi bi-journal-bookmark me-1"></i>
+                                {{ $kategori->trainings_count }} Pelatihan
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $kategori->id }}" data-bs-dismiss="modal">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL EDIT -->
+<!-- ============================================================ -->
+<div class="modal fade" id="editModal{{ $kategori->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.kategori.update', $kategori->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square text-warning me-2"></i>Edit Kategori
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nama_edit_{{ $kategori->id }}" class="form-label fw-semibold">Nama Kategori <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama_edit_{{ $kategori->id }}" 
+                               name="nama" value="{{ $kategori->nama }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="deskripsi_edit_{{ $kategori->id }}" class="form-label fw-semibold">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsi_edit_{{ $kategori->id }}" 
+                                  name="deskripsi" rows="3">{{ $kategori->deskripsi }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="icon_edit_{{ $kategori->id }}" class="form-label fw-semibold">Icon (Bootstrap Icons)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi {{ $kategori->icon ?? 'bi-tag' }}"></i></span>
+                            <input type="text" class="form-control" id="icon_edit_{{ $kategori->id }}" 
+                                   name="icon" value="{{ $kategori->icon ?? 'bi-tag' }}">
+                        </div>
+                        <small class="text-muted">Masukkan class icon Bootstrap Icons (contoh: bi-tag, bi-folder, bi-book)</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save me-1"></i> Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL DELETE -->
+<!-- ============================================================ -->
 <div class="modal fade" id="deleteModal{{ $kategori->id }}" tabindex="-1" 
      aria-labelledby="deleteModalLabel{{ $kategori->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -245,4 +421,20 @@
     </div>
 </div>
 @endforeach
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ============================================================
+    // Auto close alerts
+    // ============================================================
+    setTimeout(function() {
+        document.querySelectorAll('.alert').forEach(function(alert) {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+});
+</script>
+@endpush
 @endsection

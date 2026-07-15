@@ -15,66 +15,89 @@ class QuizQuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, Quiz $quiz = null)
-    {
-        try {
-            if ($quiz) {
-                $query = QuizQuestion::with('quiz')->where('quiz_id', $quiz->id);
-            } else {
-                $query = QuizQuestion::with('quiz');
-            }
-
-            if ($request->filled('quiz_id')) {
-                $query->where('quiz_id', $request->quiz_id);
-                $quiz = Quiz::find($request->quiz_id);
-            }
-
-            // PERBAIKI: Search menggunakan 'question' saja
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function ($q) use ($search) {
-                    $q->where('question', 'like', "%$search%");
-                });
-            }
-
-            if ($request->filled('type')) {
-                $type = $request->type;
-                if ($type === 'multiple_choice') {
-                    $query->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda']);
-                } else {
-                    $query->where('type', $type);
-                }
-            }
-
-            $questions = $query->orderBy('order', 'asc')->paginate(10)->withQueryString();
-
-            // Statistik - PERBAIKI: gunakan 'score' atau 'points'
-            $totalQuestions = $query->count();
-            $multipleChoiceCount = (clone $query)->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda'])->count();
-            $essayCount = (clone $query)->where('type', 'essay')->count();
-            $totalScore = (clone $query)->sum('score') ?: (clone $query)->sum('points') ?? 0;
-
-            $quizzes = Quiz::orderBy('judul')->get();
-
-            return view('admin.quiz.question.index', compact(
-                'questions', 
-                'quizzes', 
-                'quiz',
-                'totalQuestions',
-                'multipleChoiceCount',
-                'essayCount',
-                'totalScore'
-            ));
-            
-        } catch (\Exception $e) {
-            Log::error('ERROR IN INDEX:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            return back()->with('error', '❌ Gagal memuat data pertanyaan: ' . $e->getMessage());
+/**
+ * Display a listing of the resource.
+ */
+public function index(Request $request, Quiz $quiz = null)
+{
+    try {
+        // PERBAIKAN: Pastikan query dimulai dengan benar
+        if ($quiz) {
+            $query = QuizQuestion::where('quiz_id', $quiz->id);
+        } else {
+            $query = QuizQuestion::query();
         }
+
+        // PERBAIKAN: Load relasi quiz
+        $query->with('quiz');
+
+        // Filter berdasarkan quiz_id dari request
+        if ($request->filled('quiz_id')) {
+            $query->where('quiz_id', $request->quiz_id);
+            $quiz = Quiz::find($request->quiz_id);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('question', 'like', "%$search%")
+                  ->orWhere('pertanyaan', 'like', "%$search%");
+            });
+        }
+
+        // Filter by type
+        if ($request->filled('type')) {
+            $type = $request->type;
+            if ($type === 'multiple_choice') {
+                $query->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda']);
+            } else {
+                $query->where('type', $type);
+            }
+        }
+
+        // PERBAIKAN: Log query untuk debugging
+        Log::info('QUERY SQL:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+        // PERBAIKAN: Gunakan paginate dengan withQueryString
+        $questions = $query->orderBy('order', 'asc')->paginate(10)->withQueryString();
+
+        // PERBAIKAN: Debug data
+        Log::info('QUESTIONS COUNT:', ['count' => $questions->count(), 'total' => $questions->total()]);
+
+        // Statistics
+        $totalQuestions = $query->count();
+        $multipleChoiceCount = (clone $query)->whereIn('type', ['multiple_choice', 'pilihan', 'pilihan_ganda'])->count();
+        $essayCount = (clone $query)->where('type', 'essay')->count();
+        $totalScore = (clone $query)->sum('score') ?? 0;
+
+        $quizzes = Quiz::orderBy('judul')->get();
+
+        // PERBAIKAN: Jika quiz tidak ditemukan tapi ada quiz_id di request
+        if ($request->filled('quiz_id') && !$quiz) {
+            return redirect()->route('admin.quiz.index')
+                            ->with('error', '❌ Quiz tidak ditemukan.');
+        }
+
+        return view('admin.quiz.question.index', compact(
+            'questions', 
+            'quizzes', 
+            'quiz',
+            'totalQuestions',
+            'multipleChoiceCount',
+            'essayCount',
+            'totalScore'
+        ));
+        
+    } catch (\Exception $e) {
+        Log::error('ERROR IN INDEX:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return back()->with('error', '❌ Gagal memuat data pertanyaan: ' . $e->getMessage());
     }
+}
 
     /**
      * Show the form for creating a new resource.
@@ -112,7 +135,6 @@ class QuizQuestionController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validasi input
             $validated = $request->validate([
                 'quiz_id' => 'required|exists:quizzes,id',
                 'question' => 'required|string|max:5000',
@@ -125,17 +147,15 @@ class QuizQuestionController extends Controller
                 'order' => 'nullable|integer|min:0',
             ]);
 
-            // Konversi points ke score (untuk kompatibilitas)
+            // PERBAIKAN: Konversi points ke score
             $validated['score'] = $validated['points'] ?? 1;
             unset($validated['points']);
 
-            // Set order jika kosong
             if (empty($validated['order'])) {
                 $maxOrder = QuizQuestion::where('quiz_id', $validated['quiz_id'])->max('order');
                 $validated['order'] = $maxOrder !== null ? $maxOrder + 1 : 1;
             }
 
-            // Proses berdasarkan tipe
             if (in_array($validated['type'], ['multiple_choice', 'pilihan', 'pilihan_ganda'])) {
                 $validated['type'] = 'multiple_choice';
                 
@@ -161,13 +181,11 @@ class QuizQuestionController extends Controller
                                  ->withInput();
                 }
             } else {
-                // Essay
                 $validated['options'] = null;
                 $validated['correct_answer'] = null;
                 $validated['type'] = 'essay';
             }
 
-            // Simpan ke database
             $question = QuizQuestion::create($validated);
 
             Log::info('QUESTION CREATED:', ['id' => $question->id, 'quiz_id' => $question->quiz_id]);
@@ -235,7 +253,6 @@ class QuizQuestionController extends Controller
                 abort(404, 'Pertanyaan tidak ditemukan dalam quiz ini.');
             }
             
-            // Pastikan options dalam format array
             if ($question->options && !is_array($question->options)) {
                 $question->options = json_decode($question->options, true) ?? [];
             }
@@ -284,11 +301,10 @@ class QuizQuestionController extends Controller
                 'order' => 'nullable|integer|min:0',
             ]);
 
-            // Konversi points ke score
+            // PERBAIKAN: Konversi points ke score
             $validated['score'] = $validated['points'] ?? $question->score ?? 1;
             unset($validated['points']);
 
-            // Proses berdasarkan tipe
             if (in_array($validated['type'], ['multiple_choice', 'pilihan', 'pilihan_ganda'])) {
                 $validated['type'] = 'multiple_choice';
                 
@@ -771,6 +787,7 @@ class QuizQuestionController extends Controller
         try {
             $quiz = Quiz::findOrFail($quizId);
             
+            // PERBAIKAN: Gunakan 'score' bukan 'points'
             $stats = [
                 'total_questions' => QuizQuestion::where('quiz_id', $quizId)->count(),
                 'multiple_choice' => QuizQuestion::where('quiz_id', $quizId)
