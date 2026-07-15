@@ -9,6 +9,8 @@ class Training extends Model
 {
     use HasFactory;
 
+    protected $table = 'trainings';
+
     protected $fillable = [
         'kategori_id',
         'trainer_id',
@@ -21,12 +23,21 @@ class Training extends Model
         'tanggal_selesai',
         'kapasitas',
         'status',
-        'gambar'
+        'gambar',
+        'slug',
+        'is_free',
+        'harga',
+        'level',
+        'order',
     ];
 
     protected $casts = [
-        'tanggal_mulai' => 'date',
-        'tanggal_selesai' => 'date',
+        'tanggal_mulai' => 'datetime',
+        'tanggal_selesai' => 'datetime',
+        'kapasitas' => 'integer',
+        'is_free' => 'boolean',
+        'harga' => 'decimal:2',
+        'order' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -36,7 +47,15 @@ class Training extends Model
         'status_badge',
         'is_available',
         'formatted_date_range',
-        'participants_count'
+        'participants_count',
+        'available_slots',
+        'type_label',
+        'type_badge',
+        'location_display',
+        'duration_in_days',
+        'is_ongoing',
+        'is_upcoming',
+        'is_completed_training'
     ];
 
     // ============================================================
@@ -60,12 +79,20 @@ class Training extends Model
     }
 
     /**
-     * Relasi ke Peserta (Many to Many)
+     * Relasi ke Peserta melalui TrainingRegistration
+     */
+    public function registrations()
+    {
+        return $this->hasMany(TrainingRegistration::class, 'training_id');
+    }
+
+    /**
+     * Relasi ke User melalui TrainingRegistration
      */
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'training_participants', 'training_id', 'user_id')
-                    ->withPivot('status', 'registered_at', 'completed_at', 'certificate_id')
+        return $this->belongsToMany(User::class, 'training_registrations', 'training_id', 'user_id')
+                    ->withPivot('status', 'registered_at', 'approved_at', 'completed_at', 'final_grade', 'is_passed')
                     ->withTimestamps();
     }
 
@@ -203,15 +230,20 @@ class Training extends Model
      */
     public function getIsAvailableAttribute()
     {
-        if ($this->status !== 'published') {
+        if ($this->status !== 'published' && $this->status !== 'berjalan') {
             return false;
         }
 
-        if ($this->kapasitas && $this->participants()->count() >= $this->kapasitas) {
+        if ($this->kapasitas && $this->participants_count >= $this->kapasitas) {
             return false;
         }
 
-        return $this->tanggal_mulai >= now();
+        // Jika sudah selesai
+        if ($this->tanggal_selesai && $this->tanggal_selesai < now()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -234,7 +266,9 @@ class Training extends Model
      */
     public function getParticipantsCountAttribute()
     {
-        return $this->participants()->count();
+        return $this->registrations()
+                    ->whereIn('status', ['approved', 'completed'])
+                    ->count();
     }
 
     /**
@@ -246,196 +280,6 @@ class Training extends Model
             return null;
         }
         return max(0, $this->kapasitas - $this->participants_count);
-    }
-
-    /**
-     * Get progress for a specific user
-     */
-    public function getUserProgress($userId)
-    {
-        $totalMaterials = $this->materis()->count();
-        $completedMaterials = $this->materis()
-            ->whereHas('progress', function($q) use ($userId) {
-                $q->where('user_id', $userId)->where('status', 'completed');
-            })->count();
-        
-        $totalQuizzes = $this->quizzes()->count();
-        $completedQuizzes = $this->quizzes()
-            ->whereHas('attempts', function($q) use ($userId) {
-                $q->where('user_id', $userId)->where('status', 'completed');
-            })->count();
-        
-        $totalItems = $totalMaterials + $totalQuizzes;
-        $completedItems = $completedMaterials + $completedQuizzes;
-        
-        return $totalItems > 0 ? round(($completedItems / $totalItems) * 100) : 0;
-    }
-
-    // ============================================================
-    // HELPER METHODS
-    // ============================================================
-
-    /**
-     * Check if user is enrolled in this training
-     */
-    public function isEnrolled($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        return $this->participants()->where('user_id', $userId)->exists();
-    }
-
-    /**
-     * Check if user has completed this training
-     */
-    public function isCompleted($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        return $this->participants()
-                    ->where('user_id', $userId)
-                    ->wherePivot('status', 'completed')
-                    ->exists();
-    }
-
-    /**
-     * Get user's enrollment status
-     */
-    public function getEnrollmentStatus($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        $participant = $this->participants()
-            ->where('user_id', $userId)
-            ->first();
-        
-        if (!$participant) {
-            return 'not_enrolled';
-        }
-        
-        return $participant->pivot->status ?? 'registered';
-    }
-
-    /**
-     * Get user's enrollment date
-     */
-    public function getEnrollmentDate($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        $participant = $this->participants()
-            ->where('user_id', $userId)
-            ->first();
-        
-        if (!$participant) {
-            return null;
-        }
-        
-        return $participant->pivot->registered_at;
-    }
-
-    /**
-     * Get user's progress for this training
-     */
-    public function getProgress($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        return $this->getUserProgress($userId);
-    }
-
-    /**
-     * Check if user has certificate for this training
-     */
-    public function hasCertificate($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        return $this->participants()
-                    ->where('user_id', $userId)
-                    ->whereNotNull('pivot.certificate_id')
-                    ->exists();
-    }
-
-    /**
-     * Get user's certificate for this training
-     */
-    public function getUserCertificate($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        $participant = $this->participants()
-            ->where('user_id', $userId)
-            ->first();
-        
-        if (!$participant || !$participant->pivot->certificate_id) {
-            return null;
-        }
-        
-        return Sertifikat::find($participant->pivot->certificate_id);
-    }
-
-    /**
-     * Enroll user to training
-     */
-    public function enrollUser($userId = null, $status = 'registered')
-    {
-        $userId = $userId ?? auth()->id();
-        
-        if ($this->isEnrolled($userId)) {
-            return false;
-        }
-        
-        if (!$this->is_available) {
-            return false;
-        }
-        
-        $this->participants()->attach($userId, [
-            'status' => $status,
-            'registered_at' => now()
-        ]);
-        
-        return true;
-    }
-
-    /**
-     * Unenroll user from training
-     */
-    public function unenrollUser($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        
-        if (!$this->isEnrolled($userId)) {
-            return false;
-        }
-        
-        $this->participants()->detach($userId);
-        
-        return true;
-    }
-
-    /**
-     * Complete training for user
-     */
-    public function completeUser($userId = null)
-    {
-        $userId = $userId ?? auth()->id();
-        
-        if (!$this->isEnrolled($userId)) {
-            return false;
-        }
-        
-        $this->participants()->updateExistingPivot($userId, [
-            'status' => 'completed',
-            'completed_at' => now()
-        ]);
-        
-        return true;
-    }
-
-    /**
-     * Check if training is full
-     */
-    public function isFull()
-    {
-        if (!$this->kapasitas) {
-            return false;
-        }
-        
-        return $this->participants()->count() >= $this->kapasitas;
     }
 
     /**
@@ -485,7 +329,7 @@ class Training extends Model
             return null;
         }
         
-        return $this->tanggal_mulai->diffInDays($this->tanggal_selesai);
+        return $this->tanggal_mulai->diffInDays($this->tanggal_selesai) + 1;
     }
 
     /**
@@ -498,6 +342,200 @@ class Training extends Model
         }
         
         return $this->tanggal_mulai->diffInHours($this->tanggal_selesai);
+    }
+
+    /**
+     * Check if training is ongoing
+     */
+    public function getIsOngoingAttribute()
+    {
+        return $this->isOngoing();
+    }
+
+    /**
+     * Check if training is upcoming
+     */
+    public function getIsUpcomingAttribute()
+    {
+        return $this->isUpcoming();
+    }
+
+    /**
+     * Check if training is completed
+     */
+    public function getIsCompletedTrainingAttribute()
+    {
+        return $this->isCompletedTraining();
+    }
+
+    // ============================================================
+    // HELPER METHODS
+    // ============================================================
+
+    /**
+     * Get user's registration for this training
+     */
+    public function getUserRegistration($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        return $this->registrations()->where('user_id', $userId)->first();
+    }
+
+    /**
+     * Check if user is registered/enrolled in this training
+     */
+    public function isRegistered($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        return $this->registrations()
+                    ->where('user_id', $userId)
+                    ->whereIn('status', ['pending', 'approved', 'completed'])
+                    ->exists();
+    }
+
+    /**
+     * Check if user is approved for this training
+     */
+    public function isApproved($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        return $this->registrations()
+                    ->where('user_id', $userId)
+                    ->whereIn('status', ['approved', 'completed'])
+                    ->exists();
+    }
+
+    /**
+     * Check if user has completed this training
+     */
+    public function isCompletedByUser($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        return $this->registrations()
+                    ->where('user_id', $userId)
+                    ->where('status', 'completed')
+                    ->exists();
+    }
+
+    /**
+     * Get user's progress for this training
+     */
+    public function getUserProgress($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        $registration = $this->getUserRegistration($userId);
+        
+        if (!$registration) {
+            return 0;
+        }
+        
+        // Hitung progress dari materi dan quiz
+        $totalMaterials = $this->materis()->count();
+        $totalQuizzes = $this->quizzes()->count();
+        $totalItems = $totalMaterials + $totalQuizzes;
+        
+        if ($totalItems === 0) {
+            return $registration->status === 'completed' ? 100 : 0;
+        }
+        
+        // Hitung materi yang sudah selesai
+        $completedMaterials = $this->materis()
+            ->whereHas('progress', function($q) use ($userId) {
+                $q->where('user_id', $userId)->where('status', 'completed');
+            })->count();
+        
+        // Hitung quiz yang sudah selesai
+        $completedQuizzes = $this->quizzes()
+            ->whereHas('attempts', function($q) use ($userId) {
+                $q->where('user_id', $userId)->where('status', 'completed');
+            })->count();
+        
+        $completedItems = $completedMaterials + $completedQuizzes;
+        
+        return round(($completedItems / $totalItems) * 100);
+    }
+
+    /**
+     * Check if user has certificate for this training
+     */
+    public function hasCertificate($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        $registration = $this->getUserRegistration($userId);
+        
+        if (!$registration) {
+            return false;
+        }
+        
+        return $registration->certificate()->exists();
+    }
+
+    /**
+     * Get user's certificate for this training
+     */
+    public function getUserCertificate($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        $registration = $this->getUserRegistration($userId);
+        
+        if (!$registration) {
+            return null;
+        }
+        
+        return $registration->certificate;
+    }
+
+    /**
+     * Enroll user to training
+     */
+    public function enrollUser($userId = null, $status = 'pending')
+    {
+        $userId = $userId ?? auth()->id();
+        
+        if ($this->isRegistered($userId)) {
+            return false;
+        }
+        
+        if (!$this->is_available) {
+            return false;
+        }
+        
+        $registration = TrainingRegistration::create([
+            'training_id' => $this->id,
+            'user_id' => $userId,
+            'status' => $status,
+            'registration_number' => TrainingRegistration::generateRegistrationNumber(),
+            'registered_at' => now(),
+        ]);
+        
+        return $registration;
+    }
+
+    /**
+     * Unenroll user from training
+     */
+    public function unenrollUser($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        $registration = $this->getUserRegistration($userId);
+        
+        if (!$registration) {
+            return false;
+        }
+        
+        return $registration->delete();
+    }
+
+    /**
+     * Check if training is full
+     */
+    public function isFull()
+    {
+        if (!$this->kapasitas) {
+            return false;
+        }
+        
+        return $this->participants_count >= $this->kapasitas;
     }
 
     /**
@@ -538,10 +576,38 @@ class Training extends Model
             return true;
         }
         
-        if ($this->status === 'published') {
+        if ($this->status === 'published' || $this->status === 'berjalan') {
             return $this->tanggal_selesai < now();
         }
         
         return false;
+    }
+
+    /**
+     * Get training status berdasarkan tanggal
+     */
+    public function getCurrentStatus()
+    {
+        if ($this->status === 'draft') {
+            return 'draft';
+        }
+        
+        if ($this->status === 'dibatalkan') {
+            return 'dibatalkan';
+        }
+        
+        if ($this->isCompletedTraining()) {
+            return 'selesai';
+        }
+        
+        if ($this->isOngoing()) {
+            return 'berjalan';
+        }
+        
+        if ($this->isUpcoming()) {
+            return 'akan_datang';
+        }
+        
+        return $this->status;
     }
 }

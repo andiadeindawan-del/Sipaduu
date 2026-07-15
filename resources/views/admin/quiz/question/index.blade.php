@@ -298,6 +298,7 @@
         <div class="modal-content">
             <form action="{{ route('admin.quiz.questions.store', $quiz->id ?? '') }}" method="POST" id="createForm">
                 @csrf
+                <input type="hidden" name="quiz_id" value="{{ $quiz->id ?? '' }}">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Pertanyaan

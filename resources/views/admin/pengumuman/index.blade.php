@@ -49,7 +49,7 @@
                     <span class="metric-label">Total Pengumuman</span>
                     <span class="metric-icon"><i class="bi bi-megaphone"></i></span>
                 </div>
-                <div class="metric-value">{{ $totalPengumuman ?? $pengumuman->total() ?? 0 }}</div>
+                <div class="metric-value">{{ $totalPengumuman ?? $pengumumans->total() ?? 0 }}</div>
                 <div class="metric-meta">
                     <span class="text-primary">Semua</span>
                     <span>pengumuman</span>
@@ -166,7 +166,7 @@
             </div> -->
         </div>
         <div class="table-responsive">
-            @if(isset($pengumuman) && $pengumuman->count() > 0)
+            @if(isset($pengumumans) && $pengumumans->count() > 0)
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
@@ -182,12 +182,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($pengumuman as $index => $item)
+                    @foreach ($pengumumans as $index => $item)
                     <tr>
                         <td>
                             <input type="checkbox" class="form-check-input pengumuman-checkbox" value="{{ $item->id }}">
                         </td>
-                        <td>{{ $pengumuman->firstItem() + $index }}</td>
+                        <td>{{ $pengumumans->firstItem() + $index }}</td>
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ $item->judul }}</p>
@@ -270,14 +270,14 @@
             </div>
             @endif
         </div>
-        @if(isset($pengumuman) && $pengumuman->hasPages())
+        @if(isset($pengumumans) && $pengumumans->hasPages())
         <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-3 px-3 pb-3">
             <p class="text-muted small mb-0">
-                Menampilkan {{ $pengumuman->firstItem() ?? 0 }} sampai {{ $pengumuman->lastItem() ?? 0 }} 
-                dari {{ $pengumuman->total() ?? 0 }} pengumuman
+                Menampilkan {{ $pengumumans->firstItem() ?? 0 }} sampai {{ $pengumumans->lastItem() ?? 0 }} 
+                dari {{ $pengumumans->total() ?? 0 }} pengumuman
             </p>
             <nav aria-label="Pengumuman pagination">
-                {{ $pengumuman->links() }}
+                {{ $pengumumans->links() }}
             </nav>
         </div>
         @endif
@@ -285,8 +285,8 @@
 </div>
 
 <!-- Delete Modals -->
-@if(isset($pengumuman) && $pengumuman->count() > 0)
-@foreach($pengumuman as $item)
+@if(isset($pengumumans) && $pengumumans->count() > 0)
+@foreach($pengumumans as $item)
 <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" 
      aria-labelledby="deleteModalLabel{{ $item->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

@@ -376,6 +376,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/create', [PengumumanController::class, 'create'])->name('create');
         Route::get('/export', [PengumumanController::class, 'export'])->name('export');
         Route::get('/store', [PengumumanController::class, 'store'])->name('store');
+        Route::get('/show', [PengumumanController::class, 'show'])->name('show');
+        Route::get('/edit', [PengumumanController::class, 'edit'])->name('edit');
+        Route::get('/destroy', [PengumumanController::class, 'destroy'])->name('destroy');
     });
 
     // ============================================================

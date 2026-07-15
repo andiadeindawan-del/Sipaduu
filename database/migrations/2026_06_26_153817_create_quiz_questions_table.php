@@ -49,6 +49,7 @@ return new class extends Migration
             // ============================================================
             $table->string('correct_answer')->nullable()->comment('Jawaban benar (format baru)');
             $table->string('jawaban_benar')->nullable()->comment('Jawaban benar (format lama)');
+            $table->text('essay_answer_key')->nullable();
             
             // ============================================================
             // PENGATURAN

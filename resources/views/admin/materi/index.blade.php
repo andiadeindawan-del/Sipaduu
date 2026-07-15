@@ -275,89 +275,108 @@
                                 <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                 <select class="form-select" name="kategori_id" required>
                                     <option value="">Pilih Kategori</option>
-                                    @foreach($kategoris ?? [] as $kategori)
-                                    <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
-                                    @endforeach
+                                    @if(isset($kategoris) && $kategoris->count() > 0)
+                                        @foreach($kategoris as $kategori)
+                                        <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="" disabled>Tidak ada kategori</option>
+                                    @endif
                                 </select>
                             </div>
+                            @error('kategori_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
+                        
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Training</label>
+                            <label class="form-label fw-semibold">Training <span class="text-muted">(Opsional)</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-journal-bookmark"></i></span>
-                                <select class="form-select" name="training_id">
+                                <select class="form-select" name="training_id" id="trainingSelect">
                                     <option value="">Pilih Training (Opsional)</option>
-                                    @foreach($trainings ?? [] as $training)
-                                    <option value="{{ $training->id }}">{{ $training->judul }}</option>
-                                    @endforeach
+                                    @if(isset($trainings) && $trainings->count() > 0)
+                                        @foreach($trainings as $training)
+                                        <option value="{{ $training->id }}" {{ old('training_id') == $training->id ? 'selected' : '' }}>
+                                            {{ $training->judul }}
+                                        </option>
+                                        @endforeach
+                                    @else
+                                        <option value="" disabled>Tidak ada training</option>
+                                    @endif
                                 </select>
                             </div>
+                            @error('training_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                            <small class="text-muted">Pilih training jika materi ini terkait dengan training tertentu.</small>
                         </div>
+                        
                         <div class="col-12">
                             <label class="form-label fw-semibold">Judul <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
-                                <input type="text" class="form-control" name="judul" placeholder="Masukkan judul materi" required>
+                                <input type="text" class="form-control" name="judul" placeholder="Masukkan judul materi" value="{{ old('judul') }}" required>
                             </div>
+                            @error('judul')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
+                        
                         <div class="col-12">
                             <label class="form-label fw-semibold">Deskripsi</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-file-text"></i></span>
-                                <textarea class="form-control" name="deskripsi" rows="2" placeholder="Deskripsi materi (opsional)"></textarea>
+                                <textarea class="form-control" name="deskripsi" rows="2" placeholder="Deskripsi materi (opsional)">{{ old('deskripsi') }}</textarea>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        
+                        <div class="col-12">
                             <label class="form-label fw-semibold">Upload File</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-upload"></i></span>
                                 <input type="file" class="form-control" name="files[]" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.mp4,.avi,.mkv,.mov,.jpg,.jpeg,.png,.gif">
                             </div>
-                            <small class="text-muted">Maksimal 100MB per file.</small>
+                            <small class="text-muted">Maksimal 100MB per file. Bisa upload multiple file.</small>
+                            @error('files.*')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tipe File</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                                <select class="form-select" name="file_types[]">
-                                    <option value="pdf">📄 PDF</option>
-                                    <option value="video">🎬 Video</option>
-                                    <option value="ppt">📊 Presentasi</option>
-                                    <option value="image">🖼️ Gambar</option>
-                                    <option value="other">📁 Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Link (URL)</label>
+                            <label class="form-label fw-semibold">Link (URL) <span class="text-muted">(Opsional)</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
-                                <input type="url" class="form-control" name="file_urls[]" placeholder="https://example.com/materi">
+                                <input type="url" class="form-control" name="file_urls[]" placeholder="https://example.com/materi" value="{{ old('file_urls.0') }}">
                             </div>
                             <small class="text-muted">Tambahkan link ke materi eksternal (YouTube, Google Drive, dll).</small>
                         </div>
+                        
                         <div class="col-12 col-md-4">
                             <label class="form-label fw-semibold">Durasi (menit)</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                                <input type="number" class="form-control" name="durasi" placeholder="30" min="1">
+                                <input type="number" class="form-control" name="durasi" placeholder="30" min="1" value="{{ old('durasi') }}">
                             </div>
                         </div>
+                        
                         <div class="col-12 col-md-4">
                             <label class="form-label fw-semibold">Urutan</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-list-ol"></i></span>
-                                <input type="number" class="form-control" name="order" placeholder="0" min="0" value="0">
+                                <input type="number" class="form-control" name="order" placeholder="0" min="0" value="{{ old('order', 0) }}">
                             </div>
+                            <small class="text-muted">Semakin kecil angka, semakin atas tampilnya.</small>
                         </div>
+                        
                         <div class="col-12 col-md-4">
                             <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                                 <select class="form-select" name="status" required>
-                                    <option value="draft">📝 Draft</option>
-                                    <option value="published" selected>✅ Published</option>
-                                    <option value="archived">📦 Archived</option>
+                                    <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>📝 Draft</option>
+                                    <option value="published" {{ old('status', 'published') == 'published' ? 'selected' : '' }}>✅ Published</option>
+                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>📦 Archived</option>
                                 </select>
                             </div>
                         </div>

@@ -15,50 +15,58 @@ class MateriController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $query = Materi::with(['kategori', 'training']);
+   public function index(Request $request)
+{
+    $query = Materi::with(['kategori', 'training']);
 
-        // Search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', "%$search%")
-                  ->orWhere('deskripsi', 'like', "%$search%")
-                  ->orWhere('konten', 'like', "%$search%");
-            });
-        }
-
-        // Filter by kategori
-        if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
-        }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $materis = $query->latest()->paginate(10)->withQueryString();
-
-        // Statistics
-        $totalMateri = Materi::count();
-        $publishedMateri = Materi::where('status', 'published')->count();
-        $draftMateri = Materi::where('status', 'draft')->count();
-        $archivedMateri = Materi::where('status', 'archived')->count();
-
-        // For filters
-        $kategoris = Kategori::all();
-
-        return view('admin.materi.index', compact(
-            'materis',
-            'totalMateri',
-            'publishedMateri',
-            'draftMateri',
-            'archivedMateri',
-            'kategoris'
-        ));
+    // Search
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('judul', 'like', "%$search%")
+              ->orWhere('deskripsi', 'like', "%$search%");
+        });
     }
+
+    // Filter by kategori
+    if ($request->filled('kategori_id')) {
+        $query->where('kategori_id', $request->kategori_id);
+    }
+
+    // Filter by status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $materis = $query->latest()->paginate(10)->withQueryString();
+
+    // Statistics
+    $totalMateri = Materi::count();
+    $publishedMateri = Materi::where('status', 'published')->count();
+    $draftMateri = Materi::where('status', 'draft')->count();
+    $archivedMateri = Materi::where('status', 'archived')->count();
+
+    // PERBAIKAN: Ambil data untuk dropdown
+    $kategoris = Kategori::orderBy('nama')->get();
+    $trainings = Training::orderBy('judul')->get(); // <-- TAMBAHKAN INI
+
+    // Debug
+    \Log::info('Index Materi - Data:', [
+        'kategoris_count' => $kategoris->count(),
+        'trainings_count' => $trainings->count(),
+        'materis_count' => $materis->count(),
+    ]);
+
+    return view('admin.materi.index', compact(
+        'materis',
+        'totalMateri',
+        'publishedMateri',
+        'draftMateri',
+        'archivedMateri',
+        'kategoris',
+        'trainings' // <-- TAMBAHKAN INI
+    ));
+}
 
     /**
      * Display a listing of materi for peserta.
@@ -326,10 +334,8 @@ class MateriController extends Controller
     public function create()
     {
         $kategoris = Kategori::all();
-        // Tampilkan semua training yang statusnya published, berjalan, atau selesai
-        $trainings = Training::whereIn('status', ['published', 'berjalan', 'selesai'])
-                             ->orderBy('judul')
-                             ->get();
+        // Tampilkan semua training agar admin bisa menambahkan materi ke training yang masih draft
+        $trainings = Training::orderBy('judul')->get();
         
         return view('admin.materi.create', compact('kategoris', 'trainings'));
     }
@@ -431,10 +437,8 @@ class MateriController extends Controller
     public function edit(Materi $materi)
     {
         $kategoris = Kategori::all();
-        // Tampilkan semua training yang statusnya published, berjalan, atau selesai
-        $trainings = Training::whereIn('status', ['published', 'berjalan', 'selesai'])
-                             ->orderBy('judul')
-                             ->get();
+        // Tampilkan semua training agar admin bisa menambahkan materi ke training yang masih draft
+        $trainings = Training::orderBy('judul')->get();
         
         return view('admin.materi.edit', compact('materi', 'kategoris', 'trainings'));
     }

@@ -136,7 +136,7 @@
                                     @endif
                                 </div>
                                 <h5 class="fw-bold mb-1">{{ $pengumuman->judul }}</h5>
-                                <p class="text-muted mb-0">{{ Str::limit($pengumuman->isi, 200) }}</p>
+                                <p class="text-muted mb-0">{{ Str::limit($pengumuman->konten, 200) }}</p>
                             </div>
                             <div class="text-end flex-shrink-0">
                                 <small class="text-muted d-block">
@@ -149,7 +149,7 @@
                                 </small>
                             </div>
                         </div>
-                        @if(strlen($pengumuman->isi) > 200)
+                        @if(strlen($pengumuman->konten) > 200)
                         <button class="btn btn-sm btn-outline-primary mt-2" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#detail{{ $pengumuman->id }}">
@@ -157,7 +157,7 @@
                         </button>
                         <div class="collapse mt-3" id="detail{{ $pengumuman->id }}">
                             <div class="p-3 bg-light rounded-3">
-                                <p class="mb-0">{{ $pengumuman->isi }}</p>
+                                <p class="mb-0">{{ $pengumuman->konten }}</p>
                             </div>
                         </div>
                         @endif

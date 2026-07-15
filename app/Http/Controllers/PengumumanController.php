@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengumuman;
 use App\Models\Training;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,7 +40,7 @@ class PengumumanController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('judul', 'like', "%$search%")
-                  ->orWhere('isi', 'like', "%$search%");
+                  ->orWhere('konten', 'like', "%$search%");
             });
         }
 
@@ -86,7 +87,7 @@ class PengumumanController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('judul', 'like', "%$search%")
-                  ->orWhere('isi', 'like', "%$search%");
+                  ->orWhere('konten', 'like', "%$search%");
             });
         }
 
@@ -141,7 +142,8 @@ class PengumumanController extends Controller
     public function create()
     {
         $trainings = Training::where('status', 'published')->orderBy('judul')->get();
-        return view('admin.pengumuman.create', compact('trainings'));
+        $kategoris = Kategori::orderBy('nama')->get();
+        return view('admin.pengumuman.create', compact('trainings', 'kategoris'));
     }
 
     /**
@@ -151,10 +153,18 @@ class PengumumanController extends Controller
     {
         $validated = $request->validate([
             'training_id' => 'nullable|exists:trainings,id',
+            'kategori_id' => 'nullable|exists:kategoris,id',
             'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
+            'deskripsi' => 'nullable|string|max:1000',
+            'konten' => 'required|string',
+            'tanggal' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
+            'target_audience' => 'required|in:all,peserta,trainer,admin',
             'status' => 'required|in:draft,published,archived',
+            'is_pinned' => 'nullable|boolean',
         ]);
+        
+        $validated['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
 
         $validated['created_by'] = auth()->id();
 
@@ -179,7 +189,8 @@ class PengumumanController extends Controller
     public function edit(Pengumuman $pengumuman)
     {
         $trainings = Training::where('status', 'published')->orderBy('judul')->get();
-        return view('admin.pengumuman.edit', compact('pengumuman', 'trainings'));
+        $kategoris = Kategori::orderBy('nama')->get();
+        return view('admin.pengumuman.edit', compact('pengumuman', 'trainings', 'kategoris'));
     }
 
     /**
@@ -189,10 +200,18 @@ class PengumumanController extends Controller
     {
         $validated = $request->validate([
             'training_id' => 'nullable|exists:trainings,id',
+            'kategori_id' => 'nullable|exists:kategoris,id',
             'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
+            'deskripsi' => 'nullable|string|max:1000',
+            'konten' => 'required|string',
+            'tanggal' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
+            'target_audience' => 'required|in:all,peserta,trainer,admin',
             'status' => 'required|in:draft,published,archived',
+            'is_pinned' => 'nullable|boolean',
         ]);
+        
+        $validated['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
 
         $pengumuman->update($validated);
 
@@ -265,7 +284,7 @@ class PengumumanController extends Controller
                     $index + 1,
                     $pengumuman->judul,
                     $pengumuman->training->judul ?? 'Umum',
-                    Str::limit($pengumuman->isi, 100),
+                    Str::limit($pengumuman->konten, 100),
                     $pengumuman->status,
                     $pengumuman->created_at ? $pengumuman->created_at->format('d/m/Y H:i') : '-'
                 ]);
