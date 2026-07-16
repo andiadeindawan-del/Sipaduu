@@ -145,7 +145,7 @@
                             ">
                                 {{ $training->status_label }}
                             </span>
-                            @if($training->isEnrolled())
+                            @if($training->isRegistered())
                                 <span class="badge bg-success">
                                     <i class="bi bi-check-circle me-1"></i> Terdaftar
                                 </span>
@@ -208,7 +208,7 @@
                         </div>
 
                         <!-- Progress Bar -->
-                        @if($training->isEnrolled())
+                        @if($training->isRegistered())
                             @php
                                 $progress = $training->getProgress() ?? 0;
                             @endphp
@@ -229,7 +229,7 @@
                                class="btn btn-success btn-sm flex-grow-1">
                                 <i class="bi bi-eye me-1"></i> Lihat Detail
                             </a>
-                            @if(!$training->isEnrolled() && $training->status == 'published')
+                            @if(!$training->isRegistered() && $training->status == 'published')
                                 <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-primary btn-sm" 
@@ -238,7 +238,7 @@
                                     </button>
                                 </form>
                             @endif
-                            @if($training->isEnrolled() && $training->status == 'selesai')
+                            @if($training->isRegistered() && $training->status == 'selesai')
                                 <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-info btn-sm">
                                     <i class="bi bi-award me-1"></i> Sertifikat
                                 </a>

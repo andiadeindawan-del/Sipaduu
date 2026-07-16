@@ -145,7 +145,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('trainer.dashboard', compact(
+        return view('peserta.index', compact(
             'totalTrainings',
             'publishedTrainings',
             'completedTrainings',

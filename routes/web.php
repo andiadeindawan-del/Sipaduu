@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\TrainingRegistrationController; 
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\PesertaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,7 +54,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 */
 Route::middleware('auth')->group(function () {
     
-    // Profile Routes - HAPUS INI (pindahkan ke admin)
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
@@ -75,10 +76,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->group(function () {
     
     // Dashboard Peserta
-    Route::get('/dashboard', [DashboardController::class, 'pesertaDashboard'])->name('dashboard');
+    Route::get('/dashboard', [PesertaController::class, 'index'])->name('dashboard');
     
     // ============================================================
-    // PROFILE PESERTA - PERBAIKAN
+    // PROFILE PESERTA
     // ============================================================
     Route::get('/profile', [ProfileController::class, 'pesertaEdit'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -100,8 +101,8 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     // ============================================================
     // MATERI PESERTA
     // ============================================================
-    Route::get('/materi', [MateriController::class, 'pesertaIndex'])->name('materi.index');
-    Route::get('/materi/{materi}', [MateriController::class, 'pesertaShow'])->name('materi.show');
+    Route::get('/materi', [PesertaController::class, 'materi'])->name('materi.index');
+    Route::get('/materi/{materi}', [PesertaController::class, 'materiShow'])->name('materi.show');
     Route::get('/materi/{materi}/download/{index?}', [MateriController::class, 'pesertaDownload'])->name('materi.download');
     Route::post('/materi/{materi}/complete', [MateriController::class, 'markComplete'])->name('materi.complete');
     Route::get('/materi/{materi}/progress', [MateriController::class, 'getProgress'])->name('materi.progress');
@@ -109,8 +110,8 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     // ============================================================
     // QUIZ PESERTA
     // ============================================================
-    Route::get('/quiz', [QuizController::class, 'pesertaIndex'])->name('quiz.index');
-    Route::get('/quiz/{quiz}', [QuizController::class, 'pesertaShow'])->name('quiz.show');
+    Route::get('/quiz', [PesertaController::class, 'quiz'])->name('quiz.index');
+    Route::get('/quiz/{quiz}', [PesertaController::class, 'quizShow'])->name('quiz.show');
     Route::post('/quiz/{quiz}/start', [QuizAttemptController::class, 'start'])->name('quiz.start');
     Route::post('/quiz/{quiz}/submit', [QuizAttemptController::class, 'submit'])->name('quiz.submit');
     Route::get('/quiz/{quiz}/result/{attempt}', [QuizAttemptController::class, 'result'])->name('quiz.result');
@@ -119,8 +120,8 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     // ============================================================
     // SERTIFIKAT PESERTA
     // ============================================================
-    Route::get('/sertifikat', [SertifikatController::class, 'pesertaIndex'])->name('sertifikat.index');
-    Route::get('/sertifikat/{sertifikat}', [SertifikatController::class, 'pesertaShow'])->name('sertifikat.show');
+    Route::get('/sertifikat', [PesertaController::class, 'sertifikat'])->name('sertifikat.index');
+    Route::get('/sertifikat/{sertifikat}', [PesertaController::class, 'sertifikatShow'])->name('sertifikat.show');
     Route::get('/sertifikat/{sertifikat}/download', [SertifikatController::class, 'download'])->name('sertifikat.download');
     
     // ============================================================
@@ -137,8 +138,8 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     // ABSENSI PESERTA
     // ============================================================
     Route::prefix('absen')->name('absen.')->group(function () {
-        Route::get('/', [AbsensiController::class, 'pesertaIndex'])->name('index');
-        Route::post('/store', [AbsensiController::class, 'pesertaStore'])->name('store');
+        Route::get('/', [PesertaController::class, 'absen'])->name('index');
+        Route::post('/store', [PesertaController::class, 'absenStore'])->name('store');
         Route::get('/export', [AbsensiController::class, 'pesertaExport'])->name('export');
         Route::get('/check-status', [AbsensiController::class, 'checkStatus'])->name('check-status');
     });
@@ -173,7 +174,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
 
     // ============================================================
-    // PROFILE ADMIN - PERBAIKAN
+    // PROFILE ADMIN
     // ============================================================
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -374,11 +375,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::prefix('pengumuman')->name('pengumuman.')->group(function () {
         Route::get('/', [PengumumanController::class, 'index'])->name('index');
         Route::get('/create', [PengumumanController::class, 'create'])->name('create');
+        Route::post('/store', [PengumumanController::class, 'store'])->name('store');
+        Route::get('/{pengumuman}', [PengumumanController::class, 'show'])->name('show');
+        Route::get('/{pengumuman}/edit', [PengumumanController::class, 'edit'])->name('edit');
+        Route::put('/{pengumuman}', [PengumumanController::class, 'update'])->name('update');
+        Route::delete('/{pengumuman}', [PengumumanController::class, 'destroy'])->name('destroy');
         Route::get('/export', [PengumumanController::class, 'export'])->name('export');
-        Route::get('/store', [PengumumanController::class, 'store'])->name('store');
-        Route::get('/show', [PengumumanController::class, 'show'])->name('show');
-        Route::get('/edit', [PengumumanController::class, 'edit'])->name('edit');
-        Route::get('/destroy', [PengumumanController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-delete', [PengumumanController::class, 'bulkDelete'])->name('bulk-delete');
     });
 
     // ============================================================

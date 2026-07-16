@@ -9,13 +9,7 @@
         <div>
             <p class="eyebrow">Pelatihan</p>
             <h1 class="h3 mb-0">Detail Pelatihan</h1>
-            <p class="text-muted mb-0">{{ $training->judul }}</p>
         </div>
-    </div>
-    <div class="heading-actions">
-        <a href="{{ route('peserta.trainings.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
     </div>
 </div>
 @endsection

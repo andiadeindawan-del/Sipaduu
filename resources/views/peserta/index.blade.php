@@ -26,6 +26,31 @@
 @endsection
 
 @section('content')
+@php
+    // ============================================================
+    // DEFAULT VALUES - MENCEGAH ERROR UNDEFINED VARIABLE
+    // ============================================================
+    $totalTrainings = $totalTrainings ?? 0;
+    $totalCertificates = $totalCertificates ?? 0;
+    $totalQuizAttempts = $totalQuizAttempts ?? 0;
+    $averageQuizScore = $averageQuizScore ?? 0;
+    $totalMaterials = $totalMaterials ?? 0;
+    $completedMaterials = $completedMaterials ?? 0;
+    $totalQuizzes = $totalQuizzes ?? 0;
+    $completedQuizzes = $completedQuizzes ?? 0;
+    $totalHadir = $totalHadir ?? 0;
+    $activeTrainings = $activeTrainings ?? collect();
+    $recentCertificates = $recentCertificates ?? collect();
+    $recentQuizAttempts = $recentQuizAttempts ?? collect();
+    $recentActivities = $recentActivities ?? collect();
+    $kategoris = $kategoris ?? collect();
+    $availableTrainings = $availableTrainings ?? collect();
+    $completedTrainings = $completedTrainings ?? 0;
+    $ongoingTrainings = $ongoingTrainings ?? 0;
+    $upcomingTrainings = $upcomingTrainings ?? collect();
+    $averageProgress = $averageProgress ?? 0;
+@endphp
+
 <div class="container-fluid px-3 px-lg-4 py-4">
     <!-- Statistics Cards -->
     <section class="row g-3 mb-4" aria-label="Dashboard metrics">
@@ -35,7 +60,7 @@
                     <span class="metric-label">Total Pelatihan</span>
                     <span class="metric-icon" style="color: #6c757d;"><i class="bi bi-journal-bookmark"></i></span>
                 </div>
-                <div class="metric-value">{{ $totalTrainings ?? 0 }}</div>
+                <div class="metric-value">{{ $totalTrainings }}</div>
                 <div class="metric-meta">
                     <span style="color: #6c757d;">Semua</span>
                     <span>pelatihan</span>
@@ -49,7 +74,7 @@
                     <span class="metric-label">Sertifikat Diperoleh</span>
                     <span class="metric-icon" style="color: #28c76f;"><i class="bi bi-award"></i></span>
                 </div>
-                <div class="metric-value">{{ $totalCertificates ?? 0 }}</div>
+                <div class="metric-value">{{ $totalCertificates }}</div>
                 <div class="metric-meta">
                     <span style="color: #28c76f;">Selesai</span>
                     <span>sertifikat</span>
@@ -63,7 +88,7 @@
                     <span class="metric-label">Quiz Dikerjakan</span>
                     <span class="metric-icon" style="color: #ff9f43;"><i class="bi bi-question-circle"></i></span>
                 </div>
-                <div class="metric-value">{{ $totalQuizAttempts ?? 0 }}</div>
+                <div class="metric-value">{{ $totalQuizAttempts }}</div>
                 <div class="metric-meta">
                     <span style="color: #ff9f43;">Total</span>
                     <span>quiz</span>
@@ -77,7 +102,7 @@
                     <span class="metric-label">Rata-rata Nilai Quiz</span>
                     <span class="metric-icon" style="color: #17a2b8;"><i class="bi bi-star"></i></span>
                 </div>
-                <div class="metric-value">{{ number_format($averageQuizScore ?? 0, 1) }}</div>
+                <div class="metric-value">{{ number_format($averageQuizScore, 1) }}</div>
                 <div class="metric-meta">
                     <span style="color: #17a2b8;">Keseluruhan</span>
                     <span>nilai</span>
@@ -168,19 +193,19 @@
                         <div class="d-flex align-items-center gap-3">
                             <span class="badge" style="background: #e9ecef; color: #6c757d; padding: 0.5rem 1rem;">
                                 <i class="bi bi-check-circle me-1" style="color: #28c76f;"></i>
-                                Materi: <strong>{{ $completedMaterials ?? 0 }}</strong>/{{ $totalMaterials ?? 0 }}
+                                Materi: <strong>{{ $completedMaterials }}</strong>/{{ $totalMaterials }}
                             </span>
                             <span class="badge" style="background: #fff3e0; color: #ff9f43; padding: 0.5rem 1rem;">
                                 <i class="bi bi-check-circle me-1" style="color: #28c76f;"></i>
-                                Quiz: <strong>{{ $completedQuizzes ?? 0 }}</strong>/{{ $totalQuizzes ?? 0 }}
+                                Quiz: <strong>{{ $completedQuizzes }}</strong>/{{ $totalQuizzes }}
                             </span>
                             <span class="badge" style="background: #e8f5e9; color: #28c76f; padding: 0.5rem 1rem;">
                                 <i class="bi bi-check-circle me-1" style="color: #28c76f;"></i>
-                                Kehadiran: <strong>{{ $totalHadir ?? 0 }}</strong>
+                                Kehadiran: <strong>{{ $totalHadir }}</strong>
                             </span>
                             <span class="badge" style="background: #e3f2fd; color: #17a2b8; padding: 0.5rem 1rem;">
                                 <i class="bi bi-award me-1"></i>
-                                Sertifikat: <strong>{{ $totalCertificates ?? 0 }}</strong>
+                                Sertifikat: <strong>{{ $totalCertificates }}</strong>
                             </span>
                         </div>
                         <div>
@@ -196,7 +221,7 @@
     </div>
 
     <!-- Progress Overview -->
-    @if(isset($totalTrainings) && $totalTrainings > 0)
+    @if($totalTrainings > 0)
     <div class="panel mb-4 border-0 shadow-sm">
         <div class="panel-header bg-light bg-opacity-50">
             <h5 class="section-title"><i class="bi bi-graph-up-arrow" style="color: #6c757d;"></i> Progress Keseluruhan</h5>
@@ -218,11 +243,11 @@
                     <div class="d-flex justify-content-between mt-2">
                         <span class="text-muted small">
                             <i class="bi bi-check-circle" style="color: #28c76f;"></i>
-                            Selesai: <strong>{{ $totalCertificates ?? 0 }}</strong> pelatihan
+                            Selesai: <strong>{{ $totalCertificates }}</strong> pelatihan
                         </span>
                         <span class="text-muted small">
                             <i class="bi bi-clock" style="color: #ff9f43;"></i>
-                            Berjalan: <strong>{{ ($totalTrainings ?? 0) - ($totalCertificates ?? 0) }}</strong> pelatihan
+                            Berjalan: <strong>{{ $totalTrainings - $totalCertificates }}</strong> pelatihan
                         </span>
                     </div>
                 </div>
@@ -294,7 +319,7 @@
                     </a>
                 </div>
                 <div class="p-4">
-                    @if(isset($activeTrainings) && $activeTrainings->count() > 0)
+                    @if($activeTrainings->count() > 0)
                         <div class="list-group list-group-flush">
                             @foreach($activeTrainings as $training)
                             <div class="list-group-item px-0 py-3 border-bottom">
@@ -311,7 +336,7 @@
                                             </p>
                                             <span class="badge rounded-pill" style="background: #6c757d; color: #fff;">Aktif</span>
                                             @php
-                                                $progress = method_exists($training, 'getProgress') ? $training->getProgress() : 0;
+                                                $progress = property_exists($training, 'progress') ? $training->progress : 0;
                                             @endphp
                                             <span class="badge rounded-pill" style="background: #28c76f; color: #fff;">{{ $progress }}%</span>
                                         </div>
@@ -353,16 +378,16 @@
                     </a>
                 </div>
                 <div class="p-4">
-                    @if(isset($recentCertificates) && $recentCertificates->count() > 0)
+                    @if($recentCertificates->count() > 0)
                         <div class="list-group list-group-flush">
                             @foreach($recentCertificates as $certificate)
                             <div class="list-group-item px-0 py-3 border-bottom">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h6 class="fw-semibold mb-1">{{ $certificate->nama_sertifikat ?? 'Sertifikat' }}</h6>
+                                        <h6 class="fw-semibold mb-1">{{ $certificate->judul ?? 'Sertifikat' }}</h6>
                                         <p class="text-muted small mb-0">
                                             <i class="bi bi-calendar-check me-1"></i>
-                                            Diterbitkan: {{ $certificate->tanggal_terbit ? $certificate->tanggal_terbit->format('d/m/Y') : '-' }}
+                                            Diterbitkan: {{ $certificate->created_at ? $certificate->created_at->format('d/m/Y') : '-' }}
                                         </p>
                                         <span class="badge rounded-pill" style="background: #28c76f; color: #fff;">Tersedia</span>
                                     </div>
@@ -403,7 +428,7 @@
                     </a>
                 </div>
                 <div class="table-responsive">
-                    @if(isset($recentQuizAttempts) && $recentQuizAttempts->count() > 0)
+                    @if($recentQuizAttempts->count() > 0)
                         <table class="table align-middle mb-0">
                             <thead class="table-light">
                                 <tr>

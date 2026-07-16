@@ -7,6 +7,7 @@ use App\Models\Training;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PengumumanController extends Controller
 {
@@ -66,15 +67,16 @@ class PengumumanController extends Controller
 
     /**
      * Display a listing of pengumuman for peserta.
+     * PERBAIKAN: Gunakan training_registrations
      */
     public function pesertaIndex(Request $request)
     {
         $user = Auth::user();
         
-        // Ambil pengumuman dari pelatihan yang diikuti peserta
-        $trainingIds = Training::whereHas('participants', function($query) use ($user) {
+        // PERBAIKAN: Gunakan registrations() dengan tabel training_registrations
+        $trainingIds = Training::whereHas('registrations', function($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->whereIn('training_participants.status', ['approved', 'active', 'completed']);
+                  ->whereIn('status', ['pending', 'registered', 'approved', 'completed']);
         })->pluck('id');
 
         $query = Pengumuman::with(['training', 'creator'])
@@ -114,6 +116,7 @@ class PengumumanController extends Controller
 
     /**
      * Display the specified pengumuman for peserta.
+     * PERBAIKAN: Gunakan training_registrations
      */
     public function pesertaShow($id)
     {
@@ -123,9 +126,10 @@ class PengumumanController extends Controller
         $user = Auth::user();
         
         if ($pengumuman->training_id) {
-            $trainingIds = Training::whereHas('participants', function($query) use ($user) {
+            // PERBAIKAN: Gunakan registrations() dengan tabel training_registrations
+            $trainingIds = Training::whereHas('registrations', function($query) use ($user) {
                 $query->where('user_id', $user->id)
-                      ->whereIn('training_participants.status', ['approved', 'active', 'completed']);
+                      ->whereIn('status', ['pending', 'registered', 'approved', 'completed']);
             })->pluck('id');
 
             if (!$trainingIds->contains($pengumuman->training_id)) {

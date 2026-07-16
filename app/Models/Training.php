@@ -62,25 +62,16 @@ class Training extends Model
     // RELATIONSHIPS
     // ============================================================
 
-    /**
-     * Relasi ke Kategori
-     */
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
-    /**
-     * Relasi ke Trainer (User)
-     */
     public function trainer()
     {
         return $this->belongsTo(User::class, 'trainer_id');
     }
 
-    /**
-     * Relasi ke Peserta melalui TrainingRegistration
-     */
     public function registrations()
     {
         return $this->hasMany(TrainingRegistration::class, 'training_id');
@@ -88,33 +79,29 @@ class Training extends Model
 
     /**
      * Relasi ke User melalui TrainingRegistration
+     * PERBAIKAN: HANYA gunakan kolom yang ADA di database
      */
     public function participants()
     {
         return $this->belongsToMany(User::class, 'training_registrations', 'training_id', 'user_id')
-                    ->withPivot('status', 'registered_at', 'approved_at', 'completed_at', 'final_grade', 'is_passed')
+                    ->withPivot([
+                        'status',
+                        'created_at',
+                        'updated_at'
+                    ])
                     ->withTimestamps();
     }
 
-    /**
-     * Relasi ke Sertifikat
-     */
     public function sertifikats()
     {
         return $this->hasMany(Sertifikat::class);
     }
 
-    /**
-     * Relasi ke Materi
-     */
     public function materis()
     {
         return $this->hasMany(Materi::class);
     }
 
-    /**
-     * Relasi ke Quiz
-     */
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
@@ -124,27 +111,18 @@ class Training extends Model
     // SCOPES
     // ============================================================
 
-    /**
-     * Scope untuk training yang aktif
-     */
     public function scopeActive($query)
     {
         return $query->where('status', 'published')
                      ->where('tanggal_mulai', '>=', now());
     }
 
-    /**
-     * Scope untuk training yang akan datang
-     */
     public function scopeUpcoming($query)
     {
         return $query->where('tanggal_mulai', '>=', now())
                      ->where('status', 'published');
     }
 
-    /**
-     * Scope untuk training yang sedang berjalan
-     */
     public function scopeOngoing($query)
     {
         return $query->where('status', 'berjalan')
@@ -155,33 +133,55 @@ class Training extends Model
                      });
     }
 
-    /**
-     * Scope untuk training yang selesai
-     */
     public function scopeCompleted($query)
     {
         return $query->where('status', 'selesai');
     }
 
-    /**
-     * Scope untuk training yang draft
-     */
     public function scopeDraft($query)
     {
         return $query->where('status', 'draft');
     }
 
-    /**
-     * Scope untuk training yang published
-     */
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
     }
 
     /**
-     * Scope untuk pencarian
+     * Scope untuk training yang diikuti oleh user tertentu
+     * PERBAIKAN: Gunakan training_registrations
      */
+    public function scopeEnrolledBy($query, $userId)
+    {
+        return $query->whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('status', ['pending', 'registered', 'approved', 'completed']);
+        });
+    }
+
+    /**
+     * Scope untuk training yang disetujui oleh user tertentu
+     */
+    public function scopeApprovedBy($query, $userId)
+    {
+        return $query->whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('status', ['approved', 'completed']);
+        });
+    }
+
+    /**
+     * Scope untuk training yang telah selesai oleh user tertentu
+     */
+    public function scopeCompletedBy($query, $userId)
+    {
+        return $query->whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->where('status', 'completed');
+        });
+    }
+
     public function scopeSearch($query, $search)
     {
         return $query->where(function ($q) use ($search) {
@@ -195,9 +195,6 @@ class Training extends Model
     // ACCESSORS
     // ============================================================
 
-    /**
-     * Get status label
-     */
     public function getStatusLabelAttribute()
     {
         $labels = [
@@ -210,9 +207,6 @@ class Training extends Model
         return $labels[$this->status] ?? ucfirst($this->status);
     }
 
-    /**
-     * Get status badge class
-     */
     public function getStatusBadgeAttribute()
     {
         $classes = [
@@ -225,9 +219,6 @@ class Training extends Model
         return $classes[$this->status] ?? 'badge bg-secondary';
     }
 
-    /**
-     * Check if training is available
-     */
     public function getIsAvailableAttribute()
     {
         if ($this->status !== 'published' && $this->status !== 'berjalan') {
@@ -238,7 +229,6 @@ class Training extends Model
             return false;
         }
 
-        // Jika sudah selesai
         if ($this->tanggal_selesai && $this->tanggal_selesai < now()) {
             return false;
         }
@@ -246,9 +236,6 @@ class Training extends Model
         return true;
     }
 
-    /**
-     * Get formatted date range
-     */
     public function getFormattedDateRangeAttribute()
     {
         $start = $this->tanggal_mulai ? $this->tanggal_mulai->format('d/m/Y') : 'TBD';
@@ -261,19 +248,13 @@ class Training extends Model
         return $start . ' - ' . $end;
     }
 
-    /**
-     * Get participants count
-     */
     public function getParticipantsCountAttribute()
     {
         return $this->registrations()
-                    ->whereIn('status', ['approved', 'completed'])
+                    ->whereIn('status', ['approved', 'completed', 'registered'])
                     ->count();
     }
 
-    /**
-     * Get available slots
-     */
     public function getAvailableSlotsAttribute()
     {
         if (!$this->kapasitas) {
@@ -282,9 +263,6 @@ class Training extends Model
         return max(0, $this->kapasitas - $this->participants_count);
     }
 
-    /**
-     * Get training type label
-     */
     public function getTypeLabelAttribute()
     {
         $labels = [
@@ -295,9 +273,6 @@ class Training extends Model
         return $labels[$this->tipe] ?? ucfirst($this->tipe);
     }
 
-    /**
-     * Get training type badge
-     */
     public function getTypeBadgeAttribute()
     {
         $classes = [
@@ -308,9 +283,6 @@ class Training extends Model
         return $classes[$this->tipe] ?? 'badge bg-secondary';
     }
 
-    /**
-     * Get location display
-     */
     public function getLocationDisplayAttribute()
     {
         if ($this->tipe === 'online') {
@@ -320,9 +292,6 @@ class Training extends Model
         return $this->lokasi ?? 'Lokasi belum ditentukan';
     }
 
-    /**
-     * Get duration in days
-     */
     public function getDurationInDaysAttribute()
     {
         if (!$this->tanggal_mulai || !$this->tanggal_selesai) {
@@ -332,9 +301,6 @@ class Training extends Model
         return $this->tanggal_mulai->diffInDays($this->tanggal_selesai) + 1;
     }
 
-    /**
-     * Get duration in hours
-     */
     public function getDurationInHoursAttribute()
     {
         if (!$this->tanggal_mulai || !$this->tanggal_selesai) {
@@ -344,25 +310,16 @@ class Training extends Model
         return $this->tanggal_mulai->diffInHours($this->tanggal_selesai);
     }
 
-    /**
-     * Check if training is ongoing
-     */
     public function getIsOngoingAttribute()
     {
         return $this->isOngoing();
     }
 
-    /**
-     * Check if training is upcoming
-     */
     public function getIsUpcomingAttribute()
     {
         return $this->isUpcoming();
     }
 
-    /**
-     * Check if training is completed
-     */
     public function getIsCompletedTrainingAttribute()
     {
         return $this->isCompletedTraining();
@@ -372,9 +329,6 @@ class Training extends Model
     // HELPER METHODS
     // ============================================================
 
-    /**
-     * Get user's registration for this training
-     */
     public function getUserRegistration($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -382,20 +336,22 @@ class Training extends Model
     }
 
     /**
-     * Check if user is registered/enrolled in this training
+     * Alias untuk isRegistered()
      */
+    public function isEnrolled($userId = null)
+    {
+        return $this->isRegistered($userId);
+    }
+
     public function isRegistered($userId = null)
     {
         $userId = $userId ?? auth()->id();
         return $this->registrations()
                     ->where('user_id', $userId)
-                    ->whereIn('status', ['pending', 'approved', 'completed'])
+                    ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
                     ->exists();
     }
 
-    /**
-     * Check if user is approved for this training
-     */
     public function isApproved($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -405,9 +361,6 @@ class Training extends Model
                     ->exists();
     }
 
-    /**
-     * Check if user has completed this training
-     */
     public function isCompletedByUser($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -417,9 +370,6 @@ class Training extends Model
                     ->exists();
     }
 
-    /**
-     * Get user's progress for this training
-     */
     public function getUserProgress($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -429,7 +379,6 @@ class Training extends Model
             return 0;
         }
         
-        // Hitung progress dari materi dan quiz
         $totalMaterials = $this->materis()->count();
         $totalQuizzes = $this->quizzes()->count();
         $totalItems = $totalMaterials + $totalQuizzes;
@@ -438,13 +387,11 @@ class Training extends Model
             return $registration->status === 'completed' ? 100 : 0;
         }
         
-        // Hitung materi yang sudah selesai
         $completedMaterials = $this->materis()
             ->whereHas('progress', function($q) use ($userId) {
                 $q->where('user_id', $userId)->where('status', 'completed');
             })->count();
         
-        // Hitung quiz yang sudah selesai
         $completedQuizzes = $this->quizzes()
             ->whereHas('attempts', function($q) use ($userId) {
                 $q->where('user_id', $userId)->where('status', 'completed');
@@ -455,9 +402,6 @@ class Training extends Model
         return round(($completedItems / $totalItems) * 100);
     }
 
-    /**
-     * Check if user has certificate for this training
-     */
     public function hasCertificate($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -470,9 +414,6 @@ class Training extends Model
         return $registration->certificate()->exists();
     }
 
-    /**
-     * Get user's certificate for this training
-     */
     public function getUserCertificate($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -485,10 +426,7 @@ class Training extends Model
         return $registration->certificate;
     }
 
-    /**
-     * Enroll user to training
-     */
-    public function enrollUser($userId = null, $status = 'pending')
+    public function enrollUser($userId = null, $status = 'registered')
     {
         $userId = $userId ?? auth()->id();
         
@@ -504,16 +442,11 @@ class Training extends Model
             'training_id' => $this->id,
             'user_id' => $userId,
             'status' => $status,
-            'registration_number' => TrainingRegistration::generateRegistrationNumber(),
-            'registered_at' => now(),
         ]);
         
         return $registration;
     }
 
-    /**
-     * Unenroll user from training
-     */
     public function unenrollUser($userId = null)
     {
         $userId = $userId ?? auth()->id();
@@ -526,9 +459,6 @@ class Training extends Model
         return $registration->delete();
     }
 
-    /**
-     * Check if training is full
-     */
     public function isFull()
     {
         if (!$this->kapasitas) {
@@ -538,9 +468,6 @@ class Training extends Model
         return $this->participants_count >= $this->kapasitas;
     }
 
-    /**
-     * Check if training is ongoing
-     */
     public function isOngoing()
     {
         if ($this->status === 'berjalan') {
@@ -555,9 +482,6 @@ class Training extends Model
         return false;
     }
 
-    /**
-     * Check if training is upcoming
-     */
     public function isUpcoming()
     {
         if ($this->status !== 'published') {
@@ -567,9 +491,6 @@ class Training extends Model
         return $this->tanggal_mulai > now();
     }
 
-    /**
-     * Check if training is completed
-     */
     public function isCompletedTraining()
     {
         if ($this->status === 'selesai') {
@@ -583,9 +504,6 @@ class Training extends Model
         return false;
     }
 
-    /**
-     * Get training status berdasarkan tanggal
-     */
     public function getCurrentStatus()
     {
         if ($this->status === 'draft') {
