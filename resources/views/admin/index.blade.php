@@ -13,7 +13,6 @@
                 <i class="bi bi-grid-1x2 fs-3"></i>
             </div>
             <div>
-                <!-- <p class="text-uppercase text-muted small fw-semibold mb-0">Dashboard</p> -->
                 <h1 class="h3 mb-0">Dashboard</h1>
                 <p class="text-muted small mb-0">Selamat datang kembali, {{ auth()->user()->nama ?? auth()->user()->name }}!</p>
             </div>
@@ -144,10 +143,159 @@
         </div>
     </div>
 
+<!-- ========================================================== -->
+<!-- PENDAFTARAN MENUNGGU KONFIRMASI -->
+<!-- ========================================================== -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <h5 class="section-title">
+                        <i class="bi bi-person-check text-warning"></i> 
+                        Pendaftaran Menunggu Konfirmasi
+                        @if(isset($pendingRegistrations) && $pendingRegistrations->count() > 0)
+                        <span class="badge bg-danger ms-2">{{ $pendingRegistrations->count() }}</span>
+                        @endif
+                    </h5>
+                    <p class="text-muted small mb-0">Daftar peserta yang mendaftar dan menunggu persetujuan</p>
+                </div>
+                <a href="{{ route('admin.pendaftaran.index') }}" class="btn btn-sm btn-outline-primary">
+                    Kelola Semua <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+            <div class="table-responsive">
+                @if(isset($pendingRegistrations) && $pendingRegistrations->count() > 0)
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Peserta</th>
+                            <th>Pelatihan</th>
+                            <th>Tanggal Daftar</th>
+                            <th>Status</th>
+                            <th class="text-end">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($pendingRegistrations as $index => $registration)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar-text avatar-sm bg-primary text-white d-flex align-items-center justify-content-center rounded-circle">
+                                        {{ strtoupper(substr($registration->user->nama ?? $registration->user->name ?? 'U', 0, 2)) }}
+                                    </div>
+                                    <div>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->nama ?? $registration->user->name ?? 'Unknown' }}</p>
+                                        <p class="text-muted small mb-0">{{ $registration->user->email }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fw-semibold">{{ $registration->training->judul ?? '-' }}</span>
+                                <br>
+                                <small class="text-muted">
+                                    {{ $registration->training->tanggal_mulai ? $registration->training->tanggal_mulai->format('d/m/Y') : '-' }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="text-muted">
+                                    {{ $registration->created_at ? $registration->created_at->format('d/m/Y H:i') : '-' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning">
+                                    <i class="bi bi-clock me-1"></i> Pending
+                                </span>
+                            </td>
+                           <td class="text-end">
+    <div class="btn-group btn-group-sm" role="group">
+        @if($registration->status == 'pending')
+            <form action="{{ url('/admin/pendaftaran/' . $registration->id . '/approve') }}" method="POST" class="d-inline">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-success" title="Setujui" onclick="return confirm('Setujui pendaftaran ini?')">
+                    <i class="bi bi-check-circle"></i>
+                </button>
+            </form>
+            <form action="{{ url('/admin/pendaftaran/' . $registration->id . '/reject') }}" method="POST" class="d-inline">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-danger" title="Tolak" onclick="return confirm('Yakin ingin menolak pendaftaran ini?')">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </form>
+        @endif
+        @if($registration->status == 'disetujui' || $registration->status == 'pending')
+            <form action="{{ url('/admin/pendaftaran/' . $registration->id . '/cancel') }}" method="POST" class="d-inline">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-secondary" title="Batalkan" onclick="return confirm('Yakin ingin membatalkan pendaftaran ini?')">
+                    <i class="bi bi-ban"></i>
+                </button>
+            </form>
+        @endif
+        <a href="{{ url('/admin/pendaftaran/' . $registration->id) }}" class="btn btn-info" title="Detail">
+            <i class="bi bi-eye"></i>
+        </a>
+    </div>
+</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                <div class="text-center py-4">
+                    <i class="bi bi-check-circle fs-1 text-success d-block mb-3"></i>
+                    <p class="text-muted">Tidak ada pendaftaran yang menunggu konfirmasi</p>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- ========================================================== -->
     <!-- PELATIHAN BERJALAN & AKTIVITAS TERBARU -->
     <!-- ========================================================== -->
     <div class="row g-4 mb-4">
+          <!-- Aktivitas Terbaru -->
+        <div class="col-12 col-lg-6">
+            <div class="panel h-100">
+                <div class="panel-header">
+                    <div>
+                        <h5 class="section-title">
+                            <i class="bi bi-clock-history"></i> Aktivitas Terbaru
+                        </h5>
+                        <p class="text-muted small mb-0">Aktivitas terakhir di sistem</p>
+                    </div>
+                </div>
+                <div class="p-3 activity-list">
+                    @if(isset($recentActivities) && $recentActivities->count() > 0)
+                        @foreach($recentActivities as $activity)
+                        <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="bg-{{ $activity['color'] ?? 'primary' }} bg-opacity-10 text-{{ $activity['color'] ?? 'primary' }} rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="bi {{ $activity['icon'] ?? 'bi-bell' }}"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="fw-semibold mb-1">{{ $activity['title'] }}</p>
+                                <p class="text-muted small mb-0">{{ $activity['description'] }}</p>
+                                <span class="text-muted small">{{ $activity['time'] }}</span>
+                            </div>
+                        </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+                            <p class="text-muted">Belum ada aktivitas</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
         <!-- Pelatihan Berjalan -->
         <div class="col-12 col-lg-6">
             <div class="panel">
@@ -196,42 +344,6 @@
             </div>
         </div>
 
-        <!-- Aktivitas Terbaru -->
-        <div class="col-12 col-lg-6">
-            <div class="panel h-100">
-                <div class="panel-header">
-                    <div>
-                        <h5 class="section-title">
-                            <i class="bi bi-clock-history"></i> Aktivitas Terbaru
-                        </h5>
-                        <p class="text-muted small mb-0">Aktivitas terakhir di sistem</p>
-                    </div>
-                </div>
-                <div class="p-3 activity-list">
-                    @if(isset($recentActivities) && $recentActivities->count() > 0)
-                        @foreach($recentActivities as $activity)
-                        <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
-                            <div class="flex-shrink-0">
-                                <div class="bg-{{ $activity['color'] ?? 'primary' }} bg-opacity-10 text-{{ $activity['color'] ?? 'primary' }} rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="bi {{ $activity['icon'] ?? 'bi-bell' }}"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="fw-semibold mb-1">{{ $activity['title'] }}</p>
-                                <p class="text-muted small mb-0">{{ $activity['description'] }}</p>
-                                <span class="text-muted small">{{ $activity['time'] }}</span>
-                            </div>
-                        </div>
-                        @endforeach
-                    @else
-                        <div class="text-center py-4">
-                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-                            <p class="text-muted">Belum ada aktivitas</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- ========================================================== -->
@@ -537,6 +649,12 @@
 
     .activity-list .border-bottom:last-child {
         border-bottom: none !important;
+    }
+
+    /* Button hover effects */
+    .btn-group .btn:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
     }
 
     @media (max-width: 768px) {

@@ -110,10 +110,10 @@
                 </div>
                 <select class="form-select form-select-sm" name="status" style="width: 150px;">
                     <option value="">Semua Status</option>
-                    <option value="upcoming" {{ request('status') == 'upcoming' ? 'selected' : '' }}>📅 Akan Datang</option>
-                    <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>⏳ Sedang Berlangsung</option>
-                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>✅ Selesai</option>
-                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>❌ Dibatalkan</option>
+                    <option value="upcoming" {{ request('status') == 'upcoming' ? 'selected' : '' }}>Akan Datang</option>
+                    <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>Sedang Berlangsung</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Selesai</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
                 </select>
                 <input type="date" class="form-control form-control-sm" name="date_from" value="{{ request('date_from') }}" style="width: 150px;" placeholder="Dari">
                 <input type="date" class="form-control form-control-sm" name="date_to" value="{{ request('date_to') }}" style="width: 150px;" placeholder="Sampai">
@@ -188,14 +188,11 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ $agenda->judul }}</p>
-                                @if($agenda->deskripsi)
-                                <p class="text-muted small mb-0">{{ Str::limit($agenda->deskripsi, 50) }}</p>
-                                @endif
                             </div>
                         </td>
                         <td>
                             @if($agenda->training)
-                            <span class="badge text-bg-info">{{ $agenda->training->judul }}</span>
+                            <span class="">{{ $agenda->training->judul }}</span>
                             @else
                             <span class="text-muted">-</span>
                             @endif
@@ -203,11 +200,9 @@
                         <td>
                             <div class="small">
                                 <div>
-                                    <i class="bi bi-calendar3 me-1"></i>
                                     {{ $agenda->tanggal ? $agenda->tanggal->format('d/m/Y') : '-' }}
                                 </div>
                                 <div>
-                                    <i class="bi bi-clock me-1"></i>
                                     {{ $agenda->jam_mulai ? date('H:i', strtotime($agenda->jam_mulai)) : '-' }}
                                     {{ $agenda->jam_selesai ? ' - ' . date('H:i', strtotime($agenda->jam_selesai)) : '' }}
                                 </div>
@@ -238,20 +233,20 @@
                                 {{ $status['label'] }}
                             </span>
                         </td>
-                        <td class="text-end">
-                            <div class="btn-group btn-group-sm" role="group">
+                        <td class="text-end"> 
+                            <div class="d-flex gap-1 justify-content-end" role="group">
                                 <a href="{{ route('admin.agenda.show', $agenda->id) }}" 
-                                   class="btn btn-outline-info" title="Lihat">
-                                    <i class="bi bi-eye"></i>
+                                   class="btn btn-info" title="Lihat">
+                                    <i class="bi bi-eye"></i> 
                                 </a>
                                 <a href="{{ route('admin.agenda.edit', $agenda->id) }}" 
-                                   class="btn btn-outline-warning" title="Edit">
-                                    <i class="bi bi-pencil"></i>
+                                   class="btn btn-warning" title="Edit">
+                                    <i class="bi bi-pencil"></i> 
                                 </a>
-                                <button type="button" class="btn btn-outline-danger" 
+                                <button type="button" class="btn btn-danger" 
                                         data-bs-toggle="modal" data-bs-target="#deleteModal{{ $agenda->id }}" 
                                         title="Hapus">
-                                    <i class="bi bi-trash"></i>
+                                    <i class="bi bi-trash"></i> 
                                 </button>
                             </div>
                         </td>
@@ -290,11 +285,7 @@
         <div class="panel-header">
             <div>
                 <h5 class="section-title"><i class="bi bi-calendar3"></i> Kalender Agenda</h5>
-                <p class="text-muted small mb-0">Tampilan agenda dalam format kalender.</p>
             </div>
-            <a href="{{ route('admin.agenda.calendar') }}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-calendar3"></i> Lihat Kalender
-            </a>
         </div>
         <div class="p-4">
             <div class="row g-2">

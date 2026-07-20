@@ -204,8 +204,8 @@
                         <td>{{ $trainings->firstItem() + $index }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                @if($training->thumbnail)
-                                <img src="{{ Storage::url($training->thumbnail) }}" 
+                                @if($training->gambar)
+                                <img src="{{ asset('storage/' . $training->gambar) }}" 
                                      alt="{{ $training->judul }}" 
                                      style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
                                 @else

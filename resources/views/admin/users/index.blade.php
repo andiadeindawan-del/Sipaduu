@@ -243,6 +243,13 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">NIK <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                <input type="text" class="form-control" name="nik" placeholder="Masukkan NIK" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
@@ -302,7 +309,7 @@
                                 <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                                 <select class="form-select" name="status" required>
                                     <option value="aktif">Aktif</option>
-                                    <option value="tidak_aktif">Tidak Aktif</option>
+                                    <option value="nonaktif">Tidak Aktif</option>
                                 </select>
                             </div>
                         </div>
@@ -402,6 +409,13 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">NIK <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                <input type="text" class="form-control" name="nik" value="{{ $user->nik }}" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
@@ -468,7 +482,7 @@
                                 <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                                 <select class="form-select" name="status" required>
                                     <option value="aktif" {{ ($user->status ?? 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="tidak_aktif" {{ ($user->status ?? 'aktif') == 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                    <option value="nonaktif" {{ ($user->status ?? 'aktif') == 'nonaktif' ? 'selected' : '' }}>Tidak Aktif</option>
                                 </select>
                             </div>
                         </div>

@@ -71,13 +71,40 @@ class MateriController extends Controller
     /**
      * Display a listing of materi for peserta.
      */
-    public function pesertaIndex(Request $request)
+     public function pesertaIndex(Request $request)
     {
         $user = auth()->user();
         $userId = $user->id;
 
-        $query = Materi::with(['kategori'])
-            ->where('status', 'published');
+        // Ambil training IDs yang diikuti user (status disetujui)
+        $trainingIds = TrainingRegistration::where('user_id', $userId)
+            ->where('status', 'disetujui')
+            ->pluck('training_id')
+            ->toArray();
+
+        // Jika user tidak terdaftar di training apapun, tampilkan kosong
+        if (empty($trainingIds)) {
+            $materis = collect();
+            $totalMaterials = 0;
+            $completedMaterials = 0;
+            $inProgressMaterials = 0;
+            $totalFiles = 0;
+            $kategoris = Kategori::all();
+
+            return view('peserta.materi.index', compact(
+                'materis',
+                'totalMaterials',
+                'completedMaterials',
+                'inProgressMaterials',
+                'totalFiles',
+                'kategoris'
+            ));
+        }
+
+        // Query materi dari training yang diikuti
+        $query = Materi::with(['kategori', 'training'])
+            ->where('status', 'published')
+            ->whereIn('training_id', $trainingIds);
 
         // Search
         if ($request->filled('search')) {
@@ -120,30 +147,73 @@ class MateriController extends Controller
             });
         }
 
-        $materis = $query->orderBy('order')->paginate(12)->withQueryString();
+        // Order by order column or created_at
+        $materis = $query->orderBy('order', 'asc')
+                         ->orderBy('created_at', 'desc')
+                         ->paginate(12)
+                         ->withQueryString();
+
+        // Tambahkan progress untuk setiap materi
+        foreach ($materis as $materi) {
+            $progress = DB::table('materi_progress')
+                ->where('materi_id', $materi->id)
+                ->where('user_id', $userId)
+                ->first();
+            
+            $materi->progress = $progress ? $progress->progress : 0;
+            $materi->status_progress = $progress ? $progress->status : 'not_started';
+            
+            // Tambahkan method getMyProgress jika belum ada
+            if (!method_exists($materi, 'getMyProgress')) {
+                $materi->getMyProgress = function() use ($materi, $userId) {
+                    $progress = DB::table('materi_progress')
+                        ->where('materi_id', $materi->id)
+                        ->where('user_id', $userId)
+                        ->first();
+                    return $progress ? $progress->progress : 0;
+                };
+            }
+        }
 
         // Statistics
-        $totalMaterials = Materi::where('status', 'published')->count();
-        $completedMaterials = Materi::whereExists(function ($q) use ($userId) {
-            $q->select(DB::raw(1))
-              ->from('materi_progress')
-              ->whereColumn('materi_progress.materi_id', 'materis.id')
-              ->where('materi_progress.user_id', $userId)
-              ->where('materi_progress.status', 'completed');
-        })->count();
+        $totalMaterials = Materi::where('status', 'published')
+            ->whereIn('training_id', $trainingIds)
+            ->count();
+            
+        $completedMaterials = Materi::where('status', 'published')
+            ->whereIn('training_id', $trainingIds)
+            ->whereExists(function ($q) use ($userId) {
+                $q->select(DB::raw(1))
+                  ->from('materi_progress')
+                  ->whereColumn('materi_progress.materi_id', 'materis.id')
+                  ->where('materi_progress.user_id', $userId)
+                  ->where('materi_progress.status', 'completed');
+            })->count();
         
-        $inProgressMaterials = Materi::whereExists(function ($q) use ($userId) {
-            $q->select(DB::raw(1))
-              ->from('materi_progress')
-              ->whereColumn('materi_progress.materi_id', 'materis.id')
-              ->where('materi_progress.user_id', $userId)
-              ->where('materi_progress.status', 'in_progress');
-        })->count();
-        
-        $totalFiles = Materi::sum('total_files') ?? 0;
+        $inProgressMaterials = Materi::where('status', 'published')
+            ->whereIn('training_id', $trainingIds)
+            ->whereExists(function ($q) use ($userId) {
+                $q->select(DB::raw(1))
+                  ->from('materi_progress')
+                  ->whereColumn('materi_progress.materi_id', 'materis.id')
+                  ->where('materi_progress.user_id', $userId)
+                  ->where('materi_progress.status', 'in_progress');
+            })->count();
+
+        // Total files
+        $totalFiles = Materi::where('status', 'published')
+            ->whereIn('training_id', $trainingIds)
+            ->sum('total_files') ?? 0;
 
         // Kategori untuk filter
         $kategoris = Kategori::all();
+
+        // Debug (hapus setelah berhasil)
+        // \Log::info('Materi Data:', [
+        //     'training_ids' => $trainingIds,
+        //     'total_materi' => $totalMaterials,
+        //     'materis_count' => $materis->count(),
+        // ]);
 
         return view('peserta.materi.index', compact(
             'materis',

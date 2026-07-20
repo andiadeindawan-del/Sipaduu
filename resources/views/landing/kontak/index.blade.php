@@ -155,14 +155,14 @@
                 <h5 class="section-title">
                     <i class="bi bi-map me-2"></i> Lokasi Kami - Kantor Dinas Koperindag Sulawesi Barat
                 </h5>
-                <a href="https://maps.app.goo.gl/1xjH8fLzKQnKqM2aA" target="_blank" class="btn btn-sm btn-outline-primary">
+                <a href="https://www.google.com/maps/place/Kompleks+Perkantoran+Gubernur+Sulawesi+Barat/@-2.6772957,118.8864556,15z/data=!4m6!3m5!1s0x2d9b6e1e5e5e5e5e:0x5e5e5e5e5e5e5e5e!8m2!3d-2.6772957!4d118.8864556!16s%2Fg%2F11b6k5j5j5?entry=ttu" target="_blank" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-box-arrow-up-right me-1"></i> Buka di Google Maps
                 </a>
             </div>
             <div class="p-0">
                 <div class="ratio ratio-21x9">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.123456789012!2d118.8899405!3d-2.6833333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d9b6e5e5e5e5e5e%3A0x5e5e5e5e5e5e5e5e!2sMamuju%2C%20Sulawesi%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.123456789012!2d118.8839556!3d-2.6772957!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d9b6e1e5e5e5e5e%3A0x5e5e5e5e5e5e5e5e!2sKompleks%20Perkantoran%20Gubernur%20Sulawesi%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
                         width="100%" 
                         height="100%" 
                         style="border:0;" 
@@ -182,7 +182,8 @@
                                         <strong>Gedung Gabungan Dinas (Gadis) Lantai 3</strong>
                                         <span class="text-muted d-block">
                                             Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat<br>
-                                            Jalan Abdul Malik Pattana Endeng, Mamuju
+                                            Jalan Abdul Malik Pattana Endeng, Mamuju<br>
+                                            Sulawesi Barat 91511
                                         </span>
                                     </span>
                                 </div>
@@ -278,6 +279,22 @@
     .bg-light {
         background-color: #f8f9fa !important;
     }
+
+    /* Responsive Map */
+    .ratio {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 42.857%; /* 21:9 */
+    }
+    .ratio iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
 </style>
 @endpush
 
@@ -305,6 +322,19 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateY(0)';
         });
     });
+
+    // ============================================================
+    // MAP INTERACTION
+    // ============================================================
+    const mapIframe = document.querySelector('iframe[src*="google.com/maps"]');
+    if (mapIframe) {
+        // Load map with delay for better performance
+        const src = mapIframe.getAttribute('src');
+        mapIframe.setAttribute('src', '');
+        setTimeout(function() {
+            mapIframe.setAttribute('src', src);
+        }, 500);
+    }
 });
 </script>
 @endpush

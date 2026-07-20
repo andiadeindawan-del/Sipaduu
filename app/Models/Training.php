@@ -79,7 +79,7 @@ class Training extends Model
 
     /**
      * Relasi ke User melalui TrainingRegistration
-     * PERBAIKAN: HANYA gunakan kolom yang ADA di database
+     * PERBAIKAN: Gunakan training_registrations bukan training_participants
      */
     public function participants()
     {
@@ -113,50 +113,50 @@ class Training extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'published')
-                     ->where('tanggal_mulai', '>=', now());
+        return $query->where('trainings.status', 'published')
+                     ->where('trainings.tanggal_mulai', '>=', now());
     }
 
     public function scopeUpcoming($query)
     {
-        return $query->where('tanggal_mulai', '>=', now())
-                     ->where('status', 'published');
+        return $query->where('trainings.tanggal_mulai', '>=', now())
+                     ->where('trainings.status', 'published');
     }
 
     public function scopeOngoing($query)
     {
-        return $query->where('status', 'berjalan')
+        return $query->where('trainings.status', 'berjalan')
                      ->orWhere(function($q) {
-                         $q->where('status', 'published')
-                           ->where('tanggal_mulai', '<=', now())
-                           ->where('tanggal_selesai', '>=', now());
+                         $q->where('trainings.status', 'published')
+                           ->where('trainings.tanggal_mulai', '<=', now())
+                           ->where('trainings.tanggal_selesai', '>=', now());
                      });
     }
 
     public function scopeCompleted($query)
     {
-        return $query->where('status', 'selesai');
+        return $query->where('trainings.status', 'selesai');
     }
 
     public function scopeDraft($query)
     {
-        return $query->where('status', 'draft');
+        return $query->where('trainings.status', 'draft');
     }
 
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        return $query->where('trainings.status', 'published');
     }
 
     /**
      * Scope untuk training yang diikuti oleh user tertentu
-     * PERBAIKAN: Gunakan training_registrations
+     * PERBAIKAN: Gunakan registrations() dan klarifikasi tabel
      */
     public function scopeEnrolledBy($query, $userId)
     {
         return $query->whereHas('registrations', function($q) use ($userId) {
-            $q->where('user_id', $userId)
-              ->whereIn('status', ['pending', 'registered', 'approved', 'completed']);
+            $q->where('training_registrations.user_id', $userId)
+              ->whereIn('training_registrations.status', ['pending', 'registered', 'approved', 'completed']);
         });
     }
 
@@ -166,8 +166,8 @@ class Training extends Model
     public function scopeApprovedBy($query, $userId)
     {
         return $query->whereHas('registrations', function($q) use ($userId) {
-            $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed']);
+            $q->where('training_registrations.user_id', $userId)
+              ->whereIn('training_registrations.status', ['approved', 'completed']);
         });
     }
 
@@ -177,17 +177,17 @@ class Training extends Model
     public function scopeCompletedBy($query, $userId)
     {
         return $query->whereHas('registrations', function($q) use ($userId) {
-            $q->where('user_id', $userId)
-              ->where('status', 'completed');
+            $q->where('training_registrations.user_id', $userId)
+              ->where('training_registrations.status', 'completed');
         });
     }
 
     public function scopeSearch($query, $search)
     {
         return $query->where(function ($q) use ($search) {
-            $q->where('judul', 'like', "%$search%")
-              ->orWhere('deskripsi', 'like', "%$search%")
-              ->orWhere('lokasi', 'like', "%$search%");
+            $q->where('trainings.judul', 'like', "%$search%")
+              ->orWhere('trainings.deskripsi', 'like', "%$search%")
+              ->orWhere('trainings.lokasi', 'like', "%$search%");
         });
     }
 
@@ -251,7 +251,7 @@ class Training extends Model
     public function getParticipantsCountAttribute()
     {
         return $this->registrations()
-                    ->whereIn('status', ['approved', 'completed', 'registered'])
+                    ->whereIn('training_registrations.status', ['approved', 'completed', 'registered'])
                     ->count();
     }
 
@@ -332,7 +332,7 @@ class Training extends Model
     public function getUserRegistration($userId = null)
     {
         $userId = $userId ?? auth()->id();
-        return $this->registrations()->where('user_id', $userId)->first();
+        return $this->registrations()->where('training_registrations.user_id', $userId)->first();
     }
 
     /**
@@ -347,8 +347,8 @@ class Training extends Model
     {
         $userId = $userId ?? auth()->id();
         return $this->registrations()
-                    ->where('user_id', $userId)
-                    ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+                    ->where('training_registrations.user_id', $userId)
+                    ->whereIn('training_registrations.status', ['pending', 'registered', 'approved', 'completed'])
                     ->exists();
     }
 
@@ -356,8 +356,8 @@ class Training extends Model
     {
         $userId = $userId ?? auth()->id();
         return $this->registrations()
-                    ->where('user_id', $userId)
-                    ->whereIn('status', ['approved', 'completed'])
+                    ->where('training_registrations.user_id', $userId)
+                    ->whereIn('training_registrations.status', ['approved', 'completed'])
                     ->exists();
     }
 
@@ -365,8 +365,8 @@ class Training extends Model
     {
         $userId = $userId ?? auth()->id();
         return $this->registrations()
-                    ->where('user_id', $userId)
-                    ->where('status', 'completed')
+                    ->where('training_registrations.user_id', $userId)
+                    ->where('training_registrations.status', 'completed')
                     ->exists();
     }
 

@@ -66,12 +66,13 @@
                             <!-- Avatar -->
                             <div class="mb-3">
                                 @if(auth()->user()->avatar)
-                                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" 
-                                         alt="Avatar" class="rounded-circle" 
-                                         style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #e8ecf1;">
+                                    <img src="{{ Storage::url(auth()->user()->avatar) }}" 
+                                        alt="Avatar" 
+                                        class="rounded-circle mx-auto d-block" 
+                                        style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #e8ecf1;">
                                 @else
                                     <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center" 
-                                         style="width: 120px; height: 120px; background: #4e9af1; color: #fff; font-size: 48px; border: 4px solid #e8ecf1;">
+                                        style="width: 120px; height: 120px; background: #4e9af1; color: #fff; font-size: 48px; border: 4px solid #e8ecf1;">
                                         {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                                     </div>
                                 @endif

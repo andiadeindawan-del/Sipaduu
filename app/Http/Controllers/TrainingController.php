@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\User;
 use App\Models\Absensi;
 use App\Models\QuizAttempt;
+use App\Models\TrainingRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -20,15 +21,17 @@ class TrainingController extends Controller
     public function index(Request $request)
     {
         $query = Training::with(['kategori', 'trainer'])
-            ->withCount('participants');
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['approved', 'completed', 'registered']);
+            }]);
 
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', "%$search%")
-                  ->orWhere('deskripsi', 'like', "%$search%")
-                  ->orWhere('lokasi', 'like', "%$search%");
+                $q->where('trainings.judul', 'like', "%$search%")
+                  ->orWhere('trainings.deskripsi', 'like', "%$search%")
+                  ->orWhere('trainings.lokasi', 'like', "%$search%");
             });
         }
 
@@ -39,15 +42,15 @@ class TrainingController extends Controller
 
         // Filter by kategori
         if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
+            $query->where('trainings.kategori_id', $request->kategori_id);
         }
 
         // Filter by type
         if ($request->filled('tipe')) {
-            $query->where('tipe', $request->tipe);
+            $query->where('trainings.tipe', $request->tipe);
         }
 
-        $trainings = $query->latest()->paginate(10)->withQueryString();
+        $trainings = $query->latest('trainings.created_at')->paginate(10)->withQueryString();
 
         // Statistics
         $totalTrainings = Training::count();
@@ -76,70 +79,81 @@ class TrainingController extends Controller
 
     /**
      * Display a listing of trainings for peserta.
+     * PERBAIKAN: Gunakan registrations
      */
     public function pesertaIndex(Request $request)
     {
         $user = auth()->user();
         $userId = $user->id;
 
-        $query = Training::with(['kategori', 'trainer', 'participants'])
-            ->withCount('participants');
+        $query = Training::with(['kategori', 'trainer'])
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['approved', 'completed', 'registered']);
+            }]);
 
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', "%$search%")
-                  ->orWhere('deskripsi', 'like', "%$search%");
+                $q->where('trainings.judul', 'like', "%$search%")
+                  ->orWhere('trainings.deskripsi', 'like', "%$search%");
             });
         }
 
         // Filter by kategori
         if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
+            $query->where('trainings.kategori_id', $request->kategori_id);
         }
 
         // Filter by status
         $filter = $request->get('filter');
         if ($filter === 'ongoing') {
-            $query->whereHas('participants', function($q) use ($userId) {
-                $q->where('user_id', $userId);
+            $query->whereHas('registrations', function($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->whereIn('status', ['approved', 'completed', 'registered']);
             })->whereIn('trainings.status', ['published', 'berjalan']);
         } elseif ($filter === 'upcoming') {
-            $query->whereHas('participants', function($q) use ($userId) {
-                $q->where('user_id', $userId);
+            $query->whereHas('registrations', function($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->whereIn('status', ['approved', 'completed', 'registered']);
             })->where('trainings.tanggal_mulai', '>', now());
         } elseif ($filter === 'completed') {
-            $query->whereHas('participants', function($q) use ($userId) {
-                $q->where('user_id', $userId);
-            })->where('trainings.status', 'selesai');
+            $query->whereHas('registrations', function($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->where('status', 'completed');
+            });
         } else {
             // Show all trainings that user can access
             $query->where(function($q) use ($userId) {
-                $q->whereHas('participants', function($q2) use ($userId) {
-                    $q2->where('user_id', $userId);
+                $q->whereHas('registrations', function($q2) use ($userId) {
+                    $q2->where('user_id', $userId)
+                       ->whereIn('status', ['approved', 'completed', 'registered']);
                 })->orWhere('trainings.status', 'published');
             });
         }
 
-        $trainings = $query->orderBy('tanggal_mulai', 'asc')->paginate(12)->withQueryString();
+        $trainings = $query->orderBy('trainings.tanggal_mulai', 'asc')->paginate(12)->withQueryString();
 
         // Statistics
-        $totalTrainings = Training::whereHas('participants', function($q) use ($userId) {
-            $q->where('user_id', $userId);
+        $totalTrainings = Training::whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('status', ['approved', 'completed', 'registered']);
         })->count();
 
-        $ongoingTrainings = Training::whereHas('participants', function($q) use ($userId) {
-            $q->where('user_id', $userId);
+        $ongoingTrainings = Training::whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('status', ['approved', 'completed', 'registered']);
         })->whereIn('trainings.status', ['published', 'berjalan'])->count();
 
-        $upcomingTrainings = Training::whereHas('participants', function($q) use ($userId) {
-            $q->where('user_id', $userId);
+        $upcomingTrainings = Training::whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->whereIn('status', ['approved', 'completed', 'registered']);
         })->where('trainings.tanggal_mulai', '>', now())->count();
 
-        $completedTrainings = Training::whereHas('participants', function($q) use ($userId) {
-            $q->where('user_id', $userId);
-        })->where('trainings.status', 'selesai')->count();
+        $completedTrainings = Training::whereHas('registrations', function($q) use ($userId) {
+            $q->where('user_id', $userId)
+              ->where('status', 'completed');
+        })->count();
 
         // Kategori untuk filter
         $kategoris = Kategori::all();
@@ -156,6 +170,7 @@ class TrainingController extends Controller
 
     /**
      * Display riwayat pelatihan for peserta.
+     * PERBAIKAN: Gunakan registrations
      */
     public function history(Request $request)
     {
@@ -163,38 +178,38 @@ class TrainingController extends Controller
         $userId = $user->id;
 
         $query = Training::with(['kategori', 'trainer'])
-            ->whereHas('participants', function($q) use ($userId) {
+            ->whereHas('registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('training_participants.status', ['completed', 'selesai', 'finished']);
+                  ->where('status', 'completed');
             });
 
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', "%$search%")
-                  ->orWhere('deskripsi', 'like', "%$search%");
+                $q->where('trainings.judul', 'like', "%$search%")
+                  ->orWhere('trainings.deskripsi', 'like', "%$search%");
             });
         }
 
         // Filter by kategori
         if ($request->filled('kategori_id')) {
-            $query->where('kategori_id', $request->kategori_id);
+            $query->where('trainings.kategori_id', $request->kategori_id);
         }
 
         // Filter by tahun
         if ($request->filled('tahun')) {
-            $query->whereYear('tanggal_selesai', $request->tahun);
+            $query->whereYear('trainings.tanggal_selesai', $request->tahun);
         }
 
-        $trainings = $query->orderBy('tanggal_selesai', 'desc')
+        $trainings = $query->orderBy('trainings.tanggal_selesai', 'desc')
                           ->paginate(10)
                           ->withQueryString();
 
         // Statistics untuk riwayat
-        $totalHistory = Training::whereHas('participants', function($q) use ($userId) {
+        $totalHistory = Training::whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('training_participants.status', ['completed', 'selesai', 'finished']);
+              ->where('status', 'completed');
         })->count();
 
         // Hitung rata-rata progress
@@ -205,9 +220,9 @@ class TrainingController extends Controller
         $avgProgress = $totalHistory > 0 ? round($totalProgress / $totalHistory) : 0;
 
         // Ambil tahun untuk filter
-        $tahunList = Training::whereHas('participants', function($q) use ($userId) {
+        $tahunList = Training::whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('training_participants.status', ['completed', 'selesai', 'finished']);
+              ->where('status', 'completed');
         })->selectRaw('YEAR(tanggal_selesai) as tahun')
           ->distinct()
           ->orderBy('tahun', 'desc')
@@ -249,6 +264,7 @@ class TrainingController extends Controller
 
     /**
      * Display the specified training for peserta.
+     * PERBAIKAN: Gunakan registrations
      */
     public function pesertaShow(Training $training)
     {
@@ -256,17 +272,19 @@ class TrainingController extends Controller
         $userId = $user->id;
         
         // Check if training is published or user is enrolled
-        if ($training->status !== 'published' && !$training->participants()->where('user_id', $userId)->exists()) {
+        $isEnrolled = $training->registrations()
+            ->where('user_id', $userId)
+            ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+            ->exists();
+            
+        if ($training->status !== 'published' && !$isEnrolled) {
             abort(404);
         }
         
-        // Check if user is enrolled
-        $isEnrolled = $training->participants()->where('user_id', $userId)->exists();
-        
         // Check if user has completed this training
-        $isCompleted = $training->participants()
+        $isCompleted = $training->registrations()
             ->where('user_id', $userId)
-            ->wherePivot('status', 'completed')
+            ->where('status', 'completed')
             ->exists();
 
         // Get progress
@@ -282,7 +300,9 @@ class TrainingController extends Controller
 
         $training->load(['kategori', 'trainer', 'materis', 'quizzes']);
         
-        $participantsCount = $training->participants()->count();
+        $participantsCount = $training->registrations()
+            ->whereIn('status', ['approved', 'completed', 'registered'])
+            ->count();
         $availableSlots = $training->kapasitas ? $training->kapasitas - $participantsCount : null;
 
         return view('peserta.trainings.show', compact(
@@ -343,9 +363,11 @@ class TrainingController extends Controller
      */
     public function show(Training $training)
     {
-        $training->load(['kategori', 'trainer', 'participants']);
+        $training->load(['kategori', 'trainer']);
         
-        $participantsCount = $training->participants()->count();
+        $participantsCount = $training->registrations()
+            ->whereIn('status', ['approved', 'completed', 'registered'])
+            ->count();
         $availableSlots = $training->kapasitas ? $training->kapasitas - $participantsCount : null;
         
         return view('admin.trainings.show', compact('training', 'participantsCount', 'availableSlots'));
@@ -402,7 +424,10 @@ class TrainingController extends Controller
     public function destroy(Training $training)
     {
         // Check if training has participants
-        $participantsCount = $training->participants()->count();
+        $participantsCount = $training->registrations()
+            ->whereIn('status', ['approved', 'completed', 'registered'])
+            ->count();
+            
         if ($participantsCount > 0) {
             return redirect()->route('admin.trainings.index')
                             ->with('error', "⚠️ Pelatihan tidak dapat dihapus karena masih memiliki {$participantsCount} peserta.");
@@ -445,21 +470,26 @@ class TrainingController extends Controller
 
     /**
      * Get participants list for a training.
+     * PERBAIKAN: Gunakan registrations
      */
     public function participants(Training $training)
     {
-        $training->load('participants');
-        $participants = $training->participants()->paginate(15);
+        $participants = $training->registrations()
+            ->with(['user'])
+            ->paginate(15);
         
         return view('admin.trainings.participants', compact('training', 'participants'));
     }
 
     /**
      * Export training participants to CSV.
+     * PERBAIKAN: Gunakan registrations
      */
     public function export(Training $training)
     {
-        $participants = $training->participants()->get();
+        $participants = $training->registrations()
+            ->with(['user'])
+            ->get();
 
         $headers = [
             'Content-Type' => 'text/csv',
@@ -473,8 +503,6 @@ class TrainingController extends Controller
                 'No',
                 'Nama Peserta',
                 'Email',
-                'NIK',
-                'Role',
                 'Status Pendaftaran',
                 'Tanggal Daftar'
             ]);
@@ -483,12 +511,10 @@ class TrainingController extends Controller
             foreach ($participants as $participant) {
                 fputcsv($file, [
                     $no++,
-                    $participant->nama,
-                    $participant->email,
-                    $participant->nik ?? '-',
-                    ucfirst($participant->role),
-                    $participant->pivot->status ?? 'registered',
-                    $participant->pivot->created_at ? $participant->pivot->created_at->format('d/m/Y H:i') : '-',
+                    $participant->user->nama ?? $participant->user->name ?? '-',
+                    $participant->user->email ?? '-',
+                    $participant->status,
+                    $participant->created_at ? $participant->created_at->format('d/m/Y H:i') : '-',
                 ]);
             }
 
@@ -506,57 +532,71 @@ class TrainingController extends Controller
         $trainings = Training::where('status', 'published')
             ->where('tanggal_mulai', '>=', now())
             ->with(['kategori', 'trainer'])
-            ->withCount('participants')
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['approved', 'completed', 'registered']);
+            }])
             ->latest()
             ->paginate(12);
 
         return view('peserta.trainings.available', compact('trainings'));
     }
 
-    /**
-     * Enroll user to training.
-     */
-    public function enroll(Request $request, Training $training)
-    {
-        $user = auth()->user();
+/**
+ * Enroll user to training.
+ * PERBAIKAN: Gunakan status 'pending' sesuai ENUM
+ */
+public function enroll(Request $request, Training $training)
+{
+    $user = auth()->user();
 
-        if ($training->participants()->where('user_id', $user->id)->exists()) {
-            return redirect()->back()
-                            ->with('error', '⚠️ Anda sudah terdaftar dalam pelatihan ini.');
-        }
-
-        if ($training->kapasitas && $training->participants()->count() >= $training->kapasitas) {
-            return redirect()->back()
-                            ->with('error', '⚠️ Kuota pelatihan sudah penuh.');
-        }
-
-        if ($training->status !== 'published' || $training->tanggal_mulai < now()) {
-            return redirect()->back()
-                            ->with('error', '⚠️ Pelatihan sudah tidak tersedia.');
-        }
-
-        $training->participants()->attach($user->id, [
-            'status' => 'registered',
-            'registered_at' => now()
-        ]);
-
+    // Cek apakah user sudah terdaftar
+    if ($training->registrations()->where('user_id', $user->id)->exists()) {
         return redirect()->back()
-                        ->with('success', '✅ Berhasil mendaftar pelatihan.');
+                        ->with('error', '⚠️ Anda sudah terdaftar dalam pelatihan ini.');
     }
+
+    // Cek kuota
+    $participantsCount = $training->registrations()
+        ->where('status', 'disetujui')
+        ->count();
+        
+    if ($training->kapasitas && $participantsCount >= $training->kapasitas) {
+        return redirect()->back()
+                        ->with('error', '⚠️ Kuota pelatihan sudah penuh.');
+    }
+
+    // Cek status training
+    if ($training->status !== 'published' || $training->tanggal_mulai < now()) {
+        return redirect()->back()
+                        ->with('error', '⚠️ Pelatihan sudah tidak tersedia.');
+    }
+
+    // PERBAIKAN: Gunakan status 'pending' sesuai ENUM
+    $training->registrations()->create([
+        'user_id' => $user->id,
+        'status' => 'pending',
+    ]);
+
+    return redirect()->back()
+                    ->with('success', '✅ Berhasil mendaftar pelatihan. Mohon tunggu konfirmasi admin.');
+}
 
     /**
      * Unenroll user from training.
+     * PERBAIKAN: Gunakan registrations
      */
     public function unenroll(Request $request, Training $training)
     {
         $user = auth()->user();
 
-        if (!$training->participants()->where('user_id', $user->id)->exists()) {
+        $registration = $training->registrations()->where('user_id', $user->id)->first();
+
+        if (!$registration) {
             return redirect()->back()
                             ->with('error', '⚠️ Anda tidak terdaftar dalam pelatihan ini.');
         }
 
-        $training->participants()->detach($user->id);
+        $registration->delete();
 
         return redirect()->back()
                         ->with('success', '✅ Berhasil membatalkan pendaftaran pelatihan.');
@@ -564,12 +604,15 @@ class TrainingController extends Controller
 
     /**
      * Complete training for user.
+     * PERBAIKAN: Gunakan registrations
      */
     public function complete(Request $request, Training $training)
     {
         $user = auth()->user();
 
-        if (!$training->participants()->where('user_id', $user->id)->exists()) {
+        $registration = $training->registrations()->where('user_id', $user->id)->first();
+
+        if (!$registration) {
             return redirect()->back()
                             ->with('error', '⚠️ Anda tidak terdaftar dalam pelatihan ini.');
         }
@@ -581,9 +624,8 @@ class TrainingController extends Controller
                             ->with('error', '⚠️ Anda harus menyelesaikan semua materi dan quiz terlebih dahulu.');
         }
 
-        $training->participants()->updateExistingPivot($user->id, [
+        $registration->update([
             'status' => 'completed',
-            'completed_at' => now()
         ]);
 
         return redirect()->back()
@@ -592,12 +634,16 @@ class TrainingController extends Controller
 
     /**
      * Get training progress for user.
+     * PERBAIKAN: Gunakan registrations
      */
     public function progress(Training $training)
     {
         $user = auth()->user();
         
-        $isEnrolled = $training->participants()->where('user_id', $user->id)->exists();
+        $isEnrolled = $training->registrations()
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+            ->exists();
         
         if (!$isEnrolled) {
             return response()->json([
@@ -621,7 +667,9 @@ class TrainingController extends Controller
     public function getTraining($id)
     {
         $training = Training::with(['kategori', 'trainer', 'materis', 'quizzes'])
-            ->withCount('participants')
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['approved', 'completed', 'registered']);
+            }])
             ->findOrFail($id);
 
         return response()->json([

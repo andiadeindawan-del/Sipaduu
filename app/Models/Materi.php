@@ -578,7 +578,13 @@ class Materi extends Model
         if (!$userId) {
             return 0;
         }
-        return $this->getUserProgress($userId);
+        
+        $progress = DB::table('materi_progress')
+            ->where('materi_id', $this->id)
+            ->where('user_id', $userId)
+            ->first();
+        
+        return $progress ? $progress->progress : 0;
     }
 
     /**
@@ -760,4 +766,8 @@ class Materi extends Model
             $this->attributes['total_files'] = 0;
         }
     }
+
+
+
+
 }

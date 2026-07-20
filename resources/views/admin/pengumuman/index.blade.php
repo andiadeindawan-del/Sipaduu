@@ -191,18 +191,11 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ $item->judul }}</p>
-                                @if($item->deskripsi)
-                                <p class="text-muted small mb-0">{{ Str::limit($item->deskripsi, 60) }}</p>
-                                @endif
-                                @if($item->training)
-                                <span class="badge text-bg-info">{{ $item->training->judul }}</span>
-                                @endif
                             </div>
                         </td>
                         <td>
                             @if($item->kategori)
-                            <span class="badge" style="background-color: {{ $item->kategori->warna ?? '#6c757d' }}; color: #fff;">
-                                <i class="bi {{ $item->kategori->icon ?? 'bi-tag' }} me-1"></i>
+                            <span class="" >
                                 {{ $item->kategori->nama }}
                             </span>
                             @else
@@ -212,12 +205,10 @@
                         <td>
                             <div class="small">
                                 <div>
-                                    <i class="bi bi-calendar3 me-1"></i>
                                     {{ $item->tanggal ? $item->tanggal->format('d/m/Y') : '-' }}
                                 </div>
                                 @if($item->tanggal_selesai)
                                 <div>
-                                    <i class="bi bi-calendar-x me-1"></i>
                                     {{ $item->tanggal_selesai->format('d/m/Y') }}
                                 </div>
                                 @endif
@@ -237,16 +228,16 @@
                             </span>
                         </td>
                         <td class="text-end">
-                            <div class="btn-group btn-group-sm" role="group">
+                            <div class="d-flex gap-1 justify-content-end" role="group">
                                 <a href="{{ route('admin.pengumuman.show', $item->id) }}" 
-                                   class="btn btn-outline-info" title="Lihat">
+                                   class="btn btn-info" title="Lihat">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.pengumuman.edit', $item->id) }}" 
-                                   class="btn btn-outline-warning" title="Edit">
+                                   class="btn btn-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <button type="button" class="btn btn-outline-danger" 
+                                <button type="button" class="btn btn-danger" 
                                         data-bs-toggle="modal" data-bs-target="#deleteModal{{ $item->id }}" 
                                         title="Hapus">
                                     <i class="bi bi-trash"></i>

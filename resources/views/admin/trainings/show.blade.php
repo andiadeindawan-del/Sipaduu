@@ -9,25 +9,9 @@
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Detail Pelatihan</h1>
-            <p class="text-muted mb-0">Informasi lengkap pelatihan {{ $training->judul }}.</p>
         </div>
     </div>
-    <div class="heading-actions">
-        <div class="d-flex gap-2">
-            <a href="{{ route('admin.trainings.edit', $training->id) }}" class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a href="{{ route('admin.trainings.participants', $training->id) }}" class="btn btn-info btn-sm">
-                <i class="bi bi-people"></i> Peserta
-            </a>
-            <a href="{{ route('admin.trainings.export', $training->id) }}" class="btn btn-success btn-sm">
-                <i class="bi bi-download"></i> Export
-            </a>
-            <a href="{{ route('admin.trainings.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
-        </div>
-    </div>
+  
 </div>
 @endsection
 
@@ -294,11 +278,16 @@
                                 <form action="{{ route('admin.trainings.destroy', $training->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger" 
+                                    <button type="submit" class="btn btn-danger" 
                                             onclick="return confirm('Yakin ingin menghapus pelatihan ini?')">
                                         <i class="bi bi-trash me-1"></i> Hapus
                                     </button>
                                 </form>
+                                <div class="heading-actions">
+                                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-secondary btn-sm">
+                                        <i class="bi bi-arrow-left"></i> Kembali
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

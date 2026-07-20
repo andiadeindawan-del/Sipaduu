@@ -121,7 +121,6 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ $materi->judul }}</p>
-                               
                             </div>
                         </td>
                         <td>

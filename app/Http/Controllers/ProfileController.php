@@ -78,12 +78,13 @@ class ProfileController extends Controller
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
             // Delete old avatar
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
             }
             
             $path = $request->file('avatar')->store('avatars', 'public');
-            $validated['avatar'] = $path;
+            $validated['foto'] = $path;
+            unset($validated['avatar']);
         }
 
         // Check if email changed
@@ -146,12 +147,12 @@ class ProfileController extends Controller
         ]);
 
         // Delete old avatar
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
         }
 
         $path = $request->file('avatar')->store('avatars', 'public');
-        $user->update(['avatar' => $path]);
+        $user->update(['foto' => $path]);
 
         // Redirect based on user role
         if ($user->role === 'admin') {
@@ -170,11 +171,11 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
         }
 
-        $user->update(['avatar' => null]);
+        $user->update(['foto' => null]);
 
         // Redirect based on user role
         if ($user->role === 'admin') {
@@ -198,8 +199,8 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // Delete avatar if exists
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
         }
 
         Auth::logout();

@@ -52,7 +52,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="position-relative">
-                    <img src="https://placehold.co/600x400/4e9af1/fff?text=Tentang+Kami" 
+                    <img src="{{ asset('assets/images/OIP (1).jpg') }}" 
                          alt="Tentang Kami" 
                          class="img-fluid rounded-4 shadow-lg" style="width: 100%;">
                     <div class="position-absolute bottom-0 start-0 translate-middle-y ms-4 mb-4">

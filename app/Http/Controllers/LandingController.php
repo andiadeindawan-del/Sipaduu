@@ -7,6 +7,7 @@ use App\Models\Sertifikat;
 use App\Models\User;
 use App\Models\Materi;
 use App\Models\Quiz;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -130,13 +131,14 @@ class LandingController extends Controller
         $trainings = $query->orderBy('tanggal_mulai', 'asc')->paginate(12);
 
         // Categories for filter
-        $kategoris = \App\Models\Kategori::all();
+        $kategoris = Kategori::all();
 
         return view('landing.pelatihan.index', compact('trainings', 'kategoris'));
     }
 
     /**
      * Display training detail.
+     * PERBAIKAN: Gunakan view landing/pelatihan_detail/index
      */
     public function pelatihanDetail($id)
     {
@@ -149,7 +151,12 @@ class LandingController extends Controller
         $progress = 0;
 
         if (auth()->check()) {
-            $isEnrolled = $training->participants()->where('user_id', auth()->id())->exists();
+            // PERBAIKAN: Gunakan registrations() bukan participants()
+            $isEnrolled = $training->registrations()
+                ->where('user_id', auth()->id())
+                ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+                ->exists();
+                
             if ($isEnrolled) {
                 $totalMateri = $training->materis()->count();
                 $completedMateri = $training->materis()
@@ -169,7 +176,8 @@ class LandingController extends Controller
             }
         }
 
-        return view('landing.pelatihan-detail', compact('training', 'isEnrolled', 'progress'));
+        // PERBAIKAN: Gunakan landing.pelatihan_detail.index
+        return view('landing.pelatihan-detail.index', compact('training', 'isEnrolled', 'progress'));
     }
 
     /**

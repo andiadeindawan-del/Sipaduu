@@ -207,21 +207,7 @@
                             </span>
                         </div>
 
-                        <!-- Progress Bar -->
-                        @if($training->isRegistered())
-                            @php
-                                $progress = $training->getProgress() ?? 0;
-                            @endphp
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span>Progress</span>
-                                    <span>{{ $progress }}%</span>
-                                </div>
-                                <div class="progress" style="height: 6px;">
-                                    <div class="progress-bar bg-success" style="width: {{ $progress }}%;"></div>
-                                </div>
-                            </div>
-                        @endif
+                      
 
                         <!-- Actions -->
                         <div class="d-flex gap-2 mt-2">

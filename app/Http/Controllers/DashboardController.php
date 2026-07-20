@@ -9,6 +9,7 @@ use App\Models\Materi;
 use App\Models\Kategori;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use App\Models\TrainingRegistration;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -34,7 +35,9 @@ class DashboardController extends Controller
      */
     public function adminDashboard(): View
     {
-        // Statistics
+        // ============================================================
+        // STATISTICS
+        // ============================================================
         $totalUsers = User::count();
         $totalTrainings = Training::count();
         $totalCertificates = Sertifikat::count();
@@ -55,6 +58,7 @@ class DashboardController extends Controller
         $upcomingTrainings = Training::where('status', 'published')
             ->where('tanggal_mulai', '>=', now())
             ->count();
+        $ongoingTrainings = Training::where('status', 'berjalan')->count();
 
         // Certificate status
         $activeCertificates = Sertifikat::where('status', 'aktif')->count();
@@ -66,12 +70,94 @@ class DashboardController extends Controller
         $completedQuizAttempts = QuizAttempt::where('status', 'completed')->count();
         $averageQuizScore = QuizAttempt::where('status', 'completed')->avg('score') ?? 0;
 
-        // Recent data
-        $recentUsers = User::latest()->limit(5)->get();
+        // ============================================================
+        // PENDAFTARAN MENUNGGU KONFIRMASI
+        // ============================================================
+        $pendingRegistrations = TrainingRegistration::with(['user', 'training'])
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Statistik pendaftaran
+        $totalPending = TrainingRegistration::where('status', 'pending')->count();
+        $totalApproved = TrainingRegistration::where('status', 'disetujui')->count();
+        $totalRejected = TrainingRegistration::where('status', 'ditolak')->count();
+        $totalCancelled = TrainingRegistration::where('status', 'dibatalkan')->count();
+
+        // ============================================================
+        // PELATIHAN BERJALAN
+        // ============================================================
+        $ongoingTrainingsList = Training::where('status', 'berjalan')
+            ->orWhere(function($q) {
+                $q->where('status', 'published')
+                  ->where('tanggal_mulai', '<=', now())
+                  ->where('tanggal_selesai', '>=', now());
+            })
+            ->orderBy('tanggal_mulai', 'asc')
+            ->limit(5)
+            ->get();
+
+        // ============================================================
+        // AKTIVITAS TERBARU
+        // ============================================================
+        $recentActivities = collect();
+
+        // Aktivitas dari pendaftaran
+        $registrationActivities = TrainingRegistration::with(['user', 'training'])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'title' => 'Pendaftaran Baru',
+                    'description' => ($item->user->nama ?? $item->user->name) . ' mendaftar ' . ($item->training->judul ?? 'Pelatihan'),
+                    'icon' => 'bi-person-plus',
+                    'color' => 'primary',
+                    'time' => $item->created_at->diffForHumans(),
+                ];
+            });
+
+        // Aktivitas dari user baru
+        $userActivities = User::orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'title' => 'User Baru',
+                    'description' => ($item->nama ?? $item->name) . ' bergabung sebagai ' . ($item->role ?? 'User'),
+                    'icon' => 'bi-person',
+                    'color' => 'success',
+                    'time' => $item->created_at->diffForHumans(),
+                ];
+            });
+
+        $recentActivities = $registrationActivities->concat($userActivities)
+            ->sortByDesc('time')
+            ->take(10);
+
+        // ============================================================
+        // RINGKASAN HARI INI
+        // ============================================================
+        $todayRegistrations = TrainingRegistration::whereDate('created_at', now()->toDateString())->count();
+        $todayAttendance = 0; // Sesuaikan dengan model absensi
+        $todayMaterials = Materi::whereDate('created_at', now()->toDateString())->count();
+        $todayCertificates = Sertifikat::whereDate('created_at', now()->toDateString())->count();
+
+        // ============================================================
+        // PENGGUNA TERBARU
+        // ============================================================
+        $recentUsers = User::orderBy('created_at', 'desc')->limit(10)->get();
+
+        // ============================================================
+        // RECENT DATA
+        // ============================================================
         $recentTrainings = Training::with('kategori')->latest()->limit(5)->get();
         $recentCertificates = Sertifikat::with('user')->latest()->limit(5)->get();
 
-        // Chart data (for dashboard charts)
+        // ============================================================
+        // CHART DATA
+        // ============================================================
         $chartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
         $chartData = [
             'users' => $this->getMonthlyData(User::class, 'created_at'),
@@ -97,9 +183,21 @@ class DashboardController extends Controller
             'draftTrainings',
             'completedTrainings',
             'upcomingTrainings',
+            'ongoingTrainings',
             'activeCertificates',
             'pendingCertificates',
             'revokedCertificates',
+            'pendingRegistrations',
+            'totalPending',
+            'totalApproved',
+            'totalRejected',
+            'totalCancelled',
+            'ongoingTrainingsList',
+            'recentActivities',
+            'todayRegistrations',
+            'todayAttendance',
+            'todayMaterials',
+            'todayCertificates',
             'recentUsers',
             'recentTrainings',
             'recentCertificates',

@@ -112,7 +112,7 @@
     </div>
 
     <!-- Materi Cards -->
-    @if($materis && $materis->count() > 0)
+    @if(isset($materis) && $materis->count() > 0)
         <div class="row g-4">
             @foreach($materis as $materi)
             <div class="col-12 col-md-6 col-xl-4">
@@ -132,7 +132,7 @@
                                 {{ $materi->status_label ?? ucfirst($materi->status ?? 'Draft') }}
                             </span>
                             @php
-                                $progress = $materi->getMyProgress();
+                                $progress = method_exists($materi, 'getMyProgress') ? $materi->getMyProgress() : ($materi->progress ?? 0);
                             @endphp
                             @if($progress > 0)
                                 <span class="badge bg-success">
@@ -156,7 +156,7 @@
 
                         <!-- Description -->
                         <p class="text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            {{ Str::limit($materi->deskripsi, 100) }}
+                            {{ Str::limit($materi->deskripsi ?? '', 100) }}
                         </p>
 
                         <!-- Info -->

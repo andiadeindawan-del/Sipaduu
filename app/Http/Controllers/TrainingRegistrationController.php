@@ -4,86 +4,112 @@ namespace App\Http\Controllers;
 
 use App\Models\TrainingRegistration;
 use App\Models\Training;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 
 class TrainingRegistrationController extends Controller
 {
     /**
-     * Display a listing of the training registrations (Admin Monitoring).
+     * Display a listing of registrations (Admin)
      */
     public function index(Request $request)
     {
-        $query = TrainingRegistration::with(['user', 'training']);
+        $query = TrainingRegistration::with(['training', 'user']);
 
-        // Filter search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->whereHas('user', function($q2) use ($search) {
-                    $q2->where('name', 'LIKE', "%{$search}%")
-                      ->orWhere('email', 'LIKE', "%{$search}%")
-                      ->orWhere('nama', 'LIKE', "%{$search}%");
-                })->orWhereHas('training', function($q2) use ($search) {
-                    $q2->where('judul', 'LIKE', "%{$search}%");
-                });
-            });
-        }
-
-        // Filter status
+        // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter training
+        // Filter by training
         if ($request->filled('training_id')) {
             $query->where('training_id', $request->training_id);
         }
 
-        $registrations = $query->orderBy('created_at', 'desc')->paginate(10);
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+            })->orWhereHas('training', function($q) use ($search) {
+                $q->where('judul', 'like', "%$search%");
+            });
+        }
 
-        // Stats
-        $totalRegistrations = TrainingRegistration::count();
-        $activeRegistrations = TrainingRegistration::whereIn('status', ['approved', 'registered', 'completed'])->count();
-        $pendingRegistrations = TrainingRegistration::where('status', 'pending')->count();
-        $cancelledRegistrations = TrainingRegistration::whereIn('status', ['cancelled', 'rejected'])->count();
+        $registrations = $query->orderBy('created_at', 'desc')
+                               ->paginate(15)
+                               ->withQueryString();
 
-        // Training summary
-        $trainingSummary = $this->getTrainingSummary();
-
-        // Trainings for filter
         $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+
+        // Statistics
+        $totalPending = TrainingRegistration::where('status', 'pending')->count();
+        $totalApproved = TrainingRegistration::where('status', 'disetujui')->count();
+        $totalRejected = TrainingRegistration::where('status', 'ditolak')->count();
+        $totalCancelled = TrainingRegistration::where('status', 'dibatalkan')->count();
 
         return view('admin.pendaftaran.index', compact(
             'registrations',
-            'totalRegistrations',
-            'activeRegistrations',
-            'pendingRegistrations',
-            'cancelledRegistrations',
             'trainings',
-            'trainingSummary'
+            'totalPending',
+            'totalApproved',
+            'totalRejected',
+            'totalCancelled'
         ));
     }
 
     /**
-     * Show the form for creating a new registration (Disabled - Peserta register sendiri).
+     * Show the form for creating a new registration.
      */
     public function create()
     {
-        return redirect()->route('admin.pendaftaran.index')
-            ->with('info', '⚠️ Pendaftaran sekarang dilakukan oleh peserta melalui dashboard peserta.');
+        $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+        $users = User::where('role', 'peserta')->orderBy('name')->get();
+        
+        return view('admin.pendaftaran.create', compact('trainings', 'users'));
     }
 
     /**
-     * Store a newly created registration in storage (Disabled - Peserta register sendiri).
+     * Store a newly created registration.
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'training_id' => 'required|exists:trainings,id',
+            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:pending,disetujui,ditolak,dibatalkan',
+        ]);
+
+        // Cek duplikasi
+        $exists = TrainingRegistration::where('training_id', $request->training_id)
+            ->where('user_id', $request->user_id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()
+                ->with('error', '⚠️ User sudah terdaftar di pelatihan ini.')
+                ->withInput();
+        }
+
+        // Cek kuota jika status disetujui
+        if ($request->status === 'disetujui') {
+            $training = Training::find($request->training_id);
+            $participantsCount = TrainingRegistration::where('training_id', $request->training_id)
+                ->where('status', 'disetujui')
+                ->count();
+                
+            if ($training->kapasitas && $participantsCount >= $training->kapasitas) {
+                return redirect()->back()
+                    ->with('error', '⚠️ Kuota pelatihan sudah penuh!')
+                    ->withInput();
+            }
+        }
+
+        TrainingRegistration::create($request->all());
+
         return redirect()->route('admin.pendaftaran.index')
-            ->with('info', '⚠️ Pendaftaran sekarang dilakukan oleh peserta melalui dashboard peserta.');
+            ->with('success', '✅ Pendaftaran berhasil ditambahkan.');
     }
 
     /**
@@ -91,19 +117,10 @@ class TrainingRegistrationController extends Controller
      */
     public function show($id)
     {
-        $registration = TrainingRegistration::with(['user', 'training', 'approver'])
+        $registration = TrainingRegistration::with(['training', 'user'])
             ->findOrFail($id);
 
-        // Get quiz results for this registration
-        $quizAttempts = $registration->quizAttempts()
-            ->with('quiz')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        // Check if certificate exists
-        $certificate = $registration->certificate;
-
-        return view('admin.pendaftaran.show', compact('registration', 'quizAttempts', 'certificate'));
+        return view('admin.pendaftaran.show', compact('registration'));
     }
 
     /**
@@ -111,87 +128,98 @@ class TrainingRegistrationController extends Controller
      */
     public function edit($id)
     {
-        $registration = TrainingRegistration::with(['user', 'training'])
-            ->findOrFail($id);
-
-        $users = User::where('role', 'peserta')->orderBy('nama')->get();
+        $registration = TrainingRegistration::with(['training', 'user'])->findOrFail($id);
         $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+        $users = User::where('role', 'peserta')->orderBy('name')->get();
 
-        return view('admin.pendaftaran.edit', compact('registration', 'users', 'trainings'));
+        return view('admin.pendaftaran.edit', compact('registration', 'trainings', 'users'));
     }
 
     /**
-     * Update the specified registration in storage.
+     * Update the specified registration.
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            'training_id' => 'required|exists:trainings,id',
-            'status' => 'required|in:pending,approved,rejected,cancelled,registered,completed',
-            'notes' => 'nullable|string|max:500',
-            'registered_at' => 'nullable|date',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
         $registration = TrainingRegistration::findOrFail($id);
 
-        // Cek duplikat (kecuali dirinya sendiri)
-        $exists = TrainingRegistration::where('user_id', $request->user_id)
-            ->where('training_id', $request->training_id)
+        $request->validate([
+            'training_id' => 'required|exists:trainings,id',
+            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:pending,disetujui,ditolak,dibatalkan',
+        ]);
+
+        // Cek duplikasi (kecuali dirinya sendiri)
+        $exists = TrainingRegistration::where('training_id', $request->training_id)
+            ->where('user_id', $request->user_id)
             ->where('id', '!=', $id)
             ->exists();
 
         if ($exists) {
             return redirect()->back()
-                ->with('error', '❌ Peserta sudah terdaftar di pelatihan ini!')
+                ->with('error', '⚠️ User sudah terdaftar di pelatihan ini.')
                 ->withInput();
         }
 
-        DB::beginTransaction();
-        try {
-            $registration->update([
-                'user_id' => $request->user_id,
-                'training_id' => $request->training_id,
-                'status' => $request->status,
-                'registered_at' => $request->registered_at ?? $registration->registered_at,
-                'notes' => $request->notes,
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('admin.pendaftaran.index')
-                ->with('success', '✅ Pendaftaran berhasil diperbarui!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', '❌ Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
+        // Cek kuota jika status berubah menjadi disetujui
+        if ($request->status === 'disetujui' && $registration->status !== 'disetujui') {
+            $training = Training::find($request->training_id);
+            $participantsCount = TrainingRegistration::where('training_id', $request->training_id)
+                ->where('status', 'disetujui')
+                ->count();
+                
+            if ($training->kapasitas && $participantsCount >= $training->kapasitas) {
+                return redirect()->back()
+                    ->with('error', '⚠️ Kuota pelatihan sudah penuh!')
+                    ->withInput();
+            }
         }
+
+        $registration->update($request->all());
+
+        return redirect()->route('admin.pendaftaran.index')
+            ->with('success', '✅ Pendaftaran berhasil diperbarui.');
+    }
+
+    /**
+     * Remove the specified registration.
+     */
+    public function destroy($id)
+    {
+        $registration = TrainingRegistration::findOrFail($id);
+        $registration->delete();
+
+        return redirect()->route('admin.pendaftaran.index')
+            ->with('success', '✅ Pendaftaran berhasil dihapus.');
     }
 
     /**
      * Approve registration.
+     * PERBAIKAN: Gunakan status 'disetujui'
      */
     public function approve($id)
     {
-        $registration = TrainingRegistration::findOrFail($id);
+        $registration = TrainingRegistration::with('training')->findOrFail($id);
 
-        if ($registration->status === 'approved') {
+        // Cek apakah sudah disetujui
+        if ($registration->status === 'disetujui') {
             return redirect()->back()
                 ->with('warning', '⚠️ Pendaftaran sudah disetujui sebelumnya.');
         }
 
+        // Cek kuota
+        $training = $registration->training;
+        $participantsCount = TrainingRegistration::where('training_id', $training->id)
+            ->where('status', 'disetujui')
+            ->count();
+            
+        if ($training->kapasitas && $participantsCount >= $training->kapasitas) {
+            return redirect()->back()
+                ->with('error', '⚠️ Kuota pelatihan sudah penuh!');
+        }
+
+        // PERBAIKAN: Gunakan 'disetujui' bukan 'approved'
         $registration->update([
-            'status' => 'approved',
-            'approved_at' => now(),
-            'approved_by' => auth()->id(),
+            'status' => 'disetujui',
         ]);
 
         return redirect()->route('admin.pendaftaran.index')
@@ -200,302 +228,121 @@ class TrainingRegistrationController extends Controller
 
     /**
      * Reject registration.
+     * PERBAIKAN: Gunakan status 'ditolak'
      */
-    public function reject(Request $request, $id)
+    public function reject($id)
     {
-        $request->validate([
-            'reason' => 'nullable|string|max:500',
-        ]);
-
         $registration = TrainingRegistration::findOrFail($id);
 
-        if ($registration->status === 'rejected') {
+        // Cek apakah sudah ditolak
+        if ($registration->status === 'ditolak') {
             return redirect()->back()
                 ->with('warning', '⚠️ Pendaftaran sudah ditolak sebelumnya.');
         }
 
+        // PERBAIKAN: Gunakan 'ditolak' bukan 'rejected'
         $registration->update([
-            'status' => 'rejected',
-            'approved_at' => now(),
-            'approved_by' => auth()->id(),
-            'rejection_reason' => $request->reason,
+            'status' => 'ditolak',
         ]);
 
         return redirect()->route('admin.pendaftaran.index')
-            ->with('success', '✅ Pendaftaran berhasil ditolak!');
+            ->with('success', '✅ Pendaftaran berhasil ditolak.');
     }
 
     /**
      * Cancel registration.
+     * PERBAIKAN: Gunakan status 'dibatalkan'
      */
     public function cancel($id)
     {
         $registration = TrainingRegistration::findOrFail($id);
 
-        if ($registration->status === 'cancelled') {
+        // Cek apakah sudah dibatalkan
+        if ($registration->status === 'dibatalkan') {
             return redirect()->back()
                 ->with('warning', '⚠️ Pendaftaran sudah dibatalkan sebelumnya.');
         }
 
+        // PERBAIKAN: Gunakan 'dibatalkan' bukan 'cancelled'
         $registration->update([
-            'status' => 'cancelled',
+            'status' => 'dibatalkan',
         ]);
 
         return redirect()->route('admin.pendaftaran.index')
-            ->with('success', '✅ Pendaftaran berhasil dibatalkan!');
+            ->with('success', '✅ Pendaftaran berhasil dibatalkan.');
     }
 
     /**
-     * Remove the specified registration from storage.
+     * Bulk approve registrations.
+     * PERBAIKAN: Gunakan status 'disetujui'
      */
-    public function destroy($id)
-    {
-        $registration = TrainingRegistration::findOrFail($id);
-        
-        // Cek apakah sudah punya sertifikat
-        if ($registration->certificate) {
-            return redirect()->back()
-                ->with('error', '❌ Pendaftaran tidak dapat dihapus karena sudah memiliki sertifikat!');
-        }
-
-        // Cek apakah sudah punya attempt quiz
-        if ($registration->quizAttempts()->count() > 0) {
-            return redirect()->back()
-                ->with('error', '❌ Pendaftaran tidak dapat dihapus karena sudah mengerjakan quiz!');
-        }
-
-        DB::beginTransaction();
-        try {
-            $registration->delete();
-            DB::commit();
-
-            return redirect()->route('admin.pendaftaran.index')
-                ->with('success', '✅ Pendaftaran berhasil dihapus!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', '❌ Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    // ============================================================
-    // PESERTA REGISTRATION METHODS
-    // ============================================================
-
-    /**
-     * Display peserta registrations.
-     */
-    public function pesertaIndex()
-    {
-        $user = Auth::user();
-        
-        $registrations = TrainingRegistration::where('user_id', $user->id)
-            ->with(['training', 'certificate'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        $totalRegistrations = TrainingRegistration::where('user_id', $user->id)->count();
-        $activeRegistrations = TrainingRegistration::where('user_id', $user->id)
-            ->whereIn('status', ['approved', 'registered', 'completed'])
-            ->count();
-        $pendingRegistrations = TrainingRegistration::where('user_id', $user->id)
-            ->where('status', 'pending')
-            ->count();
-
-        return view('peserta.pendaftaran.index', compact(
-            'registrations',
-            'totalRegistrations',
-            'activeRegistrations',
-            'pendingRegistrations'
-        ));
-    }
-
-    /**
-     * Register peserta to training.
-     */
-    public function pesertaStore(Request $request)
+    public function bulkApprove(Request $request)
     {
         $request->validate([
-            'training_id' => 'required|exists:trainings,id',
+            'ids' => 'required|array',
+            'ids.*' => 'exists:training_registrations,id',
         ]);
 
-        $user = Auth::user();
-        $trainingId = $request->training_id;
-
-        // Cek apakah sudah terdaftar
-        $exists = TrainingRegistration::where('user_id', $user->id)
-            ->where('training_id', $trainingId)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()
-                ->with('error', '❌ Anda sudah terdaftar di pelatihan ini!');
-        }
-
-        // Cek kapasitas
-        $training = Training::find($trainingId);
-        $registeredCount = TrainingRegistration::where('training_id', $trainingId)
-            ->whereIn('status', ['approved', 'registered', 'completed'])
-            ->count();
-
-        if ($training->kapasitas && $registeredCount >= $training->kapasitas) {
-            return redirect()->back()
-                ->with('error', '❌ Kuota pelatihan sudah penuh!');
-        }
-
-        DB::beginTransaction();
-        try {
-            $registrationNumber = TrainingRegistration::generateRegistrationNumber();
-
-            TrainingRegistration::create([
-                'user_id' => $user->id,
-                'training_id' => $trainingId,
-                'registration_number' => $registrationNumber,
-                'status' => 'pending',
-                'registered_at' => now(),
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('peserta.pendaftaran.index')
-                ->with('success', '✅ Pendaftaran berhasil! Menunggu verifikasi admin.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', '❌ Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Cancel peserta registration.
-     */
-    public function pesertaCancel($id)
-    {
-        $user = Auth::user();
-        
-        $registration = TrainingRegistration::where('user_id', $user->id)
-            ->findOrFail($id);
-
-        if ($registration->status === 'approved' || $registration->status === 'completed') {
-            return redirect()->back()
-                ->with('error', '❌ Pendaftaran yang sudah disetujui tidak dapat dibatalkan. Hubungi admin.');
-        }
-
-        $registration->update([
-            'status' => 'cancelled',
-        ]);
-
-        return redirect()->route('peserta.pendaftaran.index')
-            ->with('success', '✅ Pendaftaran berhasil dibatalkan!');
-    }
-
-    /**
-     * Export peserta registrations.
-     */
-    public function pesertaExport()
-    {
-        $user = Auth::user();
-        
-        $registrations = TrainingRegistration::where('user_id', $user->id)
-            ->with('training')
-            ->orderBy('created_at', 'desc')
+        // Cek kuota untuk setiap training
+        $registrations = TrainingRegistration::whereIn('id', $request->ids)
+            ->where('status', 'pending')
             ->get();
 
         if ($registrations->isEmpty()) {
-            return redirect()->route('peserta.pendaftaran.index')
-                ->with('warning', '⚠️ Belum ada data pendaftaran untuk diexport.');
+            return redirect()->back()
+                ->with('warning', '⚠️ Tidak ada pendaftaran yang bisa disetujui.');
         }
 
-        $filename = 'pendaftaran_saya_' . date('Y-m-d_His') . '.csv';
+        $errors = [];
+        $successCount = 0;
 
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-
-        $callback = function() use ($registrations) {
-            $handle = fopen('php://output', 'w');
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            fputcsv($handle, [
-                'No',
-                'Pelatihan',
-                'Tanggal Daftar',
-                'Status',
-                'Nomor Registrasi'
-            ]);
-
-            foreach ($registrations as $index => $reg) {
-                fputcsv($handle, [
-                    $index + 1,
-                    $reg->training->judul ?? '-',
-                    $reg->registered_at ? $reg->registered_at->format('d/m/Y H:i') : '-',
-                    $reg->status,
-                    $reg->registration_number ?? '-'
-                ]);
+        foreach ($registrations as $registration) {
+            $training = $registration->training;
+            $participantsCount = TrainingRegistration::where('training_id', $training->id)
+                ->where('status', 'disetujui')
+                ->count();
+                
+            if ($training->kapasitas && $participantsCount >= $training->kapasitas) {
+                $errors[] = "Kuota pelatihan '{$training->judul}' sudah penuh!";
+                continue;
             }
 
-            fclose($handle);
-        };
-
-        return response()->stream($callback, 200, $headers);
-    }
-
-    // ============================================================
-    // ADDITIONAL METHODS
-    // ============================================================
-
-    /**
-     * Get training summary for dashboard.
-     */
-    private function getTrainingSummary()
-    {
-        $trainings = Training::where('status', 'published')->get();
-        $summary = [];
-
-        foreach ($trainings as $training) {
-            $total = TrainingRegistration::where('training_id', $training->id)->count();
-            $approved = TrainingRegistration::where('training_id', $training->id)
-                ->whereIn('status', ['approved', 'registered', 'completed'])
-                ->count();
-            $pending = TrainingRegistration::where('training_id', $training->id)
-                ->where('status', 'pending')
-                ->count();
-            $rejected = TrainingRegistration::where('training_id', $training->id)
-                ->whereIn('status', ['rejected', 'cancelled'])
-                ->count();
-
-            $summary[] = [
-                'training' => $training->judul,
-                'total' => $total,
-                'approved' => $approved,
-                'pending' => $pending,
-                'rejected' => $rejected,
-                'kapasitas' => $training->kapasitas,
-            ];
+            // PERBAIKAN: Gunakan 'disetujui'
+            $registration->update(['status' => 'disetujui']);
+            $successCount++;
         }
 
-        return $summary;
+        $message = "✅ {$successCount} pendaftaran berhasil disetujui.";
+        if (!empty($errors)) {
+            $message .= " <br>⚠️ " . implode('<br>⚠️ ', $errors);
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 
     /**
      * Export registrations to CSV.
      */
-    public function export()
+    public function export(Request $request)
     {
-        $registrations = TrainingRegistration::with(['user', 'training'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = TrainingRegistration::with(['training', 'user']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('training_id')) {
+            $query->where('training_id', $request->training_id);
+        }
+
+        $registrations = $query->get();
 
         if ($registrations->isEmpty()) {
-            return redirect()->route('admin.pendaftaran.index')
-                ->with('warning', '⚠️ Tidak ada data pendaftaran untuk diexport.');
+            return redirect()->back()
+                ->with('warning', '⚠️ Tidak ada data untuk diexport.');
         }
 
         $filename = 'pendaftaran_' . date('Y-m-d_His') . '.csv';
-
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
@@ -512,20 +359,16 @@ class TrainingRegistrationController extends Controller
                 'Pelatihan',
                 'Tanggal Daftar',
                 'Status',
-                'Tanggal Approve',
-                'Catatan'
             ]);
 
-            foreach ($registrations as $index => $reg) {
+            foreach ($registrations as $index => $registration) {
                 fputcsv($handle, [
                     $index + 1,
-                    $reg->user->nama ?? $reg->user->name ?? '-',
-                    $reg->user->email ?? '-',
-                    $reg->training->judul ?? '-',
-                    $reg->registered_at ? $reg->registered_at->format('d/m/Y H:i') : ($reg->created_at ? $reg->created_at->format('d/m/Y H:i') : '-'),
-                    $reg->status,
-                    $reg->approved_at ? $reg->approved_at->format('d/m/Y H:i') : '-',
-                    $reg->notes ?? '-'
+                    $registration->user->name ?? '-',
+                    $registration->user->email ?? '-',
+                    $registration->training->judul ?? '-',
+                    $registration->created_at ? $registration->created_at->format('d/m/Y H:i') : '-',
+                    $registration->status_label,
                 ]);
             }
 
@@ -536,29 +379,32 @@ class TrainingRegistrationController extends Controller
     }
 
     /**
+     * Get pending count for dashboard badge.
+     */
+    public function pendingCount()
+    {
+        $count = TrainingRegistration::where('status', 'pending')->count();
+        return response()->json(['count' => $count]);
+    }
+
+    /**
      * Get training info for AJAX.
      */
     public function getTrainingInfo($id)
     {
-        $training = Training::with(['trainer', 'kategori'])->findOrFail($id);
-        $participantsCount = TrainingRegistration::where('training_id', $id)
-            ->whereIn('status', ['approved', 'registered', 'completed'])
-            ->count();
-        
+        $training = Training::withCount(['registrations as participants_count' => function($q) {
+            $q->where('status', 'disetujui');
+        }])->findOrFail($id);
+
         return response()->json([
             'success' => true,
             'training' => [
                 'id' => $training->id,
                 'judul' => $training->judul,
-                'deskripsi' => $training->deskripsi,
-                'status' => $training->status,
-                'tanggal_mulai' => $training->tanggal_mulai,
-                'tanggal_selesai' => $training->tanggal_selesai,
                 'kapasitas' => $training->kapasitas,
-                'participants_count' => $participantsCount,
-                'trainer' => $training->trainer ? [
-                    'nama' => $training->trainer->nama ?? $training->trainer->name,
-                ] : null,
+                'participants_count' => $training->participants_count,
+                'available_slots' => $training->kapasitas ? $training->kapasitas - $training->participants_count : null,
+                'is_full' => $training->kapasitas ? $training->participants_count >= $training->kapasitas : false,
             ]
         ]);
     }

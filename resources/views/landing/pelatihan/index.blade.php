@@ -79,11 +79,11 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card-feature p-0 overflow-hidden h-100">
                         <!-- Image -->
-                        @if($training->gambar)
+                       @if($training->gambar)
                         <img src="{{ asset('storage/' . $training->gambar) }}" 
-                             alt="{{ $training->judul }}" 
-                             class="img-fluid w-100" 
-                             style="height: 200px; object-fit: cover;">
+                            alt="{{ $training->judul }}" 
+                            class="img-fluid w-100" 
+                            style="height: 200px; object-fit: cover;">
                         @else
                         <div class="bg-light text-center py-5" style="height: 200px;">
                             <i class="bi bi-image fs-1 text-muted"></i>
