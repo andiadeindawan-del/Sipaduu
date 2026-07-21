@@ -29,7 +29,7 @@ class PesertaController extends Controller
         // Total Training yang diikuti
         $totalTrainings = DB::table('training_registrations')
             ->where('user_id', $userId)
-            ->whereIn('status', ['approved', 'completed'])
+            ->whereIn('status', ['disetujui'])
             ->count();
 
         // Total Sertifikat yang didapat
@@ -51,7 +51,7 @@ class PesertaController extends Controller
         // Total Materi
         $totalMaterials = Materi::whereHas('training.registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed']);
+              ->whereIn('status', ['disetujui']);
         })->count();
 
         // Materi yang sudah selesai
@@ -63,7 +63,7 @@ class PesertaController extends Controller
         // Total Quiz yang tersedia
         $totalQuizzes = Quiz::whereHas('training.registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed']);
+              ->whereIn('status', ['disetujui']);
         })->count();
 
         // Quiz yang sudah selesai
@@ -85,7 +85,7 @@ class PesertaController extends Controller
             ->join('trainings', 'training_registrations.training_id', '=', 'trainings.id')
             ->leftJoin('kategoris', 'trainings.kategori_id', '=', 'kategoris.id')
             ->where('training_registrations.user_id', $userId)
-            ->whereIn('training_registrations.status', ['approved', 'completed'])
+            ->whereIn('training_registrations.status', ['disetujui'])
             ->where('trainings.tanggal_mulai', '<=', now())
             ->where('trainings.tanggal_selesai', '>=', now())
             ->where('trainings.status', 'published')
@@ -229,7 +229,7 @@ class PesertaController extends Controller
         $ongoingTrainings = DB::table('training_registrations')
             ->join('trainings', 'training_registrations.training_id', '=', 'trainings.id')
             ->where('training_registrations.user_id', $userId)
-            ->whereIn('training_registrations.status', ['approved'])
+            ->whereIn('training_registrations.status', ['disetujui'])
             ->where('trainings.tanggal_mulai', '<=', now())
             ->where('trainings.tanggal_selesai', '>=', now())
             ->count();
@@ -240,7 +240,7 @@ class PesertaController extends Controller
         $upcomingTrainings = DB::table('training_registrations')
             ->join('trainings', 'training_registrations.training_id', '=', 'trainings.id')
             ->where('training_registrations.user_id', $userId)
-            ->whereIn('training_registrations.status', ['approved', 'pending'])
+            ->whereIn('training_registrations.status', ['disetujui', 'pending'])
             ->where('trainings.tanggal_mulai', '>', now())
             ->where('trainings.status', 'published')
             ->orderBy('trainings.tanggal_mulai', 'asc')
@@ -289,7 +289,7 @@ class PesertaController extends Controller
         $materis = Materi::with(['kategori', 'training'])
             ->whereHas('training.registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed']);
+                  ->whereIn('status', ['disetujui']);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(12);
@@ -309,7 +309,7 @@ class PesertaController extends Controller
 
         $totalMaterials = Materi::whereHas('training.registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed']);
+              ->whereIn('status', ['disetujui']);
         })->count();
 
         $completedMaterials = DB::table('materi_progress')
@@ -338,7 +338,7 @@ class PesertaController extends Controller
         $materi = Materi::with(['kategori', 'training'])
             ->whereHas('training.registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed']);
+                  ->whereIn('status', ['disetujui']);
             })
             ->findOrFail($id);
 
@@ -366,7 +366,7 @@ class PesertaController extends Controller
         $quizzes = Quiz::with(['training'])
             ->whereHas('training.registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed']);
+                  ->whereIn('status', ['disetujui']);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -386,7 +386,7 @@ class PesertaController extends Controller
 
         $totalQuizzes = Quiz::whereHas('training.registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed']);
+              ->whereIn('status', ['disetujui']);
         })->count();
 
         $completedQuizzes = DB::table('quiz_attempts')
@@ -412,7 +412,7 @@ class PesertaController extends Controller
         $quiz = Quiz::with(['training', 'questions'])
             ->whereHas('training.registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed']);
+                  ->whereIn('status', ['disetujui']);
             })
             ->findOrFail($id);
 
@@ -545,7 +545,7 @@ class PesertaController extends Controller
         // Training yang tersedia untuk absen
         $availableTrainings = Training::whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed']);
+              ->whereIn('status', ['disetujui']);
         })
         ->where('status', 'published')
         ->where('tanggal_mulai', '<=', now())
@@ -580,7 +580,7 @@ class PesertaController extends Controller
         $isRegistered = DB::table('training_registrations')
             ->where('user_id', $userId)
             ->where('training_id', $request->training_id)
-            ->whereIn('status', ['approved', 'completed'])
+            ->whereIn('status', ['disetujui'])
             ->exists();
 
         if (!$isRegistered) {
@@ -621,7 +621,7 @@ class PesertaController extends Controller
         
         $totalTrainings = DB::table('training_registrations')
             ->where('user_id', $user->id)
-            ->whereIn('status', ['approved', 'completed'])
+            ->whereIn('status', ['disetujui'])
             ->count();
 
         $completedTrainings = DB::table('training_registrations')
@@ -744,7 +744,7 @@ class PesertaController extends Controller
             ->join('trainings', 'training_registrations.training_id', '=', 'trainings.id')
             ->leftJoin('kategoris', 'trainings.kategori_id', '=', 'kategoris.id')
             ->where('training_registrations.user_id', $userId)
-            ->whereIn('training_registrations.status', ['pending', 'approved', 'completed']);
+            ->whereIn('training_registrations.status', ['pending', 'disetujui']);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -796,13 +796,13 @@ class PesertaController extends Controller
         // Statistics
         $totalTrainings = DB::table('training_registrations')
             ->where('user_id', $userId)
-            ->whereIn('status', ['approved', 'completed'])
+            ->whereIn('status', ['disetujui'])
             ->count();
 
         $ongoingTrainings = DB::table('training_registrations')
             ->join('trainings', 'training_registrations.training_id', '=', 'trainings.id')
             ->where('training_registrations.user_id', $userId)
-            ->whereIn('training_registrations.status', ['approved'])
+            ->whereIn('training_registrations.status', ['disetujui'])
             ->where('trainings.tanggal_mulai', '<=', now())
             ->where('trainings.tanggal_selesai', '>=', now())
             ->count();
@@ -840,7 +840,7 @@ class PesertaController extends Controller
         $training = Training::with(['kategori', 'trainer', 'materis'])
             ->whereHas('registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed']);
+                  ->whereIn('status', ['disetujui']);
             })
             ->findOrFail($id);
 

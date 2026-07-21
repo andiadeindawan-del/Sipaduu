@@ -22,7 +22,7 @@ class TrainingController extends Controller
     {
         $query = Training::with(['kategori', 'trainer'])
             ->withCount(['registrations as participants_count' => function($q) {
-                $q->whereIn('status', ['approved', 'completed', 'registered']);
+                $q->whereIn('status', ['disetujui']);
             }]);
 
         // Search
@@ -88,7 +88,7 @@ class TrainingController extends Controller
 
         $query = Training::with(['kategori', 'trainer'])
             ->withCount(['registrations as participants_count' => function($q) {
-                $q->whereIn('status', ['approved', 'completed', 'registered']);
+                $q->whereIn('status', ['disetujui']);
             }]);
 
         // Search
@@ -110,12 +110,12 @@ class TrainingController extends Controller
         if ($filter === 'ongoing') {
             $query->whereHas('registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed', 'registered']);
+                  ->whereIn('status', ['disetujui']);
             })->whereIn('trainings.status', ['published', 'berjalan']);
         } elseif ($filter === 'upcoming') {
             $query->whereHas('registrations', function($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->whereIn('status', ['approved', 'completed', 'registered']);
+                  ->whereIn('status', ['disetujui']);
             })->where('trainings.tanggal_mulai', '>', now());
         } elseif ($filter === 'completed') {
             $query->whereHas('registrations', function($q) use ($userId) {
@@ -127,7 +127,7 @@ class TrainingController extends Controller
             $query->where(function($q) use ($userId) {
                 $q->whereHas('registrations', function($q2) use ($userId) {
                     $q2->where('user_id', $userId)
-                       ->whereIn('status', ['approved', 'completed', 'registered']);
+                       ->whereIn('status', ['disetujui']);
                 })->orWhere('trainings.status', 'published');
             });
         }
@@ -137,17 +137,17 @@ class TrainingController extends Controller
         // Statistics
         $totalTrainings = Training::whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed', 'registered']);
+              ->whereIn('status', ['disetujui']);
         })->count();
 
         $ongoingTrainings = Training::whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed', 'registered']);
+              ->whereIn('status', ['disetujui']);
         })->whereIn('trainings.status', ['published', 'berjalan'])->count();
 
         $upcomingTrainings = Training::whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
-              ->whereIn('status', ['approved', 'completed', 'registered']);
+              ->whereIn('status', ['disetujui']);
         })->where('trainings.tanggal_mulai', '>', now())->count();
 
         $completedTrainings = Training::whereHas('registrations', function($q) use ($userId) {
@@ -276,7 +276,7 @@ class TrainingController extends Controller
         // Check if training is published or user is enrolled
         $isEnrolled = $training->registrations()
             ->where('user_id', $userId)
-            ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->exists();
             
         if ($training->status !== 'published' && !$isEnrolled) {
@@ -303,7 +303,7 @@ class TrainingController extends Controller
         $training->load(['kategori', 'trainer', 'materis', 'quizzes']);
         
         $participantsCount = $training->registrations()
-            ->whereIn('status', ['approved', 'completed', 'registered'])
+            ->whereIn('status', ['disetujui'])
             ->count();
         $availableSlots = $training->kapasitas ? $training->kapasitas - $participantsCount : null;
 
@@ -368,7 +368,7 @@ class TrainingController extends Controller
         $training->load(['kategori', 'trainer']);
         
         $participantsCount = $training->registrations()
-            ->whereIn('status', ['approved', 'completed', 'registered'])
+            ->whereIn('status', ['disetujui'])
             ->count();
         $availableSlots = $training->kapasitas ? $training->kapasitas - $participantsCount : null;
         
@@ -427,7 +427,7 @@ class TrainingController extends Controller
     {
         // Check if training has participants
         $participantsCount = $training->registrations()
-            ->whereIn('status', ['approved', 'completed', 'registered'])
+            ->whereIn('status', ['disetujui'])
             ->count();
             
         if ($participantsCount > 0) {
@@ -535,7 +535,7 @@ class TrainingController extends Controller
             ->where('tanggal_mulai', '>=', now())
             ->with(['kategori', 'trainer'])
             ->withCount(['registrations as participants_count' => function($q) {
-                $q->whereIn('status', ['approved', 'completed', 'registered']);
+                $q->whereIn('status', ['disetujui']);
             }])
             ->latest()
             ->paginate(12);
@@ -644,7 +644,7 @@ public function enroll(Request $request, Training $training)
         
         $isEnrolled = $training->registrations()
             ->where('user_id', $user->id)
-            ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->exists();
         
         if (!$isEnrolled) {
@@ -670,7 +670,7 @@ public function enroll(Request $request, Training $training)
     {
         $training = Training::with(['kategori', 'trainer', 'materis', 'quizzes'])
             ->withCount(['registrations as participants_count' => function($q) {
-                $q->whereIn('status', ['approved', 'completed', 'registered']);
+                $q->whereIn('status', ['disetujui']);
             }])
             ->findOrFail($id);
 

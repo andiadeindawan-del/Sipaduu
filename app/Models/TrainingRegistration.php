@@ -67,17 +67,17 @@ class TrainingRegistration extends Model
 
     public function scopeRegistered($query)
     {
-        return $query->where('status', 'registered');
+        return $query->where('status', 'terdaftar');
     }
 
     public function scopeApproved($query)
     {
-        return $query->where('status', 'approved');
+        return $query->where('status', 'disetujui');
     }
 
     public function scopeCompleted($query)
     {
-        return $query->where('status', 'completed');
+        return $query->where('status', 'selesai');
     }
 
     public function scopeRejected($query)
@@ -108,9 +108,9 @@ class TrainingRegistration extends Model
     {
         $labels = [
             'pending' => '⏳ Pending',
-            'registered' => '📋 Registered',
-            'approved' => '✅ Approved',
-            'completed' => '🎉 Completed',
+            'terdaftar' => '📋 Registered',
+            'disetujui' => '✅ Approved',
+            'selesai' => '🎉 Completed',
             'rejected' => '❌ Rejected',
             'cancelled' => '❌ Cancelled',
         ];
@@ -121,9 +121,9 @@ class TrainingRegistration extends Model
     {
         $classes = [
             'pending' => 'badge bg-warning',
-            'registered' => 'badge bg-info',
-            'approved' => 'badge bg-success',
-            'completed' => 'badge bg-success',
+            'terdaftar' => 'badge bg-info',
+            'disetujui' => 'badge bg-success',
+            'selesai' => 'badge bg-success',
             'rejected' => 'badge bg-danger',
             'cancelled' => 'badge bg-secondary',
         ];
@@ -132,12 +132,12 @@ class TrainingRegistration extends Model
 
     public function getIsApprovedAttribute()
     {
-        return $this->status === 'approved' || $this->status === 'completed';
+        return $this->status === 'disetujui' || $this->status === 'selesai';
     }
 
     public function getIsCompletedAttribute()
     {
-        return $this->status === 'completed';
+        return $this->status === 'selesai';
     }
 
     public function getIsPendingAttribute()
@@ -166,17 +166,17 @@ class TrainingRegistration extends Model
 
     public function isRegistered()
     {
-        return $this->status === 'registered';
+        return $this->status === 'terdaftar';
     }
 
     public function isApproved()
     {
-        return $this->status === 'approved' || $this->status === 'completed';
+        return $this->status === 'disetujui' || $this->status === 'selesai';
     }
 
     public function isCompleted()
     {
-        return $this->status === 'completed';
+        return $this->status === 'selesai';
     }
 
     public function isRejected()
@@ -201,7 +201,7 @@ class TrainingRegistration extends Model
 
     public function approve()
     {
-        $this->update(['status' => 'approved']);
+        $this->update(['status' => 'disetujui']);
         return $this;
     }
 
@@ -219,13 +219,13 @@ class TrainingRegistration extends Model
 
     public function markAsCompleted()
     {
-        $this->update(['status' => 'completed']);
+        $this->update(['status' => 'selesai']);
         return $this;
     }
 
     public function getProgress()
     {
-        if ($this->status === 'completed') {
+        if ($this->status === 'selesai') {
             return 100;
         }
         
