@@ -171,7 +171,7 @@
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">No</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Status</th>
@@ -190,9 +190,7 @@
                                 <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->nama ?? $user->name }}" 
                                      class="rounded-circle" width="36" height="36" style="object-fit: cover;">
                                 @else
-                                <div class="avatar-text rounded-circle bg-light text-dark">
-                                    {{ strtoupper(substr($user->nama ?? $user->name, 0, 1)) }}
-                                </div>
+                               
                                 @endif
                                 <div>
                                     <p class="fw-semibold mb-0">{{ $user->nama ?? $user->name }}</p>

@@ -702,7 +702,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // FILTER AUTO SUBMIT
     // ============================================================
-    document.querySelectorAll('select[name="status"], select[name="materi_id"]').forEach(function(select) {
+    document.querySelectorAll('form[method="GET"] select[name="status"], form[method="GET"] select[name="materi_id"]').forEach(function(select) {
         select.addEventListener('change', function() {
             this.closest('form').submit();
         });

@@ -180,7 +180,7 @@
                     <table class="table align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>Judul Pelatihan</th>
                                 <th>Kategori</th>
                                 <th>Peserta</th>
@@ -218,7 +218,7 @@
                     <table class="table align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -260,7 +260,7 @@
                     <table class="table align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>Nomor Sertifikat</th>
                                 <th>Nama Sertifikat</th>
                                 <th>Peserta</th>
@@ -298,7 +298,7 @@
                     <table class="table align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>Peserta</th>
                                 <th>Pelatihan</th>
                                 <th>Tanggal Daftar</th>

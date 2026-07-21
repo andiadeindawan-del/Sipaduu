@@ -245,10 +245,12 @@ class TrainingController extends Controller
     private function calculateProgress($training, $userId)
     {
         $totalMaterials = $training->materis()->count();
-        $completedMaterials = $training->materis()
-            ->whereHas('progress', function($q) use ($userId) {
-                $q->where('user_id', $userId)->where('status', 'completed');
-            })->count();
+        $completedMaterials = \Illuminate\Support\Facades\DB::table('materi_progress')
+            ->join('materis', 'materi_progress.materi_id', '=', 'materis.id')
+            ->where('materis.training_id', $training->id)
+            ->where('materi_progress.user_id', $userId)
+            ->where('materi_progress.status', 'completed')
+            ->count();
         
         $totalQuizzes = $training->quizzes()->count();
         $completedQuizzes = $training->quizzes()

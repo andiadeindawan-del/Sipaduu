@@ -9,17 +9,11 @@
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Pertanyaan Quiz</h1>
-            <p class="text-muted mb-0">
-                @if(isset($quiz))
-                    Quiz: <strong>{{ $quiz->judul }}</strong>
-                @else
-                    Kelola semua pertanyaan quiz.
-                @endif
-            </p>
+           
         </div>
     </div>
     <div class="heading-actions d-flex gap-2">
-        <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
+        <a href="{{ route('admin.quiz.index') }}" class="btn btn-secondary btn-sm">
             <i class="bi bi-arrow-left"></i> Kembali
         </a>
     </div>
@@ -117,7 +111,7 @@
                     <option value="multiple_choice" {{ request('type') == 'multiple_choice' ? 'selected' : '' }}>Pilihan Ganda</option>
                     <option value="essay" {{ request('type') == 'essay' ? 'selected' : '' }}>Essay</option>
                 </select>
-                <button type="submit" class="btn btn-outline-primary btn-sm">
+                <button type="submit" class="btn btn-primary btn-sm">
                     <i class="bi bi-search"></i> Cari
                 </button>
                 <a href="{{ route('admin.quiz.questions.index', $quiz->id ?? '') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
@@ -172,7 +166,7 @@
                         <th style="width: 40px;">
                             <input type="checkbox" id="selectAll" class="form-check-input">
                         </th>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">No</th>
                         <th>Pertanyaan</th>
                         <th>Tipe</th>
                         <th>Nilai</th>
@@ -189,7 +183,6 @@
                         <td>{{ $questions->firstItem() + $index }}</td>
                         <td>
                             <div>
-                                <!-- PERBAIKI: Hanya gunakan question, hapus pertanyaan -->
                                 <p class="fw-semibold mb-0">{{ Str::limit($question->question, 60) }}</p>
                                 @if(isset($question->type) && $question->type == 'multiple_choice')
                                 <div class="text-muted small">
@@ -221,18 +214,17 @@
                                 ];
                                 $type = $typeMap[$question->type] ?? ['label' => $question->type ?? 'Pilihan Ganda', 'class' => 'text-bg-secondary'];
                             @endphp
-                            <span class="badge {{ $type['class'] }}">
+                            <span class="text-muted">
                                 {{ $type['label'] }}
                             </span>
                         </td>
                         <td>
-                            <span class="badge text-bg-secondary">
-                                <i class="bi bi-star me-1"></i>
+                            <span class="text-muted">
                                 {{ $question->points ?? $question->score ?? 1 }}
                             </span>
                         </td>
                         <td>
-                            <span class="badge text-bg-light">{{ $question->order ?? $loop->iteration }}</span>
+                            <span class="text-muted">{{ $question->order ?? $loop->iteration }}</span>
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm" role="group">
