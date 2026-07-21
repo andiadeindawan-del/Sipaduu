@@ -30,8 +30,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             KategoriSeeder::class,
             TrainingSeeder::class,
-            MateriSeeder::class,
-            QuizSeeder::class,
             AgendaSeeder::class,
             PengumumanSeeder::class,
         ]);

@@ -219,6 +219,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('materi/{materi}/preview/{index?}', [MateriController::class, 'preview'])->name('materi.preview');
 
     // ============================================================
+    // TAMBAHAN ROUTE UNTUK AJAX MATERI
+    // ============================================================
+    Route::get('/materi/by-training/{trainingId}', [MateriController::class, 'getByTraining'])->name('materi.by-training');
+    Route::get('/materi/all', [MateriController::class, 'getAll'])->name('materi.all');
+
+    // ============================================================
     // QUIZ MANAGEMENT
     // ============================================================
     Route::resource('quiz', QuizController::class);
@@ -277,27 +283,27 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // REGISTRATION MANAGEMENT (PENDAFTARAN) - ADMIN MONITORING
     // ============================================================
     Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
-    // Route untuk export harus di atas route {id} agar tidak dianggap sebagai parameter
-    Route::get('/export', [TrainingRegistrationController::class, 'export'])->name('export');
-    Route::get('/training-info/{id}', [TrainingRegistrationController::class, 'getTrainingInfo'])->name('training-info');
-    
-    // Route untuk bulk actions
-    Route::post('/bulk-approve', [TrainingRegistrationController::class, 'bulkApprove'])->name('bulk-approve');
-    
-    // Route untuk actions pada registrasi tertentu
-    Route::put('/{id}/approve', [TrainingRegistrationController::class, 'approve'])->name('approve');
-    Route::put('/{id}/reject', [TrainingRegistrationController::class, 'reject'])->name('reject');
-    Route::put('/{id}/cancel', [TrainingRegistrationController::class, 'cancel'])->name('cancel');
-    
-    // Route CRUD utama (resource)
-    Route::get('/', [TrainingRegistrationController::class, 'index'])->name('index');
-    Route::get('/create', [TrainingRegistrationController::class, 'create'])->name('create');
-    Route::post('/', [TrainingRegistrationController::class, 'store'])->name('store');
-    Route::get('/{id}', [TrainingRegistrationController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [TrainingRegistrationController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [TrainingRegistrationController::class, 'update'])->name('update');
-    Route::delete('/{id}', [TrainingRegistrationController::class, 'destroy'])->name('destroy');
-});
+        // Route untuk export harus di atas route {id} agar tidak dianggap sebagai parameter
+        Route::get('/export', [TrainingRegistrationController::class, 'export'])->name('export');
+        Route::get('/training-info/{id}', [TrainingRegistrationController::class, 'getTrainingInfo'])->name('training-info');
+        
+        // Route untuk bulk actions
+        Route::post('/bulk-approve', [TrainingRegistrationController::class, 'bulkApprove'])->name('bulk-approve');
+        
+        // Route untuk actions pada registrasi tertentu
+        Route::put('/{id}/approve', [TrainingRegistrationController::class, 'approve'])->name('approve');
+        Route::put('/{id}/reject', [TrainingRegistrationController::class, 'reject'])->name('reject');
+        Route::put('/{id}/cancel', [TrainingRegistrationController::class, 'cancel'])->name('cancel');
+        
+        // Route CRUD utama (resource)
+        Route::get('/', [TrainingRegistrationController::class, 'index'])->name('index');
+        Route::get('/create', [TrainingRegistrationController::class, 'create'])->name('create');
+        Route::post('/', [TrainingRegistrationController::class, 'store'])->name('store');
+        Route::get('/{id}', [TrainingRegistrationController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [TrainingRegistrationController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [TrainingRegistrationController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TrainingRegistrationController::class, 'destroy'])->name('destroy');
+    });
 
     // ============================================================
     // CERTIFICATES MANAGEMENT

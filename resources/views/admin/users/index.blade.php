@@ -9,7 +9,6 @@
         <div>
             <p class="eyebrow mb-1">Management</p>
             <h1 class="h3 mb-1">Users</h1>
-            <p class="text-muted mb-0">Kelola pengguna sistem pelatihan.</p>
         </div>
     </div>
 </div>
@@ -138,7 +137,6 @@
                                 @endif
                                 <div>
                                     <p class="fw-semibold mb-0">{{ $user->nama ?? $user->name ?? 'Unknown' }}</p>
-                                    <p class="text-muted small mb-0">{{ $user->email }}</p>
                                 </div>
                             </div>
                         </td>

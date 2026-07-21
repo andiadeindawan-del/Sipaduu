@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Materi;
 use App\Models\Kategori;
 use App\Models\Training;
+use App\Models\TrainingRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,63 +16,63 @@ class MateriController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request)
-{
-    $query = Materi::with(['kategori', 'training']);
+    public function index(Request $request)
+    {
+        $query = Materi::with(['kategori', 'training']);
 
-    // Search
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('judul', 'like', "%$search%")
-              ->orWhere('deskripsi', 'like', "%$search%");
-        });
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%$search%")
+                  ->orWhere('deskripsi', 'like', "%$search%");
+            });
+        }
+
+        // Filter by kategori
+        if ($request->filled('kategori_id')) {
+            $query->where('kategori_id', $request->kategori_id);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $materis = $query->latest()->paginate(10)->withQueryString();
+
+        // Statistics
+        $totalMateri = Materi::count();
+        $publishedMateri = Materi::where('status', 'published')->count();
+        $draftMateri = Materi::where('status', 'draft')->count();
+        $archivedMateri = Materi::where('status', 'archived')->count();
+
+        // PERBAIKAN: Ambil data untuk dropdown
+        $kategoris = Kategori::orderBy('nama')->get();
+        $trainings = Training::orderBy('judul')->get();
+
+        // Debug
+        \Log::info('Index Materi - Data:', [
+            'kategoris_count' => $kategoris->count(),
+            'trainings_count' => $trainings->count(),
+            'materis_count' => $materis->count(),
+        ]);
+
+        return view('admin.materi.index', compact(
+            'materis',
+            'totalMateri',
+            'publishedMateri',
+            'draftMateri',
+            'archivedMateri',
+            'kategoris',
+            'trainings'
+        ));
     }
-
-    // Filter by kategori
-    if ($request->filled('kategori_id')) {
-        $query->where('kategori_id', $request->kategori_id);
-    }
-
-    // Filter by status
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
-    }
-
-    $materis = $query->latest()->paginate(10)->withQueryString();
-
-    // Statistics
-    $totalMateri = Materi::count();
-    $publishedMateri = Materi::where('status', 'published')->count();
-    $draftMateri = Materi::where('status', 'draft')->count();
-    $archivedMateri = Materi::where('status', 'archived')->count();
-
-    // PERBAIKAN: Ambil data untuk dropdown
-    $kategoris = Kategori::orderBy('nama')->get();
-    $trainings = Training::orderBy('judul')->get(); // <-- TAMBAHKAN INI
-
-    // Debug
-    \Log::info('Index Materi - Data:', [
-        'kategoris_count' => $kategoris->count(),
-        'trainings_count' => $trainings->count(),
-        'materis_count' => $materis->count(),
-    ]);
-
-    return view('admin.materi.index', compact(
-        'materis',
-        'totalMateri',
-        'publishedMateri',
-        'draftMateri',
-        'archivedMateri',
-        'kategoris',
-        'trainings' // <-- TAMBAHKAN INI
-    ));
-}
 
     /**
      * Display a listing of materi for peserta.
      */
-     public function pesertaIndex(Request $request)
+    public function pesertaIndex(Request $request)
     {
         $user = auth()->user();
         $userId = $user->id;
@@ -162,17 +163,6 @@ class MateriController extends Controller
             
             $materi->progress = $progress ? $progress->progress : 0;
             $materi->status_progress = $progress ? $progress->status : 'not_started';
-            
-            // Tambahkan method getMyProgress jika belum ada
-            if (!method_exists($materi, 'getMyProgress')) {
-                $materi->getMyProgress = function() use ($materi, $userId) {
-                    $progress = DB::table('materi_progress')
-                        ->where('materi_id', $materi->id)
-                        ->where('user_id', $userId)
-                        ->first();
-                    return $progress ? $progress->progress : 0;
-                };
-            }
         }
 
         // Statistics
@@ -208,13 +198,6 @@ class MateriController extends Controller
         // Kategori untuk filter
         $kategoris = Kategori::all();
 
-        // Debug (hapus setelah berhasil)
-        // \Log::info('Materi Data:', [
-        //     'training_ids' => $trainingIds,
-        //     'total_materi' => $totalMaterials,
-        //     'materis_count' => $materis->count(),
-        // ]);
-
         return view('peserta.materi.index', compact(
             'materis',
             'totalMaterials',
@@ -238,7 +221,17 @@ class MateriController extends Controller
             abort(404);
         }
 
-        $materi->load(['kategori']);
+        // Check if user has access to this materi
+        $hasAccess = TrainingRegistration::where('user_id', $userId)
+            ->where('training_id', $materi->training_id)
+            ->where('status', 'disetujui')
+            ->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Anda tidak memiliki akses ke materi ini.');
+        }
+
+        $materi->load(['kategori', 'training']);
 
         // Get user progress using Query Builder
         $progress = DB::table('materi_progress')
@@ -246,12 +239,17 @@ class MateriController extends Controller
             ->where('user_id', $userId)
             ->value('progress') ?? 0;
 
+        $status = DB::table('materi_progress')
+            ->where('materi_id', $materi->id)
+            ->where('user_id', $userId)
+            ->value('status') ?? 'not_started';
+
         // Mark as in_progress if not completed
-        if ($progress > 0 && $progress < 100) {
+        if ($progress > 0 && $progress < 100 && $status !== 'completed') {
             $this->updateProgress($materi->id, $userId, 'in_progress', $progress);
         }
 
-        return view('peserta.materi.show', compact('materi', 'progress'));
+        return view('peserta.materi.show', compact('materi', 'progress', 'status'));
     }
 
     /**
@@ -262,6 +260,19 @@ class MateriController extends Controller
         // Check if materi is published
         if ($materi->status !== 'published') {
             abort(404);
+        }
+
+        $user = auth()->user();
+        $userId = $user->id;
+
+        // Check if user has access
+        $hasAccess = TrainingRegistration::where('user_id', $userId)
+            ->where('training_id', $materi->training_id)
+            ->where('status', 'disetujui')
+            ->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Anda tidak memiliki akses ke materi ini.');
         }
 
         $files = $materi->files;
@@ -284,8 +295,7 @@ class MateriController extends Controller
             }
             
             // Mark as in_progress
-            $user = auth()->user();
-            $this->updateProgress($materi->id, $user->id, 'in_progress');
+            $this->updateProgress($materi->id, $userId, 'in_progress');
             
             return Storage::disk('public')->download($file['path'], $file['name'] ?? basename($file['path']));
         }
@@ -293,8 +303,7 @@ class MateriController extends Controller
         // Redirect to URL
         if (!empty($file['url'])) {
             // Mark as in_progress
-            $user = auth()->user();
-            $this->updateProgress($materi->id, $user->id, 'in_progress');
+            $this->updateProgress($materi->id, $userId, 'in_progress');
             
             return redirect()->away($file['url']);
         }
@@ -309,6 +318,16 @@ class MateriController extends Controller
     {
         $user = auth()->user();
         $userId = $user->id;
+        
+        // Check if user has access
+        $hasAccess = TrainingRegistration::where('user_id', $userId)
+            ->where('training_id', $materi->training_id)
+            ->where('status', 'disetujui')
+            ->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Anda tidak memiliki akses ke materi ini.');
+        }
         
         // Check if user already completed
         $status = DB::table('materi_progress')
@@ -745,6 +764,37 @@ class MateriController extends Controller
                 'id' => $materi->id,
                 'judul' => $materi->judul,
             ]
+        ]);
+    }
+
+    /**
+     * Get materi by training ID for AJAX.
+     */
+    public function getByTraining($trainingId)
+    {
+        $materis = Materi::where('training_id', $trainingId)
+                         ->where('status', 'published')
+                         ->orderBy('judul')
+                         ->get(['id', 'judul']);
+        
+        return response()->json([
+            'success' => true,
+            'materis' => $materis
+        ]);
+    }
+
+    /**
+     * Get all materi for AJAX.
+     */
+    public function getAll()
+    {
+        $materis = Materi::where('status', 'published')
+                         ->orderBy('judul')
+                         ->get(['id', 'judul']);
+        
+        return response()->json([
+            'success' => true,
+            'materis' => $materis
         ]);
     }
 

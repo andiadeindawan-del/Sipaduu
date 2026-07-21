@@ -69,16 +69,16 @@
                                 @enderror
                             </div>
 
-                            <!-- Training -->
+                            <!-- Training - WAJIB -->
                             <div class="col-12 col-md-6">
                                 <label for="training_id" class="form-label fw-semibold">
-                                    Training
+                                    Training <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-journal-bookmark"></i></span>
                                     <select class="form-select @error('training_id') is-invalid @enderror" 
-                                            id="training_id" name="training_id">
-                                        <option value="">Pilih Training (Opsional)</option>
+                                            id="training_id" name="training_id" required>
+                                        <option value="">-- Pilih Training --</option>
                                         @foreach($trainings ?? [] as $training)
                                         <option value="{{ $training->id }}" {{ old('training_id') == $training->id ? 'selected' : '' }}>
                                             {{ $training->judul }}
@@ -86,7 +86,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <small class="text-muted">Kosongkan jika materi tidak terkait dengan training tertentu.</small>
+                                <small class="text-muted">Pilih training yang terkait dengan materi ini. <span class="text-danger">Wajib dipilih.</span></small>
                                 @error('training_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -126,7 +126,7 @@
                             </div>
 
                             <!-- ========================================================== -->
-                            <!-- MULTIPLE FILES SECTION - TANPA DROPDOWN TIPE -->
+                            <!-- MULTIPLE FILES SECTION -->
                             <!-- ========================================================== -->
                             <div class="col-12">
                                 <hr class="my-2">
@@ -239,42 +239,61 @@
                                 </h6>
                             </div>
 
-                            <!-- Durasi -->
-                            <div class="col-12 col-md-4">
-                                <label for="durasi" class="form-label fw-semibold">
-                                    Durasi (menit)
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                                    <input type="number" class="form-control @error('durasi') is-invalid @enderror" 
-                                           id="durasi" name="durasi" value="{{ old('durasi') }}" 
-                                           placeholder="30" min="1">
+                            <div class="row">
+                                <!-- Durasi -->
+                                <div class="col-12 col-md-4">
+                                    <label for="durasi" class="form-label fw-semibold">
+                                        Durasi (menit)
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                                        <input type="number" class="form-control @error('durasi') is-invalid @enderror" 
+                                               id="durasi" name="durasi" value="{{ old('durasi') }}" 
+                                               placeholder="30" min="1">
+                                    </div>
+                                    <small class="text-muted">Estimasi durasi membaca/menonton.</small>
+                                    @error('durasi')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <small class="text-muted">Estimasi durasi membaca/menonton.</small>
-                                @error('durasi')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            <!-- Order -->
-                            <div class="col-12 col-md-4">
-                                <label for="order" class="form-label fw-semibold">
-                                    Urutan
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-list-ol"></i></span>
-                                    <input type="number" class="form-control @error('order') is-invalid @enderror" 
-                                           id="order" name="order" value="{{ old('order', 0) }}" 
-                                           placeholder="0" min="0">
+                                <!-- Max Attempt -->
+                                <div class="col-12 col-md-4">
+                                    <label for="max_attempt" class="form-label fw-semibold">
+                                        Maksimal Percobaan <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
+                                        <input type="number" class="form-control @error('max_attempt') is-invalid @enderror" 
+                                               id="max_attempt" name="max_attempt" value="{{ old('max_attempt', 3) }}" 
+                                               placeholder="3" min="1" max="10" required>
+                                    </div>
+                                    <small class="text-muted">Jumlah maksimal percobaan quiz. Default: 3.</small>
+                                    @error('max_attempt')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <small class="text-muted">Urutan tampil materi (semakin kecil semakin atas).</small>
-                                @error('order')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+
+                                <!-- Order -->
+                                <div class="col-12 col-md-4">
+                                    <label for="order" class="form-label fw-semibold">
+                                        Urutan
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-list-ol"></i></span>
+                                        <input type="number" class="form-control @error('order') is-invalid @enderror" 
+                                               id="order" name="order" value="{{ old('order', 0) }}" 
+                                               placeholder="0" min="0">
+                                    </div>
+                                    <small class="text-muted">Urutan tampil materi (semakin kecil semakin atas).</small>
+                                    @error('order')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Status -->
-                            <div class="col-12 col-md-4">
+                            <div class="col-12">
                                 <label for="status" class="form-label fw-semibold">
                                     Status <span class="text-danger">*</span>
                                 </label>
@@ -494,6 +513,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================================
+    // MAX ATTEMPT VALIDATION
+    // ============================================================
+    const maxAttemptInput = document.getElementById('max_attempt');
+    if (maxAttemptInput) {
+        maxAttemptInput.addEventListener('input', function() {
+            if (this.value < 1) this.value = 1;
+            if (this.value > 10) this.value = 10;
+        });
+    }
+
+    // ============================================================
     // ORDER VALIDATION
     // ============================================================
     const orderInput = document.getElementById('order');
@@ -508,6 +538,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     if (form) {
         form.addEventListener('submit', function(e) {
+            // Validasi training_id wajib dipilih
+            const trainingSelect = document.getElementById('training_id');
+            if (trainingSelect && trainingSelect.value === '') {
+                e.preventDefault();
+                trainingSelect.classList.add('is-invalid');
+                alert('⚠️ Silakan pilih Training terlebih dahulu.');
+                trainingSelect.focus();
+                return false;
+            }
+
+            // Validasi max_attempt
+            const maxAttempt = document.getElementById('max_attempt');
+            if (maxAttempt) {
+                const value = parseInt(maxAttempt.value);
+                if (isNaN(value) || value < 1 || value > 10) {
+                    e.preventDefault();
+                    maxAttempt.classList.add('is-invalid');
+                    alert('⚠️ Maksimal percobaan harus antara 1-10.');
+                    maxAttempt.focus();
+                    return false;
+                }
+            }
+
             const files = fileInput ? fileInput.files.length : 0;
             const urls = document.querySelectorAll('input[name="file_urls[]"]');
             let hasUrl = false;

@@ -391,6 +391,14 @@
                             </div>
                             <small class="text-muted">Nilai minimal untuk lulus.</small>
                         </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Maks. Percobaan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
+                                <input type="number" class="form-control" name="max_attempt" value="1" min="1" max="10" required>
+                            </div>
+                            <small class="text-muted">Batas maksimal pengulangan quiz.</small>
+                        </div>
                         <div class="col-12">
                             <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                             <div class="input-group">
@@ -583,6 +591,13 @@
                                 <span class="input-group-text"><i class="bi bi-star"></i></span>
                                 <input type="number" class="form-control" name="passing_score" value="{{ $quiz->passing_score ?? 70 }}" min="0" max="100" required>
                                 <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Maks. Percobaan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
+                                <input type="number" class="form-control" name="max_attempt" value="{{ $quiz->max_attempt ?? 1 }}" min="1" max="10" required>
                             </div>
                         </div>
                         <div class="col-12">
