@@ -113,15 +113,16 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     Route::get('/quiz', [PesertaController::class, 'quiz'])->name('quiz.index');
     Route::get('/quiz/{quiz}', [PesertaController::class, 'quizShow'])->name('quiz.show');
     Route::post('/quiz/{quiz}/start', [QuizAttemptController::class, 'start'])->name('quiz.start');
-    Route::post('/quiz/{quiz}/submit', [QuizAttemptController::class, 'submit'])->name('quiz.submit');
+    Route::get('/quiz/{quiz}/take/{attempt}', [QuizAttemptController::class, 'take'])->name('quiz.take');
+    Route::post('/quiz/{quiz}/submit/{attempt}', [QuizAttemptController::class, 'submit'])->name('quiz.submit');
     Route::get('/quiz/{quiz}/result/{attempt}', [QuizAttemptController::class, 'result'])->name('quiz.result');
     Route::get('/quiz/{quiz}/attempts', [QuizAttemptController::class, 'userAttempts'])->name('quiz.attempts');
     
     // ============================================================
     // SERTIFIKAT PESERTA
     // ============================================================
-    Route::get('/sertifikat', [PesertaController::class, 'sertifikat'])->name('sertifikat.index');
-    Route::get('/sertifikat/{sertifikat}', [PesertaController::class, 'sertifikatShow'])->name('sertifikat.show');
+    Route::get('/sertifikat', [SertifikatController::class, 'pesertaIndex'])->name('sertifikat.index');
+    Route::get('/sertifikat/{sertifikat}', [SertifikatController::class, 'pesertaShow'])->name('sertifikat.show');
     Route::get('/sertifikat/{sertifikat}/download', [SertifikatController::class, 'download'])->name('sertifikat.download');
     
     // ============================================================

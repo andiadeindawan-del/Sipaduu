@@ -142,10 +142,7 @@ class QuizAttempt extends Model
      */
     public function getPercentageAttribute()
     {
-        if ($this->total_questions > 0) {
-            return round(($this->score / $this->total_questions) * 100, 2);
-        }
-        return 0;
+        return $this->score;
     }
 
     /**
@@ -239,8 +236,8 @@ class QuizAttempt extends Model
         $questions = $this->quiz->questions;
         $correct = 0;
 
-        foreach ($questions as $index => $question) {
-            $userAnswer = $this->answers[$index] ?? null;
+        foreach ($questions as $question) {
+            $userAnswer = $this->answers[$question->id] ?? null;
             if ($question->isAnswerCorrect($userAnswer)) {
                 $correct++;
             }
@@ -248,7 +245,7 @@ class QuizAttempt extends Model
 
         $this->correct_answers = $correct;
         $this->total_questions = $questions->count();
-        $this->score = $correct;
+        $this->score = ($this->total_questions > 0) ? round(($correct / $this->total_questions) * 100, 2) : 0;
         $this->save();
 
         return $this->score;

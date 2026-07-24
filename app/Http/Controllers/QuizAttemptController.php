@@ -329,4 +329,130 @@ class QuizAttemptController extends Controller
 
         return response()->json($attempts);
     }
+
+    /**
+     * Start a quiz for a peserta.
+     */
+    public function start(Request $request, Quiz $quiz)
+    {
+        $userId = auth()->id();
+
+        if (!$quiz->canTake($userId)) {
+            return redirect()->route('peserta.quiz.show', $quiz->id)
+                            ->with('error', 'Anda tidak dapat mengerjakan quiz ini.');
+        }
+
+        // Check Absensi
+        if ($quiz->training_id) {
+            $hasAbsensi = \App\Models\Absensi::where('user_id', $userId)
+                ->where('training_id', $quiz->training_id)
+                ->where('status', 'hadir')
+                ->exists();
+
+            if (!$hasAbsensi) {
+                return redirect()->route('peserta.quiz.show', $quiz->id)
+                    ->with('error', 'Anda harus melakukan absensi kehadiran (Hadir) pada pelatihan ini terlebih dahulu sebelum dapat mengerjakan quiz.');
+            }
+        }
+
+        // Check if there is already an in_progress attempt
+        $existingAttempt = QuizAttempt::where('quiz_id', $quiz->id)
+                                    ->where('user_id', $userId)
+                                    ->where('status', 'in_progress')
+                                    ->first();
+
+        if ($existingAttempt) {
+            $attempt = $existingAttempt;
+        } else {
+            // Create new attempt
+            $attempt = QuizAttempt::create([
+                'quiz_id' => $quiz->id,
+                'user_id' => $userId,
+                'started_at' => now(),
+                'status' => 'in_progress',
+                'total_questions' => $quiz->questions()->count(),
+                'answers' => [],
+            ]);
+        }
+
+        return redirect()->route('peserta.quiz.take', ['quiz' => $quiz->id, 'attempt' => $attempt->id]);
+    }
+
+    /**
+     * Show quiz taking page for peserta.
+     */
+    public function take(Quiz $quiz, QuizAttempt $attempt)
+    {
+        if ($attempt->user_id !== auth()->id() || $attempt->quiz_id !== $quiz->id) {
+            abort(403);
+        }
+
+        if ($attempt->status === 'completed') {
+            return redirect()->route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $attempt->id]);
+        }
+
+        $questions = $quiz->questions;
+        $answers = $attempt->answers ?? [];
+
+        return view('peserta.quiz.take', compact('quiz', 'attempt', 'questions', 'answers'));
+    }
+
+    /**
+     * Submit quiz for peserta.
+     */
+    public function submit(Request $request, Quiz $quiz, QuizAttempt $attempt)
+    {
+        if ($attempt->user_id !== auth()->id() || $attempt->quiz_id !== $quiz->id) {
+            abort(403);
+        }
+
+        if ($attempt->status === 'completed') {
+            return redirect()->route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $attempt->id]);
+        }
+
+        $validated = $request->validate([
+            'answers' => 'nullable|array',
+            'answers.*' => 'nullable|string',
+        ]);
+
+        $attempt->answers = $validated['answers'] ?? [];
+        $attempt->status = 'completed';
+        $attempt->completed_at = now();
+        $attempt->save();
+        
+        $attempt->calculateScore();
+        $attempt->save();
+
+        return redirect()->route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $attempt->id])
+                        ->with('success', 'Quiz berhasil diselesaikan.');
+    }
+
+    /**
+     * Show quiz result for peserta.
+     */
+    public function result(Quiz $quiz, QuizAttempt $attempt)
+    {
+        if ($attempt->user_id !== auth()->id() || $attempt->quiz_id !== $quiz->id) {
+            abort(403);
+        }
+
+        $questions = $quiz->questions;
+        $answers = $attempt->answers ?? [];
+
+        return view('peserta.quiz.result', compact('quiz', 'attempt', 'questions', 'answers'));
+    }
+
+    /**
+     * Show user attempts for a quiz.
+     */
+    public function userAttempts(Quiz $quiz)
+    {
+        $userId = auth()->id();
+        $attempts = QuizAttempt::where('quiz_id', $quiz->id)
+                                ->where('user_id', $userId)
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+                                
+        return view('peserta.quiz.attempts', compact('quiz', 'attempts'));
+    }
 }

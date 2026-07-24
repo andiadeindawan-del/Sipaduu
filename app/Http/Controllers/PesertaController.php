@@ -424,8 +424,27 @@ class PesertaController extends Controller
 
         $quiz->attempt_status = $attempt ? $attempt->status : 'not_started';
         $quiz->attempt_id = $attempt ? $attempt->id : null;
+        
+        $totalQuestions = $quiz->questions()->count();
+        $userAttempts = DB::table('quiz_attempts')->where('quiz_id', $quiz->id)->where('user_id', $userId)->count();
+        $remainingAttempts = max(0, $quiz->max_attempt - $userAttempts);
+        $userBestScore = DB::table('quiz_attempts')->where('quiz_id', $quiz->id)->where('user_id', $userId)->max('score');
+        
+        $userAttempt = DB::table('quiz_attempts')
+            ->where('quiz_id', $quiz->id)
+            ->where('user_id', $userId)
+            ->where('status', 'completed')
+            ->first();
 
-        return view('peserta.quiz.show', compact('quiz', 'attempt'));
+        $hasAbsensi = true;
+        if ($quiz->training_id) {
+            $hasAbsensi = \App\Models\Absensi::where('user_id', $userId)
+                ->where('training_id', $quiz->training_id)
+                ->where('status', 'hadir')
+                ->exists();
+        }
+
+        return view('peserta.quiz.show', compact('quiz', 'attempt', 'totalQuestions', 'remainingAttempts', 'userBestScore', 'userAttempt', 'hasAbsensi'));
     }
 
     /**
@@ -522,7 +541,7 @@ class PesertaController extends Controller
         $user = auth()->user();
         $userId = $user->id;
 
-        $absensis = DB::table('absensis')
+        $riwayatAbsensi = \App\Models\Absensi::with('training')
             ->where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -553,7 +572,7 @@ class PesertaController extends Controller
         ->get();
 
         return view('peserta.absen.index', compact(
-            'absensis',
+            'riwayatAbsensi',
             'totalHadir',
             'totalIzin',
             'totalAlpha',
@@ -608,8 +627,7 @@ class PesertaController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('peserta.absen.index')
-                        ->with('success', '✅ Absen berhasil dicatat.');
+        return redirect()->back()->with('success', '✅ Absen berhasil dicatat.');
     }
 
     /**

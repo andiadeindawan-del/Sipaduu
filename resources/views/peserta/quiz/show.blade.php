@@ -9,13 +9,7 @@
         <div>
             <p class="eyebrow">Quiz</p>
             <h1 class="h3 mb-0">Detail Quiz</h1>
-            <p class="text-muted mb-0">{{ $quiz->judul }}</p>
         </div>
-    </div>
-    <div class="heading-actions">
-        <a href="{{ route('peserta.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
     </div>
 </div>
 @endsection
@@ -38,6 +32,26 @@
                 <i class="bi bi-exclamation-circle me-2"></i>
                 {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            @endif
+
+            @if(isset($hasAbsensi) && !$hasAbsensi)
+            <div class="alert alert-warning d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                    <div>
+                        <strong>Perhatian!</strong> Anda harus melakukan absensi kehadiran (Hadir) pada pelatihan ini terlebih dahulu sebelum dapat memulai atau mengulang quiz.
+                    </div>
+                </div>
+                <form action="{{ route('peserta.absen.store') }}" method="POST" class="m-0">
+                    @csrf
+                    <input type="hidden" name="training_id" value="{{ $quiz->training_id }}">
+                    <input type="hidden" name="tanggal" value="{{ date('Y-m-d') }}">
+                    <input type="hidden" name="status" value="hadir">
+                    <button type="submit" class="btn btn-success text-nowrap shadow-sm" onclick="return confirm('Apakah Anda yakin ingin merekam kehadiran untuk pelatihan ini sekarang?')">
+                        <i class="bi bi-check2-circle me-1"></i> Absen Sekarang
+                    </button>
+                </form>
             </div>
             @endif
 
@@ -74,10 +88,12 @@
                                 </div>
                                 <div class="d-flex gap-2 flex-wrap">
                                     @if(($remainingAttempts ?? 0) > 0 && !isset($userAttempt))
-                                        <a href="{{ route('peserta.quiz.start', $quiz->id) }}" 
-                                           class="btn btn-success">
-                                            <i class="bi bi-play-circle me-2"></i> Mulai Quiz
-                                        </a>
+                                        <form action="{{ route('peserta.quiz.start', $quiz->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success" {{ (isset($hasAbsensi) && !$hasAbsensi) ? 'disabled' : '' }} onclick="return confirm('Yakin ingin memulai quiz ini?')">
+                                                <i class="bi bi-play-circle me-2"></i> Mulai Quiz
+                                            </button>
+                                        </form>
                                     @elseif(isset($userAttempt))
                                         <a href="{{ route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $userAttempt->id]) }}" 
                                            class="btn btn-info text-white">
@@ -85,10 +101,12 @@
                                         </a>
                                     @endif
                                     @if(($remainingAttempts ?? 0) > 0 && isset($userAttempt) && $userAttempt->status == 'completed')
-                                        <a href="{{ route('peserta.quiz.start', $quiz->id) }}" 
-                                           class="btn btn-warning">
-                                            <i class="bi bi-arrow-repeat me-2"></i> Coba Lagi
-                                        </a>
+                                        <form action="{{ route('peserta.quiz.start', $quiz->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning" {{ (isset($hasAbsensi) && !$hasAbsensi) ? 'disabled' : '' }} onclick="return confirm('Yakin ingin mencoba quiz ini lagi?')">
+                                                <i class="bi bi-arrow-repeat me-2"></i> Coba Lagi
+                                            </button>
+                                        </form>
                                     @endif
                                 </div>
                             </div>
@@ -219,9 +237,12 @@
                                     <i class="bi bi-arrow-left me-1"></i> Kembali
                                 </a>
                                 @if(($remainingAttempts ?? 0) > 0 && !isset($userAttempt))
-                                    <a href="{{ route('peserta.quiz.start', $quiz->id) }}" class="btn btn-success">
-                                        <i class="bi bi-play-circle me-1"></i> Mulai Quiz
-                                    </a>
+                                    <form action="{{ route('peserta.quiz.start', $quiz->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success" {{ (isset($hasAbsensi) && !$hasAbsensi) ? 'disabled' : '' }} onclick="return confirm('Yakin ingin memulai quiz ini?')">
+                                            <i class="bi bi-play-circle me-1"></i> Mulai Quiz
+                                        </button>
+                                    </form>
                                 @elseif(isset($userAttempt))
                                     <a href="{{ route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $userAttempt->id]) }}" 
                                        class="btn btn-info text-white">
@@ -229,9 +250,12 @@
                                     </a>
                                 @endif
                                 @if(($remainingAttempts ?? 0) > 0 && isset($userAttempt) && $userAttempt->status == 'completed')
-                                    <a href="{{ route('peserta.quiz.start', $quiz->id) }}" class="btn btn-warning">
-                                        <i class="bi bi-arrow-repeat me-1"></i> Coba Lagi
-                                    </a>
+                                    <form action="{{ route('peserta.quiz.start', $quiz->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning" {{ (isset($hasAbsensi) && !$hasAbsensi) ? 'disabled' : '' }} onclick="return confirm('Yakin ingin mencoba quiz ini lagi?')">
+                                            <i class="bi bi-arrow-repeat me-1"></i> Coba Lagi
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         </div>

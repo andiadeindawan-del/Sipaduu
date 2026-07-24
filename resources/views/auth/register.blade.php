@@ -4,568 +4,433 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SIPADU - Sistem Pengembangan SDM Usaha KOPERINDAG">
-    <title>Register | SIPADU</title>
+    <title>Daftar | SIPADU</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
         :root {
-            --primary: #6c757d;
-            --primary-dark: #5a6268;
-            --primary-light: #e9ecef;
-            --primary-gradient: linear-gradient(135deg, #4a5568 0%, #6c757d 50%, #8a929a 100%);
+            --teal-900: #0d2e2f;
+            --teal-800: #10403f;
+            --teal-700: #17504e;
+            --gold-500: #c9962b;
+            --gold-400: #dcb356;
+            --sage-400: #8fae9c;
+            --paper: #f7f2e7;
+            --paper-2: #efe8d8;
+            --ink: #1a2420;
+            --ink-soft: #55625b;
+            --line: #e2dac6;
+            --danger: #a5372f;
+            --danger-bg: #f7e6e3;
+            --success: #33613f;
+            --success-bg: #e7efe4;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: var(--paper);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 1.5rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--ink);
+            padding: 2rem 1.5rem;
         }
 
-        /* ============================================================ */
-        /* AUTH CARD */
-        /* ============================================================ */
-        .auth-card {
-            background: #ffffff;
-            border-radius: 2rem;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+        .auth-shell {
             width: 100%;
-            max-width: 1120px;
-            display: flex;
-            flex-direction: column;
-            min-height: 580px;
-            transition: all 0.3s ease;
+            max-width: 1180px;
+            display: grid;
+            grid-template-columns: 1fr;
+            background: #fff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 40px 90px -30px rgba(13, 46, 47, 0.35);
+            border: 1px solid var(--line);
         }
 
-        @media (min-width: 992px) {
-            .auth-card {
-                flex-direction: row;
-                min-height: 680px;
-            }
+        @media (min-width: 960px) {
+            .auth-shell { grid-template-columns: 0.85fr 1.15fr; min-height: 640px; }
         }
 
-        /* ============================================================ */
-        /* LEFT SIDE - BRAND & VISUAL */
-        /* ============================================================ */
-        .auth-brand-side {
-            background: var(--primary-gradient);
-            padding: 2.5rem 2.5rem 2rem;
+        /* ============================== LEFT: BRAND PANEL ============================== */
+        .brand-panel {
+            position: relative;
+            background: var(--teal-900);
+            color: #fff;
+            padding: 3rem 2.6rem 2.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
             overflow: hidden;
-            flex: 0 0 45%;
         }
 
-        .auth-brand-side::before {
+        /* woven kawung-inspired geometric pattern, low opacity */
+        .brand-panel::before {
             content: '';
             position: absolute;
-            top: -40%;
-            right: -20%;
-            width: 70%;
-            height: 70%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
-            border-radius: 50%;
+            inset: 0;
+            opacity: 0.14;
+            background-image:
+                radial-gradient(circle at 20px 20px, transparent 9px, rgba(255,255,255,0.55) 9.6px, rgba(255,255,255,0.55) 10px, transparent 10.6px),
+                radial-gradient(circle at 60px 60px, transparent 9px, rgba(255,255,255,0.55) 9.6px, rgba(255,255,255,0.55) 10px, transparent 10.6px);
+            background-size: 40px 40px;
+            mix-blend-mode: overlay;
+            pointer-events: none;
         }
 
-        .auth-brand-side .brand-top {
-            position: relative;
-            z-index: 1;
+        .brand-panel::after {
+            content: '';
+            position: absolute;
+            right: -30%;
+            bottom: -30%;
+            width: 65%;
+            height: 65%;
+            background: radial-gradient(circle, rgba(201,150,43,0.18) 0%, transparent 72%);
+            pointer-events: none;
         }
 
-        /* ============================================================ */
-        /* BRAND TITLE */
-        /* ============================================================ */
-        .auth-brand-side .brand-title {
-            margin-bottom: 2rem;
+        .brand-mark { position: relative; z-index: 2; display: flex; align-items: center; gap: 0.75rem; }
+
+        .brand-mark .logo-img {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 10px;
+            padding: 4px;
+            flex-shrink: 0;
         }
 
-        .auth-brand-side .brand-title .brand-name {
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 1.6rem;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .brand-mark .mark-word { display: flex; flex-direction: column; line-height: 1.1; }
+
+        .brand-mark .mark-word .name {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: 0.02em;
         }
 
-        .auth-brand-side .brand-title .brand-name span {
-            color: #a8b0b8;
-        }
-
-        .auth-brand-side .brand-title .brand-name .separator {
-            color: rgba(255, 255, 255, 0.2);
-            font-weight: 300;
-        }
-
-        .auth-brand-side .brand-title .brand-sub {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.7rem;
-            font-weight: 400;
-            letter-spacing: 1.5px;
+        .brand-mark .mark-word .agency {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.76rem;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
+            color: var(--gold-400);
             margin-top: 0.15rem;
         }
 
-        /* ============================================================ */
-        /* BRAND CONTENT */
-        /* ============================================================ */
-        .auth-brand-side .brand-content {
+        .brand-copy { position: relative; z-index: 2; padding: 2rem 0; }
+
+        .brand-copy .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--sage-400);
+            margin-bottom: 1rem;
+        }
+
+        .brand-copy h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 500;
+            font-size: 2.25rem;
+            line-height: 1.14;
+            max-width: 420px;
+        }
+
+        .brand-copy h1 em {
+            font-style: italic;
+            color: var(--gold-400);
+            font-weight: 400;
+        }
+
+        .brand-copy p {
+            margin-top: 1rem;
+            color: rgba(255,255,255,0.62);
+            font-size: 0.92rem;
+            max-width: 360px;
+            line-height: 1.55;
+        }
+
+        .brand-features {
             position: relative;
-            z-index: 1;
-            flex: 1;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            padding-top: 1.6rem;
+            border-top: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .brand-features .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.72);
+        }
+
+        .brand-features .feature-item svg {
+            width: 17px;
+            height: 17px;
+            stroke: var(--gold-400);
+            flex-shrink: 0;
+        }
+
+        /* ============================== RIGHT: FORM PANEL ============================== */
+        .form-panel {
+            padding: 2.6rem 3.1rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0.5rem 0;
+            background: #fff;
         }
 
-        .auth-brand-side .brand-content h1 {
-            color: #fff;
-            font-size: 2.2rem;
-            font-weight: 700;
-            line-height: 1.15;
+        .form-panel .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.66rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold-500);
             margin-bottom: 0.4rem;
         }
 
-        .auth-brand-side .brand-content h1 .highlight {
-            color: #a8b0b8;
+        .form-panel h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--teal-900);
         }
 
-        .auth-brand-side .brand-content p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            max-width: 80%;
+        .form-panel .sub {
+            color: var(--ink-soft);
+            font-size: 0.86rem;
+            margin-top: 0.3rem;
             margin-bottom: 1.5rem;
         }
 
-        .auth-brand-side .brand-features {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0 1rem;
         }
 
-        .auth-brand-side .brand-features .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.82rem;
+        @media (min-width: 640px) {
+            .field-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        .auth-brand-side .brand-features .feature-item i {
-            color: #a8b0b8;
-            font-size: 0.95rem;
-        }
+        .field { margin-bottom: 1rem; }
 
-        .auth-brand-side .brand-footer {
-            position: relative;
-            z-index: 1;
-            padding-top: 1.2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: 1.2rem;
-        }
-
-        .auth-brand-side .brand-footer .version {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-        }
-
-        /* ============================================================ */
-        /* RIGHT SIDE - FORM */
-        /* ============================================================ */
-        .auth-form-side {
-            padding: 2.5rem 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex: 0 0 55%;
-            max-height: 680px;
-            overflow-y: auto;
-        }
-
-        .auth-form-side::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .auth-form-side::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .auth-form-side::-webkit-scrollbar-thumb {
-            background: #d0d5dd;
-            border-radius: 4px;
-        }
-
-        .auth-form-side .form-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-form-side .form-header .eyebrow {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #6c757d;
+        .field label {
+            display: block;
             font-weight: 600;
-            margin-bottom: 0.2rem;
+            font-size: 0.76rem;
+            color: var(--teal-900);
+            margin-bottom: 0.32rem;
         }
 
-        .auth-form-side .form-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 0.15rem;
-        }
+        .field .control { position: relative; }
 
-        .auth-form-side .form-header p {
-            color: #8a93a3;
-            font-size: 0.85rem;
-            margin-bottom: 0;
-        }
-
-        .auth-form-side .form-label {
-            font-weight: 600;
-            font-size: 0.82rem;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
-        }
-
-        .auth-form-side .input-group-custom {
-            position: relative;
-            margin-bottom: 0.9rem;
-        }
-
-        .auth-form-side .input-group-custom .input-icon {
+        .field .control svg {
             position: absolute;
             left: 14px;
-            top: 50%;
+            top: 22px;
             transform: translateY(-50%);
-            color: #b0b8c8;
-            z-index: 10;
-            font-size: 0.95rem;
+            width: 16px;
+            height: 16px;
+            stroke: #a3ab9f;
+            pointer-events: none;
         }
 
-        .auth-form-side .input-group-custom .input-icon-textarea {
-            top: 16px;
-            transform: none;
-        }
+        .field .control svg.icon-top { top: 20px; }
 
-        .auth-form-side .input-group-custom .form-control,
-        .auth-form-side .input-group-custom .form-select,
-        .auth-form-side .input-group-custom textarea {
-            padding: 0.6rem 0.75rem 0.6rem 2.8rem;
-            border: 1.5px solid #e8ecf1;
-            border-radius: 0.7rem;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-            background: #fafbfc;
+        .field input,
+        .field select,
+        .field textarea {
             width: 100%;
-            height: 44px;
+            height: 46px;
+            padding: 0 0.9rem 0 2.6rem;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            font-size: 0.87rem;
+            font-family: inherit;
+            background: var(--paper);
+            color: var(--ink);
+            transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
         }
 
-        .auth-form-side .input-group-custom textarea {
-            height: auto;
-            min-height: 50px;
-            resize: vertical;
-            padding-top: 0.6rem;
-        }
-
-        .auth-form-side .input-group-custom .form-select {
-            padding-right: 2.5rem;
+        .field select {
             appearance: auto;
             cursor: pointer;
         }
 
-        .auth-form-side .input-group-custom .form-control:focus,
-        .auth-form-side .input-group-custom .form-select:focus,
-        .auth-form-side .input-group-custom textarea:focus {
-            border-color: #6c757d;
-            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.08);
-            background: #ffffff;
+        .field textarea {
+            height: auto;
+            min-height: 46px;
+            padding-top: 0.65rem;
+            resize: vertical;
         }
 
-        .auth-form-side .input-group-custom .form-control.is-invalid,
-        .auth-form-side .input-group-custom .form-select.is-invalid,
-        .auth-form-side .input-group-custom textarea.is-invalid {
-            border-color: #ea5455;
-            box-shadow: 0 0 0 3px rgba(234, 84, 85, 0.08);
+        .field input::placeholder,
+        .field textarea::placeholder { color: #a6ac9f; }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--teal-700);
+            box-shadow: 0 0 0 3px rgba(23, 80, 78, 0.12);
+            background: #fff;
         }
 
-        .auth-form-side .row-custom {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.9rem;
+        .field input.is-invalid,
+        .field select.is-invalid,
+        .field textarea.is-invalid {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(165, 55, 47, 0.1);
         }
 
-        .auth-form-side .btn-register {
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-            border: none;
-            padding: 0.7rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 0.7rem;
-            transition: all 0.25s;
-            color: #fff;
-            width: 100%;
-            height: 48px;
-            letter-spacing: 0.3px;
+        .field .err {
+            color: var(--danger);
+            font-size: 0.74rem;
             margin-top: 0.3rem;
         }
 
-        .auth-form-side .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        .btn-submit {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            background: var(--teal-900);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            margin-top: 0.4rem;
         }
 
-        .auth-form-side .btn-register:active {
-            transform: translateY(0);
+        .btn-submit:hover {
+            background: var(--teal-700);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px -8px rgba(13,46,47,0.5);
         }
 
-        .auth-form-side .auth-footer {
-            margin-top: 1.2rem;
+        .btn-submit:active { transform: translateY(0); }
+
+        .form-footer {
+            margin-top: 1.4rem;
             text-align: center;
             font-size: 0.82rem;
-            color: #8a93a3;
+            color: var(--ink-soft);
         }
 
-        .auth-form-side .auth-footer a {
-            color: #6c757d;
-            font-weight: 600;
+        .form-footer a {
+            color: var(--teal-800);
+            font-weight: 700;
             text-decoration: none;
-            transition: color 0.15s;
         }
 
-        .auth-form-side .auth-footer a:hover {
-            color: #5a6268;
-            text-decoration: underline;
-        }
+        .form-footer a:hover { text-decoration: underline; }
 
         .alert {
-            border-radius: 0.7rem;
+            border-radius: 10px;
             font-size: 0.82rem;
-            padding: 0.65rem 1rem;
-            border: none;
+            padding: 0.7rem 1rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
         }
 
-        .alert-success {
-            background: #e8f5e9;
-            color: #2e7d32;
+        .alert-success { background: var(--success-bg); color: var(--success); }
+        .alert-danger { background: var(--danger-bg); color: var(--danger); }
+        .alert svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+        /* ============================== RESPONSIVE ============================== */
+        @media (max-width: 959px) {
+            .brand-panel { padding: 2.2rem; }
+            .brand-copy { padding: 1.4rem 0; }
+            .brand-copy h1 { font-size: 1.85rem; }
+            .brand-features { display: none; }
+            .form-panel { padding: 2.2rem; }
         }
 
-        .alert-danger {
-            background: #fde8e8;
-            color: #842029;
-        }
-
-        .alert i {
-            font-size: 1rem;
-        }
-
-        .invalid-feedback {
-            font-size: 0.75rem;
-            color: #ea5455;
-            margin-top: 0.2rem;
-        }
-
-        /* ============================================================ */
-        /* RESPONSIVE */
-        /* ============================================================ */
-        @media (max-width: 991px) {
-            .auth-brand-side {
-                flex: 0 0 100%;
-                padding: 1.8rem;
-                min-height: 200px;
-            }
-
-            .auth-brand-side .brand-content h1 {
-                font-size: 1.8rem;
-            }
-
-            .auth-brand-side .brand-content p {
-                max-width: 100%;
-                font-size: 0.85rem;
-            }
-
-            .auth-brand-side .brand-features {
-                display: none;
-            }
-
-            .auth-brand-side .brand-title .brand-name {
-                font-size: 1.3rem;
-            }
-
-            .auth-form-side {
-                flex: 0 0 100%;
-                padding: 1.8rem;
-                max-height: none;
-                overflow-y: visible;
-            }
-
-            .auth-card {
-                margin: 0;
-                min-height: auto;
-                border-radius: 1.5rem;
-            }
-
-            body {
-                padding: 1rem;
-            }
-
-            .auth-form-side .row-custom {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .auth-brand-side .brand-content h1 {
-                font-size: 1.4rem;
-            }
-
-            .auth-brand-side .brand-title .brand-name {
-                font-size: 1.1rem;
-            }
-
-            .auth-form-side .form-header h2 {
-                font-size: 1.2rem;
-            }
-
-            .auth-form-side {
-                padding: 1.2rem;
-            }
-
-            .auth-brand-side {
-                padding: 1.2rem;
-                min-height: 150px;
-            }
-
-            .auth-form-side .input-group-custom .form-control,
-            .auth-form-side .input-group-custom .form-select {
-                height: 40px;
-                font-size: 0.82rem;
-            }
-
-            .auth-form-side .input-group-custom textarea {
-                min-height: 40px;
-                font-size: 0.82rem;
-            }
-
-            .auth-form-side .btn-register {
-                height: 40px;
-                font-size: 0.85rem;
-            }
-
-            .auth-card {
-                border-radius: 1.2rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .auth-brand-side .brand-content h1 {
-                font-size: 1.2rem;
-            }
-
-            .auth-form-side .form-header h2 {
-                font-size: 1rem;
-            }
-
-            .auth-form-side {
-                padding: 1rem;
-            }
-
-            .auth-brand-side {
-                padding: 1rem;
-            }
-
-            .auth-brand-side .brand-title .brand-name {
-                font-size: 0.95rem;
-            }
+        @media (max-width: 480px) {
+            .auth-shell { border-radius: 16px; }
+            .brand-panel { padding: 1.6rem; }
+            .brand-copy h1 { font-size: 1.55rem; }
+            .brand-copy p { font-size: 0.85rem; }
+            .form-panel { padding: 1.6rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="auth-card">
+    <div class="auth-shell">
         <!-- ============================================================ -->
-        <!-- LEFT SIDE - BRAND & VISUAL -->
+        <!-- LEFT: BRAND PANEL -->
         <!-- ============================================================ -->
-        <div class="auth-brand-side">
-            <div class="brand-top">
-                <!-- ========================================================== -->
-                <!-- BRAND TITLE -->
-                <!-- ========================================================== -->
-                <div class="brand-title">
-                    <div class="brand-name">
-                        SIPADU
-                        <span class="separator">|</span>
-                        <span>KOPERINDAG</span>
-                    </div>
-                    <div class="brand-sub">Sistem Pengembangan SDM Usaha KOPERINDAG</div>
+        <div class="brand-panel">
+            <div class="brand-mark">
+                <!-- Lambang resmi Provinsi Sulawesi Barat. Letakkan file resmi (PNG/SVG) di public/images/logo-sulbar.png -->
+                <img src="{{ asset('assets/images/logo-sulbar.jpg') }}" alt="Lambang Provinsi Sulawesi Barat" class="logo-img">
+                <div class="mark-word">
+                    <span class="name">SIPADU</span>
+                    <span class="agency">Dinas Koperindag Prov. Sulawesi Barat</span>
                 </div>
             </div>
 
-            <div class="brand-content">
-                <h1>Mulai <br>Perjalanan <span class="highlight">Belajar</span></h1>
-                <p>Daftar sekarang untuk mengakses berbagai pelatihan dan sertifikasi digital.</p>
-                <div class="brand-features">
-                    <div class="feature-item">
-                        <i class="bi bi-shield-check"></i>
-                        <span>Koneksi Aman &amp; Terenkripsi</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="bi bi-mortarboard-fill"></i>
-                        <span>Akses ke semua pelatihan</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="bi bi-award"></i>
-                        <span>Dapatkan sertifikat resmi</span>
-                    </div>
-                </div>
+            <div class="brand-copy">
+                <p class="eyebrow">Portal Pelatihan &amp; SDM</p>
+                <h1>Mulai perjalanan <em>belajar</em> Anda.</h1>
+                <p>Daftarkan usaha Anda untuk mengakses pelatihan, sertifikasi, dan program pengembangan SDM koperasi, industri, dan perdagangan.</p>
             </div>
 
-            <div class="brand-footer">
-                <span class="version">v1.0.0 &bull; SIPADU Platform</span>
+            <div class="brand-features">
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Koneksi aman &amp; terenkripsi
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+                    Akses ke semua pelatihan
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M9.5 13.5L7 22l5-3 5 3-2.5-8.5"/></svg>
+                    Dapatkan sertifikat resmi
+                </div>
             </div>
         </div>
 
         <!-- ============================================================ -->
-        <!-- RIGHT SIDE - REGISTER FORM -->
+        <!-- RIGHT: REGISTER FORM -->
         <!-- ============================================================ -->
-        <div class="auth-form-side">
-            <div class="form-header">
-                <p class="eyebrow">Daftar Akun</p>
-                <h2>Buat Akun Baru</h2>
-                <p>Isi data diri Anda untuk mendaftar.</p>
-            </div>
+        <div class="form-panel">
+            <p class="eyebrow">Daftar Akun</p>
+            <h2>Buat akun baru</h2>
+            <p class="sub">Isi data diri dan usaha Anda untuk mendaftar.</p>
 
-            <!-- Session Status -->
             @if(session('status'))
-                <div class="alert alert-success mb-3">
-                    <i class="bi bi-check-circle me-2"></i>
+                <div class="alert alert-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     {{ session('status') }}
                 </div>
             @endif
 
             @if($errors->any())
-                <div class="alert alert-danger mb-3">
-                    <i class="bi bi-exclamation-circle me-2"></i>
+                <div class="alert alert-danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Terdapat kesalahan pada form di bawah.
                 </div>
             @endif
@@ -573,173 +438,206 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
 
-                <div class="row-custom">
+                <div class="field-grid">
                     <!-- NIK -->
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-card-text"></i></span>
-                        <input type="text" 
-                               class="form-control @error('nik') is-invalid @enderror" 
-                               id="nik" 
-                               name="nik" 
-                               value="{{ old('nik') }}" 
-                               placeholder="NIK" 
-                               required>
+                    <div class="field">
+                        <label for="nik">NIK</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 15h4M6 11h.01"/><circle cx="16" cy="11" r="1.5"/></svg>
+                            <input type="text"
+                                   class="@error('nik') is-invalid @enderror"
+                                   id="nik"
+                                   name="nik"
+                                   value="{{ old('nik') }}"
+                                   placeholder="Nomor Induk Kependudukan"
+                                   required>
+                        </div>
                         @error('nik')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Nama Lengkap -->
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-person"></i></span>
-                        <input type="text" 
-                               class="form-control @error('nama') is-invalid @enderror" 
-                               id="nama" 
-                               name="nama" 
-                               value="{{ old('nama') }}" 
-                               placeholder="Nama Lengkap" 
-                               required>
+                    <div class="field">
+                        <label for="nama">Nama Lengkap</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+                            <input type="text"
+                                   class="@error('nama') is-invalid @enderror"
+                                   id="nama"
+                                   name="nama"
+                                   value="{{ old('nama') }}"
+                                   placeholder="Nama lengkap"
+                                   required>
+                        </div>
                         @error('nama')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Email -->
-                <div class="input-group-custom">
-                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                    <input type="email" 
-                           class="form-control @error('email') is-invalid @enderror" 
-                           id="email" 
-                           name="email" 
-                           value="{{ old('email') }}" 
-                           placeholder="Email" 
-                           required>
-                    @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                <div class="field-grid">
+                    <!-- Email -->
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+                            <input type="email"
+                                   class="@error('email') is-invalid @enderror"
+                                   id="email"
+                                   name="email"
+                                   value="{{ old('email') }}"
+                                   placeholder="nama@instansi.go.id"
+                                   required>
+                        </div>
+                        @error('email')
+                            <div class="err">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- No Telepon -->
+                    <div class="field">
+                        <label for="no_telepon">No. Telepon</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 3a2 2 0 01-.5 2L8 10a16 16 0 006 6l1.3-1.2a2 2 0 012-.5c1 .3 2 .5 3 .6a2 2 0 011.7 2z"/></svg>
+                            <input type="text"
+                                   class="@error('no_telepon') is-invalid @enderror"
+                                   id="no_telepon"
+                                   name="no_telepon"
+                                   value="{{ old('no_telepon') }}"
+                                   placeholder="No. Telepon"
+                                   required>
+                        </div>
+                        @error('no_telepon')
+                            <div class="err">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
-                <!-- No Telepon -->
-                <div class="input-group-custom">
-                    <span class="input-icon"><i class="bi bi-phone"></i></span>
-                    <input type="text" 
-                           class="form-control @error('no_telepon') is-invalid @enderror" 
-                           id="no_telepon" 
-                           name="no_telepon" 
-                           value="{{ old('no_telepon') }}" 
-                           placeholder="No. Telepon" 
-                           required>
-                    @error('no_telepon')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Nama Usaha & NIB -->
-                <div class="row-custom">
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-building"></i></span>
-                        <input type="text" 
-                               class="form-control @error('nama_usaha') is-invalid @enderror" 
-                               id="nama_usaha" 
-                               name="nama_usaha" 
-                               value="{{ old('nama_usaha') }}" 
-                               placeholder="Nama Usaha" 
-                               required>
+                <div class="field-grid">
+                    <!-- Nama Usaha -->
+                    <div class="field">
+                        <label for="nama_usaha">Nama Usaha</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1m4 0h1m-6 4h1m4 0h1m-6 4h1m4 0h1"/></svg>
+                            <input type="text"
+                                   class="@error('nama_usaha') is-invalid @enderror"
+                                   id="nama_usaha"
+                                   name="nama_usaha"
+                                   value="{{ old('nama_usaha') }}"
+                                   placeholder="Nama usaha"
+                                   required>
+                        </div>
                         @error('nama_usaha')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-file-earmark-text"></i></span>
-                        <input type="text" 
-                               class="form-control @error('nib') is-invalid @enderror" 
-                               id="nib" 
-                               name="nib" 
-                               value="{{ old('nib') }}" 
-                               placeholder="NIB" 
-                               required>
+                    <!-- NIB -->
+                    <div class="field">
+                        <label for="nib">NIB</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+                            <input type="text"
+                                   class="@error('nib') is-invalid @enderror"
+                                   id="nib"
+                                   name="nib"
+                                   value="{{ old('nib') }}"
+                                   placeholder="Nomor Induk Berusaha"
+                                   required>
+                        </div>
                         @error('nib')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Jenis Usaha & Alamat -->
-                <div class="row-custom">
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-tag"></i></span>
-                        <select class="form-select @error('jenis_usaha') is-invalid @enderror" 
-                                id="jenis_usaha" 
-                                name="jenis_usaha" 
-                                required>
-                            <option value="">Jenis Usaha</option>
-                            <option value="formal" @selected(old('jenis_usaha') === 'formal')>Formal</option>
-                            <option value="non_formal" @selected(old('jenis_usaha') === 'non_formal')>Non Formal</option>
-                        </select>
+                <div class="field-grid">
+                    <!-- Jenis Usaha -->
+                    <div class="field">
+                        <label for="jenis_usaha">Jenis Usaha</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.7L12.7 20.6a2 2 0 01-2.8 0L2 12.7V4a2 2 0 012-2h8.7a2 2 0 011.4.6l6.5 6.5a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+                            <select class="@error('jenis_usaha') is-invalid @enderror"
+                                    id="jenis_usaha"
+                                    name="jenis_usaha"
+                                    required>
+                                <option value="">Pilih jenis usaha</option>
+                                <option value="formal" @selected(old('jenis_usaha') === 'formal')>Formal</option>
+                                <option value="non_formal" @selected(old('jenis_usaha') === 'non_formal')>Non Formal</option>
+                            </select>
+                        </div>
                         @error('jenis_usaha')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="input-group-custom">
-                        <span class="input-icon input-icon-textarea"><i class="bi bi-geo-alt"></i></span>
-                        <textarea class="form-control @error('alamat_lengkap') is-invalid @enderror" 
-                                  id="alamat_lengkap" 
-                                  name="alamat_lengkap" 
-                                  rows="1" 
-                                  placeholder="Alamat Lengkap" 
-                                  required>{{ old('alamat_lengkap') }}</textarea>
+                    <!-- Alamat Lengkap -->
+                    <div class="field">
+                        <label for="alamat_lengkap">Alamat Lengkap</label>
+                        <div class="control">
+                            <svg class="icon-top" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <textarea class="@error('alamat_lengkap') is-invalid @enderror"
+                                      id="alamat_lengkap"
+                                      name="alamat_lengkap"
+                                      rows="1"
+                                      placeholder="Alamat lengkap"
+                                      required>{{ old('alamat_lengkap') }}</textarea>
+                        </div>
                         @error('alamat_lengkap')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Password & Confirm -->
-                <div class="row-custom">
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-lock"></i></span>
-                        <input type="password" 
-                               class="form-control @error('password') is-invalid @enderror" 
-                               id="password" 
-                               name="password" 
-                               placeholder="Password (min 8)" 
-                               required>
+                <div class="field-grid">
+                    <!-- Password -->
+                    <div class="field">
+                        <label for="password">Kata Sandi</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+                            <input type="password"
+                                   class="@error('password') is-invalid @enderror"
+                                   id="password"
+                                   name="password"
+                                   placeholder="Min. 8 karakter"
+                                   required>
+                        </div>
                         @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="input-group-custom">
-                        <span class="input-icon"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" 
-                               class="form-control @error('password_confirmation') is-invalid @enderror" 
-                               id="password_confirmation" 
-                               name="password_confirmation" 
-                               placeholder="Konfirmasi Password" 
-                               required>
+                    <!-- Konfirmasi Password -->
+                    <div class="field">
+                        <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+                        <div class="control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/><path d="M12 15v2"/></svg>
+                            <input type="password"
+                                   class="@error('password_confirmation') is-invalid @enderror"
+                                   id="password_confirmation"
+                                   name="password_confirmation"
+                                   placeholder="Ulangi kata sandi"
+                                   required>
+                        </div>
                         @error('password_confirmation')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Submit -->
-                <button type="submit" class="btn-register">
-                    <i class="bi bi-person-plus me-2"></i>
+                <button type="submit" class="btn-submit">
                     Daftar Sekarang
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
             </form>
 
-            <div class="auth-footer">
-                Sudah punya akun? 
+            <div class="form-footer">
+                Sudah punya akun?
                 <a href="{{ route('login') }}">Masuk di sini</a>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

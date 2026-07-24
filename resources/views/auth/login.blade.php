@@ -4,540 +4,430 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SIPADU - Sistem Pengembangan SDM Usaha KOPERINDAG">
-    <title>Login | SIPADU</title>
+    <title>Masuk | SIPADU</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
         :root {
-            --primary: #6c757d;
-            --primary-dark: #5a6268;
-            --primary-light: #e9ecef;
-            --primary-gradient: linear-gradient(135deg, #4a5568 0%, #6c757d 50%, #8a929a 100%);
+            --teal-900: #0d2e2f;
+            --teal-800: #10403f;
+            --teal-700: #17504e;
+            --gold-500: #c9962b;
+            --gold-400: #dcb356;
+            --sage-400: #8fae9c;
+            --paper: #f7f2e7;
+            --paper-2: #efe8d8;
+            --ink: #1a2420;
+            --ink-soft: #55625b;
+            --line: #e2dac6;
+            --danger: #a5372f;
+            --danger-bg: #f7e6e3;
+            --success: #33613f;
+            --success-bg: #e7efe4;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: var(--paper);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 1.5rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--ink);
+            padding: 2rem 1.5rem;
         }
 
-        /* ============================================================ */
-        /* AUTH CARD */
-        /* ============================================================ */
-        .auth-card {
-            background: #ffffff;
-            border-radius: 2rem;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+        .auth-shell {
             width: 100%;
-            max-width: 1120px;
-            display: flex;
-            flex-direction: column;
-            min-height: 580px;
-            transition: all 0.3s ease;
+            max-width: 1080px;
+            display: grid;
+            grid-template-columns: 1fr;
+            background: #fff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 40px 90px -30px rgba(13, 46, 47, 0.35);
+            border: 1px solid var(--line);
         }
 
-        @media (min-width: 992px) {
-            .auth-card {
-                flex-direction: row;
-                min-height: 620px;
-            }
+        @media (min-width: 960px) {
+            .auth-shell { grid-template-columns: 1.05fr 1fr; min-height: 640px; }
         }
 
-        /* ============================================================ */
-        /* LEFT SIDE - BRAND & VISUAL */
-        /* ============================================================ */
-        .auth-brand-side {
-            background: var(--primary-gradient);
-            padding: 2.5rem 2.5rem 2rem;
+        /* ============================== LEFT: BRAND PANEL ============================== */
+        .brand-panel {
+            position: relative;
+            background: var(--teal-900);
+            color: #fff;
+            padding: 3rem 3rem 2.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
             overflow: hidden;
-            flex: 0 0 48%;
         }
 
-        .auth-brand-side::before {
+        /* woven kawung-inspired geometric pattern, low opacity */
+        .brand-panel::before {
             content: '';
             position: absolute;
-            top: -40%;
-            right: -20%;
-            width: 70%;
-            height: 70%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
-            border-radius: 50%;
+            inset: 0;
+            opacity: 0.14;
+            background-image:
+                radial-gradient(circle at 20px 20px, transparent 9px, rgba(255,255,255,0.55) 9.6px, rgba(255,255,255,0.55) 10px, transparent 10.6px),
+                radial-gradient(circle at 60px 60px, transparent 9px, rgba(255,255,255,0.55) 9.6px, rgba(255,255,255,0.55) 10px, transparent 10.6px);
+            background-size: 40px 40px;
+            mix-blend-mode: overlay;
+            pointer-events: none;
         }
 
-        .auth-brand-side .brand-top {
-            position: relative;
-            z-index: 1;
+        .brand-panel::after {
+            content: '';
+            position: absolute;
+            right: -30%;
+            bottom: -30%;
+            width: 65%;
+            height: 65%;
+            background: radial-gradient(circle, rgba(201,150,43,0.18) 0%, transparent 72%);
+            pointer-events: none;
         }
 
-        /* ============================================================ */
-        /* BRAND TITLE */
-        /* ============================================================ */
-        .auth-brand-side .brand-title {
-            margin-bottom: 2rem;
+        .brand-mark { position: relative; z-index: 2; display: flex; align-items: center; gap: 0.75rem; }
+
+        .brand-mark .logo-img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 10px;
+            padding: 4px;
+            flex-shrink: 0;
         }
 
-        .auth-brand-side .brand-title .brand-name {
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 1.6rem;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .brand-mark .mark-word { display: flex; flex-direction: column; line-height: 1.1; }
+
+        .brand-mark .mark-word .name {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 2.0rem;
+            letter-spacing: 0.02em;
         }
 
-        .auth-brand-side .brand-title .brand-name span {
-            color: #a8b0b8;
-        }
-
-        .auth-brand-side .brand-title .brand-name .separator {
-            color: rgba(255, 255, 255, 0.2);
-            font-weight: 300;
-        }
-
-        .auth-brand-side .brand-title .brand-sub {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.7rem;
-            font-weight: 400;
-            letter-spacing: 1.5px;
+        .brand-mark .mark-word .agency {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
+            color: var(--gold-400);
             margin-top: 0.15rem;
         }
 
-        /* ============================================================ */
-        /* BRAND CONTENT */
-        /* ============================================================ */
-        .auth-brand-side .brand-content {
+        .brand-copy { position: relative; z-index: 2; padding: 2.2rem 0; }
+
+        .brand-copy .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--sage-400);
+            margin-bottom: 1rem;
+        }
+
+        .brand-copy h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 500;
+            font-size: 2.5rem;
+            line-height: 1.12;
+            max-width: 460px;
+        }
+
+        .brand-copy h1 em {
+            font-style: italic;
+            color: var(--gold-400);
+            font-weight: 400;
+        }
+
+        .brand-copy p {
+            margin-top: 1rem;
+            color: rgba(255,255,255,0.62);
+            font-size: 0.92rem;
+            max-width: 380px;
+            line-height: 1.55;
+        }
+
+        .brand-stats {
             position: relative;
-            z-index: 1;
-            flex: 1;
+            z-index: 2;
+            display: flex;
+            gap: 2.2rem;
+            padding-top: 1.6rem;
+            border-top: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .brand-stats .stat .num {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            color: var(--gold-400);
+            font-weight: 600;
+        }
+
+        .brand-stats .stat .label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.55);
+            margin-top: 0.15rem;
+        }
+
+        /* ============================== RIGHT: FORM PANEL ============================== */
+        .form-panel {
+            padding: 3rem 3.2rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0.5rem 0;
+            background: #fff;
         }
 
-        .auth-brand-side .brand-content h1 {
-            color: #fff;
-            font-size: 2.4rem;
-            font-weight: 700;
-            line-height: 1.15;
+        .form-panel .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.66rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold-500);
             margin-bottom: 0.4rem;
         }
 
-        .auth-brand-side .brand-content h1 .highlight {
-            color: #a8b0b8;
-        }
-
-        .auth-brand-side .brand-content p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            max-width: 80%;
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-brand-side .brand-features {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .auth-brand-side .brand-features .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.82rem;
-        }
-
-        .auth-brand-side .brand-features .feature-item i {
-            color: #a8b0b8;
-            font-size: 0.95rem;
-        }
-
-        .auth-brand-side .brand-footer {
-            position: relative;
-            z-index: 1;
-            padding-top: 1.2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: 1.2rem;
-        }
-
-        .auth-brand-side .brand-footer .version {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-        }
-
-        /* ============================================================ */
-        /* RIGHT SIDE - FORM */
-        /* ============================================================ */
-        .auth-form-side {
-            padding: 2.5rem 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex: 0 0 52%;
-        }
-
-        .auth-form-side .form-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-form-side .form-header .eyebrow {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #6c757d;
+        .form-panel h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.7rem;
             font-weight: 600;
-            margin-bottom: 0.2rem;
+            color: var(--teal-900);
         }
 
-        .auth-form-side .form-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 0.15rem;
+        .form-panel .sub {
+            color: var(--ink-soft);
+            font-size: 0.88rem;
+            margin-top: 0.3rem;
+            margin-bottom: 1.8rem;
         }
 
-        .auth-form-side .form-header p {
-            color: #8a93a3;
-            font-size: 0.85rem;
-            margin-bottom: 0;
-        }
+        .field { margin-bottom: 1.15rem; }
 
-        .auth-form-side .form-label {
+        .field label {
+            display: block;
             font-weight: 600;
-            font-size: 0.82rem;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
+            font-size: 0.78rem;
+            color: var(--teal-900);
+            margin-bottom: 0.35rem;
         }
 
-        .auth-form-side .input-group-custom {
+        .field .control {
             position: relative;
-            margin-bottom: 1.1rem;
         }
 
-        .auth-form-side .input-group-custom .input-icon {
+        .field .control svg {
             position: absolute;
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #b0b8c8;
-            z-index: 10;
-            font-size: 0.95rem;
+            width: 17px;
+            height: 17px;
+            stroke: #a3ab9f;
         }
 
-        .auth-form-side .input-group-custom .form-control {
-            padding: 0.65rem 0.75rem 0.65rem 2.8rem;
-            border: 1.5px solid #e8ecf1;
-            border-radius: 0.7rem;
-            font-size: 0.88rem;
-            transition: all 0.2s;
-            background: #fafbfc;
+        .field input {
+            width: 100%;
             height: 48px;
+            padding: 0 0.9rem 0 2.7rem;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: var(--paper);
+            color: var(--ink);
+            transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
         }
 
-        .auth-form-side .input-group-custom .form-control:focus {
-            border-color: #6c757d;
-            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.08);
-            background: #ffffff;
+        .field input::placeholder { color: #a6ac9f; }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--teal-700);
+            box-shadow: 0 0 0 3px rgba(23, 80, 78, 0.12);
+            background: #fff;
         }
 
-        .auth-form-side .input-group-custom .form-control.is-invalid {
-            border-color: #ea5455;
-            box-shadow: 0 0 0 3px rgba(234, 84, 85, 0.08);
+        .field input.is-invalid {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(165, 55, 47, 0.1);
         }
 
-        .auth-form-side .form-check {
+        .field .err {
+            color: var(--danger);
+            font-size: 0.76rem;
+            margin-top: 0.3rem;
+        }
+
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.4rem;
+        }
+
+        .check {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--ink-soft);
         }
 
-        .auth-form-side .form-check-input {
+        .check input {
             width: 16px;
             height: 16px;
-            border-radius: 4px;
-            border: 1.5px solid #d0d5dd;
+            accent-color: var(--teal-800);
             cursor: pointer;
-            transition: all 0.15s;
-            margin-top: 0;
         }
 
-        .auth-form-side .form-check-input:checked {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .auth-form-side .form-check-label {
-            font-size: 0.82rem;
-            color: #4a5568;
-        }
-
-        .auth-form-side .btn-login {
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-            border: none;
-            padding: 0.7rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 0.7rem;
-            transition: all 0.25s;
-            color: #fff;
-            width: 100%;
-            height: 48px;
-            letter-spacing: 0.3px;
-        }
-
-        .auth-form-side .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
-        }
-
-        .auth-form-side .btn-login:active {
-            transform: translateY(0);
-        }
-
-        .auth-form-side .auth-footer {
-            margin-top: 1.2rem;
-            text-align: center;
-            font-size: 0.82rem;
-            color: #8a93a3;
-        }
-
-        .auth-form-side .auth-footer a {
-            color: #6c757d;
-            font-weight: 600;
+        .forgot {
+            font-size: 0.8rem;
+            color: var(--ink-soft);
             text-decoration: none;
-            transition: color 0.15s;
-        }
-
-        .auth-form-side .auth-footer a:hover {
-            color: #5a6268;
-            text-decoration: underline;
-        }
-
-        .auth-form-side .forgot-link {
-            color: #8a93a3;
-            font-size: 0.78rem;
-            text-decoration: none;
-            transition: color 0.15s;
             font-weight: 500;
         }
 
-        .auth-form-side .forgot-link:hover {
-            color: #6c757d;
+        .forgot:hover { color: var(--teal-800); text-decoration: underline; }
+
+        .btn-submit {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            background: var(--teal-900);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
         }
+
+        .btn-submit:hover {
+            background: var(--teal-700);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px -8px rgba(13,46,47,0.5);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .form-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+        }
+
+        .form-footer a {
+            color: var(--teal-800);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover { text-decoration: underline; }
 
         .alert {
-            border-radius: 0.7rem;
+            border-radius: 10px;
             font-size: 0.82rem;
-            padding: 0.65rem 1rem;
-            border: none;
+            padding: 0.7rem 1rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
         }
 
-        .alert-success {
-            background: #e8f5e9;
-            color: #2e7d32;
+        .alert-success { background: var(--success-bg); color: var(--success); }
+        .alert-danger { background: var(--danger-bg); color: var(--danger); }
+        .alert svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+        /* ============================== RESPONSIVE ============================== */
+        @media (max-width: 959px) {
+            .brand-panel { padding: 2.2rem; }
+            .brand-copy { padding: 1.4rem 0; }
+            .brand-copy h1 { font-size: 1.9rem; }
+            .brand-stats { display: none; }
+            .form-panel { padding: 2.2rem; }
         }
 
-        .alert-danger {
-            background: #fde8e8;
-            color: #842029;
-        }
-
-        .alert i {
-            font-size: 1rem;
-        }
-
-        /* ============================================================ */
-        /* RESPONSIVE */
-        /* ============================================================ */
-        @media (max-width: 991px) {
-            .auth-brand-side {
-                flex: 0 0 100%;
-                padding: 1.8rem;
-                min-height: 200px;
-            }
-
-            .auth-brand-side .brand-content h1 {
-                font-size: 1.8rem;
-            }
-
-            .auth-brand-side .brand-content p {
-                max-width: 100%;
-                font-size: 0.85rem;
-            }
-
-            .auth-brand-side .brand-features {
-                display: none;
-            }
-
-            .auth-brand-side .brand-title .brand-name {
-                font-size: 1.3rem;
-            }
-
-            .auth-form-side {
-                flex: 0 0 100%;
-                padding: 1.8rem;
-            }
-
-            .auth-card {
-                margin: 0;
-                min-height: auto;
-                border-radius: 1.5rem;
-            }
-
-            body {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .auth-brand-side .brand-content h1 {
-                font-size: 1.4rem;
-            }
-
-            .auth-brand-side .brand-title .brand-name {
-                font-size: 1.1rem;
-            }
-
-            .auth-form-side .form-header h2 {
-                font-size: 1.2rem;
-            }
-
-            .auth-form-side {
-                padding: 1.2rem;
-            }
-
-            .auth-brand-side {
-                padding: 1.2rem;
-                min-height: 150px;
-            }
-
-            .auth-form-side .input-group-custom .form-control {
-                height: 42px;
-                font-size: 0.82rem;
-            }
-
-            .auth-form-side .btn-login {
-                height: 42px;
-                font-size: 0.85rem;
-            }
-
-            .auth-card {
-                border-radius: 1.2rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .auth-brand-side .brand-content h1 {
-                font-size: 1.2rem;
-            }
-
-            .auth-form-side .form-header h2 {
-                font-size: 1rem;
-            }
-
-            .auth-form-side {
-                padding: 1rem;
-            }
-
-            .auth-brand-side {
-                padding: 1rem;
-            }
-
-            .auth-brand-side .brand-title .brand-name {
-                font-size: 0.95rem;
-            }
+        @media (max-width: 480px) {
+            .auth-shell { border-radius: 16px; }
+            .brand-panel { padding: 1.6rem; }
+            .brand-copy h1 { font-size: 1.6rem; }
+            .brand-copy p { font-size: 0.85rem; }
+            .form-panel { padding: 1.6rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="auth-card">
+    <div class="auth-shell">
         <!-- ============================================================ -->
-        <!-- LEFT SIDE - BRAND & VISUAL -->
+        <!-- LEFT: BRAND PANEL -->
         <!-- ============================================================ -->
-        <div class="auth-brand-side">
-            <div class="brand-top">
-                <!-- ========================================================== -->
-                <!-- BRAND TITLE -->
-                <!-- ========================================================== -->
-                <div class="brand-title">
-                    <div class="brand-name">
-                        SIPADU
-                        <span class="separator">|</span>
-                        <span>KOPERINDAG</span>
-                    </div>
-                    <div class="brand-sub">Sistem Pengembangan SDM Usaha KOPERINDAG</div>
+        <div class="brand-panel">
+            <div class="brand-mark">
+                <!-- Lambang resmi Provinsi Sulawesi Barat. Letakkan file resmi (PNG/SVG) di public/images/logo-sulbar.png -->
+                <img src="{{ asset('assets/images/logo-sulbar.jpg') }}" alt="Lambang Provinsi Sulawesi Barat" class="logo-img">
+                <div class="mark-word">
+                    <span class="name">SIPADU</span>
+                    <span class="agency">Dinas Koperindag Prov. Sulawesi Barat</span>
                 </div>
             </div>
 
-            <div class="brand-content">
-                <h1>Selamat <br>Datang <span class="highlight">Kembali</span></h1>
-                <p>Masuk ke akun Anda untuk melanjutkan pembelajaran dan pelatihan.</p>
-                <div class="brand-features">
-                    <div class="feature-item">
-                        <i class="bi bi-shield-check"></i>
-                        <span>Koneksi Aman &amp; Terenkripsi</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="bi bi-clock-history"></i>
-                        <span>Terakhir login: {{ now()->format('d/m/Y H:i') }}</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="bi bi-mortarboard-fill"></i>
-                        <span>Akses ke semua pelatihan Anda</span>
-                    </div>
-                </div>
+            <div class="brand-copy">
+                <p class="eyebrow">Portal Pelatihan &amp; SDM</p>
+                <h1>Tumbuh bersama, <em>berdaya</em> bersama.</h1>
+                <p>Sistem Pengembangan SDM Usaha KOPERINDAG &mdash; ruang belajar dan pelatihan bagi pelaku koperasi, industri, dan perdagangan.</p>
             </div>
 
-            <div class="brand-footer">
-                <span class="version">v1.0.0 &bull; SIPADU Platform</span>
+            <div class="brand-stats">
+                <div class="stat">
+                    <div class="num">120+</div>
+                    <div class="label">Modul pelatihan</div>
+                </div>
+                <div class="stat">
+                    <div class="num">4.500</div>
+                    <div class="label">Peserta terdaftar</div>
+                </div>
+                <div class="stat">
+                    <div class="num">98%</div>
+                    <div class="label">Tingkat kelulusan</div>
+                </div>
             </div>
         </div>
 
         <!-- ============================================================ -->
-        <!-- RIGHT SIDE - LOGIN FORM -->
+        <!-- RIGHT: LOGIN FORM -->
         <!-- ============================================================ -->
-        <div class="auth-form-side">
-            <div class="form-header">
-                <p class="eyebrow">Akses Aman</p>
-                <h2>Masuk ke Akun</h2>
-                <p>Masukkan email dan password Anda.</p>
-            </div>
+        <div class="form-panel">
+            <p class="eyebrow">Akses Anggota</p>
+            <h2>Masuk ke akun Anda</h2>
+            <p class="sub">Masukkan email dan kata sandi terdaftar Anda.</p>
 
-            <!-- Session Status -->
             @if(session('status'))
-                <div class="alert alert-success mb-3">
-                    <i class="bi bi-check-circle me-2"></i>
+                <div class="alert alert-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     {{ session('status') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger mb-3">
-                    <i class="bi bi-exclamation-circle me-2"></i>
+                <div class="alert alert-danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     {{ session('error') }}
                 </div>
             @endif
@@ -545,60 +435,58 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
-                <!-- Email -->
-                <div class="input-group-custom">
-                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                    <input type="email" 
-                           class="form-control @error('email') is-invalid @enderror" 
-                           id="email" 
-                           name="email" 
-                           value="{{ old('email') }}" 
-                           placeholder="Email address" 
-                           required 
-                           autofocus>
-                    @error('email')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Password -->
-                <div class="input-group-custom">
-                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                    <input type="password" 
-                           class="form-control @error('password') is-invalid @enderror" 
-                           id="password" 
-                           name="password" 
-                           placeholder="Password" 
-                           required>
-                    @error('password')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Remember & Forgot -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                        <label class="form-check-label" for="remember">
-                            Ingat saya
-                        </label>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <div class="control">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4V4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+                        <input type="email"
+                               class="@error('email') is-invalid @enderror"
+                               id="email"
+                               name="email"
+                               value="{{ old('email') }}"
+                               placeholder="nama@instansi.go.id"
+                               required
+                               autofocus>
                     </div>
+                    @error('email')
+                        <div class="err">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="field">
+                    <label for="password">Kata Sandi</label>
+                    <div class="control">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+                        <input type="password"
+                               class="@error('password') is-invalid @enderror"
+                               id="password"
+                               name="password"
+                               placeholder="Kata sandi"
+                               required>
+                    </div>
+                    @error('password')
+                        <div class="err">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="row-between">
+                    <label class="check">
+                        <input type="checkbox" name="remember" id="remember">
+                        Ingat saya
+                    </label>
                     @if (Route::has('password.request'))
-                        <a class="forgot-link" href="{{ route('password.request') }}">
-                            Lupa password?
-                        </a>
+                        <a class="forgot" href="{{ route('password.request') }}">Lupa kata sandi?</a>
                     @endif
                 </div>
 
-                <!-- Submit -->
-                <button type="submit" class="btn-login">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                <button type="submit" class="btn-submit">
                     Masuk
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
             </form>
 
-            <div class="auth-footer">
-                Belum punya akun? 
+            <div class="form-footer">
+                Belum punya akun?
                 @if (Route::has('register'))
                     <a href="{{ route('register') }}">Daftar sekarang</a>
                 @endif
@@ -606,6 +494,5 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

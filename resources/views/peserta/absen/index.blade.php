@@ -9,7 +9,7 @@
         <div>
             <p class="eyebrow">Kehadiran</p>
             <h1 class="h3 mb-0">Absensi Pelatihan</h1>
-            <p class="text-muted mb-0">Lakukan absensi setelah menyelesaikan quiz pada pelatihan yang diikuti.</p>
+            <p class="text-muted mb-0">Lakukan absensi kehadiran Anda sebelum memulai quiz pada pelatihan yang diikuti.</p>
         </div>
     </div>
 </div>
@@ -106,17 +106,17 @@
         <div class="panel-header">
             <div>
                 <h5 class="section-title"><i class="bi bi-list-check"></i> Daftar Pelatihan</h5>
-                <p class="text-muted small mb-0">Pelatihan yang dapat diabsensi setelah menyelesaikan quiz.</p>
+                <p class="text-muted small mb-0">Pelatihan yang dapat diabsensi hari ini.</p>
             </div>
             <div>
                 <span class="badge text-bg-info">
                     <i class="bi bi-info-circle me-1"></i>
-                    Syarat: Selesaikan semua quiz
+                    Absensi Wajib
                 </span>
             </div>
         </div>
         <div class="table-responsive">
-            @if(isset($trainings) && $trainings->count() > 0)
+            @if(isset($availableTrainings) && $availableTrainings->count() > 0)
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
@@ -130,7 +130,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($trainings as $index => $training)
+                    @foreach($availableTrainings as $index => $training)
                     @php
                         // Hitung progress materi
                         $totalMateri = $training->materi->count();
@@ -220,28 +220,21 @@
                             @endif
                         </td>
                         <td class="text-center">
-                            @if(!$sudahAbsen && $isQuizComplete)
+                            @if($sudahAbsen)
+                                <span class="text-success fs-5" title="Sudah Absen">
+                                    <i class="bi bi-check2-circle"></i>
+                                </span>
+                            @else
                                 <form action="{{ route('peserta.absen.store') }}" method="POST" class="d-inline">
                                     @csrf
                                     <input type="hidden" name="training_id" value="{{ $training->id }}">
+                                    <input type="hidden" name="tanggal" value="{{ date('Y-m-d') }}">
+                                    <input type="hidden" name="status" value="hadir">
                                     <button type="submit" class="btn btn-success btn-sm" 
-                                            onclick="return confirm('Apakah Anda yakin ingin melakukan absensi untuk pelatihan ini?')">
+                                            onclick="return confirm('Apakah Anda yakin ingin merekam kehadiran untuk pelatihan ini?')">
                                         <i class="bi bi-check2 me-1"></i> Absen Sekarang
                                     </button>
                                 </form>
-                            @elseif($sudahAbsen)
-                                <span class="text-success fs-5">
-                                    <i class="bi bi-check2-circle"></i>
-                                </span>
-                            @elseif(!$isQuizComplete && $totalQuiz > 0)
-                                <button class="btn btn-secondary btn-sm" disabled title="Selesaikan semua quiz terlebih dahulu">
-                                    <i class="bi bi-lock me-1"></i> Terkunci
-                                </button>
-                                <small class="text-muted d-block">Selesaikan quiz</small>
-                            @else
-                                <button class="btn btn-secondary btn-sm" disabled title="Belum ada quiz">
-                                    <i class="bi bi-dash-circle me-1"></i> Tidak Tersedia
-                                </button>
                             @endif
                         </td>
                     </tr>
@@ -261,14 +254,14 @@
             </div>
             @endif
         </div>
-        @if(isset($trainings) && $trainings->hasPages())
+        @if(isset($availableTrainings) && method_exists($availableTrainings, 'hasPages') && $availableTrainings->hasPages())
         <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-3 px-3 pb-3">
             <p class="text-muted small mb-0">
-                Menampilkan {{ $trainings->firstItem() ?? 0 }} sampai {{ $trainings->lastItem() ?? 0 }} 
-                dari {{ $trainings->total() ?? 0 }} pelatihan
+                Menampilkan {{ $availableTrainings->firstItem() ?? 0 }} sampai {{ $availableTrainings->lastItem() ?? 0 }} 
+                dari {{ $availableTrainings->total() ?? 0 }} pelatihan
             </p>
             <nav aria-label="Pagination">
-                {{ $trainings->appends(request()->query())->links() }}
+                {{ $availableTrainings->appends(request()->query())->links() }}
             </nav>
         </div>
         @endif
