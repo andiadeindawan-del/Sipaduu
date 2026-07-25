@@ -9,7 +9,6 @@
         <div>
             <p class="eyebrow">Materi</p>
             <h1 class="h3 mb-0">Daftar Materi</h1>
-            <p class="text-muted mb-0">Akses dan pelajari materi pelatihan yang tersedia.</p>
         </div>
     </div>
     <div class="heading-actions">

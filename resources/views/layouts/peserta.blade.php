@@ -530,7 +530,7 @@
                     Quiz
                 </a>
                 <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
-                    Kehadiran
+                    Absen
                 </a>
                 <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
                     Sertifikat

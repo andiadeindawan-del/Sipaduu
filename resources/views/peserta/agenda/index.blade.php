@@ -9,7 +9,6 @@
         <div>
             <p class="eyebrow">Informasi</p>
             <h1 class="h3 mb-0">Agenda</h1>
-            <p class="text-muted mb-0">Jadwal kegiatan dan acara pelatihan Anda.</p>
         </div>
     </div>
     <div class="heading-actions">
@@ -181,7 +180,7 @@
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">No</th>
                         <th>Agenda</th>
                         <th>Pelatihan</th>
                         <th>Tanggal & Waktu</th>
@@ -201,16 +200,14 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ Str::limit($agenda->judul, 50) }}</p>
-                                @if($agenda->deskripsi)
-                                    <small class="text-muted">{{ Str::limit($agenda->deskripsi, 80) }}</small>
-                                @endif
+                               
                             </div>
                         </td>
                         <td>
                             @if($agenda->training)
                                 <span class="badge text-bg-primary">{{ Str::limit($agenda->training->judul, 25) }}</span>
                             @else
-                                <span class="badge text-bg-secondary">Umum</span>
+                                <span class="">Umum</span>
                             @endif
                         </td>
                         <td>
@@ -344,132 +341,78 @@
     </div>
 
     <!-- Calendar View -->
-    <div class="panel mt-4">
+  <div class="panel mt-3">
         <div class="panel-header">
             <div>
                 <h5 class="section-title"><i class="bi bi-calendar3"></i> Kalender Agenda</h5>
-                <p class="text-muted small mb-0">Tampilan kalender agenda Anda.</p>
-            </div>
-            <div>
-                <button class="btn btn-sm btn-outline-secondary" onclick="goToToday()">
-                    <i class="bi bi-calendar-week"></i> Hari Ini
-                </button>
             </div>
         </div>
         <div class="p-4">
-            <div class="row g-4">
+            <div class="row g-2">
                 @php
-                    $currentMonth = isset($_GET['month']) ? (int)$_GET['month'] : now()->month;
-                    $currentYear = isset($_GET['year']) ? (int)$_GET['year'] : now()->year;
-                    $date = \Carbon\Carbon::create($currentYear, $currentMonth, 1);
-                    $daysInMonth = $date->daysInMonth;
-                    $firstDayOfMonth = $date->dayOfWeek;
                     $today = now();
+                    $currentMonth = $today->format('m');
+                    $currentYear = $today->format('Y');
+                    $daysInMonth = $today->daysInMonth;
+                    $firstDayOfMonth = $today->copy()->startOfMonth()->format('w');
                     
-                    // Konversi ke format Indonesia (Senin = 1, Minggu = 7)
-                    $firstDayOfMonth = ($firstDayOfMonth == 0) ? 7 : $firstDayOfMonth;
+                    // Ambil agenda untuk bulan ini
+                    $monthlyAgendas = $agendas->filter(function($agenda) use ($currentMonth, $currentYear) {
+                        return $agenda->tanggal && $agenda->tanggal->format('m') == $currentMonth && $agenda->tanggal->format('Y') == $currentYear;
+                    });
                     
-                    // Agenda dates
-                    $agendaDates = $agendas->pluck('tanggal')->map(function($d) {
-                        return $d ? $d->format('Y-m-d') : null;
-                    })->filter()->toArray();
-                    
-                    // Navigation
-                    $prevMonth = $date->copy()->subMonth();
-                    $nextMonth = $date->copy()->addMonth();
+                    $agendaDates = $monthlyAgendas->pluck('tanggal')->map(function($date) {
+                        return $date->format('Y-m-d');
+                    })->toArray();
                 @endphp
                 
-                <!-- Month/Year Header -->
                 <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">
-                            <span class="text-primary">{{ $date->translatedFormat('F') }}</span>
-                            <span class="text-muted">{{ $date->format('Y') }}</span>
-                        </h5>
-                        <div class="d-flex gap-2">
-                            <a href="{{ route('peserta.agenda.index', ['month' => $prevMonth->month, 'year' => $prevMonth->year] + request()->except(['month', 'year'])) }}" 
-                               class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-chevron-left"></i>
-                            </a>
-                            <a href="{{ route('peserta.agenda.index', ['month' => $nextMonth->month, 'year' => $nextMonth->year] + request()->except(['month', 'year'])) }}" 
-                               class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                        </div>
+                    <div class="text-center mb-3">
+                        <h6>{{ $today->format('F Y') }}</h6>
                     </div>
-                </div>
-
-                <!-- Calendar Grid -->
-                <div class="col-12">
-                    <div class="calendar-grid">
-                        <!-- Day Names -->
-                        <div class="row g-1 mb-2">
-                            @foreach(['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $day)
-                            <div class="col text-center">
-                                <span class="fw-semibold text-muted small">{{ $day }}</span>
-                            </div>
-                            @endforeach
-                        </div>
-
-                        <!-- Calendar Days -->
-                        <div class="row g-1">
-                            <!-- Empty days before first day -->
-                            @for($i = 1; $i < $firstDayOfMonth; $i++)
-                            <div class="col text-center py-2">
-                                <span class="text-muted opacity-25">-</span>
-                            </div>
-                            @endfor
-
-                            <!-- Days of month -->
-                            @for($day = 1; $day <= $daysInMonth; $day++)
-                            @php
-                                $currentDate = \Carbon\Carbon::create($currentYear, $currentMonth, $day);
-                                $dateString = $currentDate->format('Y-m-d');
-                                $hasAgenda = in_array($dateString, $agendaDates);
-                                $isToday = $currentDate->isToday();
-                                $isWeekend = $currentDate->isWeekend();
-                                $dayOfWeek = $currentDate->dayOfWeek;
-                            @endphp
-                            <div class="col text-center py-1">
-                                <div class="calendar-day {{ $isToday ? 'today' : '' }} {{ $hasAgenda ? 'has-agenda' : '' }} {{ $isWeekend ? 'weekend' : '' }}"
-                                     data-date="{{ $dateString }}"
-                                     onclick="filterByDate('{{ $dateString }}')"
-                                     title="{{ $hasAgenda ? 'Ada agenda' : 'Tidak ada agenda' }}">
-                                    <span class="day-number {{ $isToday ? 'text-white' : ($hasAgenda ? 'text-primary fw-bold' : '') }}">
-                                        {{ $day }}
-                                    </span>
-                                    @if($hasAgenda)
-                                        <span class="agenda-dot"></span>
-                                    @endif
-                                    @if($isToday)
-                                        <span class="today-badge">Hari Ini</span>
-                                    @endif
-                                </div>
-                            </div>
-                            @endfor
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Legend -->
-                <div class="col-12 mt-3">
-                    <div class="d-flex flex-wrap gap-4 justify-content-center">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="legend-dot today-dot"></span>
-                            <small class="text-muted">Hari Ini</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="legend-dot has-agenda-dot"></span>
-                            <small class="text-muted">Ada Agenda</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="legend-dot no-agenda-dot"></span>
-                            <small class="text-muted">Tidak Ada Agenda</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="legend-dot weekend-dot"></span>
-                            <small class="text-muted">Akhir Pekan</small>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0" style="font-size: 0.85rem;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Min</th>
+                                    <th class="text-center">Sen</th>
+                                    <th class="text-center">Sel</th>
+                                    <th class="text-center">Rab</th>
+                                    <th class="text-center">Kam</th>
+                                    <th class="text-center">Jum</th>
+                                    <th class="text-center">Sab</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $day = 1;
+                                    $emptyDays = $firstDayOfMonth;
+                                    $totalDays = $daysInMonth;
+                                @endphp
+                                @for($week = 0; $week < ceil(($totalDays + $emptyDays) / 7); $week++)
+                                <tr>
+                                    @for($d = 0; $d < 7; $d++)
+                                        @php
+                                            $dayNumber = ($week * 7 + $d) - $emptyDays + 1;
+                                            $dateObj = $dayNumber > 0 && $dayNumber <= $totalDays ? \Carbon\Carbon::create($currentYear, $currentMonth, $dayNumber) : null;
+                                            $hasAgenda = $dateObj && in_array($dateObj->format('Y-m-d'), $agendaDates);
+                                            $isToday = $dateObj && $dateObj->isToday();
+                                        @endphp
+                                        <td class="text-center p-1 {{ $isToday ? 'bg-primary bg-opacity-10' : '' }}" style="height: 60px;">
+                                            @if($dateObj)
+                                                <span class="{{ $isToday ? 'fw-bold text-primary' : '' }}">{{ $dayNumber }}</span>
+                                                @if($hasAgenda)
+                                                    <div class="mt-1">
+                                                        <span class="badge text-bg-success" style="font-size: 6px; width: 6px; height: 6px; border-radius: 50%; display: inline-block;"></span>
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        </td>
+                                    @endfor
+                                </tr>
+                                @endfor
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -137,7 +137,7 @@ public function index(Request $request, Quiz $quiz = null)
         $validated = $request->validate([
             'quiz_id' => 'required|exists:quizzes,id',
             'question' => 'required|string|max:5000',
-            'type' => ['required', Rule::in(['multiple_choice', 'essay'])],
+            'type' => ['required', Rule::in(['multiple_choice', 'true_false', 'essay'])],
             'points' => 'nullable|integer|min:1|max:100',
             'options' => 'nullable|array',
             'options.*' => 'nullable|string|max:1000',
@@ -170,6 +170,9 @@ public function index(Request $request, Quiz $quiz = null)
             
             $questionData['options'] = array_values($filteredOptions);
             $questionData['correct_answer'] = $validated['correct_answer'] ?? 'A';
+        } elseif ($validated['type'] === 'true_false') {
+            $questionData['options'] = null;
+            $questionData['correct_answer'] = $validated['correct_answer'] ?? 'true';
         } else {
             // Essay
             $questionData['options'] = null;
@@ -292,7 +295,7 @@ public function index(Request $request, Quiz $quiz = null)
 
             $validated = $request->validate([
                 'question' => 'required|string|max:5000',
-                'type' => ['required', Rule::in(['multiple_choice', 'essay', 'pilihan', 'pilihan_ganda'])],
+                'type' => ['required', Rule::in(['multiple_choice', 'true_false', 'essay', 'pilihan', 'pilihan_ganda'])],
                 'points' => 'nullable|integer|min:1|max:100',
                 'options' => 'nullable|array',
                 'options.*' => 'nullable|string|max:1000',
@@ -327,6 +330,12 @@ public function index(Request $request, Quiz $quiz = null)
                 $letters = ['A', 'B', 'C', 'D', 'E', 'F'];
                 if (!in_array($validated['correct_answer'], array_slice($letters, 0, count($validated['options'])))) {
                     return back()->withErrors(['correct_answer' => 'Jawaban benar tidak valid.'])
+                                 ->withInput();
+                }
+            } elseif ($validated['type'] === 'true_false') {
+                $validated['options'] = null;
+                if (empty($validated['correct_answer']) || !in_array($validated['correct_answer'], ['true', 'false'])) {
+                    return back()->withErrors(['correct_answer' => 'Jawaban benar wajib dipilih untuk soal Benar/Salah (true/false).'])
                                  ->withInput();
                 }
             } else {

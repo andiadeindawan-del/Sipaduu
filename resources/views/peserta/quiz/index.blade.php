@@ -9,7 +9,6 @@
         <div>
             <p class="eyebrow">Quiz</p>
             <h1 class="h3 mb-0">Daftar Quiz</h1>
-            <p class="text-muted mb-0">Ikuti quiz untuk menguji pemahaman Anda terhadap materi pelatihan.</p>
         </div>
     </div>
     <div class="heading-actions">

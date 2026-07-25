@@ -169,7 +169,7 @@
                         <th style="width: 40px;">
                             <input type="checkbox" id="selectAll" class="form-check-input">
                         </th>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">No</th>
                         <th>Judul</th>
                         <th>Pelatihan</th>
                         <th>Tanggal & Waktu</th>
@@ -210,7 +210,6 @@
                         </td>
                         <td>
                             @if($agenda->lokasi)
-                            <span class="badge text-bg-secondary">
                                 <i class="bi bi-geo-alt me-1"></i>
                                 {{ Str::limit($agenda->lokasi, 20) }}
                             </span>

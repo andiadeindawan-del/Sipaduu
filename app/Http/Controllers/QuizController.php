@@ -200,8 +200,8 @@ class QuizController extends Controller
             'order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_random'] = $request->has('is_random') ? 1 : 0;
-        $validated['show_result'] = $request->has('show_result') ? 1 : 0;
+        $validated['is_random'] = $request->boolean('is_random') ? 1 : 0;
+        $validated['show_result'] = $request->boolean('show_result') ? 1 : 0;
 
         if (!isset($validated['order']) || $validated['order'] === null) {
             $validated['order'] = (Quiz::max('order') ?? 0) + 1;
@@ -337,8 +337,8 @@ class QuizController extends Controller
             'order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_random'] = $request->has('is_random') ? 1 : 0;
-        $validated['show_result'] = $request->has('show_result') ? 1 : 0;
+        $validated['is_random'] = $request->boolean('is_random') ? 1 : 0;
+        $validated['show_result'] = $request->boolean('show_result') ? 1 : 0;
 
         if (!isset($validated['order']) || $validated['order'] === null) {
             $validated['order'] = $quiz->order ?? 0;
@@ -383,17 +383,6 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
-        $questionsCount = $quiz->questions()->count();
-        if ($questionsCount > 0) {
-            return redirect()->route('admin.quiz.index')
-                            ->with('error', "⚠️ Quiz tidak dapat dihapus karena masih memiliki {$questionsCount} pertanyaan. Hapus pertanyaan terlebih dahulu.");
-        }
-
-        $attemptsCount = $quiz->attempts()->count();
-        if ($attemptsCount > 0) {
-            return redirect()->route('admin.quiz.index')
-                            ->with('error', "⚠️ Quiz tidak dapat dihapus karena sudah ada {$attemptsCount} peserta yang mengerjakan.");
-        }
 
         $quiz->delete();
 
@@ -482,10 +471,6 @@ class QuizController extends Controller
         foreach ($request->ids as $id) {
             $quiz = Quiz::find($id);
             if ($quiz) {
-                if ($quiz->questions()->count() > 0 || $quiz->attempts()->count() > 0) {
-                    $errors[] = "Quiz '{$quiz->judul}' tidak dapat dihapus karena memiliki pertanyaan atau peserta.";
-                    continue;
-                }
                 $quiz->delete();
                 $deleted++;
             }

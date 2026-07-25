@@ -163,7 +163,7 @@
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">No</th>
                         <th>Peserta</th>
                         <th>Pelatihan</th>
                         <th>Tanggal</th>
@@ -188,20 +188,18 @@
                                 @endif
                                 <div>
                                     <p class="fw-semibold mb-0">{{ $absen->user->nama ?? $absen->user->name ?? '-' }}</p>
-                                    <p class="text-muted small mb-0">{{ $absen->user->email ?? '-' }}</p>
                                 </div>
                             </div>
                         </td>
                         <td>
                             @if($absen->training)
-                            <span class="badge text-bg-info">{{ $absen->training->judul }}</span>
+                            <span class=" ">{{ $absen->training->judul }}</span>
                             @else
                             <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
-                            <span class="badge text-bg-light">
-                                <i class="bi bi-calendar3 me-1"></i>
+                            <span class=" text-bg-light">
                                 {{ $absen->tanggal ? $absen->tanggal->format('d/m/Y') : '-' }}
                             </span>
                         </td>
