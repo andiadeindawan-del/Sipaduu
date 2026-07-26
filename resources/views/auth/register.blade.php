@@ -11,21 +11,23 @@
 
     <style>
         :root {
-            --teal-900: #0d2e2f;
-            --teal-800: #10403f;
-            --teal-700: #17504e;
+            --primary: #4e9af1;
+            --primary-dark: #3a7bc8;
+            --primary-light: #e8f4f8;
+            --secondary: #1a2236;
+            --accent: #28c76f;
             --gold-500: #c9962b;
             --gold-400: #dcb356;
-            --sage-400: #8fae9c;
-            --paper: #f7f2e7;
-            --paper-2: #efe8d8;
-            --ink: #1a2420;
-            --ink-soft: #55625b;
-            --line: #e2dac6;
-            --danger: #a5372f;
-            --danger-bg: #f7e6e3;
-            --success: #33613f;
-            --success-bg: #e7efe4;
+            --paper: #f8fafc;
+            --paper-2: #f0f7fa;
+            --ink: #1a2236;
+            --ink-soft: #5a6a7a;
+            --line: #d4e8f0;
+            --danger: #ea5455;
+            --danger-bg: #fce8e8;
+            --success: #28c76f;
+            --success-bg: #dff6e8;
+            --white: #ffffff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,7 +51,7 @@
             background: #fff;
             border-radius: 22px;
             overflow: hidden;
-            box-shadow: 0 40px 90px -30px rgba(13, 46, 47, 0.35);
+            box-shadow: 0 40px 90px -30px rgba(26, 34, 54, 0.3);
             border: 1px solid var(--line);
         }
 
@@ -60,7 +62,7 @@
         /* ============================== LEFT: BRAND PANEL ============================== */
         .brand-panel {
             position: relative;
-            background: var(--teal-900);
+            background: linear-gradient(135deg, #1a3a4a 0%, #2c7a9a 50%, #4a9aba 100%);
             color: #fff;
             padding: 3rem 2.6rem 2.5rem;
             display: flex;
@@ -69,15 +71,14 @@
             overflow: hidden;
         }
 
-        /* woven kawung-inspired geometric pattern, low opacity */
         .brand-panel::before {
             content: '';
             position: absolute;
             inset: 0;
-            opacity: 0.14;
+            opacity: 0.08;
             background-image:
-                radial-gradient(circle at 20px 20px, transparent 9px, rgba(255,255,255,0.55) 9.6px, rgba(255,255,255,0.55) 10px, transparent 10.6px),
-                radial-gradient(circle at 60px 60px, transparent 9px, rgba(255,255,255,0.55) 9.6px, rgba(255,255,255,0.55) 10px, transparent 10.6px);
+                radial-gradient(circle at 20px 20px, transparent 9px, rgba(255,255,255,0.4) 9.6px, rgba(255,255,255,0.4) 10px, transparent 10.6px),
+                radial-gradient(circle at 60px 60px, transparent 9px, rgba(255,255,255,0.4) 9.6px, rgba(255,255,255,0.4) 10px, transparent 10.6px);
             background-size: 40px 40px;
             mix-blend-mode: overlay;
             pointer-events: none;
@@ -90,7 +91,7 @@
             bottom: -30%;
             width: 65%;
             height: 65%;
-            background: radial-gradient(circle, rgba(201,150,43,0.18) 0%, transparent 72%);
+            background: radial-gradient(circle, rgba(78, 154, 241, 0.2) 0%, transparent 72%);
             pointer-events: none;
         }
 
@@ -101,9 +102,10 @@
             height: 58px;
             object-fit: contain;
             background: #fff;
-            border-radius: 10px;
-            padding: 4px;
+            border-radius: 12px;
+            padding: 6px;
             flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .brand-mark .mark-word { display: flex; flex-direction: column; line-height: 1.1; }
@@ -120,7 +122,7 @@
             font-size: 0.76rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: var(--gold-400);
+            color: rgba(255,255,255,0.8);
             margin-top: 0.15rem;
         }
 
@@ -131,7 +133,7 @@
             font-size: 0.68rem;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: var(--sage-400);
+            color: rgba(255,255,255,0.7);
             margin-bottom: 1rem;
         }
 
@@ -145,13 +147,13 @@
 
         .brand-copy h1 em {
             font-style: italic;
-            color: var(--gold-400);
+            color: #6ab0f5;
             font-weight: 400;
         }
 
         .brand-copy p {
             margin-top: 1rem;
-            color: rgba(255,255,255,0.62);
+            color: rgba(255,255,255,0.7);
             font-size: 0.92rem;
             max-width: 360px;
             line-height: 1.55;
@@ -164,7 +166,7 @@
             flex-direction: column;
             gap: 0.85rem;
             padding-top: 1.6rem;
-            border-top: 1px solid rgba(255,255,255,0.14);
+            border-top: 1px solid rgba(255,255,255,0.12);
         }
 
         .brand-features .feature-item {
@@ -178,7 +180,7 @@
         .brand-features .feature-item svg {
             width: 17px;
             height: 17px;
-            stroke: var(--gold-400);
+            stroke: #6ab0f5;
             flex-shrink: 0;
         }
 
@@ -196,7 +198,7 @@
             font-size: 0.66rem;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: var(--gold-500);
+            color: var(--primary);
             margin-bottom: 0.4rem;
         }
 
@@ -204,7 +206,7 @@
             font-family: 'Fraunces', serif;
             font-size: 1.6rem;
             font-weight: 600;
-            color: var(--teal-900);
+            color: var(--secondary);
         }
 
         .form-panel .sub {
@@ -230,7 +232,7 @@
             display: block;
             font-weight: 600;
             font-size: 0.76rem;
-            color: var(--teal-900);
+            color: var(--secondary);
             margin-bottom: 0.32rem;
         }
 
@@ -243,7 +245,7 @@
             transform: translateY(-50%);
             width: 16px;
             height: 16px;
-            stroke: #a3ab9f;
+            stroke: #8a9aa8;
             pointer-events: none;
         }
 
@@ -277,14 +279,14 @@
         }
 
         .field input::placeholder,
-        .field textarea::placeholder { color: #a6ac9f; }
+        .field textarea::placeholder { color: #8a9aa8; }
 
         .field input:focus,
         .field select:focus,
         .field textarea:focus {
             outline: none;
-            border-color: var(--teal-700);
-            box-shadow: 0 0 0 3px rgba(23, 80, 78, 0.12);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.12);
             background: #fff;
         }
 
@@ -292,7 +294,7 @@
         .field select.is-invalid,
         .field textarea.is-invalid {
             border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(165, 55, 47, 0.1);
+            box-shadow: 0 0 0 3px rgba(234, 84, 85, 0.1);
         }
 
         .field .err {
@@ -306,7 +308,7 @@
             height: 50px;
             border: none;
             border-radius: 10px;
-            background: var(--teal-900);
+            background: linear-gradient(135deg, #4e9af1, #3a7bc8);
             color: #fff;
             font-weight: 700;
             font-size: 0.9rem;
@@ -321,9 +323,9 @@
         }
 
         .btn-submit:hover {
-            background: var(--teal-700);
+            background: linear-gradient(135deg, #3a7bc8, #2c6aad);
             transform: translateY(-1px);
-            box-shadow: 0 10px 24px -8px rgba(13,46,47,0.5);
+            box-shadow: 0 10px 24px -8px rgba(78, 154, 241, 0.5);
         }
 
         .btn-submit:active { transform: translateY(0); }
@@ -336,7 +338,7 @@
         }
 
         .form-footer a {
-            color: var(--teal-800);
+            color: var(--primary);
             font-weight: 700;
             text-decoration: none;
         }
@@ -383,7 +385,6 @@
         <!-- ============================================================ -->
         <div class="brand-panel">
             <div class="brand-mark">
-                <!-- Lambang resmi Provinsi Sulawesi Barat. Letakkan file resmi (PNG/SVG) di public/images/logo-sulbar.png -->
                 <img src="{{ asset('assets/images/logo-sulbar.jpg') }}" alt="Lambang Provinsi Sulawesi Barat" class="logo-img">
                 <div class="mark-word">
                     <span class="name">SIPADU</span>

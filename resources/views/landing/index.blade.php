@@ -4,53 +4,92 @@
 
 @section('content')
 <!-- ============================================================
-     HERO SECTION
+     HERO SECTION - DENGAN EFEK BLUR HALUS
 ============================================================ -->
 <section class="hero">
-    <div class="container position-relative">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="mb-3">
-                    Tingkatkan Kompetensi SDM <br>
-                    <span style="color: #4e9af1;">Perusahaan Anda</span>
-                </h1>
-                <p class="mb-4">
-                    Platform pelatihan online yang dirancang untuk mengembangkan 
-                    kompetensi karyawan dengan materi terkini dan metode pembelajaran interaktif.
-                </p>
-                <div class="d-flex flex-wrap gap-3">
-                    <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-journal-bookmark me-2"></i> Lihat Pelatihan
-                    </a>
-                    <a href="#features" class="btn btn-outline-light btn-lg">
-                        <i class="bi bi-arrow-down me-2"></i> Pelajari Lebih Lanjut
-                    </a>
+    <!-- Background Blur -->
+    <div class="hero-bg-blur">
+        <div class="hero-bg-image" style="background-image: url('{{ asset('assets/images/pelatihan.jpg') }}');"></div>
+        <div class="hero-bg-gradient"></div>
+    </div>
+
+   
+    
+   <div class="container position-relative">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <h1 class="hero-title">
+                Sistem Pelatihan SDM Usaha<br>
+                <span class="highlight">Dinas Koperasi, Perindustrian, dan Perdagangan Sulawesi Barat</span>
+            </h1>
+            
+            <p class="hero-description">
+                Platform pelatihan online yang dirancang untuk mengembangkan 
+                kompetensi karyawan dengan materi terkini dan metode pembelajaran interaktif.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="hero-actions justify-content-center">
+                <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-primary btn-lg hero-btn-primary">
+                    <i class="bi bi-journal-bookmark me-2"></i> Lihat Pelatihan
+                    <span class="btn-ripple"></span>
+                </a>
+                <a href="#features" class="btn btn-outline-light btn-lg hero-btn-outline">
+                    <i class="bi bi-arrow-down me-2"></i> Pelajari Lebih Lanjut
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats justify-content-center">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="{{ $totalParticipants ?? 0 }}">
+                        <span class="counter">0</span>
+                    </div>
+                    <div class="stat-label">
+                        <i class="bi bi-people-fill"></i> Peserta Aktif
+                    </div>
+                    <div class="stat-trend trend-up">
+                        <i class="bi bi-arrow-up-short"></i> 12% bulan ini
+                    </div>
                 </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="number" data-count="5000">0</div>
-                        <div class="label">Peserta Aktif</div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="{{ $totalTrainings ?? 0 }}">
+                        <span class="counter">0</span>
                     </div>
-                    <div class="stat">
-                        <div class="number" data-count="150">0</div>
-                        <div class="label">Pelatihan Tersedia</div>
+                    <div class="stat-label">
+                        <i class="bi bi-journal-bookmark-fill"></i> Pelatihan Tersedia
                     </div>
-                    <div class="stat">
-                        <div class="number" data-count="98">0</div>
-                        <div class="label">Sertifikat Diterbitkan</div>
+                    <div class="stat-trend trend-up">
+                        <i class="bi bi-arrow-up-short"></i> 8% bulan ini
+                    </div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="{{ $totalCertificates ?? 0 }}">
+                        <span class="counter">0</span>
+                    </div>
+                    <div class="stat-label">
+                        <i class="bi bi-award-fill"></i> Sertifikat Diterbitkan
+                    </div>
+                    <div class="stat-trend trend-up">
+                        <i class="bi bi-arrow-up-short"></i> 15% bulan ini
                     </div>
                 </div>
             </div>
-           <div class="col-lg-6 d-none d-lg-block">
-    <div class="text-center">
-        <img src="{{ asset('assets/images/OIP (1).jpg') }}" 
-             alt="Gambar" 
-             class="img-fluid rounded-4 shadow-lg"
-             style="width: 100%; height: 400px; object-fit: cover; object-position: center;">
-    </div>
-</div>
+
+            <!-- Scroll Indicator -->
+            <div class="hero-scroll">
+                <a href="#features" class="scroll-btn">
+                    <span class="scroll-text">Scroll untuk menjelajahi</span>
+                    <span class="scroll-line">
+                        <span class="scroll-dot"></span>
+                    </span>
+                </a>
+            </div>
         </div>
     </div>
+</div>
 </section>
 
 <!-- ============================================================
@@ -132,27 +171,27 @@
         <div class="row g-4 text-center">
             <div class="col-6 col-md-3">
                 <h3 class="text-primary fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="1000">0</span>+
+                    <span data-count="{{ $totalUsers ?? 0 }}">0</span>
                 </h3>
-                <p class="text-muted small">Peserta Terdaftar</p>
+                <p class="text-muted small">Total Pengguna</p>
             </div>
             <div class="col-6 col-md-3">
                 <h3 class="text-success fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="75">0</span>+
+                    <span data-count="{{ $totalTrainings ?? 0 }}">0</span>
                 </h3>
-                <p class="text-muted small">Pelatihan Aktif</p>
+                <p class="text-muted small">Pelatihan Tersedia</p>
             </div>
             <div class="col-6 col-md-3">
                 <h3 class="text-warning fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="50">0</span>+
+                    <span data-count="{{ $totalCertificates ?? 0 }}">0</span>
                 </h3>
-                <p class="text-muted small">Instruktur Profesional</p>
+                <p class="text-muted small">Sertifikat Diterbitkan</p>
             </div>
             <div class="col-6 col-md-3">
                 <h3 class="text-info fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="95">0</span>%
+                    <span data-count="{{ $totalMaterials ?? 0 }}">0</span>
                 </h3>
-                <p class="text-muted small">Tingkat Kepuasan</p>
+                <p class="text-muted small">Total Materi</p>
             </div>
         </div>
     </div>
@@ -174,130 +213,46 @@
         </div>
 
         <div class="row g-4">
-            @php
-                $trainings = [
-                    [
-                        'title' => 'Manajemen SDM Modern',
-                        'description' => 'Pelatihan manajemen sumber daya manusia dengan pendekatan modern.',
-                        'duration' => '40',
-                        'level' => 'Menengah',
-                        'students' => '1.200',
-                        'rating' => 4.8,
-                        'image' => 'https://placehold.co/400x250/4e9af1/fff?text=SDM+Modern'
-                    ],
-                    [
-                        'title' => 'Kepemimpinan Digital',
-                        'description' => 'Kembangkan kemampuan kepemimpinan di era transformasi digital.',
-                        'duration' => '35',
-                        'level' => 'Menengah',
-                        'students' => '980',
-                        'rating' => 4.9,
-                        'image' => 'https://placehold.co/400x250/28c76f/fff?text=Leadership'
-                    ],
-                    [
-                        'title' => 'Data Analytics untuk HR',
-                        'description' => 'Pelajari analisis data untuk pengambilan keputusan HR yang lebih baik.',
-                        'duration' => '45',
-                        'level' => 'Lanjutan',
-                        'students' => '750',
-                        'rating' => 4.7,
-                        'image' => 'https://placehold.co/400x250/ff9f43/fff?text=Data+Analytics'
-                    ]
-                ];
-            @endphp
-
-            @foreach($trainings as $training)
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature p-0 overflow-hidden">
-                    <img src="{{ $training['image'] }}" 
-                         alt="{{ $training['title'] }}" 
-                         class="img-fluid w-100" 
-                         style="height: 200px; object-fit: cover;">
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="fw-bold mb-0">{{ $training['title'] }}</h5>
-                            <span class="badge bg-warning text-dark">
-                                <i class="bi bi-star-fill me-1"></i>{{ $training['rating'] }}
-                            </span>
+            @if(isset($popularTrainings) && $popularTrainings->count() > 0)
+                @foreach($popularTrainings as $training)
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-feature p-0 overflow-hidden">
+                        @if($training->gambar)
+                        <img src="{{ asset('storage/' . $training->gambar) }}" 
+                             alt="{{ $training->judul }}" 
+                             class="img-fluid w-100" 
+                             style="height: 200px; object-fit: cover;">
+                        @else
+                        <div style="height: 200px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 3rem;">
+                            <i class="bi bi-journal-bookmark"></i>
                         </div>
-                        <p class="text-muted small">{{ $training['description'] }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex gap-3 text-muted small">
-                                <span><i class="bi bi-clock me-1"></i>{{ $training['duration'] }} jam</span>
-                                <span><i class="bi bi-people me-1"></i>{{ $training['students'] }}</span>
+                        @endif
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="fw-bold mb-0">{{ $training->judul }}</h5>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-star-fill me-1"></i>{{ number_format($training->rating ?? 4.5, 1) }}
+                                </span>
                             </div>
-                            <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-sm btn-primary">
-                                Detail <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
+                            <p class="text-muted small">{{ Str::limit($training->deskripsi ?? '', 100) }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-3 text-muted small">
+                                    <span><i class="bi bi-clock me-1"></i>{{ $training->durasi ?? '-' }} jam</span>
+                                    <span><i class="bi bi-people me-1"></i>{{ $training->participants_count ?? 0 }}</span>
+                                </div>
+                                <a href="{{ route('landing.pelatihan.detail', $training->id) }}" class="btn btn-sm btn-primary">
+                                    Detail <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-<!-- ============================================================
-     TESTIMONIAL SECTION
-============================================================ -->
-<section class="section-pad" style="background: #f8fafc;">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="section-title">Apa Kata Mereka?</h2>
-            <p class="section-subtitle">Testimoni dari peserta yang telah mengikuti pelatihan kami.</p>
-        </div>
-
-        <div class="row g-4">
-            @php
-                $testimonials = [
-                    [
-                        'name' => 'Andi Wijaya',
-                        'role' => 'HR Manager, PT Maju Jaya',
-                        'quote' => 'Pelatihan ini sangat membantu meningkatkan kompetensi tim HR kami. Materi disampaikan dengan jelas dan aplikatif.',
-                        'rating' => 5,
-                        'avatar' => 'AW'
-                    ],
-                    [
-                        'name' => 'Siti Rahayu',
-                        'role' => 'Training Specialist, PT Sejahtera',
-                        'quote' => 'Platform yang sangat user-friendly. Saya bisa mengakses materi kapan saja dan di mana saja. Sangat direkomendasikan!',
-                        'rating' => 5,
-                        'avatar' => 'SR'
-                    ],
-                    [
-                        'name' => 'Budi Santoso',
-                        'role' => 'Direktur SDM, PT Nusantara',
-                        'quote' => 'Investasi terbaik untuk pengembangan karyawan. Hasilnya terlihat dari peningkatan kinerja tim kami.',
-                        'rating' => 4,
-                        'avatar' => 'BS'
-                    ]
-                ];
-            @endphp
-
-            @foreach($testimonials as $testimonial)
-            <div class="col-md-6 col-lg-4">
-                <div class="testimonial-card">
-                    <div class="stars">
-                        @for($i = 1; $i <= 5; $i++)
-                            @if($i <= $testimonial['rating'])
-                                <i class="bi bi-star-fill"></i>
-                            @else
-                                <i class="bi bi-star"></i>
-                            @endif
-                        @endfor
-                    </div>
-                    <p class="quote">"{{ $testimonial['quote'] }}"</p>
-                    <div class="author">
-                        <div class="avatar">{{ $testimonial['avatar'] }}</div>
-                        <div>
-                            <p class="name">{{ $testimonial['name'] }}</p>
-                            <p class="role">{{ $testimonial['role'] }}</p>
-                        </div>
-                    </div>
+                @endforeach
+            @else
+                <div class="col-12 text-center">
+                    <p class="text-muted">Belum ada pelatihan populer.</p>
                 </div>
-            </div>
-            @endforeach
+            @endif
         </div>
     </div>
 </section>
@@ -325,6 +280,347 @@
     </div>
 </section>
 
+@push('styles')
+<style>
+    /* ============================================================
+       HERO BACKGROUND BLUR - HALUS & JELAS
+    ============================================================ */
+    .hero-bg-blur {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+    }
+    .hero-bg-image {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        filter: blur(4px) brightness(0.5) saturate(1.1);
+        transform: scale(1.05);
+        transition: filter 0.8s ease;
+    }
+    .hero-bg-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, 
+            rgba(15, 23, 36, 0.75) 0%, 
+            rgba(26, 34, 54, 0.6) 30%, 
+            rgba(42, 54, 84, 0.5) 60%, 
+            rgba(15, 23, 36, 0.70) 100%
+        );
+        z-index: 1;
+    }
+    .hero-bg-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(ellipse at 50% 50%, 
+            rgba(78, 154, 241, 0.05) 0%, 
+            transparent 70%
+        );
+        z-index: 2;
+    }
+
+    /* ============================================================
+       HERO CONTAINER
+    ============================================================ */
+    .hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 650px;
+        display: flex;
+        align-items: center;
+        background: transparent;
+        padding: 6rem 0 4rem;
+    }
+    .hero .container {
+        position: relative;
+        z-index: 3;
+    }
+
+    /* ============================================================
+       HERO SHAPES
+    ============================================================ */
+    .hero-shapes {
+        z-index: 1;
+    }
+
+    /* ============================================================
+       HERO TITLE
+    ============================================================ */
+    .hero-title {
+        font-weight: 800;
+        font-size: 3.5rem;
+        line-height: 1.15;
+        color: #fff;
+        margin-bottom: 1.25rem;
+    }
+    .hero-title .highlight {
+        background: linear-gradient(135deg, #6ab0f5, #4e9af1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+    }
+    .hero-title .highlight::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #4e9af1, transparent);
+        border-radius: 2px;
+    }
+
+    /* ============================================================
+       HERO DESCRIPTION
+    ============================================================ */
+    .hero-description {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 1.2rem;
+        max-width: 650px;
+        margin: 0 auto 2rem;
+        line-height: 1.8;
+    }
+
+    /* ============================================================
+       HERO ACTIONS
+    ============================================================ */
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+    .hero-btn-primary {
+        padding: 0.85rem 2.8rem;
+        font-weight: 600;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #4e9af1, #3a7bc8);
+        border: none;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .hero-btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(78, 154, 241, 0.4);
+    }
+    .hero-btn-primary .btn-ripple {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    .hero-btn-primary:hover .btn-ripple {
+        width: 300px;
+        height: 300px;
+    }
+    .hero-btn-outline {
+        padding: 0.85rem 2.8rem;
+        font-weight: 600;
+        border-radius: 50px;
+        border: 2px solid rgba(255,255,255,0.25);
+        transition: all 0.3s ease;
+    }
+    .hero-btn-outline:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: #4e9af1;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(78, 154, 241, 0.2);
+    }
+
+    /* ============================================================
+       HERO STATS
+    ============================================================ */
+    .hero-stats {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 2rem;
+    }
+    .stat-item {
+        flex: 1;
+        max-width: 200px;
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #6ab0f5, #4e9af1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+    }
+    .stat-number .counter {
+        -webkit-text-fill-color: transparent;
+    }
+    .stat-label {
+        color: rgba(255,255,255,0.6);
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+    .stat-label i {
+        color: #4e9af1;
+        margin-right: 0.25rem;
+    }
+    .stat-trend {
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-top: 0.25rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.15rem;
+    }
+    .trend-up {
+        color: #28c76f;
+    }
+    .trend-up i {
+        font-size: 1rem;
+    }
+    .stat-divider {
+        width: 1px;
+        height: 50px;
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* ============================================================
+       SCROLL INDICATOR
+    ============================================================ */
+    .hero-scroll {
+        margin-top: 1rem;
+    }
+    .scroll-btn {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255,255,255,0.4);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        cursor: pointer;
+    }
+    .scroll-btn:hover {
+        color: rgba(255,255,255,0.8);
+    }
+    .scroll-text {
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .scroll-line {
+        display: block;
+        width: 1px;
+        height: 40px;
+        background: rgba(255,255,255,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    .scroll-dot {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 3px;
+        height: 12px;
+        background: #4e9af1;
+        border-radius: 2px;
+        animation: scroll-down 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scroll-down {
+        0% { top: -20%; opacity: 1; }
+        100% { top: 100%; opacity: 0; }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 991.98px) {
+        .hero {
+            padding: 4rem 0;
+            min-height: auto;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        .hero-description {
+            font-size: 1rem;
+            max-width: 100%;
+        }
+        .hero-stats {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .stat-divider {
+            display: none;
+        }
+        .stat-item {
+            flex: 0 0 auto;
+            min-width: 120px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+        }
+        .hero-bg-image {
+            filter: blur(6px) brightness(0.45);
+        }
+        .hero-scroll {
+            display: none;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        .hero-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        .hero-btn-primary,
+        .hero-btn-outline {
+            width: 100%;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+        }
+        .hero-stats {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .stat-item {
+            min-width: unset;
+            width: 100%;
+        }
+        .stat-number {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -335,8 +631,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function animateCounter(element) {
         const target = parseInt(element.getAttribute('data-count'));
+        if (target === 0) {
+            element.textContent = '0';
+            return;
+        }
+        
         const duration = 2000;
-        const step = target / (duration / 16);
+        const step = Math.max(1, target / (duration / 16));
         let current = 0;
         
         const update = () => {
@@ -346,16 +647,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 requestAnimationFrame(update);
             } else {
                 element.textContent = target;
-                if (element.getAttribute('data-suffix')) {
-                    element.textContent += element.getAttribute('data-suffix');
-                }
             }
         };
         
         update();
     }
 
-    // Use Intersection Observer for counter animation
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -368,7 +665,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         counters.forEach(counter => observer.observe(counter));
     } else {
-        // Fallback for older browsers
         counters.forEach(counter => animateCounter(counter));
     }
 
@@ -379,8 +675,13 @@ document.addEventListener('DOMContentLoaded', function() {
     heroStats.forEach(stat => {
         if (stat.hasAttribute('data-count')) {
             const target = parseInt(stat.getAttribute('data-count'));
+            if (target === 0) {
+                stat.textContent = '0';
+                return;
+            }
+            
             const duration = 2000;
-            const step = target / (duration / 16);
+            const step = Math.max(1, target / (duration / 16));
             let current = 0;
             
             const update = () => {
@@ -393,7 +694,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             };
             
-            // Start animation when hero is visible
             const heroObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {

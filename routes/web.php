@@ -37,6 +37,10 @@ Route::get('/tentang', [LandingController::class, 'tentang'])->name('landing.ten
 Route::get('/faq', [LandingController::class, 'faq'])->name('landing.faq.index');
 Route::get('/kontak', [LandingController::class, 'kontak'])->name('landing.kontak.index');
 Route::post('/kontak', [LandingController::class, 'kontakSend'])->name('landing.kontak.send');
+Route::get('/pengumuman', [LandingController::class, 'pengumuman'])->name('landing.pengumuman.index');
+Route::get('/pengumuman/{id}', [LandingController::class, 'pengumumanShow'])->name('landing.pengumuman.show');
+Route::get('/agenda', [LandingController::class, 'agenda'])->name('landing.agenda.index');
+Route::get('/agenda/{id}', [LandingController::class, 'agendaShow'])->name('landing.agenda.show');
 
 /*
 |--------------------------------------------------------------------------

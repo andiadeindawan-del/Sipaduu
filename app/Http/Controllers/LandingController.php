@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Models\Materi;
 use App\Models\Quiz;
 use App\Models\Kategori;
+use App\Models\TrainingRegistration;
+use App\Models\Pengumuman;
+use App\Models\Agenda;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -19,17 +22,20 @@ class LandingController extends Controller
     {
         // Get popular trainings
         $popularTrainings = Training::where('status', 'published')
-            ->withCount('participants')
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['disetujui', 'completed']);
+            }])
             ->orderBy('participants_count', 'desc')
             ->limit(6)
             ->get();
 
-        // Get statistics
+        // Get statistics - DATA REAL DARI SISTEM
+        $totalUsers = User::count();
         $totalTrainings = Training::where('status', 'published')->count();
-        $totalParticipants = User::where('role', 'peserta')->count();
         $totalCertificates = Sertifikat::count();
         $totalMateri = Materi::where('status', 'published')->count();
         $totalQuizzes = Quiz::where('status', 'published')->count();
+        $totalParticipants = User::where('role', 'peserta')->count();
 
         // Get testimonials (from training participants with completed status)
         $testimonials = User::where('role', 'peserta')
@@ -90,6 +96,7 @@ class LandingController extends Controller
 
         return view('landing.index', compact(
             'popularTrainings',
+            'totalUsers',
             'totalTrainings',
             'totalParticipants',
             'totalCertificates',
@@ -107,7 +114,9 @@ class LandingController extends Controller
     {
         $query = Training::where('status', 'published')
             ->with(['kategori', 'trainer'])
-            ->withCount('participants');
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['disetujui', 'completed']);
+            }]);
 
         // Search
         if ($request->filled('search')) {
@@ -138,23 +147,23 @@ class LandingController extends Controller
 
     /**
      * Display training detail.
-     * PERBAIKAN: Gunakan view landing/pelatihan_detail/index
      */
     public function pelatihanDetail($id)
     {
         $training = Training::where('status', 'published')
             ->with(['kategori', 'trainer', 'materis', 'quizzes'])
-            ->withCount('participants')
+            ->withCount(['registrations as participants_count' => function($q) {
+                $q->whereIn('status', ['disetujui', 'completed']);
+            }])
             ->findOrFail($id);
 
         $isEnrolled = false;
         $progress = 0;
 
         if (auth()->check()) {
-            // PERBAIKAN: Gunakan registrations() bukan participants()
             $isEnrolled = $training->registrations()
                 ->where('user_id', auth()->id())
-                ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+                ->whereIn('status', ['pending', 'disetujui', 'completed'])
                 ->exists();
                 
             if ($isEnrolled) {
@@ -176,7 +185,6 @@ class LandingController extends Controller
             }
         }
 
-        // PERBAIKAN: Gunakan landing.pelatihan_detail.index
         return view('landing.pelatihan-detail.index', compact('training', 'isEnrolled', 'progress'));
     }
 
@@ -258,5 +266,104 @@ class LandingController extends Controller
 
         return redirect()->route('landing.kontak.index')
                         ->with('success', 'Pesan Anda berhasil dikirim. Tim kami akan segera menghubungi Anda.');
+    }
+
+    /**
+     * Display pengumuman page.
+     * TAMBAHAN: Method untuk halaman pengumuman
+     */
+    public function pengumuman(Request $request)
+    {
+        $query = Pengumuman::with(['training', 'creator'])
+            ->where('status', 'published');
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%$search%")
+                  ->orWhere('konten', 'like', "%$search%");
+            });
+        }
+
+        // Filter by date
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $pengumumans = $query->orderBy('is_pinned', 'desc')
+                             ->orderBy('created_at', 'desc')
+                             ->paginate(10)
+                             ->withQueryString();
+
+        return view('landing.pengumuman.index', compact('pengumumans'));
+    }
+
+    /**
+     * Display pengumuman detail.
+     * TAMBAHAN: Method untuk detail pengumuman
+     */
+    public function pengumumanShow($id)
+    {
+        $pengumuman = Pengumuman::with(['training', 'creator'])
+            ->where('status', 'published')
+            ->findOrFail($id);
+
+        // Increment views
+        $pengumuman->increment('views');
+
+        return view('landing.pengumuman-detail', compact('pengumuman'));
+    }
+
+    /**
+     * Display agenda page.
+     * TAMBAHAN: Method untuk halaman agenda
+     */
+    public function agenda(Request $request)
+    {
+        $query = Agenda::with(['training', 'creator'])
+            ->where('status', 'published')
+            ->whereDate('tanggal', '>=', now());
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%$search%")
+                  ->orWhere('deskripsi', 'like', "%$search%")
+                  ->orWhere('lokasi', 'like', "%$search%");
+            });
+        }
+
+        // Filter by date
+        if ($request->filled('date_from')) {
+            $query->whereDate('tanggal', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('tanggal', '<=', $request->date_to);
+        }
+
+        $agendas = $query->orderBy('tanggal', 'asc')
+                         ->orderBy('jam_mulai', 'asc')
+                         ->paginate(12)
+                         ->withQueryString();
+
+        return view('landing.agenda.index', compact('agendas'));
+    }
+
+    /**
+     * Display agenda detail.
+     * TAMBAHAN: Method untuk detail agenda
+     */
+    public function agendaShow($id)
+    {
+        $agenda = Agenda::with(['training', 'creator'])
+            ->where('status', 'published')
+            ->findOrFail($id);
+
+        return view('landing.agenda-detail.index', compact('agenda'));
     }
 }

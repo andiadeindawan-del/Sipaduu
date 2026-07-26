@@ -11,9 +11,6 @@
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6">
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3">
-                    <i class="bi bi-rocket-takeoff me-1"></i> Visi & Misi
-                </span>
                 <h2 class="display-5 fw-bold mb-3">Membangun SDM Unggul untuk Indonesia</h2>
                 <p class="text-muted mb-4">
                     Kami percaya bahwa sumber daya manusia yang berkualitas adalah kunci 
@@ -70,9 +67,6 @@
 <section class="section-pad" style="padding: 4rem 0; background: #f8fafc;">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                <i class="bi bi-bar-chart me-1"></i> Statistik
-            </span>
             <h2 class="display-5 fw-bold mb-2">Pencapaian Kami</h2>
             <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
                 Angka-angka yang menunjukkan komitmen kami dalam pengembangan SDM.
@@ -122,9 +116,6 @@
 <section class="section-pad" style="padding: 4rem 0;">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                <i class="bi bi-stars me-1"></i> Nilai-Nilai
-            </span>
             <h2 class="display-5 fw-bold mb-2">Nilai-Nilai Kami</h2>
             <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
                 Prinsip-prinsip yang menjadi landasan kami dalam memberikan pelayanan terbaik.
@@ -172,74 +163,6 @@
     </div>
 </section>
 
-<!-- ============================================================
-     TEAM SECTION
-============================================================ -->
-<section class="section-pad" style="padding: 4rem 0; background: #f8fafc;">
-    <div class="container">
-        <div class="text-center mb-5">
-            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                <i class="bi bi-people me-1"></i> Tim Kami
-            </span>
-            <h2 class="display-5 fw-bold mb-2">Tim Pengajar</h2>
-            <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
-                Instruktur profesional yang berpengalaman di bidangnya masing-masing.
-            </p>
-        </div>
-
-        <div class="row g-4">
-            @php
-                $teams = [
-                    [
-                        'name' => 'Dr. Ahmad Hidayat',
-                        'role' => 'Instruktur SDM',
-                        'bio' => 'Praktisi SDM dengan pengalaman 15 tahun di bidang pengembangan sumber daya manusia.',
-                        'avatar' => 'AH',
-                        'color' => 'primary'
-                    ],
-                    [
-                        'name' => 'Ir. Budi Santoso',
-                        'role' => 'Instruktur Manajemen',
-                        'bio' => 'Ahli manajemen dengan pengalaman sebagai konsultan berbagai perusahaan ternama.',
-                        'avatar' => 'BS',
-                        'color' => 'success'
-                    ],
-                    [
-                        'name' => 'Dr. Siti Rahayu',
-                        'role' => 'Instruktur HR Analytics',
-                        'bio' => 'Spesialis data dan analitik HR dengan pengalaman di perusahaan multinasional.',
-                        'avatar' => 'SR',
-                        'color' => 'warning'
-                    ],
-                    [
-                        'name' => 'M. Rizky Fauzan',
-                        'role' => 'Instruktur Leadership',
-                        'bio' => 'Trainer kepemimpinan yang telah melatih ribuan leader di berbagai industri.',
-                        'avatar' => 'RF',
-                        'color' => 'info'
-                    ]
-                ];
-            @endphp
-
-            @foreach($teams as $team)
-            <div class="col-md-6 col-lg-3">
-                <div class="text-center p-3 bg-white rounded-4 shadow-sm">
-                    <div class="avatar-circle mx-auto mb-3" style="width: 100px; height: 100px; border-radius: 50%; background: {{ 
-                        $team['color'] == 'primary' ? '#4e9af1' : 
-                        ($team['color'] == 'success' ? '#28c76f' : 
-                        ($team['color'] == 'warning' ? '#ff9f43' : '#17a2b8')) 
-                    }}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700;">
-                        {{ $team['avatar'] }}
-                    </div>
-                    <h5 class="fw-bold">{{ $team['name'] }}</h5>
-                    <p class="text-muted small">{{ $team['role'] }}</p>
-                    <p class="small text-muted">{{ $team['bio'] }}</p>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
 
 <!-- ============================================================
      CTA SECTION
