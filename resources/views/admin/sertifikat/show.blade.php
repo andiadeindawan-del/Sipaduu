@@ -10,22 +10,6 @@
             <div>
                 <p class="eyebrow mb-1">Detail Sertifikat</p>
                 <h1 class="h3 mb-1">{{ $sertifikat->nama_sertifikat }}</h1>
-                <p class="text-muted mb-0">Informasi lengkap sertifikat {{ $sertifikat->nomor_sertifikat }}.</p>
-            </div>
-        </div>
-        <div class="heading-actions">
-            <div class="d-flex gap-2">
-                @if($sertifikat->file_path)
-                <a href="{{ route('admin.sertifikat.download', $sertifikat->id) }}" class="btn btn-success btn-sm" target="_blank">
-                    <i class="bi bi-download"></i> Download
-                </a>
-                @endif
-                <a href="{{ route('admin.sertifikat.edit', $sertifikat->id) }}" class="btn btn-warning btn-sm">
-                    <i class="bi bi-pencil"></i> Edit
-                </a>
-                <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </a>
             </div>
         </div>
     </div>
@@ -265,9 +249,14 @@
                         <div class="col-12 mt-2">
                             <hr class="my-2">
                             <div class="d-flex gap-2 flex-wrap">
+                                <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> Kembali
+                                </a>
+                                
                                 <a href="{{ route('admin.sertifikat.edit', $sertifikat->id) }}" class="btn btn-warning">
                                     <i class="bi bi-pencil me-1"></i> Edit Sertifikat
                                 </a>
+                                
                                 @if($sertifikat->status == 'aktif')
                                 <form action="{{ route('admin.sertifikat.status', $sertifikat->id) }}" method="POST" class="d-inline">
                                     @csrf
@@ -287,6 +276,7 @@
                                     </button>
                                 </form>
                                 @endif
+                                
                                 <form action="{{ route('admin.sertifikat.destroy', $sertifikat->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')

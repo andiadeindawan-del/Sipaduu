@@ -562,14 +562,13 @@ class PesertaController extends Controller
             ->count();
 
         // Training yang tersedia untuk absen
-        $availableTrainings = Training::whereHas('registrations', function($q) use ($userId) {
+        $availableTrainings = Training::with('absensis')
+            ->whereHas('registrations', function($q) use ($userId) {
             $q->where('user_id', $userId)
               ->whereIn('status', ['disetujui']);
         })
         ->where('status', 'published')
-        ->where('tanggal_mulai', '<=', now())
-        ->where('tanggal_selesai', '>=', now())
-        ->get();
+        ->paginate(10);
 
         return view('peserta.absen.index', compact(
             'riwayatAbsensi',

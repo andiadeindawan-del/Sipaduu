@@ -9,7 +9,7 @@
         <div>
             <p class="eyebrow">Kehadiran</p>
             <h1 class="h3 mb-0">Absensi Pelatihan</h1>
-            <p class="text-muted mb-0">Lakukan absensi kehadiran Anda sebelum memulai quiz pada pelatihan yang diikuti.</p>
+            <p class="text-muted mb-0">Lakukan absensi kehadiran Anda pada pelatihan yang sedang berlangsung.</p>
         </div>
     </div>
 </div>
@@ -47,6 +47,18 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     @endif
+
+    <!-- Info Banner -->
+    <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+            <div>
+                <strong>Informasi Absensi</strong>
+                <p class="mb-0 small">Silakan lakukan absensi pada pelatihan yang sedang berlangsung. Anda wajib absen sebelum dapat mengikuti quiz.</p>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
     <!-- Stats Summary -->
     <div class="row g-3 mb-4">
@@ -105,105 +117,59 @@
     <div class="panel">
         <div class="panel-header">
             <div>
-                <h5 class="section-title"><i class="bi bi-list-check"></i> Daftar Pelatihan</h5>
-                <p class="text-muted small mb-0">Pelatihan yang dapat diabsensi hari ini.</p>
+                <h5 class="section-title"><i class="bi bi-list-check"></i> Daftar Pelatihan Wajib Absensi</h5>
+                <p class="text-muted small mb-0">Klik tombol <strong>"Absen Sekarang"</strong> untuk melakukan absensi.</p>
             </div>
             <div>
-                <span class="badge text-bg-info">
-                    <i class="bi bi-info-circle me-1"></i>
-                    Absensi Wajib
+                <span class="badge text-bg-success">
+                    <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
+                    {{ $availableTrainings->count() ?? 0 }} Pelatihan
                 </span>
             </div>
         </div>
+
         <div class="table-responsive">
             @if(isset($availableTrainings) && $availableTrainings->count() > 0)
-            <table class="table align-middle mb-0">
+            <table class="table align-middle mb-0 table-hover">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
-                        <th>Pelatihan</th>
-                        <th>Progress Materi</th>
-                        <th>Progress Quiz</th>
-                        <th>Status Quiz</th>
+                        <th style="width: 50px;">No</th>
+                        <th>Nama Pelatihan</th>
+                        <th>Tanggal Pelaksanaan</th>
                         <th>Status Absensi</th>
-                        <th class="text-center">Aksi</th>
+                        <th class="text-center" style="width: 180px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($availableTrainings as $index => $training)
                     @php
-                        // Hitung progress materi
-                        $totalMateri = $training->materi->count();
-                        $selesaiMateri = $training->materi->filter(function($materi) use ($training) {
-                            return $materi->pivot && $materi->pivot->status === 'completed';
-                        })->count();
-                        $progressMateri = $totalMateri > 0 ? round(($selesaiMateri / $totalMateri) * 100) : 0;
-
-                        // Hitung progress quiz
-                        $totalQuiz = $training->quiz->count();
-                        $selesaiQuiz = $training->quiz->filter(function($quiz) use ($training) {
-                            return $quiz->pivot && $quiz->pivot->status === 'completed';
-                        })->count();
-                        $progressQuiz = $totalQuiz > 0 ? round(($selesaiQuiz / $totalQuiz) * 100) : 0;
-                        $isQuizComplete = $totalQuiz > 0 && $selesaiQuiz == $totalQuiz;
-
                         // Cek status absensi
-                        $sudahAbsen = $training->absensi->where('user_id', auth()->id())->first();
+                        $sudahAbsen = $training->absensis->where('user_id', auth()->id())->first();
                     @endphp
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $availableTrainings->firstItem() + $index }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <div class="avatar-text rounded-circle bg-success text-white" style="width: 32px; height: 32px; font-size: 0.7rem;">
+                                @if($training->gambar)
+                                <img src="{{ asset('storage/' . $training->gambar) }}" 
+                                     alt="{{ $training->judul }}" 
+                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
+                                @else
+                                <div class="avatar-text rounded-circle bg-primary text-white" style="width: 40px; height: 40px; font-size: 0.8rem;">
                                     {{ strtoupper(substr($training->judul, 0, 2)) }}
                                 </div>
+                                @endif
                                 <div>
-                                    <p class="fw-semibold mb-0">{{ Str::limit($training->judul, 40) }}</p>
+                                    <p class="fw-semibold mb-0">{{ $training->judul }}</p>
                                     <small class="text-muted">{{ $training->kategori->nama ?? 'Umum' }}</small>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="progress" style="width: 80px; height: 6px;">
-                                    <div class="progress-bar bg-primary" role="progressbar" 
-                                         style="width: {{ $progressMateri }}%;" 
-                                         aria-valuenow="{{ $progressMateri }}" 
-                                         aria-valuemin="0" aria-valuemax="100">
-                                    </div>
-                                </div>
-                                <span class="small fw-semibold">{{ $progressMateri }}%</span>
+                            <div class="small">
+                                <div><i class="bi bi-calendar3 me-1"></i> {{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : '-' }}</div>
+                                <div><i class="bi bi-calendar3 me-1"></i> {{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '-' }}</div>
                             </div>
-                            <small class="text-muted d-block">{{ $selesaiMateri }}/{{ $totalMateri }} materi</small>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="progress" style="width: 80px; height: 6px;">
-                                    <div class="progress-bar {{ $isQuizComplete ? 'bg-success' : 'bg-warning' }}" 
-                                         role="progressbar" 
-                                         style="width: {{ $progressQuiz }}%;" 
-                                         aria-valuenow="{{ $progressQuiz }}" 
-                                         aria-valuemin="0" aria-valuemax="100">
-                                    </div>
-                                </div>
-                                <span class="small fw-semibold">{{ $progressQuiz }}%</span>
-                            </div>
-                            <small class="text-muted d-block">{{ $selesaiQuiz }}/{{ $totalQuiz }} quiz</small>
-                        </td>
-                        <td>
-                            @if($isQuizComplete)
-                                <span class="badge text-bg-success">
-                                    <i class="bi bi-check-circle me-1"></i> Quiz Selesai
-                                </span>
-                            @elseif($totalQuiz > 0)
-                                <span class="badge text-bg-warning">
-                                    <i class="bi bi-hourglass-split me-1"></i> {{ $progressQuiz }}% Selesai
-                                </span>
-                            @else
-                                <span class="badge text-bg-secondary">
-                                    <i class="bi bi-dash-circle me-1"></i> Belum Ada Quiz
-                                </span>
-                            @endif
                         </td>
                         <td>
                             @if($sudahAbsen)
@@ -221,7 +187,7 @@
                         </td>
                         <td class="text-center">
                             @if($sudahAbsen)
-                                <span class="text-success fs-5" title="Sudah Absen">
+                                <span class="text-success fs-4" title="Sudah Absen">
                                     <i class="bi bi-check2-circle"></i>
                                 </span>
                             @else
@@ -230,7 +196,7 @@
                                     <input type="hidden" name="training_id" value="{{ $training->id }}">
                                     <input type="hidden" name="tanggal" value="{{ date('Y-m-d') }}">
                                     <input type="hidden" name="status" value="hadir">
-                                    <button type="submit" class="btn btn-success btn-sm" 
+                                    <button type="submit" class="btn btn-success btn-sm px-4" 
                                             onclick="return confirm('Apakah Anda yakin ingin merekam kehadiran untuk pelatihan ini?')">
                                         <i class="bi bi-check2 me-1"></i> Absen Sekarang
                                     </button>
@@ -245,11 +211,10 @@
             <div class="text-center py-5">
                 <div class="text-muted">
                     <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                    <p class="h5">Belum ada pelatihan</p>
-                    <p class="small">Anda belum terdaftar dalam pelatihan apapun.</p>
-                    <a href="{{ route('peserta.trainings.index') }}" class="btn btn-primary btn-sm mt-2">
-                        <i class="bi bi-search me-1"></i> Cari Pelatihan
-                    </a>
+                    <p class="h5">Belum Ada Pelatihan yang Diikuti</p>
+                    <p class="small">
+                        Anda belum terdaftar dalam pelatihan apapun.
+                    </p>
                 </div>
             </div>
             @endif
@@ -274,6 +239,12 @@
                 <h5 class="section-title"><i class="bi bi-clock-history"></i> Riwayat Absensi</h5>
                 <p class="text-muted small mb-0">Riwayat absensi yang telah Anda lakukan.</p>
             </div>
+            <div>
+                <span class="badge text-bg-secondary">
+                    <i class="bi bi-clock me-1"></i>
+                    Total: {{ $riwayatAbsensi->total() ?? 0 }} absensi
+                </span>
+            </div>
         </div>
         <div class="table-responsive">
             @if(isset($riwayatAbsensi) && $riwayatAbsensi->count() > 0)
@@ -289,12 +260,18 @@
                 <tbody>
                     @foreach($riwayatAbsensi as $index => $absen)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $riwayatAbsensi->firstItem() + $index }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
+                                @if($absen->training->gambar ?? false)
+                                <img src="{{ asset('storage/' . $absen->training->gambar) }}" 
+                                     alt="{{ $absen->training->judul }}" 
+                                     style="width: 32px; height: 32px; object-fit: cover; border-radius: 6px;">
+                                @else
                                 <div class="avatar-text rounded-circle bg-success text-white" style="width: 32px; height: 32px; font-size: 0.7rem;">
                                     {{ strtoupper(substr($absen->training->judul ?? '-', 0, 2)) }}
                                 </div>
+                                @endif
                                 <div>
                                     <p class="fw-semibold mb-0">{{ Str::limit($absen->training->judul ?? '-', 40) }}</p>
                                     <small class="text-muted">{{ $absen->training->kategori->nama ?? '-' }}</small>
@@ -347,19 +324,79 @@
         border-radius: 50%;
         flex-shrink: 0;
     }
-    .progress {
-        border-radius: 4px;
-        background-color: #f0f0f0;
-    }
-    .progress-bar {
-        border-radius: 4px;
-        transition: width 0.6s ease;
-    }
     .metric-card {
         transition: transform 0.2s ease;
     }
     .metric-card:hover {
         transform: translateY(-2px);
+    }
+    .panel-header {
+        flex-wrap: wrap;
+    }
+    .btn-success {
+        min-width: 120px;
+    }
+    .alert-info {
+        background-color: #e8f4f8;
+        border-color: #b8dce8;
+        color: #1a3a4a;
+    }
+    .table th {
+        font-weight: 600;
+        font-size: .75rem;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        color: #6c757d;
+        border-bottom-width: 2px;
+        white-space: nowrap;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .table .badge {
+        font-weight: 500;
+        padding: 0.35rem 0.7rem;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+    .table-hover tbody tr:hover .btn-success {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+    @media (max-width: 768px) {
+        .btn-success {
+            min-width: auto;
+            width: 100%;
+        }
+        .panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .metric-value {
+            font-size: 1.2rem;
+        }
+        .panel-header .d-flex {
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .table td, .table th {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+        .table .btn-sm {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .table td .d-flex {
+            flex-wrap: wrap;
+        }
+        .table td .d-flex img,
+        .table td .d-flex .avatar-text {
+            width: 30px;
+            height: 30px;
+        }
     }
 </style>
 @endpush
@@ -375,10 +412,14 @@
             });
         }, 5000);
 
-        // Auto refresh progress setelah 30 detik (optional)
-        // setInterval(function() {
-        //     location.reload();
-        // }, 30000);
+        // Confirmation before submit
+        document.querySelectorAll('form[action*="absen.store"]').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Apakah Anda yakin ingin merekam kehadiran untuk pelatihan ini?')) {
+                    e.preventDefault();
+                }
+            });
+        });
     });
 </script>
 @endpush

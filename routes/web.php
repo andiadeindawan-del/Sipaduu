@@ -42,6 +42,11 @@ Route::get('/pengumuman/{id}', [LandingController::class, 'pengumumanShow'])->na
 Route::get('/agenda', [LandingController::class, 'agenda'])->name('landing.agenda.index');
 Route::get('/agenda/{id}', [LandingController::class, 'agendaShow'])->name('landing.agenda.show');
 
+// ============================================================
+// SERTIFIKAT VERIFICATION - PUBLIC
+// ============================================================
+Route::get('/sertifikat/verify/{nomor?}', [SertifikatController::class, 'verify'])->name('sertifikat.verify');
+
 /*
 |--------------------------------------------------------------------------
 | Dashboard

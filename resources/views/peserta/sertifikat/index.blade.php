@@ -7,20 +7,23 @@
     <div class="page-heading-copy">
         <span class="page-icon"><i class="bi bi-award"></i></span>
         <div>
-            <p class="eyebrow">Sertifikat</p>
+            <p class="eyebrow">Prestasi</p>
             <h1 class="h3 mb-0">Sertifikat Saya</h1>
-            <p class="text-muted mb-0">Daftar sertifikat yang telah Anda peroleh.</p>
+            <p class="text-muted mb-0">Kumpulkan dan kelola semua sertifikat yang telah Anda peroleh.</p>
         </div>
     </div>
     <div class="heading-actions">
         <div class="d-flex gap-2 flex-wrap">
             <form action="{{ route('peserta.sertifikat.index') }}" method="GET" class="d-flex gap-2">
-                <input type="text" name="search" class="form-control form-control-sm" 
-                       placeholder="Cari sertifikat..." value="{{ request('search') }}" style="width: 200px;">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-search"></i>
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" 
+                           placeholder="Cari sertifikat..." value="{{ request('search') }}">
+                </div>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-search"></i> Cari
                 </button>
-                <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
+                <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
                     <i class="bi bi-arrow-counterclockwise"></i>
                 </a>
             </form>
@@ -31,6 +34,23 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
+    <!-- Alert Messages -->
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle me-2"></i>
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     <!-- Stats -->
     <div class="row g-3 mb-4">
         <div class="col-12 col-sm-6 col-xl-3">
@@ -108,6 +128,17 @@
                     <i class="bi bi-x-circle"></i> Dicabut
                 </a>
             </div>
+            @if(request('filter') || request('search'))
+            <div>
+                <span class="badge bg-light text-muted">
+                    <i class="bi bi-filter-circle me-1"></i>
+                    Filter aktif
+                    <a href="{{ route('peserta.sertifikat.index') }}" class="text-danger ms-1" title="Hapus filter">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </span>
+            </div>
+            @endif
         </div>
     </div>
 
@@ -116,91 +147,87 @@
         <div class="row g-4">
             @foreach($sertifikats as $sertifikat)
             <div class="col-12 col-md-6 col-xl-4">
-                <div class="panel h-100">
-                    <div class="p-4">
-                        <!-- Status Badge -->
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge 
-                                @if($sertifikat->status == 'aktif') 
-                                    badge-success
-                                @elseif($sertifikat->status == 'expired') 
-                                    badge-warning
-                                @elseif($sertifikat->status == 'revoked') 
-                                    badge-danger
-                                @else 
-                                    badge-secondary
-                                @endif
-                            ">
-                                @if($sertifikat->status == 'aktif')
-                                    <i class="bi bi-check-circle me-1"></i>
-                                @elseif($sertifikat->status == 'expired')
-                                    <i class="bi bi-clock me-1"></i>
-                                @elseif($sertifikat->status == 'revoked')
-                                    <i class="bi bi-x-circle me-1"></i>
-                                @endif
-                                {{ ucfirst($sertifikat->status) }}
-                            </span>
-                            <span class="badge bg-primary">
-                                <i class="bi bi-award me-1"></i>
-                                Sertifikat
-                            </span>
+                <div class="certificate-card">
+                    <!-- Card Header with Icon -->
+                    <div class="certificate-card-header">
+                        <div class="certificate-icon">
+                            <i class="bi bi-award-fill"></i>
+                        </div>
+                        <div class="certificate-status">
+                            @if($sertifikat->status == 'aktif')
+                                <span class="badge badge-status badge-aktif">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Aktif
+                                </span>
+                            @elseif($sertifikat->status == 'expired')
+                                <span class="badge badge-status badge-expired">
+                                    <i class="bi bi-clock-fill me-1"></i> Kadaluarsa
+                                </span>
+                            @elseif($sertifikat->status == 'revoked')
+                                <span class="badge badge-status badge-revoked">
+                                    <i class="bi bi-x-circle-fill me-1"></i> Dicabut
+                                </span>
+                            @else
+                                <span class="badge badge-status badge-secondary">
+                                    {{ ucfirst($sertifikat->status) }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="certificate-card-body">
+                        <div class="certificate-number">
+                            <i class="bi bi-hash"></i>
+                            {{ $sertifikat->nomor_sertifikat }}
                         </div>
 
-                        <!-- Certificate Number -->
-                        <p class="text-muted small mb-1">
-                            <i class="bi bi-hash me-1"></i>
-                            {{ $sertifikat->nomor_sertifikat }}
-                        </p>
-
-                        <!-- Title -->
-                        <h5 class="fw-bold mb-2 text-truncate" title="{{ $sertifikat->nama_sertifikat }}">
-                            {{ $sertifikat->nama_sertifikat }}
-                        </h5>
+                        <h5 class="certificate-title">{{ $sertifikat->judul ?? $sertifikat->nama_sertifikat }}</h5>
                         
-                        <!-- Training -->
                         @if($sertifikat->training)
-                        <p class="text-muted small mb-2">
-                            <i class="bi bi-journal-bookmark me-1"></i>
+                        <div class="certificate-training">
+                            <i class="bi bi-journal-bookmark"></i>
                             {{ $sertifikat->training->judul }}
-                        </p>
+                        </div>
                         @endif
 
-                        <!-- Description -->
                         @if($sertifikat->deskripsi)
-                        <p class="text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        <p class="certificate-description">
                             {{ Str::limit($sertifikat->deskripsi, 80) }}
                         </p>
                         @endif
 
-                        <!-- Info -->
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="text-muted small">
-                                <i class="bi bi-calendar-check me-1"></i>
-                                Terbit: {{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d/m/Y') : '-' }}
-                            </span>
+                        <div class="certificate-info">
+                            <div class="info-item">
+                                <i class="bi bi-calendar-check"></i>
+                                <span>Terbit: {{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d/m/Y') : '-' }}</span>
+                            </div>
                             @if($sertifikat->tanggal_berlaku_sampai)
-                            <span class="text-muted small">
-                                <i class="bi bi-calendar-x me-1"></i>
-                                Berlaku s/d: {{ $sertifikat->tanggal_berlaku_sampai->format('d/m/Y') }}
-                            </span>
+                            <div class="info-item">
+                                <i class="bi bi-calendar-x"></i>
+                                <span>Berlaku s/d: {{ $sertifikat->tanggal_berlaku_sampai->format('d/m/Y') }}</span>
+                            </div>
                             @endif
-                            <span class="text-muted small">
-                                <i class="bi bi-person me-1"></i>
-                                {{ $sertifikat->penerbit }}
-                            </span>
+                            <div class="info-item">
+                                <i class="bi bi-person"></i>
+                                <span>{{ $sertifikat->penerbit ?? 'Dinas Koperindag' }}</span>
+                            </div>
                         </div>
 
-                        <!-- Actions -->
-                        <div class="d-flex gap-2 mt-2">
+                        <div class="certificate-actions">
                             <a href="{{ route('peserta.sertifikat.show', $sertifikat->id) }}" 
-                               class="btn btn-success btn-sm flex-grow-1">
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i> Detail
                             </a>
                             @if($sertifikat->file_path && $sertifikat->status == 'aktif')
                                 <a href="{{ route('peserta.sertifikat.download', $sertifikat->id) }}" 
-                                   class="btn btn-primary btn-sm" target="_blank">
-                                    <i class="bi bi-download"></i>
+                                   class="btn btn-success btn-sm" target="_blank">
+                                    <i class="bi bi-download me-1"></i> Unduh
                                 </a>
+                            @endif
+                            @if($sertifikat->status == 'aktif' && !$sertifikat->file_path)
+                                <span class="btn btn-secondary btn-sm disabled">
+                                    <i class="bi bi-clock me-1"></i> Diproses
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -223,71 +250,324 @@
         @endif
     @else
         <!-- Empty State -->
-        <div class="panel">
-            <div class="text-center py-5">
-                <div class="text-muted">
-                    <i class="bi bi-award fs-1 d-block mb-3"></i>
-                    <p class="h5">Belum ada sertifikat</p>
-                    <p class="small">
-                        @if(request('search'))
-                            Tidak ada sertifikat yang sesuai dengan pencarian "{{ request('search') }}".
-                        @elseif(request('filter') == 'aktif')
-                            Anda belum memiliki sertifikat yang aktif.
-                        @elseif(request('filter') == 'expired')
-                            Anda belum memiliki sertifikat yang kadaluarsa.
-                        @elseif(request('filter') == 'revoked')
-                            Anda belum memiliki sertifikat yang dicabut.
-                        @else
-                            Anda belum memiliki sertifikat. Ikuti pelatihan dan selesaikan untuk mendapatkan sertifikat.
-                        @endif
-                    </p>
-                    @if(request('search') || request('filter'))
-                    <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-success btn-sm mt-2">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
-                    </a>
-                    @endif
-                    @if(!request('search') && !request('filter') && $sertifikats->count() == 0)
-                    <a href="{{ route('peserta.trainings.index') }}" class="btn btn-primary btn-sm mt-2">
-                        <i class="bi bi-plus-circle me-1"></i> Ikuti Pelatihan
-                    </a>
-                    @endif
-                </div>
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-award"></i>
             </div>
+            <h5 class="empty-state-title">Belum ada sertifikat</h5>
+            <p class="empty-state-description">
+                @if(request('search'))
+                    Tidak ada sertifikat yang sesuai dengan pencarian "{{ request('search') }}".
+                @elseif(request('filter') == 'aktif')
+                    Anda belum memiliki sertifikat yang aktif.
+                @elseif(request('filter') == 'expired')
+                    Anda belum memiliki sertifikat yang kadaluarsa.
+                @elseif(request('filter') == 'revoked')
+                    Anda belum memiliki sertifikat yang dicabut.
+                @else
+                    Ikuti pelatihan dan selesaikan untuk mendapatkan sertifikat.
+                @endif
+            </p>
+            @if(request('search') || request('filter'))
+            <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-primary btn-sm mt-2">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+            </a>
+            @endif
+            @if(!request('search') && !request('filter') && $sertifikats->count() == 0)
+            <a href="{{ route('peserta.trainings.index') }}" class="btn btn-success btn-sm mt-2">
+                <i class="bi bi-plus-circle me-1"></i> Ikuti Pelatihan
+            </a>
+            @endif
         </div>
     @endif
 </div>
 
 @push('styles')
 <style>
-    .badge-success { background: #d1e7dd; color: #0a7344; }
-    .badge-warning { background: #fff3cd; color: #856404; }
-    .badge-danger { background: #f8d7da; color: #842029; }
-    .badge-secondary { background: #e9ecef; color: #495057; }
-    
-    .panel .btn-sm {
+    /* ============================================================
+       CERTIFICATE CARD
+    ============================================================ */
+    .certificate-card {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+        height: 100%;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.04);
+        display: flex;
+        flex-direction: column;
+    }
+    .certificate-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        border-color: transparent;
+    }
+
+    .certificate-card-header {
+        padding: 1rem 1.25rem 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .certificate-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #e8f4f8, #b8dce8);
+        color: #4e9af1;
+        flex-shrink: 0;
+    }
+
+    .certificate-status .badge-status {
+        font-weight: 500;
+        padding: 0.35rem 0.7rem;
+        font-size: 0.7rem;
+        border-radius: 6px;
+    }
+    .badge-aktif {
+        background: #d4edda;
+        color: #155724;
+    }
+    .badge-expired {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .badge-revoked {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .certificate-card-body {
+        padding: 1rem 1.25rem 1.25rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .certificate-number {
+        font-size: 0.7rem;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #8a93a3;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .certificate-number i {
         font-size: 0.8rem;
     }
-    
-    .text-truncate {
-        max-width: 100%;
-        white-space: nowrap;
+
+    .certificate-title {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+        color: #1a2236;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
     }
-    
+
+    .certificate-training {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .certificate-training i {
+        color: #4e9af1;
+    }
+
+    .certificate-description {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.5;
+    }
+
+    .certificate-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        padding: 0.5rem 0;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 0.75rem;
+    }
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+    .info-item i {
+        font-size: 0.8rem;
+        color: #4e9af1;
+        width: 16px;
+        flex-shrink: 0;
+    }
+
+    .certificate-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
+    .certificate-actions .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        flex: 1;
+    }
+    .certificate-actions .btn-sm {
+        min-height: 34px;
+    }
+
+    /* ============================================================
+       METRIC CARDS
+    ============================================================ */
     .metric-card {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        border-left: 4px solid transparent;
+        height: 100%;
         transition: transform 0.2s ease;
     }
     .metric-card:hover {
         transform: translateY(-4px);
     }
+    .metric-primary { border-left-color: #4e9af1; }
+    .metric-success { border-left-color: #28c76f; }
+    .metric-warning { border-left-color: #ff9f43; }
+    .metric-info { border-left-color: #17a2b8; }
     
-    .panel {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    .metric-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .4rem;
     }
-    .panel:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    .metric-label {
+        font-size: .75rem;
+        color: #8a93a3;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+    }
+    .metric-icon {
+        color: #c3cad6;
+        font-size: 1.3rem;
+    }
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a2236;
+    }
+    .metric-meta {
+        font-size: .75rem;
+        color: #8a93a3;
+        display: flex;
+        gap: .35rem;
+    }
+
+    /* ============================================================
+       PANEL
+    ============================================================ */
+    .panel {
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+    .panel-header {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: 0;
+        font-size: 1rem;
+    }
+    .section-title i {
+        color: #4e9af1;
+    }
+
+    /* ============================================================
+       EMPTY STATE
+    ============================================================ */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: #fff;
+        border-radius: 1rem;
+        border: 1px solid rgba(0,0,0,0.04);
+    }
+    .empty-state-icon {
+        font-size: 3rem;
+        color: #c3cad6;
+        margin-bottom: 1rem;
+    }
+    .empty-state-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a2236;
+        margin-bottom: 0.5rem;
+    }
+    .empty-state-description {
+        color: #8a93a3;
+        font-size: 0.9rem;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+        .certificate-card-header {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .certificate-card-body {
+            padding: 0.75rem 1rem 1rem;
+        }
+        .certificate-title {
+            font-size: 0.9rem;
+        }
+        .metric-value {
+            font-size: 1.2rem;
+        }
+        .panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .certificate-actions .btn {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.5rem;
+        }
     }
 </style>
 @endpush
@@ -313,16 +593,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // Filter buttons - active state
-    document.querySelectorAll('.panel-header .btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.panel-header .btn').forEach(function(b) {
-                b.classList.remove('active');
-            });
-            this.classList.add('active');
-        });
-    });
 });
 </script>
 @endpush

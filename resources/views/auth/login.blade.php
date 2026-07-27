@@ -382,7 +382,7 @@
         <!-- ============================================================ -->
         <div class="brand-panel">
             <div class="brand-mark">
-                <img src="{{ asset('assets/images/logo-sulbar.jpg') }}" alt="Lambang Provinsi Sulawesi Barat" class="logo-img">
+                <img src="{{ asset('assets/images/logo koperindag 1.gif') }}" alt="Lambang Provinsi Sulawesi Barat" class="logo-img">
                 <div class="mark-word">
                     <span class="name">SIPADU</span>
                     <span class="agency">Dinas Koperindag Prov. Sulawesi Barat</span>

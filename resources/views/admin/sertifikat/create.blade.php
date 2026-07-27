@@ -13,11 +13,6 @@
                 <p class="text-muted mb-0">Buat sertifikat baru untuk peserta.</p>
             </div>
         </div>
-        <div class="heading-actions">
-            <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
-        </div>
     </div>
 
     <div class="row mt-3">
@@ -223,13 +218,21 @@
 
                             <!-- Submit Buttons -->
                             <div class="col-12 mt-4">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-save me-1"></i> Simpan
-                                    </button>
-                                    <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-circle me-1"></i> Batal
-                                    </a>
+                                <hr class="my-2">
+                                <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+                                    <div>
+                                        <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
+                                        </a>
+                                    </div>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-save me-1"></i> Simpan
+                                        </button>
+                                        <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-x-circle me-1"></i> Batal
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

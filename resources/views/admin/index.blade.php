@@ -216,14 +216,14 @@
                 @csrf
                 @method('PUT')
                 <button type="submit" class="btn btn-success" title="Setujui" onclick="return confirm('Setujui pendaftaran ini?')">
-                    <i class="bi bi-check-circle"></i>
+                    <i class="bi bi-check-circle"></i> Setuju
                 </button>
             </form>
             <form action="{{ url('/admin/pendaftaran/' . $registration->id . '/reject') }}" method="POST" class="d-inline">
                 @csrf
                 @method('PUT')
                 <button type="submit" class="btn btn-danger" title="Tolak" onclick="return confirm('Yakin ingin menolak pendaftaran ini?')">
-                    <i class="bi bi-x-circle"></i>
+                    <i class="bi bi-x-circle"></i> Tolak
                 </button>
             </form>
         @endif
@@ -232,12 +232,12 @@
                 @csrf
                 @method('PUT')
                 <button type="submit" class="btn btn-secondary" title="Batalkan" onclick="return confirm('Yakin ingin membatalkan pendaftaran ini?')">
-                    <i class="bi bi-ban"></i>
+                    <i class="bi bi-ban"></i> Batal
                 </button>
             </form>
         @endif
         <a href="{{ url('/admin/pendaftaran/' . $registration->id) }}" class="btn btn-info" title="Detail">
-            <i class="bi bi-eye"></i>
+            <i class="bi bi-eye"></i> Detail
         </a>
     </div>
 </td>

@@ -526,11 +526,11 @@
                 <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
                     Materi
                 </a>
+                 <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
+                    Absen
+                </a>
                 <a href="{{ route('peserta.quiz.index') }}" class="nav-link {{ request()->routeIs('peserta.quiz.*') ? 'active' : '' }}">
                     Quiz
-                </a>
-                <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
-                    Absen
                 </a>
                 <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
                     Sertifikat
@@ -574,7 +574,7 @@
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn btn-sm btn-logout w-100">
+                <button type="submit" class=" btn-sm btn-logout w-100">
                     <i class="bi bi-box-arrow-right me-1"></i> Keluar
                 </button>
             </form>

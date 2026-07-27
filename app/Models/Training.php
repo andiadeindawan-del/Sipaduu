@@ -107,6 +107,11 @@ class Training extends Model
         return $this->hasMany(Quiz::class);
     }
 
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
+    }
+
     // ============================================================
     // SCOPES
     // ============================================================

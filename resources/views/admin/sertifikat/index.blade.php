@@ -13,11 +13,6 @@
                 <p class="text-muted mb-0">Kelola semua sertifikat yang diterbitkan.</p>
             </div>
         </div>
-        <div class="heading-actions">
-            <a href="{{ route('admin.sertifikat.create') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-circle" aria-hidden="true"></i> Tambah Sertifikat
-            </a>
-        </div>
     </div>
 
     <!-- Stats Grid -->
@@ -125,68 +120,74 @@
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
+                        <th scope="col" style="width: 50px;">No</th>
                         <th scope="col">Nomor Sertifikat</th>
                         <th scope="col">Nama Sertifikat</th>
                         <th scope="col">Peserta</th>
                         <th scope="col">Tanggal Terbit</th>
-                        <th scope="col">Penerbit</th>
                         <th scope="col">Status</th>
-                        <th scope="col" class="text-end">Aksi</th>
+                        <th scope="col" class="text-end" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($sertifikats as $sertifikat)
+                    @foreach ($sertifikats as $index => $sertifikat)
                     <tr>
+                        <td>{{ $sertifikats->firstItem() + $index }}</td>
                         <td>
-                            <span class="fw-semibold">{{ $sertifikat->nomor_sertifikat }}</span>
+                            <span class="fw-semibold small">{{ $sertifikat->nomor_sertifikat }}</span>
                         </td>
-                        <td>{{ $sertifikat->nama_sertifikat }}</td>
+                        <td>{{ $sertifikat->judul ?? $sertifikat->nama_sertifikat }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                @if($sertifikat->user->foto)
-                                <img class="avatar-img avatar-xs rounded-circle" src="{{ asset('storage/' . $sertifikat->user->foto) }}" alt="{{ $sertifikat->user->nama }}">
+                                @if($sertifikat->user && $sertifikat->user->foto)
+                                <img class="rounded-circle" 
+                                     src="{{ asset('storage/' . $sertifikat->user->foto) }}" 
+                                     alt="{{ $sertifikat->user->nama }}" 
+                                     style="width: 28px; height: 28px; object-fit: cover;">
                                 @else
-                                <div class="avatar-img avatar-xs bg-primary text-white d-flex align-items-center justify-content-center rounded-circle">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" 
+                                     style="width: 28px; height: 28px; font-size: 11px; font-weight: 600; flex-shrink: 0;">
                                     {{ strtoupper(substr($sertifikat->user->nama ?? 'U', 0, 1)) }}
                                 </div>
                                 @endif
-                                <span>{{ $sertifikat->user->nama }}</span>
+                                <span class="small">{{ $sertifikat->user->nama ?? '-' }}</span>
                             </div>
                         </td>
-                        <td>{{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d/m/Y') : '-' }}</td>
-                        <td>{{ $sertifikat->penerbit ?? '-' }}</td>
                         <td>
-                            @if($sertifikat->status === 'aktif')
-                            <span class="badge text-bg-success">
-                                <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i> Aktif
+                            <span class="small">{{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d/m/Y') : '-' }}</span>
+                        </td>
+                        <td>
+                            @php
+                                $statusMap = [
+                                    'aktif' => ['label' => '✅ Aktif', 'class' => 'badge text-bg-success'],
+                                    'active' => ['label' => '✅ Aktif', 'class' => 'badge text-bg-success'],
+                                    'pending' => ['label' => '⏳ Pending', 'class' => 'badge text-bg-warning'],
+                                    'revoked' => ['label' => '❌ Revoked', 'class' => 'badge text-bg-danger'],
+                                    'expired' => ['label' => '⏰ Expired', 'class' => 'badge text-bg-secondary'],
+                                ];
+                                $status = $statusMap[$sertifikat->status] ?? ['label' => $sertifikat->status, 'class' => 'badge text-bg-secondary'];
+                            @endphp
+                            <span class="{{ $status['class'] }}">
+                                {{ $status['label'] }}
                             </span>
-                            @elseif($sertifikat->status === 'revoked')
-                            <span class="badge text-bg-danger">
-                                <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i> Revoked
-                            </span>
-                            @else
-                            <span class="badge text-bg-warning">
-                                <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i> Pending
-                            </span>
-                            @endif
                         </td>
                         <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                            <div class="btn-group btn-group-sm" role="group">
                                 <a href="{{ route('admin.sertifikat.show', $sertifikat->id) }}" 
-                                   class="badge bg-info text-white text-decoration-none p-2" title="Lihat">
+                                   class="btn btn-info" title="Lihat">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.sertifikat.edit', $sertifikat->id) }}" 
-                                   class="badge bg-warning text-dark text-decoration-none p-2" title="Edit">
+                                   class="btn btn-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 @if($sertifikat->file_path)
                                 <a href="{{ route('admin.sertifikat.download', $sertifikat->id) }}" 
-                                   class="badge bg-success text-white text-decoration-none p-2" title="Download">
+                                   class="btn btn-success" title="Download">
                                     <i class="bi bi-download"></i>
                                 </a>
                                 @endif
-                                <button type="button" class="badge bg-danger text-white border-0 p-2" 
+                                <button type="button" class="btn btn-danger" 
                                         data-bs-toggle="modal" data-bs-target="#deleteModal{{ $sertifikat->id }}" 
                                         title="Hapus">
                                     <i class="bi bi-trash"></i>
@@ -211,9 +212,10 @@
             @endif
         </div>
         @if(isset($sertifikats) && $sertifikats->hasPages())
-        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-3">
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-3 px-3 pb-3">
             <p class="text-muted small mb-0">
-                Menampilkan {{ $sertifikats->firstItem() ?? 0 }} sampai {{ $sertifikats->lastItem() ?? 0 }} dari {{ $sertifikats->total() ?? 0 }} sertifikat
+                Menampilkan {{ $sertifikats->firstItem() ?? 0 }} sampai {{ $sertifikats->lastItem() ?? 0 }} 
+                dari {{ $sertifikats->total() ?? 0 }} sertifikat
             </p>
             <nav aria-label="Certificate pagination">
                 {{ $sertifikats->links() }}
@@ -237,7 +239,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus sertifikat <strong>{{ $sertifikat->nama_sertifikat }}</strong>?</p>
+                <p>Apakah Anda yakin ingin menghapus sertifikat <strong>{{ $sertifikat->judul ?? $sertifikat->nama_sertifikat }}</strong>?</p>
+                @if($sertifikat->file_path)
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    File sertifikat akan ikut terhapus.
+                </div>
+                @endif
                 <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
             </div>
             <div class="modal-footer">
@@ -255,6 +263,115 @@
 </div>
 @endforeach
 
+@push('styles')
+<style>
+    .metric-card {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        border-left: 4px solid transparent;
+        height: 100%;
+        transition: transform 0.2s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-4px);
+    }
+    .metric-primary { border-left-color: #4e9af1; }
+    .metric-success { border-left-color: #28c76f; }
+    .metric-warning { border-left-color: #ff9f43; }
+    .metric-danger { border-left-color: #ea5455; }
+    
+    .metric-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .4rem;
+    }
+    .metric-label {
+        font-size: .75rem;
+        color: #8a93a3;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+    }
+    .metric-icon {
+        color: #c3cad6;
+        font-size: 1.3rem;
+    }
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a2236;
+    }
+    .metric-meta {
+        font-size: .75rem;
+        color: #8a93a3;
+        display: flex;
+        gap: .35rem;
+    }
+
+    .panel {
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+    .panel-header {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: 0;
+        font-size: 1rem;
+    }
+    .section-title i {
+        color: #4e9af1;
+    }
+
+    .table th {
+        font-weight: 600;
+        font-size: .75rem;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        color: #6c757d;
+        border-bottom-width: 2px;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .table .badge {
+        font-weight: 500;
+        padding: 0.3rem 0.7rem;
+        font-size: .75rem;
+    }
+
+    .btn-group .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    .btn-group .btn:hover {
+        transform: scale(1.1);
+    }
+
+    .avatar-img {
+        width: 28px;
+        height: 28px;
+        object-fit: cover;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -262,12 +379,21 @@
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
-                alert.classList.remove('show');
-                setTimeout(function() {
-                    alert.remove();
-                }, 300);
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
             });
         }, 5000);
+
+        // Search with Enter key
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.closest('form').submit();
+                }
+            });
+        }
     });
 </script>
 @endpush

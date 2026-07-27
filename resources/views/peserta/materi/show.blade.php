@@ -12,11 +12,6 @@
             <p class="text-muted mb-0">{{ $materi->judul }}</p>
         </div>
     </div>
-    <div class="heading-actions">
-        <a href="{{ route('peserta.materi.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
-    </div>
 </div>
 @endsection
 
@@ -79,21 +74,7 @@
                                     @php
                                         $progress = $materi->getMyProgress();
                                     @endphp
-                                    @if($progress < 100)
-                                        <form action="{{ route('peserta.materi.complete', $materi->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success" 
-                                                    onclick="return confirm('Yakin ingin menandai materi ini selesai?')">
-                                                <i class="bi bi-check-circle me-2"></i> Tandai Selesai
-                                            </button>
-                                        </form>
-                                    @endif
-                                    @if($materi->total_files > 0)
-                                        <a href="{{ route('peserta.materi.download', $materi->id) }}" 
-                                           class="btn btn-primary">
-                                            <i class="bi bi-download me-2"></i> Download Semua
-                                        </a>
-                                    @endif
+                                    
                                 </div>
                             </div>
                         </div>

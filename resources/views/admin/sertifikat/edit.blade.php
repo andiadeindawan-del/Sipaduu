@@ -13,11 +13,6 @@
                 <p class="text-muted mb-0">Perbarui informasi sertifikat {{ $sertifikat->nomor_sertifikat }}.</p>
             </div>
         </div>
-        <div class="heading-actions">
-            <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
-        </div>
     </div>
 
     <div class="row mt-3">
@@ -240,14 +235,19 @@
                             </div>
 
                             <!-- Submit Buttons -->
-                            <div class="col-12 mt-4">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                    </button>
-                                    <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-circle me-1"></i> Batal
+                           <div class="col-12 mt-4">
+                                <div class="d-flex gap-2 flex-wrap align-items-center">
+                                    <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
                                     </a>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                        <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-x-circle me-1"></i> Batal
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

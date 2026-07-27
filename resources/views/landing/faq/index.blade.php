@@ -59,9 +59,6 @@
                         <a href="{{ route('landing.kontak.index') }}" class="btn btn-primary">
                             <i class="bi bi-envelope me-1"></i> Halaman Kontak
                         </a>
-                        <a href="mailto:info@pelatihan-sdm.com" class="btn btn-outline-primary">
-                            <i class="bi bi-envelope me-1"></i> info@pelatihan-sdm.com
-                        </a>
                     </div>
                 </div>
             </div>

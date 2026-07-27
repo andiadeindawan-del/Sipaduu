@@ -104,7 +104,7 @@
             <table class="table align-middle mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">No</th>
                         <th>Judul</th>
                         <th>Kategori</th>
                         <th>Tanggal</th>
@@ -131,13 +131,12 @@
                         </td>
                         <td>
                             <div class="small">
-                                <div><i class="bi bi-calendar3 me-1"></i> {{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : '-' }}</div>
-                                <div><i class="bi bi-calendar3 me-1"></i> {{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '-' }}</div>
+                                <div><i class=""></i> {{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : '-' }}</div>
+                                <div><i class=""></i> {{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '-' }}</div>
                             </div>
                         </td>
                         <td>
                             <span class="text-muted">
-                                <i class="bi bi-people me-1"></i>
                                 {{ $training->participants_count ?? 0 }}
                                 @if($training->kapasitas)
                                 / {{ $training->kapasitas }}

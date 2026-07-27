@@ -20,7 +20,7 @@
         <div class="col-lg-8 text-center">
             <h1 class="hero-title">
                 Sistem Pelatihan SDM Usaha<br>
-                <span class="highlight">Dinas Koperasi, Perindustrian, dan Perdagangan Sulawesi Barat</span>
+                <span class="">Dinas Koperasi, Perindustrian, dan Perdagangan Sulawesi Barat</span>
             </h1>
             
             <p class="hero-description">
