@@ -12,11 +12,6 @@
             <p class="text-muted mb-0">Perbarui informasi akun {{ $user->nama ?? $user->name ?? 'User' }}.</p>
         </div>
     </div>
-    <div class="heading-actions">
-        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
-    </div>
 </div>
 @endsection
 
@@ -244,19 +239,38 @@
                                 @enderror
                             </div>
 
-                            <!-- Foto -->
+                            <!-- Foto Profil - PERBAIKAN UKURAN -->
                             <div class="col-12">
                                 <label for="foto" class="form-label fw-semibold">Foto Profil</label>
-                                @if($user->foto)
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $user->foto) }}" alt="{{ $user->nama }}" 
-                                         class="avatar-img avatar-md rounded-circle">
-                                    <span class="ms-2 text-muted small">Foto saat ini</span>
+                                <div class="d-flex align-items-center gap-3">
+                                    @if($user->foto)
+                                    <div class="position-relative">
+                                        <img src="{{ asset('storage/' . $user->foto) }}" alt="{{ $user->nama }}" 
+                                             class="rounded-circle border" 
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                        <span class="badge bg-success position-absolute bottom-0 end-0" style="font-size: 8px; padding: 2px 6px;">
+                                            <i class="bi bi-check-circle"></i>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted small d-block">Foto saat ini</span>
+                                        <small class="text-muted">{{ basename($user->foto) }}</small>
+                                    </div>
+                                    @else
+                                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-light text-secondary border" 
+                                         style="width: 60px; height: 60px;">
+                                        <i class="bi bi-person fs-2"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted small d-block">Belum ada foto</span>
+                                    </div>
+                                    @endif
                                 </div>
-                                @endif
-                                <input type="file" class="form-control @error('foto') is-invalid @enderror" 
-                                       id="foto" name="foto" accept="image/*">
-                                <small class="text-muted">Max 2MB. Supported: JPG, PNG, GIF</small>
+                                <div class="mt-2">
+                                    <input type="file" class="form-control @error('foto') is-invalid @enderror" 
+                                           id="foto" name="foto" accept="image/*" style="max-width: 400px;">
+                                    <small class="text-muted">Max 2MB. Supported: JPG, PNG, GIF</small>
+                                </div>
                                 @error('foto')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -264,13 +278,24 @@
 
                             <!-- Submit Buttons -->
                             <div class="col-12 mt-4">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-save me-1"></i> Perbarui
-                                    </button>
-                                    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-circle me-1"></i> Batal
-                                    </a>
+                                <hr class="my-2">
+                                <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+                                    <!-- Kiri: Tombol Kembali -->
+                                    <div>
+                                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Kanan: Tombol Aksi -->
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-save me-1"></i> Perbarui
+                                        </button>
+                                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-x-circle me-1"></i> Batal
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -305,7 +330,7 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        const preview = document.querySelector('.avatar-img.avatar-md.rounded-circle');
+                        const preview = document.querySelector('.rounded-circle.border[style*="width: 60px"]');
                         if (preview) {
                             preview.src = e.target.result;
                         }

@@ -128,13 +128,13 @@
                     <td><span class="text-muted small">{{ $kategori->slug }}</span></td>
                     <td>{{ Str::limit($kategori->deskripsi, 50) ?? '-' }}</td>
                     <td>
-                        <span class="badge text-bg-info">
+                        <span class="">
                             <i class="bi bi-book me-1"></i>
                             {{ $kategori->materis_count ?? 0 }}
                         </span>
                     </td>
                     <td>
-                        <span class="badge text-bg-primary">
+                        <span class="">
                             <i class="bi bi-journal-bookmark me-1"></i>
                             {{ $kategori->trainings_count ?? 0 }}
                         </span>

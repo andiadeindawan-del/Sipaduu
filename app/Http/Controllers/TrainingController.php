@@ -425,16 +425,6 @@ class TrainingController extends Controller
      */
     public function destroy(Training $training)
     {
-        // Check if training has participants
-        $participantsCount = $training->registrations()
-            ->whereIn('status', ['disetujui'])
-            ->count();
-            
-        if ($participantsCount > 0) {
-            return redirect()->route('admin.trainings.index')
-                            ->with('error', "⚠️ Pelatihan tidak dapat dihapus karena masih memiliki {$participantsCount} peserta.");
-        }
-
         // Delete image if exists
         if ($training->gambar) {
             Storage::disk('public')->delete($training->gambar);

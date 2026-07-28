@@ -491,11 +491,29 @@
 <nav id="sidebar">
     <div class="sidebar-content">
         <!-- Brand -->
-        <a href="{{ route('peserta.dashboard') }}" class="brand">
-            <i class="bi bi-mortarboard-fill"></i>
-            <div class="brand-text">
-                <span class="brand-name">S I P <span>A D U</span></span>
-                <span class="brand-sub">Sistem Pelatihan SDM usaha KOPERINDAG</span>
+         <a href="{{ route('peserta.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.25rem; text-decoration: none;">
+           @php
+                $logoPath = 'assets/images/logo koperindag 1.gif';
+                $logoExists = file_exists(public_path($logoPath));
+            @endphp
+            
+            @if($logoExists)
+                <img src="{{ asset($logoPath) }}" 
+                     alt="Logo SIPADU" 
+                     style="height: 40px; width: auto; object-fit: contain;">
+            @else
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4e9af1, #3a7bc8); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
+                    S
+                </div>
+            @endif
+            
+            <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                <span style="font-weight: 800; color: #090909; font-size: 1.3rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    S I P <span style="color: #6ab0f5;">A D U</span>
+                </span>
+                <small style="font-size: 0.55rem; color: rgba(5, 5, 5, 0.5); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 1px;">
+                    Koperindag Sulbar
+                </small>
             </div>
         </a>
 

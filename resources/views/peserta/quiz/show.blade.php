@@ -95,10 +95,10 @@
                                             </button>
                                         </form>
                                     @elseif(isset($userAttempt))
-                                        <a href="{{ route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $userAttempt->id]) }}" 
+                                        <!-- <a href="{{ route('peserta.quiz.result', ['quiz' => $quiz->id, 'attempt' => $userAttempt->id]) }}" 
                                            class="btn btn-info text-white">
                                             <i class="bi bi-eye me-2"></i> Lihat Hasil
-                                        </a>
+                                        </a> -->
                                     @endif
                                     @if(($remainingAttempts ?? 0) > 0 && isset($userAttempt) && $userAttempt->status == 'completed')
                                         <form action="{{ route('peserta.quiz.start', $quiz->id) }}" method="POST" class="d-inline">

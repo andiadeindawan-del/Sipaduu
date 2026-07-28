@@ -268,10 +268,117 @@
 <nav id="sidebar">
     <div class="sidebar-content">
         <!-- Brand -->
-        <a href="{{ route('admin.dashboard') }}" class="brand">
-            <i class="bi bi-mortarboard-fill"></i>
-            S I P <span>A D U</span>
+        <nav id="sidebar">
+    <div class="sidebar-content">
+        <!-- Brand -->
+        <a href="{{ route('admin.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.25rem; text-decoration: none;">
+           @php
+                $logoPath = 'assets/images/logo koperindag 1.gif';
+                $logoExists = file_exists(public_path($logoPath));
+            @endphp
+            
+            @if($logoExists)
+                <img src="{{ asset($logoPath) }}" 
+                     alt="Logo SIPADU" 
+                     style="height: 40px; width: auto; object-fit: contain;">
+            @else
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4e9af1, #3a7bc8); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
+                    S
+                </div>
+            @endif
+            
+            <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                <span style="font-weight: 800; color: #ffffff; font-size: 1.3rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    S I P <span style="color: #6ab0f5;">A D U</span>
+                </span>
+                <small style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 1px;">
+                    Koperindag Sulbar
+                </small>
+            </div>
         </a>
+
+        <!-- ========================================================== -->
+        <!-- MENU PESERTA -->
+        <!-- ========================================================== -->
+        <div class="sidebar-nav">
+            <!-- DASHBOARD -->
+            <div class="nav-label">Menu</div>
+            
+            <a href="{{ route('peserta.dashboard') }}" class="nav-link {{ request()->routeIs('peserta.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+
+            <!-- ========================================================== -->
+            <!-- PELATIHAN -->
+            <!-- ========================================================== -->
+            <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.index') ? 'active' : '' }}">
+                <i class="bi bi-list-check"></i> Pelatihan
+            </a>
+
+            <!-- Pelatihan Saya (dengan submenu) -->
+            <a href="#" class="nav-link" onclick="toggleSubmenu('submenuPelatihanSaya')">
+                <i class="bi bi-journal-bookmark"></i> Pelatihan Saya
+                <span class="chevron" id="chevronPelatihanSaya"><i class="bi bi-chevron-right"></i></span>
+            </a>
+            <div class="submenu" id="submenuPelatihanSaya">
+                <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
+                    Materi
+                </a>
+                 <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
+                    Absen
+                </a>
+                <a href="{{ route('peserta.quiz.index') }}" class="nav-link {{ request()->routeIs('peserta.quiz.*') ? 'active' : '' }}">
+                    Quiz
+                </a>
+                <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
+                    Sertifikat
+                </a>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- INFORMASI -->
+            <!-- ========================================================== -->
+            <div class="nav-label">Informasi</div>
+
+            <a href="{{ route('peserta.agenda.index') }}" class="nav-link {{ request()->routeIs('peserta.agenda.*') ? 'active' : '' }}">
+                <i class="bi bi-calendar-event"></i> Agenda
+            </a>
+            
+            <a href="{{ route('peserta.pengumuman.index') }}" class="nav-link {{ request()->routeIs('peserta.pengumuman.*') ? 'active' : '' }}">
+                <i class="bi bi-megaphone"></i> Pengumuman
+            </a>
+
+            <!-- ========================================================== -->
+            <!-- AKUN -->
+            <!-- ========================================================== -->
+            <div class="nav-label">Akun</div>
+
+            <a href="{{ route('peserta.profile.index') }}" class="nav-link {{ request()->routeIs('peserta.profile.*') ? 'active' : '' }}">
+                <i class="bi bi-person"></i> Profil
+            </a>
+        </div>
+
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="user-avatar">
+                    {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'U', 0, 2)) }}
+                </div>
+                <div class="flex-grow-1">
+                    <div class="user-name">{{ auth()->user()->nama ?? auth()->user()->name }}</div>
+                    <div class="user-role">{{ auth()->user()->nik ?? 'Peserta' }}</div>
+                </div>
+                <span class="badge bg-primary">Peserta</span>
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn-sm btn-logout w-100">
+                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
 
         <!-- ========================================================== -->
         <!-- DASHBOARD -->
