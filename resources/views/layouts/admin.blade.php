@@ -25,21 +25,11 @@
             overflow-y: auto;
             overflow-x: hidden;
         }
-        #sidebar::-webkit-scrollbar { 
-            width: 4px; 
-        }
-        #sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #sidebar::-webkit-scrollbar-thumb { 
-            background: rgba(255,255,255,.2); 
-            border-radius: 4px;
-        }
-        #sidebar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,.3);
-        }
+        #sidebar::-webkit-scrollbar { width: 4px; }
+        #sidebar::-webkit-scrollbar-track { background: transparent; }
+        #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 4px; }
+        #sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.3); }
 
-        /* Agar sidebar content tetap flex */
         #sidebar .sidebar-content {
             display: flex;
             flex-direction: column;
@@ -47,8 +37,9 @@
             flex: 1;
         }
 
+        /* ===== Brand ===== */
         #sidebar .brand {
-            padding: 1.25rem 1.5rem;
+            padding: 1rem 1.25rem;
             color: #fff;
             font-weight: 700;
             font-size: 1.1rem;
@@ -58,9 +49,54 @@
             gap: 0.5rem;
             text-decoration: none;
             flex-shrink: 0;
+            transition: background .2s;
+        }
+        #sidebar .brand:hover {
+            background: rgba(255,255,255,.03);
         }
         #sidebar .brand i { font-size: 1.4rem; color: #4e9af1; }
         #sidebar .brand span { color: #4e9af1; }
+        #sidebar .brand .brand-logo {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        #sidebar .brand .brand-icon-placeholder {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4e9af1, #3a7bc8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        #sidebar .brand .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        #sidebar .brand .brand-name {
+            font-weight: 800;
+            color: #ffffff;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+        #sidebar .brand .brand-highlight {
+            color: #6ab0f5;
+        }
+        #sidebar .brand .brand-subtitle {
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.4);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
 
         /* ===== Sidebar Navigation ===== */
         #sidebar .sidebar-nav {
@@ -74,22 +110,15 @@
             font-weight: 600;
             letter-spacing: .1em;
             text-transform: uppercase;
-            padding: .85rem 1.5rem .25rem;
+            padding: .85rem 1.25rem .25rem;
             display: flex;
             align-items: center;
             gap: .5rem;
         }
-        #sidebar .nav-label::before,
-        #sidebar .nav-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255,255,255,.06);
-        }
 
         #sidebar .nav-link {
             color: rgba(255,255,255,.65);
-            padding: .5rem 1.5rem;
+            padding: .5rem 1.25rem;
             border-radius: 0;
             display: flex;
             align-items: center;
@@ -138,7 +167,7 @@
             max-height: 500px;
         }
         #sidebar .submenu .nav-link {
-            padding-left: 3.2rem;
+            padding-left: 3rem;
             font-size: .82rem;
             border-left-color: transparent;
         }
@@ -158,26 +187,47 @@
 
         /* ===== User Info ===== */
         #sidebar .user-info {
-            padding: 1rem 1.5rem;
+            padding: 1rem 1.25rem;
             border-top: 1px solid rgba(255,255,255,.08);
             color: rgba(255,255,255,.7);
             font-size: .82rem;
             flex-shrink: 0;
+            background: rgba(0,0,0,.2);
         }
-        #sidebar .user-info .user-name { color: #fff; font-weight: 600; }
-        #sidebar .user-info .user-role { font-size: .72rem; opacity: .6; }
-        #sidebar .user-info .btn-outline-secondary {
-            color: rgba(255,255,255,.7);
-            border-color: rgba(255,255,255,.15);
-            font-size: .78rem;
-            transition: all .15s;
-        }
-        #sidebar .user-info .btn-outline-secondary:hover {
-            background: rgba(255,255,255,.1);
+        #sidebar .user-info .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4e9af1, #3a7bc8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #fff;
-            border-color: rgba(255,255,255,.3);
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
         }
-        #sidebar .user-info .btn-outline-secondary i { font-size: .9rem; }
+        #sidebar .user-info .user-name { color: #fff; font-weight: 600; font-size: 0.85rem; }
+        #sidebar .user-info .user-role { font-size: .72rem; opacity: .6; }
+        #sidebar .user-info .user-badge {
+            font-size: 0.6rem;
+            padding: 0.15rem 0.5rem;
+        }
+        #sidebar .user-info .btn-logout {
+            width: 100%;
+            padding: 0.4rem 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        #sidebar .user-info .btn-logout:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
 
         /* ===== Main ===== */
         #main { margin-left: var(--sidebar-width); min-height: 100vh; display: flex; flex-direction: column; }
@@ -193,8 +243,6 @@
             justify-content: flex-end;
             gap: .75rem;
         }
-        #topbar .topbar-brand { font-weight: 600; color: #1a2236; }
-        #topbar .topbar-brand span { color: #4e9af1; }
 
         /* ===== Page heading ===== */
         .page-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 1.25rem 1.5rem; background: #fff; border-bottom: 1px solid #e8ecf1; }
@@ -227,18 +275,7 @@
         .table td { vertical-align: middle; }
         .avatar-img { border-radius: 50%; object-fit: cover; }
         .avatar-sm { width: 34px; height: 34px; }
-        .avatar-text { 
-            width: 34px; 
-            height: 34px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 600; 
-            font-size: .8rem;
-            color: #fff;
-            background: #4e9af1;
-        }
+        .avatar-text { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: .8rem; color: #fff; background: #4e9af1; }
 
         /* ===== Badge status ===== */
         .badge-draft      { background: #e9ecef; color: #495057; }
@@ -250,25 +287,38 @@
         /* ===== Content ===== */
         .page-content { flex: 1; padding-bottom: 2rem; }
 
+        /* ===== Topbar Dropdown ===== */
+        .dropdown-header {
+            padding: 0.5rem 1rem;
+        }
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+        .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
             #sidebar { transform: translateX(-100%); }
             #sidebar.open { transform: translateX(0); box-shadow: 0 0 30px rgba(0,0,0,.3); }
             #main { margin-left: 0; }
+            #topbar .d-none.d-sm-inline { display: none !important; }
         }
     </style>
     @stack('styles')
 </head>
 <body>
 
-
 <!-- ========================================================== -->
 <!-- SIDEBAR -->
 <!-- ========================================================== -->
 <nav id="sidebar">
-    <div class="sidebar-content">
-        <!-- Brand -->
-        <nav id="sidebar">
     <div class="sidebar-content">
         <!-- Brand -->
         <a href="{{ route('admin.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.25rem; text-decoration: none;">
@@ -287,103 +337,19 @@
                 </div>
             @endif
             
-            <div style="display: flex; flex-direction: column; line-height: 1.1;">
-                <span style="font-weight: 800; color: #ffffff; font-size: 1.3rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    S I P <span style="color: #6ab0f5;">A D U</span>
-                </span>
-                <small style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 1px;">
-                    Koperindag Sulbar
-                </small>
+            <div class="brand-text">
+                <span class="brand-name">S I P <span class="brand-highlight">A D U</span></span>
+                <span class="brand-subtitle">Koperindag Sulbar</span>
             </div>
         </a>
 
         <!-- ========================================================== -->
-        <!-- MENU PESERTA -->
+        <!-- NAVIGATION -->
         <!-- ========================================================== -->
         <div class="sidebar-nav">
             <!-- DASHBOARD -->
             <div class="nav-label">Menu</div>
             
-            <a href="{{ route('peserta.dashboard') }}" class="nav-link {{ request()->routeIs('peserta.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2"></i> Dashboard
-            </a>
-
-            <!-- ========================================================== -->
-            <!-- PELATIHAN -->
-            <!-- ========================================================== -->
-            <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.index') ? 'active' : '' }}">
-                <i class="bi bi-list-check"></i> Pelatihan
-            </a>
-
-            <!-- Pelatihan Saya (dengan submenu) -->
-            <a href="#" class="nav-link" onclick="toggleSubmenu('submenuPelatihanSaya')">
-                <i class="bi bi-journal-bookmark"></i> Pelatihan Saya
-                <span class="chevron" id="chevronPelatihanSaya"><i class="bi bi-chevron-right"></i></span>
-            </a>
-            <div class="submenu" id="submenuPelatihanSaya">
-                <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
-                    Materi
-                </a>
-                 <a href="{{ route('peserta.absen.index') }}" class="nav-link {{ request()->routeIs('peserta.absen.*') ? 'active' : '' }}">
-                    Absen
-                </a>
-                <a href="{{ route('peserta.quiz.index') }}" class="nav-link {{ request()->routeIs('peserta.quiz.*') ? 'active' : '' }}">
-                    Quiz
-                </a>
-                <a href="{{ route('peserta.sertifikat.index') }}" class="nav-link {{ request()->routeIs('peserta.sertifikat.*') ? 'active' : '' }}">
-                    Sertifikat
-                </a>
-            </div>
-
-            <!-- ========================================================== -->
-            <!-- INFORMASI -->
-            <!-- ========================================================== -->
-            <div class="nav-label">Informasi</div>
-
-            <a href="{{ route('peserta.agenda.index') }}" class="nav-link {{ request()->routeIs('peserta.agenda.*') ? 'active' : '' }}">
-                <i class="bi bi-calendar-event"></i> Agenda
-            </a>
-            
-            <a href="{{ route('peserta.pengumuman.index') }}" class="nav-link {{ request()->routeIs('peserta.pengumuman.*') ? 'active' : '' }}">
-                <i class="bi bi-megaphone"></i> Pengumuman
-            </a>
-
-            <!-- ========================================================== -->
-            <!-- AKUN -->
-            <!-- ========================================================== -->
-            <div class="nav-label">Akun</div>
-
-            <a href="{{ route('peserta.profile.index') }}" class="nav-link {{ request()->routeIs('peserta.profile.*') ? 'active' : '' }}">
-                <i class="bi bi-person"></i> Profil
-            </a>
-        </div>
-
-        <!-- User Info -->
-        <div class="user-info">
-            <div class="d-flex align-items-center gap-3 mb-2">
-                <div class="user-avatar">
-                    {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'U', 0, 2)) }}
-                </div>
-                <div class="flex-grow-1">
-                    <div class="user-name">{{ auth()->user()->nama ?? auth()->user()->name }}</div>
-                    <div class="user-role">{{ auth()->user()->nik ?? 'Peserta' }}</div>
-                </div>
-                <span class="badge bg-primary">Peserta</span>
-            </div>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn-sm btn-logout w-100">
-                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
-                </button>
-            </form>
-        </div>
-    </div>
-</nav>
-
-        <!-- ========================================================== -->
-        <!-- DASHBOARD -->
-        <!-- ========================================================== -->
-        <div class="sidebar-nav">
             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2"></i> Dashboard
             </a>
@@ -434,12 +400,8 @@
             <!-- ========================================================== -->
             <div class="nav-label">📋 AKTIVITAS</div>
             
-            <!-- <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
-                    <i class="bi bi-list-check"></i> Pendaftaran
-            </a> -->
-            
-             <a href="{{ route('admin.absen.index') }}" class="nav-link {{ request()->routeIs('admin.absen.*') ? 'active' : '' }}">
-                    <i class="bi bi-list-check"></i> Absen
+            <a href="{{ route('admin.absen.index') }}" class="nav-link {{ request()->routeIs('admin.absen.*') ? 'active' : '' }}">
+                <i class="bi bi-list-check"></i> Absen
             </a>
             
             <a href="{{ route('admin.agenda.index') }}" class="nav-link {{ request()->routeIs('admin.agenda.*') ? 'active' : '' }}">
@@ -479,18 +441,19 @@
 
         <!-- User Info -->
         <div class="user-info">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="user-avatar">
+                    {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'U', 0, 2)) }}
+                </div>
+                <div class="flex-grow-1">
                     <div class="user-name">{{ auth()->user()->nama ?? auth()->user()->name }}</div>
-                    <div class="user-role">{{ auth()->user()->nik ?? '' }}</div>
+                    <div class="user-role">{{ auth()->user()->nik ?? 'Admin' }}</div>
                 </div>
-                <div>
-                    <span class="badge bg-primary">{{ ucfirst(auth()->user()->role ?? 'Admin') }}</span>
-                </div>
+                <span class="badge bg-primary user-badge">{{ ucfirst(auth()->user()->role ?? 'Admin') }}</span>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                <button type="submit" class="btn-logout">
                     <i class="bi bi-box-arrow-right me-1"></i> Keluar
                 </button>
             </form>
@@ -503,13 +466,13 @@
 <!-- ========================================================== -->
 <div id="main">
     <!-- Topbar -->
-    <div id="topbar" class="d-flex align-items-center justify-content-between">
+    <div id="topbar">
         <button class="btn btn-sm btn-light d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')">
             <i class="bi bi-list fs-5"></i>
         </button>
         <div class="d-flex align-items-center gap-2 ms-auto">
-            <!-- Kalender Agenda -->
-            <a href="#" class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" title="Agenda & Kalender">
+            <!-- Kalender -->
+            <a href="{{ route('admin.agenda.index') }}" class="btn btn-light btn-sm d-flex align-items-center gap-2 border-0 rounded-pill px-3 py-1.5" title="Agenda & Kalender">
                 <i class="bi bi-calendar3 text-primary"></i>
                 <span class="d-none d-md-inline fw-semibold text-dark">Kalender</span>
             </a>
@@ -536,12 +499,12 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile.edit') }}">
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile.edit') }}">
                             <i class="bi bi-person text-muted"></i> Profil Saya
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile.edit') }}">
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile.edit') }}">
                             <i class="bi bi-gear text-muted"></i> Pengaturan
                         </a>
                     </li>
@@ -660,7 +623,6 @@
             });
         }
 
-        // Jalankan saat halaman dimuat
         openActiveSubmenu();
 
         // ============================================================
@@ -668,10 +630,10 @@
         // ============================================================
         document.querySelectorAll('.submenu .nav-link').forEach(function(link) {
             link.addEventListener('mouseenter', function() {
-                this.style.paddingLeft = '3.5rem';
+                this.style.paddingLeft = '3.3rem';
             });
             link.addEventListener('mouseleave', function() {
-                this.style.paddingLeft = '3.2rem';
+                this.style.paddingLeft = '3rem';
             });
         });
     });

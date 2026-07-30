@@ -855,7 +855,7 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-md-4">
-                <h6><i class="bi bi-mortarboard-fill me-1"></i>Pelatihan SDM</h6>
+                <h6><i class="bi bi-mortarboard-fill me-1"></i>Pelatihan SIPADU</h6>
                 <p class="small">Platform pelatihan dan pengembangan kompetensi sumber daya manusia perusahaan.</p>
                 <div class="social-icons mt-3 d-flex gap-2">
                     <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>

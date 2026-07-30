@@ -58,7 +58,7 @@
                         <span class="counter">0</span>
                     </div>
                     <div class="stat-label">
-                        <i class="bi bi-journal-bookmark-fill"></i> Pelatihan Tersedia
+                        <i class="bi bi-journal-bookmark-fill"></i> Pelatihan
                     </div>
                     <div class="stat-trend trend-up">
                         <i class="bi bi-arrow-up-short"></i> 8% bulan ini
@@ -70,7 +70,7 @@
                         <span class="counter">0</span>
                     </div>
                     <div class="stat-label">
-                        <i class="bi bi-award-fill"></i> Sertifikat Diterbitkan
+                        <i class="bi bi-award-fill"></i> Sertifikat
                     </div>
                     <div class="stat-trend trend-up">
                         <i class="bi bi-arrow-up-short"></i> 15% bulan ini

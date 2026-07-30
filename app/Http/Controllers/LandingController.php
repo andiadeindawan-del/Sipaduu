@@ -364,6 +364,6 @@ class LandingController extends Controller
             ->where('status', 'published')
             ->findOrFail($id);
 
-        return view('landing.agenda-detail.index', compact('agenda'));
+        return view('landing.agenda.show', compact('agenda'));
     }
 }
