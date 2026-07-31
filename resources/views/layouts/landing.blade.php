@@ -853,58 +853,77 @@
 ============================================================ -->
 <footer>
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <h6><i class="bi bi-mortarboard-fill me-1"></i>Pelatihan SIPADU</h6>
-                <p class="small">Platform pelatihan dan pengembangan kompetensi sumber daya manusia perusahaan.</p>
-                <div class="social-icons mt-3 d-flex gap-2">
-                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <h6>Menu</h6>
-                <ul class="list-unstyled small">
-                    <li class="mb-2"><a href="{{ route('landing.index') }}">Beranda</a></li>
-                    <li class="mb-2"><a href="{{ route('landing.pelatihan.index') }}">Pelatihan</a></li>
-                    <li class="mb-2"><a href="{{ route('landing.pengumuman.index') }}">Pengumuman</a></li>
-                    <li class="mb-2"><a href="{{ route('landing.agenda.index') }}">Agenda</a></li>
-                    <li class="mb-2"><a href="{{ route('landing.tentang.index') }}">Tentang</a></li>
-                    <li class="mb-2"><a href="{{ route('landing.faq.index') }}">FAQ</a></li>
-                    <li class="mb-2"><a href="{{ route('landing.kontak.index') }}">Kontak</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <h6>Akun</h6>
-                <ul class="list-unstyled small">
-                    @auth
-                        <li class="mb-2"><a href="{{ auth()->user()->role === 'peserta' ? route('peserta.dashboard') : route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="mb-2">
-                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-link text-decoration-none p-0 text-white-50" style="font-size: inherit;">
-                                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
-                                </button>
-                            </form>
-                        </li>
-                    @else
-                        <li class="mb-2"><a href="{{ route('login') }}">Masuk</a></li>
-                        <li class="mb-2"><a href="{{ route('register') }}">Daftar</a></li>
-                    @endauth
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <h6>Kontak</h6>
-                <ul class="list-unstyled small">
-                    <li class="mb-2"><i class="bi bi-envelope me-2"></i> andiadeindawan@gmail.com</li>
-                    <li class="mb-2"><i class="bi bi-telephone me-2"></i> 0822-9194-7554</li>
-                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Mamuju-Sulawesi Barat, Indonesia</li>
-                </ul>
-            </div>
+       <div class="row g-4">
+    <div class="col-md-4">
+        <h6><i class="bi bi-mortarboard-fill me-1"></i>SIPADU</h6>
+        <p class="small">Platform pelatihan dan pengembangan kompetensi sumber daya manusia perusahaan.</p>
+        <div class="social-icons mt-3 d-flex gap-2">
+            <a href="https://www.facebook.com/koperindagsulbar" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               aria-label="Facebook Koperindag Sulbar"
+               class="social-link facebook"
+               title="Facebook">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/koperindagsulbar" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               aria-label="Instagram Koperindag Sulbar"
+               class="social-link instagram"
+               title="Instagram">
+                <i class="bi bi-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/@koperindagsulbar" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               aria-label="YouTube Koperindag Sulbar"
+               class="social-link youtube"
+               title="YouTube">
+                <i class="bi bi-youtube"></i>
+            </a>
         </div>
+    </div>
+    <div class="col-md-2">
+        <h6>Menu</h6>
+        <ul class="list-unstyled small">
+            <li class="mb-2"><a href="{{ route('landing.index') }}">Beranda</a></li>
+            <li class="mb-2"><a href="{{ route('landing.pelatihan.index') }}">Pelatihan</a></li>
+            <li class="mb-2"><a href="{{ route('landing.pengumuman.index') }}">Pengumuman</a></li>
+            <li class="mb-2"><a href="{{ route('landing.agenda.index') }}">Agenda</a></li>
+            <li class="mb-2"><a href="{{ route('landing.tentang.index') }}">Tentang</a></li>
+            <li class="mb-2"><a href="{{ route('landing.faq.index') }}">FAQ</a></li>
+            <li class="mb-2"><a href="{{ route('landing.kontak.index') }}">Kontak</a></li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h6>Akun</h6>
+        <ul class="list-unstyled small">
+            @auth
+                <li class="mb-2"><a href="{{ auth()->user()->role === 'peserta' ? route('peserta.dashboard') : route('admin.dashboard') }}">Dashboard</a></li>
+                <li class="mb-2">
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-link text-decoration-none p-0 text-white-50" style="font-size: inherit;">
+                            <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                        </button>
+                    </form>
+                </li>
+            @else
+                <li class="mb-2"><a href="{{ route('login') }}">Masuk</a></li>
+                <li class="mb-2"><a href="{{ route('register') }}">Daftar</a></li>
+            @endauth
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h6>Kontak</h6>
+        <ul class="list-unstyled small">
+            <li class="mb-2"><i class="bi bi-envelope me-2"></i> andiadeindawan@gmail.com</li>
+            <li class="mb-2"><i class="bi bi-telephone me-2"></i> 0822-9194-7554</li>
+            <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Mamuju-Sulawesi Barat, Indonesia</li>
+        </ul>
+    </div>
+</div>
         <div class="footer-bottom">
             &copy; {{ date('Y') }} Sistem Pelatihan SDM. Seluruh hak cipta dilindungi.
             <span class="mx-2">|</span>

@@ -11,21 +11,7 @@
             <h1 class="h3 mb-0">Daftar Pelatihan</h1>
         </div>
     </div>
-    <div class="heading-actions">
-        <div class="d-flex gap-2 flex-wrap">
-            <form action="{{ route('peserta.trainings.index') }}" method="GET" class="d-flex gap-2">
-                <input type="text" name="search" class="form-control form-control-sm" 
-                       placeholder="Cari pelatihan..." value="{{ request('search') }}" style="width: 200px;">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-search"></i>
-                    
-                </button>
-                <a href="{{ route('peserta.trainings.index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-counterclockwise"></i>
-                </a>
-            </form>
-        </div>
-    </div>
+  
 </div>
 @endsection
 
@@ -87,29 +73,69 @@
         </div>
     </div>
 
-    <!-- Filter Tabs -->
-    <div class="panel mb-3">
-        <div class="panel-header">
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ route('peserta.trainings.index') }}" 
-                   class="btn btn-sm {{ !request('filter') ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-grid"></i> Semua
+   <!-- Filter Tabs dengan Search -->
+<div class="panel mb-3">
+    <div class="panel-header">
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            <a href="{{ route('peserta.trainings.index') }}" 
+               class="btn btn-sm {{ !request('filter') ? 'btn-success' : 'btn-outline-secondary' }}">
+                <i class="bi bi-grid"></i> Semua
+            </a>
+            <a href="{{ route('peserta.trainings.index', ['filter' => 'ongoing']) }}" 
+               class="btn btn-sm {{ request('filter') == 'ongoing' ? 'btn-success' : 'btn-outline-secondary' }}">
+                <i class="bi bi-play-circle"></i> Sedang Berjalan
+            </a>
+            <a href="{{ route('peserta.trainings.index', ['filter' => 'upcoming']) }}" 
+               class="btn btn-sm {{ request('filter') == 'upcoming' ? 'btn-success' : 'btn-outline-secondary' }}">
+                <i class="bi bi-calendar-event"></i> Akan Datang
+            </a>
+            <a href="{{ route('peserta.trainings.index', ['filter' => 'completed']) }}" 
+               class="btn btn-sm {{ request('filter') == 'completed' ? 'btn-success' : 'btn-outline-secondary' }}">
+                <i class="bi bi-check-circle"></i> Selesai
+            </a>
+        </div>
+        <div>
+            <form action="{{ route('peserta.trainings.index') }}" method="GET" class="d-flex gap-1 align-items-center">
+                <div class="input-group input-group-sm" style="width: 200px;">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" 
+                           placeholder="Cari pelatihan..." value="{{ request('search') }}">
+                </div>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-search"></i>
+                </button>
+                @if(request('search') || request('filter'))
+                <a href="{{ route('peserta.trainings.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
+                    <i class="bi bi-arrow-counterclockwise"></i>
                 </a>
-                <a href="{{ route('peserta.trainings.index', ['filter' => 'ongoing']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'ongoing' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-play-circle"></i> Sedang Berjalan
-                </a>
-                <a href="{{ route('peserta.trainings.index', ['filter' => 'upcoming']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'upcoming' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-calendar-event"></i> Akan Datang
-                </a>
-                <a href="{{ route('peserta.trainings.index', ['filter' => 'completed']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'completed' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-check-circle"></i> Selesai
-                </a>
-            </div>
+                @endif
+            </form>
         </div>
     </div>
+    @if(request('filter') || request('search'))
+    <div class="p-2 px-3 bg-light border-top">
+        <small class="text-muted">
+            <i class="bi bi-filter-circle me-1"></i>
+            Filter aktif: 
+            @if(request('filter'))
+                <span class="badge text-bg-primary">
+                    @if(request('filter') == 'ongoing') Sedang Berjalan
+                    @elseif(request('filter') == 'upcoming') Akan Datang
+                    @elseif(request('filter') == 'completed') Selesai
+                    @else {{ ucfirst(request('filter')) }}
+                    @endif
+                </span>
+            @endif
+            @if(request('search'))
+                <span class="badge text-bg-primary">Pencarian: "{{ request('search') }}"</span>
+            @endif
+            <a href="{{ route('peserta.trainings.index') }}" class="text-danger ms-2">
+                <i class="bi bi-x-circle"></i> Hapus filter
+            </a>
+        </small>
+    </div>
+    @endif
+</div>
 
     <!-- Training Cards -->
     @if($trainings && $trainings->count() > 0)

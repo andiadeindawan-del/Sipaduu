@@ -531,9 +531,7 @@
             <!-- ========================================================== -->
             <!-- PELATIHAN -->
             <!-- ========================================================== -->
-            <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.index') ? 'active' : '' }}">
-                <i class="bi bi-list-check"></i> Pelatihan
-            </a>
+           
 
             <!-- Pelatihan Saya (dengan submenu) -->
             <a href="#" class="nav-link" onclick="toggleSubmenu('submenuPelatihanSaya')">
@@ -541,6 +539,9 @@
                 <span class="chevron" id="chevronPelatihanSaya"><i class="bi bi-chevron-right"></i></span>
             </a>
             <div class="submenu" id="submenuPelatihanSaya">
+                 <a href="{{ route('peserta.trainings.index') }}" class="nav-link {{ request()->routeIs('peserta.trainings.index') ? 'active' : '' }}">
+                    Daftar Pelatihan
+                </a>
                 <a href="{{ route('peserta.materi.index') }}" class="nav-link {{ request()->routeIs('peserta.materi.*') ? 'active' : '' }}">
                     Materi
                 </a>
