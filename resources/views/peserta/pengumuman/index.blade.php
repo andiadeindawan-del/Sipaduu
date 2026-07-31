@@ -243,6 +243,11 @@
                         <!-- Detail Content -->
                         <div class="collapse mt-3" id="detail{{ $pengumuman->id }}">
                             <div class="announcement-detail">
+                                @if($pengumuman->gambar)
+                                <div class="mb-3">
+                                    <img src="{{ Storage::url($pengumuman->gambar) }}" alt="Gambar Pengumuman" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: auto;">
+                                </div>
+                                @endif
                                 <div class="announcement-content">
                                     {!! nl2br(e($pengumuman->konten)) !!}
                                 </div>

@@ -42,7 +42,7 @@
                     <p class="text-muted small mb-0">Isi data pengumuman dengan lengkap.</p>
                 </div>
                 <div class="p-4">
-                    <form action="{{ route('admin.pengumuman.store') }}" method="POST" id="pengumumanForm">
+                    <form action="{{ route('admin.pengumuman.store') }}" method="POST" id="pengumumanForm" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row g-3">
@@ -141,6 +141,25 @@
                                 </div>
                                 <small class="text-muted">Konten lengkap pengumuman. Bisa menggunakan HTML.</small>
                                 @error('konten')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Gambar Pengumuman -->
+                            <div class="col-12">
+                                <label for="gambar" class="form-label fw-semibold">
+                                    Gambar Pengumuman
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                    <input type="file" class="form-control @error('gambar') is-invalid @enderror" 
+                                           id="gambar" name="gambar" accept="image/jpeg,image/png,image/jpg" onchange="previewImage(this)">
+                                </div>
+                                <small class="text-muted">Opsional. Format: JPG, JPEG, PNG. Max: 2MB.</small>
+                                <div id="imagePreviewContainer" class="mt-2 d-none">
+                                    <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+                                </div>
+                                @error('gambar')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -276,6 +295,25 @@
 
 @push('scripts')
 <script>
+window.previewImage = function(input) {
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('imagePreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewContainer.classList.remove('d-none');
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewImage.src = '#';
+        previewContainer.classList.add('d-none');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // PREVIEW FUNCTION

@@ -10,15 +10,10 @@
 <section class="section-pad" style="padding-top: 2rem;">
     <div class="container">
         <div class="panel">
-            <div class="panel-header">
-                <h5 class="section-title">
-                    <i class="bi bi-funnel me-2"></i> Filter Pelatihan
-                </h5>
-            </div>
             <div class="p-4">
                 <form action="{{ route('landing.pelatihan.index') }}" method="GET" class="row g-3">
                     <!-- Search -->
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-8">
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-search"></i></span>
                             <input type="text" class="form-control" name="search" 
@@ -26,48 +21,34 @@
                         </div>
                     </div>
 
-                    <!-- Kategori -->
-                    <div class="col-12 col-md-3">
-                        <select class="form-select" name="kategori_id">
-                            <option value="">Semua Kategori</option>
-                            @foreach($kategoris ?? [] as $kategori)
-                            <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                {{ $kategori->nama }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Tipe -->
-                    <div class="col-12 col-md-3">
-                        <select class="form-select" name="tipe">
-                            <option value="">Semua Tipe</option>
-                            <option value="online" {{ request('tipe') == 'online' ? 'selected' : '' }}>🖥️ Online</option>
-                            <option value="offline" {{ request('tipe') == 'offline' ? 'selected' : '' }}>🏢 Offline</option>
-                            <option value="hybrid" {{ request('tipe') == 'hybrid' ? 'selected' : '' }}>🔄 Hybrid</option>
-                        </select>
-                    </div>
-
                     <!-- Submit -->
-                    <div class="col-12 col-md-2">
+                    <div class="col-6 col-md-2">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search me-1"></i> Filter
+                            <i class="bi bi-search me-1"></i> Cari
                         </button>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                        </a>
                     </div>
                 </form>
 
-                @if(request('search') || request('kategori_id') || request('tipe'))
+                @if(request('search'))
                 <div class="mt-3">
-                    <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
-                    </a>
+                    <small class="text-muted">
+                        <i class="bi bi-filter-circle me-1"></i>
+                        Hasil pencarian: <strong>"{{ request('search') }}"</strong>
+                        <a href="{{ route('landing.pelatihan.index') }}" class="text-danger ms-2">
+                            <i class="bi bi-x-circle"></i> Hapus filter
+                        </a>
+                    </small>
                 </div>
                 @endif
             </div>
         </div>
     </div>
 </section>
-
 <!-- ============================================================
      TRAINING LIST
 ============================================================ -->

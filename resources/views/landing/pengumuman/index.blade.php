@@ -13,12 +13,6 @@
     <div class="container">
         <!-- Filter -->
         <div class="panel mb-4">
-            <div class="panel-header">
-                <div>
-                    <h5 class="section-title"><i class="bi bi-funnel"></i> Filter Pengumuman</h5>
-                    <p class="text-muted small mb-0">Temukan pengumuman yang Anda cari.</p>
-                </div>
-            </div>
             <div class="p-3">
                 <form action="{{ route('landing.pengumuman.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-12 col-md-8">

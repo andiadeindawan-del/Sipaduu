@@ -164,40 +164,6 @@
 </section>
 
 <!-- ============================================================
-     STATISTICS SECTION
-============================================================ -->
-<section class="section-pad" style="background: #f0f4f9;">
-    <div class="container">
-        <div class="row g-4 text-center">
-            <div class="col-6 col-md-3">
-                <h3 class="text-primary fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="{{ $totalUsers ?? 0 }}">0</span>
-                </h3>
-                <p class="text-muted small">Total Pengguna</p>
-            </div>
-            <div class="col-6 col-md-3">
-                <h3 class="text-success fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="{{ $totalTrainings ?? 0 }}">0</span>
-                </h3>
-                <p class="text-muted small">Pelatihan Tersedia</p>
-            </div>
-            <div class="col-6 col-md-3">
-                <h3 class="text-warning fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="{{ $totalCertificates ?? 0 }}">0</span>
-                </h3>
-                <p class="text-muted small">Sertifikat Diterbitkan</p>
-            </div>
-            <div class="col-6 col-md-3">
-                <h3 class="text-info fw-bold mb-0" style="font-size: 2.5rem;">
-                    <span data-count="{{ $totalMaterials ?? 0 }}">0</span>
-                </h3>
-                <p class="text-muted small">Total Materi</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============================================================
      POPULAR TRAININGS SECTION
 ============================================================ -->
 <section class="section-pad">

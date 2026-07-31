@@ -20,6 +20,7 @@ class Pengumuman extends Model
         'status',
         'is_pinned',
         'target_audience',
+        'gambar',
     ];
 
     protected $casts = [

@@ -9,7 +9,13 @@
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Pengumuman</h1>
+            <p class="text-muted mb-0">Kelola semua pengumuman yang tersedia.</p>
         </div>
+    </div>
+    <div class="heading-actions d-flex gap-2">
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+            <i class="bi bi-plus-circle"></i> Tambah Pengumuman
+        </button>
     </div>
 </div>
 @endsection
@@ -114,20 +120,18 @@
                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>📝 Draft</option>
                     <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>📦 Archived</option>
                 </select>
-                <input type="date" class="form-control form-control-sm" name="date_from" value="{{ request('date_from') }}" style="width: 150px;" placeholder="Dari">
-                <input type="date" class="form-control form-control-sm" name="date_to" value="{{ request('date_to') }}" style="width: 150px;" placeholder="Sampai">
                 <button type="submit" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-search"></i> Filter
                 </button>
                 <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
                     <i class="bi bi-arrow-counterclockwise"></i> Reset
                 </a>
-                <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary btn-sm">
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
                     <i class="bi bi-plus-circle"></i> Tambah
-                </a>
+                </button>
             </form>
         </div>
-        @if(request('search') || request('status') || request('date_from') || request('date_to'))
+        @if(request('search') || request('status'))
         <div class="p-2 px-3 bg-light border-top">
             <small class="text-muted">
                 <i class="bi bi-filter-circle me-1"></i>
@@ -137,12 +141,6 @@
                 @endif
                 @if(request('status'))
                     <span class="badge text-bg-primary">Status: {{ ucfirst(request('status')) }}</span>
-                @endif
-                @if(request('date_from'))
-                    <span class="badge text-bg-primary">Dari: {{ request('date_from') }}</span>
-                @endif
-                @if(request('date_to'))
-                    <span class="badge text-bg-primary">Sampai: {{ request('date_to') }}</span>
                 @endif
                 <a href="{{ route('admin.pengumuman.index') }}" class="text-danger ms-2">
                     <i class="bi bi-x-circle"></i> Hapus semua filter
@@ -159,11 +157,6 @@
                 <h5 class="section-title"><i class="bi bi-table"></i> Daftar Pengumuman</h5>
                 <p class="text-muted small mb-0">Kelola semua pengumuman yang tersedia.</p>
             </div>
-            <!-- <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ route('admin.pengumuman.export') }}" class="btn btn-success btn-sm">
-                    <i class="bi bi-download"></i> Export
-                </a>
-            </div> -->
         </div>
         <div class="table-responsive">
             @if(isset($pengumumans) && $pengumumans->count() > 0)
@@ -178,7 +171,7 @@
                         <th>Kategori</th>
                         <th>Tanggal</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 120px;">Aksi</th>
+                        <th class="text-end" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -195,23 +188,14 @@
                         </td>
                         <td>
                             @if($item->kategori)
-                            <span class="" >
-                                {{ $item->kategori->nama }}
-                            </span>
+                            <span>{{ $item->kategori->nama }}</span>
                             @else
                             <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
                             <div class="small">
-                                <div>
-                                    {{ $item->tanggal ? $item->tanggal->format('d/m/Y') : '-' }}
-                                </div>
-                                @if($item->tanggal_selesai)
-                                <div>
-                                    {{ $item->tanggal_selesai->format('d/m/Y') }}
-                                </div>
-                                @endif
+                                <div>{{ $item->tanggal ? $item->tanggal->format('d/m/Y') : '-' }}</div>
                             </div>
                         </td>
                         <td>
@@ -228,19 +212,21 @@
                             </span>
                         </td>
                         <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end" role="group">
-                                <a href="{{ route('admin.pengumuman.show', $item->id) }}" 
-                                   class="btn btn-info" title="Lihat">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="{{ route('admin.pengumuman.edit', $item->id) }}" 
-                                   class="btn btn-warning" title="Edit">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-info" 
+                                        data-bs-toggle="modal" data-bs-target="#showModal{{ $item->id }}" 
+                                        title="Lihat">
+                                    <i class="bi bi-eye"></i> Lihat
+                                </button>
+                                <button type="button" class="btn btn-warning" 
+                                        data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" 
+                                        title="Edit">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
                                 <button type="button" class="btn btn-danger" 
                                         data-bs-toggle="modal" data-bs-target="#deleteModal{{ $item->id }}" 
                                         title="Hapus">
-                                    <i class="bi bi-trash"></i>
+                                    <i class="bi bi-trash"></i> Hapus
                                 </button>
                             </div>
                         </td>
@@ -254,9 +240,9 @@
                     <i class="bi bi-inbox fs-1 d-block mb-3"></i>
                     <p class="h5">Belum ada pengumuman</p>
                     <p class="small">Mulai dengan menambahkan pengumuman baru</p>
-                    <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary btn-sm mt-2">
+                    <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
                         <i class="bi bi-plus-circle"></i> Tambah Pengumuman
-                    </a>
+                    </button>
                 </div>
             </div>
             @endif
@@ -275,27 +261,310 @@
     </div>
 </div>
 
-<!-- Delete Modals -->
+<!-- ============================================================ -->
+<!-- MODAL CREATE -->
+<!-- ============================================================ -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="{{ route('admin.pengumuman.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Pengumuman
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Training</label>
+                            <select class="form-select" name="training_id">
+                                <option value="">Pilih Training (Opsional)</option>
+                                @foreach($trainings ?? [] as $training)
+                                <option value="{{ $training->id }}">{{ $training->judul }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Kategori</label>
+                            <select class="form-select" name="kategori_id">
+                                <option value="">Pilih Kategori (Opsional)</option>
+                                @foreach($kategoris ?? [] as $kategori)
+                                <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Judul <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="judul" placeholder="Masukkan judul pengumuman" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Deskripsi</label>
+                            <textarea class="form-control" name="deskripsi" rows="2" placeholder="Deskripsi singkat (opsional)"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Konten <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="konten" rows="6" placeholder="Isi pengumuman..." required></textarea>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Tanggal <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="tanggal" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Tanggal Selesai</label>
+                            <input type="date" class="form-control" name="tanggal_selesai">
+                            <small class="text-muted">Kosongkan jika tidak ada batas waktu.</small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Target Audience <span class="text-danger">*</span></label>
+                            <select class="form-select" name="target_audience" required>
+                                <option value="all">🌍 Semua</option>
+                                <option value="peserta">👤 Peserta</option>
+                                <option value="trainer">👨‍🏫 Trainer</option>
+                                <option value="admin">🛡️ Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-select" name="status" required>
+                                <option value="draft">📝 Draft</option>
+                                <option value="published">✅ Published</option>
+                                <option value="archived">📦 Archived</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="is_pinned" value="0">
+                                <input class="form-check-input" type="checkbox" id="is_pinned" name="is_pinned" value="1">
+                                <label class="form-check-label fw-semibold" for="is_pinned">
+                                    <i class="bi bi-pin-fill text-warning me-1"></i> Pin Pengumuman
+                                </label>
+                                <small class="d-block text-muted">Pengumuman yang di-pin akan muncul di bagian atas.</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Gambar</label>
+                            <input type="file" class="form-control" name="gambar" accept="image/*">
+                            <small class="text-muted">Format: JPG, PNG, JPEG. Maksimal 2MB.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL SHOW, EDIT, DELETE -->
+<!-- ============================================================ -->
 @if(isset($pengumumans) && $pengumumans->count() > 0)
 @foreach($pengumumans as $item)
-<div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" 
-     aria-labelledby="deleteModalLabel{{ $item->id }}" aria-hidden="true">
+<!-- MODAL SHOW -->
+<div class="modal fade" id="showModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-info-circle text-info me-2"></i>Detail Pengumuman
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    @if($item->gambar)
+                    <div class="col-12 text-center">
+                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}" 
+                             style="max-width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px;">
+                    </div>
+                    @endif
+                    <div class="col-12">
+                        <h5 class="fw-bold">{{ $item->judul }}</h5>
+                        <p class="text-muted">{{ $item->deskripsi ?? 'Tidak ada deskripsi' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Kategori</label>
+                        <p class="fw-semibold mb-0">{{ $item->kategori->nama ?? '-' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Status</label>
+                        <p class="fw-semibold mb-0">
+                            <span class="badge {{ $statusMap[$item->status]['class'] ?? 'text-bg-secondary' }}">
+                                {{ $statusMap[$item->status]['label'] ?? $item->status }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Tanggal</label>
+                        <p class="fw-semibold mb-0">{{ $item->tanggal ? $item->tanggal->format('d/m/Y') : '-' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Berlaku s/d</label>
+                        <p class="fw-semibold mb-0">{{ $item->tanggal_selesai ? $item->tanggal_selesai->format('d/m/Y') : '-' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Target Audience</label>
+                        <p class="fw-semibold mb-0">{{ ucfirst($item->target_audience ?? 'All') }}</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="text-muted small fw-semibold">Dibuat</label>
+                        <p class="fw-semibold mb-0">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</p>
+                    </div>
+                    @if($item->training)
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold">Training</label>
+                        <p class="fw-semibold mb-0">{{ $item->training->judul }}</p>
+                    </div>
+                    @endif
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold">Konten</label>
+                        <div class="p-3 bg-light rounded-3" style="line-height: 1.8;">
+                            {!! nl2br(e($item->konten)) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}" data-bs-dismiss="modal">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT -->
+<div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="{{ route('admin.pengumuman.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square text-warning me-2"></i>Edit Pengumuman
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Training</label>
+                            <select class="form-select" name="training_id">
+                                <option value="">Pilih Training (Opsional)</option>
+                                @foreach($trainings ?? [] as $training)
+                                <option value="{{ $training->id }}" {{ $item->training_id == $training->id ? 'selected' : '' }}>
+                                    {{ $training->judul }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Kategori</label>
+                            <select class="form-select" name="kategori_id">
+                                <option value="">Pilih Kategori (Opsional)</option>
+                                @foreach($kategoris ?? [] as $kategori)
+                                <option value="{{ $kategori->id }}" {{ $item->kategori_id == $kategori->id ? 'selected' : '' }}>
+                                    {{ $kategori->nama }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Judul <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="judul" value="{{ $item->judul }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Deskripsi</label>
+                            <textarea class="form-control" name="deskripsi" rows="2">{{ $item->deskripsi }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Konten <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="konten" rows="6" required>{{ $item->konten }}</textarea>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Tanggal <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="tanggal" value="{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : date('Y-m-d') }}" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Tanggal Selesai</label>
+                            <input type="date" class="form-control" name="tanggal_selesai" value="{{ $item->tanggal_selesai ? $item->tanggal_selesai->format('Y-m-d') : '' }}">
+                            <small class="text-muted">Kosongkan jika tidak ada batas waktu.</small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Target Audience <span class="text-danger">*</span></label>
+                            <select class="form-select" name="target_audience" required>
+                                <option value="all" {{ $item->target_audience == 'all' ? 'selected' : '' }}>🌍 Semua</option>
+                                <option value="peserta" {{ $item->target_audience == 'peserta' ? 'selected' : '' }}>👤 Peserta</option>
+                                <option value="trainer" {{ $item->target_audience == 'trainer' ? 'selected' : '' }}>👨‍🏫 Trainer</option>
+                                <option value="admin" {{ $item->target_audience == 'admin' ? 'selected' : '' }}>🛡️ Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-select" name="status" required>
+                                <option value="draft" {{ $item->status == 'draft' ? 'selected' : '' }}>📝 Draft</option>
+                                <option value="published" {{ $item->status == 'published' ? 'selected' : '' }}>✅ Published</option>
+                                <option value="archived" {{ $item->status == 'archived' ? 'selected' : '' }}>📦 Archived</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="is_pinned" value="0">
+                                <input class="form-check-input" type="checkbox" id="is_pinned" name="is_pinned" value="1" {{ $item->is_pinned ? 'checked' : '' }}>
+                                <label class="form-check-label fw-semibold" for="is_pinned">
+                                    <i class="bi bi-pin-fill text-warning me-1"></i> Pin Pengumuman
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Gambar</label>
+                            @if($item->gambar)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}" 
+                                     style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px;">
+                                <small class="text-muted d-block">Gambar saat ini</small>
+                            </div>
+                            @endif
+                            <input type="file" class="form-control" name="gambar" accept="image/*">
+                            <small class="text-muted">Format: JPG, PNG, JPEG. Maksimal 2MB. Kosongkan jika tidak ingin mengubah.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save me-1"></i> Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">
+                <h5 class="modal-title">
                     <i class="bi bi-exclamation-triangle text-danger me-2"></i>
                     Konfirmasi Hapus
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Apakah Anda yakin ingin menghapus pengumuman ini?</p>
                 <div class="alert alert-light">
                     <p class="fw-semibold mb-0">{{ $item->judul }}</p>
-                    @if($item->tanggal)
-                    <p class="text-muted small mb-0">{{ $item->tanggal->format('d/m/Y') }}</p>
-                    @endif
+                    <p class="text-muted small mb-0">{{ $item->tanggal ? $item->tanggal->format('d/m/Y') : '-' }}</p>
                 </div>
                 @if($item->status == 'published')
                 <div class="alert alert-warning">
@@ -323,19 +592,90 @@
 
 @push('styles')
 <style>
-    .avatar-text {
-        width: 36px;
-        height: 36px;
+    .metric-card {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        border-left: 4px solid transparent;
+        height: 100%;
+        transition: transform 0.2s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-4px);
+    }
+    .metric-primary { border-left-color: #4e9af1; }
+    .metric-success { border-left-color: #28c76f; }
+    .metric-warning { border-left-color: #ff9f43; }
+    .metric-info { border-left-color: #17a2b8; }
+    
+    .metric-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .4rem;
+    }
+    .metric-label {
+        font-size: .75rem;
+        color: #8a93a3;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+    }
+    .metric-icon {
+        color: #c3cad6;
+        font-size: 1.3rem;
+    }
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a2236;
+    }
+    .metric-meta {
+        font-size: .75rem;
+        color: #8a93a3;
+        display: flex;
+        gap: .35rem;
+    }
+
+    .panel {
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+    .panel-header {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+    .section-title {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.85rem;
+        gap: .5rem;
+        margin: 0;
+        font-size: 1rem;
     }
-    .avatar-img {
-        width: 36px;
-        height: 36px;
-        object-fit: cover;
+    .section-title i {
+        color: #4e9af1;
+    }
+
+    .btn-group .btn {
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        transition: all 0.2s ease;
+    }
+    .btn-group .btn:hover {
+        transform: scale(1.1);
+    }
+
+    .modal-lg {
+        max-width: 800px;
     }
 </style>
 @endpush
@@ -354,21 +694,6 @@ document.addEventListener('DOMContentLoaded', function() {
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
     }
-
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', function() {
-            const checked = document.querySelectorAll('.pengumuman-checkbox:checked');
-            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-            if (bulkDeleteBtn) {
-                if (checked.length > 0) {
-                    bulkDeleteBtn.classList.remove('d-none');
-                    bulkDeleteBtn.textContent = '🗑️ Hapus ' + checked.length + ' Terpilih';
-                } else {
-                    bulkDeleteBtn.classList.add('d-none');
-                }
-            }
-        });
-    });
 
     // ============================================================
     // AUTO CLOSE ALERTS
@@ -393,6 +718,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // ============================================================
+    // PREVIEW IMAGE BEFORE UPLOAD
+    // ============================================================
+    document.querySelectorAll('input[type="file"][name="gambar"]').forEach(function(input) {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = this.closest('.modal-body').querySelector('.preview-image');
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+
+    // ============================================================
+    // SEARCH WITH ENTER KEY
+    // ============================================================
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.closest('form').submit();
+            }
+        });
+    }
 });
 </script>
 @endpush

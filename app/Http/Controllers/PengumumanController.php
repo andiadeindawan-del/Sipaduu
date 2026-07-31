@@ -7,6 +7,7 @@ use App\Models\Training;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PengumumanController extends Controller
@@ -166,11 +167,16 @@ class PengumumanController extends Controller
             'target_audience' => 'required|in:all,peserta,trainer,admin',
             'status' => 'required|in:draft,published,archived',
             'is_pinned' => 'nullable|boolean',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
         
         $validated['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
 
         $validated['created_by'] = auth()->id();
+
+        if ($request->hasFile('gambar')) {
+            $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
+        }
 
         Pengumuman::create($validated);
 
@@ -213,9 +219,17 @@ class PengumumanController extends Controller
             'target_audience' => 'required|in:all,peserta,trainer,admin',
             'status' => 'required|in:draft,published,archived',
             'is_pinned' => 'nullable|boolean',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
         
         $validated['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
+
+        if ($request->hasFile('gambar')) {
+            if ($pengumuman->gambar) {
+                Storage::disk('public')->delete($pengumuman->gambar);
+            }
+            $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
+        }
 
         $pengumuman->update($validated);
 
@@ -228,6 +242,10 @@ class PengumumanController extends Controller
      */
     public function destroy(Pengumuman $pengumuman)
     {
+        if ($pengumuman->gambar) {
+            Storage::disk('public')->delete($pengumuman->gambar);
+        }
+
         $pengumuman->delete();
 
         return redirect()->route('admin.pengumuman.index')

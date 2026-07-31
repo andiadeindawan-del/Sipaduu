@@ -117,6 +117,16 @@
                             </span>
                         </div>
 
+                        <!-- Gambar -->
+                        @if($pengumuman->gambar)
+                        <div class="col-12">
+                            <label class="text-muted small fw-semibold d-block">Gambar</label>
+                            <div class="mt-2">
+                                <img src="{{ Storage::url($pengumuman->gambar) }}" alt="Gambar Pengumuman" class="img-fluid rounded border" style="max-height: 400px; width: auto;">
+                            </div>
+                        </div>
+                        @endif
+
                         <!-- Deskripsi -->
                         @if($pengumuman->deskripsi)
                         <div class="col-12">
