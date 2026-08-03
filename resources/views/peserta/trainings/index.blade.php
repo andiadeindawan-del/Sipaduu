@@ -97,7 +97,6 @@
         <div>
             <form action="{{ route('peserta.trainings.index') }}" method="GET" class="d-flex gap-1 align-items-center">
                 <div class="input-group input-group-sm" style="width: 200px;">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control" 
                            placeholder="Cari pelatihan..." value="{{ request('search') }}">
                 </div>

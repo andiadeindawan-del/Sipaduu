@@ -139,31 +139,6 @@ class ReportController extends Controller
         return view('admin.laporan.users', compact('users'));
     }
 
-    /**
-     * Laporan Sertifikat
-     */
-    public function certificates(Request $request)
-    {
-        $query = Sertifikat::with(['user', 'training']);
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('training_id')) {
-            $query->where('training_id', $request->training_id);
-        }
-        if ($request->filled('date_from')) {
-            $query->whereDate('tanggal_terbit', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('tanggal_terbit', '<=', $request->date_to);
-        }
-
-        $certificates = $query->orderBy('tanggal_terbit', 'desc')->paginate(15);
-        $trainings = Training::all();
-
-        return view('admin.laporan.certificates', compact('certificates', 'trainings'));
-    }
 
     /**
      * Laporan Materi
@@ -273,20 +248,6 @@ class ReportController extends Controller
                 }
                 break;
 
-            case 'certificates':
-                $headers = ['No', 'Peserta', 'Pelatihan', 'Nomor Sertifikat', 'Tanggal Terbit', 'Status'];
-                $items = Sertifikat::with(['user', 'training'])->get();
-                foreach ($items as $index => $item) {
-                    $data[] = [
-                        $index + 1,
-                        $item->user->nama ?? $item->user->name ?? '-',
-                        $item->training->judul ?? '-',
-                        $item->nomor_sertifikat,
-                        $item->tanggal_terbit ? $item->tanggal_terbit->format('d/m/Y') : '-',
-                        $item->status ?? 'active'
-                    ];
-                }
-                break;
 
             case 'registrations':
                 $headers = ['No', 'Peserta', 'Pelatihan', 'Tanggal Daftar', 'Status'];

@@ -214,10 +214,12 @@
                         </div>
 
                         <div class="certificate-actions">
-                            <a href="{{ route('peserta.sertifikat.show', $sertifikat->id) }}" 
-                               class="btn btn-outline-primary btn-sm">
+                            <!-- Tombol untuk membuka modal detail -->
+                            <button type="button" class="btn btn-outline-primary btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#certificateModal{{ $sertifikat->id }}">
                                 <i class="bi bi-eye me-1"></i> Detail
-                            </a>
+                            </button>
                             @if($sertifikat->file_path && $sertifikat->status == 'aktif')
                                 <a href="{{ route('peserta.sertifikat.download', $sertifikat->id) }}" 
                                    class="btn btn-success btn-sm" target="_blank">
@@ -228,6 +230,188 @@
                                 <span class="btn btn-secondary btn-sm disabled">
                                     <i class="bi bi-clock me-1"></i> Diproses
                                 </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 MODAL DETAIL SERTIFIKAT
+            ============================================================ -->
+            <div class="modal fade" id="certificateModal{{ $sertifikat->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header border-0 pb-0">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="certificate-modal-icon">
+                                    <i class="bi bi-award-fill"></i>
+                                </div>
+                                <div>
+                                    <h5 class="modal-title fw-bold">Detail Sertifikat</h5>
+                                    <p class="text-muted small mb-0">Informasi lengkap sertifikat Anda</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body px-4 py-3">
+                            <!-- Status Banner -->
+                            <div class="certificate-status-banner mb-3">
+                                @if($sertifikat->status == 'aktif')
+                                    <div class="alert alert-success mb-0 d-flex align-items-center gap-2">
+                                        <i class="bi bi-check-circle-fill fs-5"></i>
+                                        <div>
+                                            <strong>Sertifikat Aktif</strong>
+                                            <span class="d-block small">Sertifikat ini masih berlaku</span>
+                                        </div>
+                                    </div>
+                                @elseif($sertifikat->status == 'expired')
+                                    <div class="alert alert-warning mb-0 d-flex align-items-center gap-2">
+                                        <i class="bi bi-clock-fill fs-5"></i>
+                                        <div>
+                                            <strong>Sertifikat Kadaluarsa</strong>
+                                            <span class="d-block small">Sertifikat ini sudah melewati masa berlaku</span>
+                                        </div>
+                                    </div>
+                                @elseif($sertifikat->status == 'revoked')
+                                    <div class="alert alert-danger mb-0 d-flex align-items-center gap-2">
+                                        <i class="bi bi-x-circle-fill fs-5"></i>
+                                        <div>
+                                            <strong>Sertifikat Dicabut</strong>
+                                            <span class="d-block small">Sertifikat ini telah dicabut oleh penerbit</span>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Informasi Sertifikat -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Nomor Sertifikat</label>
+                                        <div class="info-value font-monospace">{{ $sertifikat->nomor_sertifikat }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Nama Sertifikat</label>
+                                        <div class="info-value fw-semibold">{{ $sertifikat->judul ?? $sertifikat->nama_sertifikat }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Pelatihan</label>
+                                        <div class="info-value">
+                                            @if($sertifikat->training)
+                                                {{ $sertifikat->training->judul }}
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Status</label>
+                                        <div class="info-value">
+                                            @if($sertifikat->status == 'aktif')
+                                                <span class="badge bg-success">Aktif</span>
+                                            @elseif($sertifikat->status == 'expired')
+                                                <span class="badge bg-warning text-dark">Kadaluarsa</span>
+                                            @elseif($sertifikat->status == 'revoked')
+                                                <span class="badge bg-danger">Dicabut</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($sertifikat->status) }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Tanggal Terbit</label>
+                                        <div class="info-value">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            {{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d/m/Y H:i') : '-' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Berlaku Sampai</label>
+                                        <div class="info-value">
+                                            @if($sertifikat->tanggal_berlaku_sampai)
+                                                <i class="bi bi-calendar-x me-1"></i>
+                                                {{ $sertifikat->tanggal_berlaku_sampai->format('d/m/Y') }}
+                                            @else
+                                                <span class="text-muted">Tidak berlaku</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">Penerbit</label>
+                                        <div class="info-value">
+                                            <i class="bi bi-building me-1"></i>
+                                            {{ $sertifikat->penerbit ?? 'Dinas Koperindag Prov. Sulawesi Barat' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-group">
+                                        <label class="info-label">ID Peserta</label>
+                                        <div class="info-value">
+                                            <i class="bi bi-person me-1"></i>
+                                            {{ $sertifikat->peserta_id ?? auth()->user()->id ?? '-' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                @if($sertifikat->deskripsi)
+                                <div class="col-12">
+                                    <div class="info-group">
+                                        <label class="info-label">Deskripsi</label>
+                                        <div class="info-value">{{ $sertifikat->deskripsi }}</div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($sertifikat->catatan)
+                                <div class="col-12">
+                                    <div class="info-group">
+                                        <label class="info-label">Catatan</label>
+                                        <div class="info-value text-muted">{{ $sertifikat->catatan }}</div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+
+                            <!-- QR Code / Preview Section -->
+                            @if($sertifikat->file_path)
+                            <div class="certificate-preview mt-3 pt-3 border-top">
+                                <div class="d-flex align-items-center gap-3 flex-wrap">
+                                    <div class="certificate-preview-icon">
+                                        <i class="bi bi-file-pdf"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 fw-semibold">File Sertifikat</p>
+                                        <p class="text-muted small mb-0">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>
+                                            Sertifikat dalam format PDF
+                                        </p>
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Tutup
+                            </button>
+                            @if($sertifikat->file_path && $sertifikat->status == 'aktif')
+                                <a href="{{ route('peserta.sertifikat.download', $sertifikat->id) }}" 
+                                   class="btn btn-success" target="_blank">
+                                    <i class="bi bi-download me-1"></i> Unduh Sertifikat
+                                </a>
                             @endif
                         </div>
                     </div>
@@ -438,6 +622,76 @@
     }
 
     /* ============================================================
+       MODAL STYLES
+    ============================================================ */
+    .certificate-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #e8f4f8, #b8dce8);
+        color: #4e9af1;
+        flex-shrink: 0;
+    }
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .modal-header {
+        padding: 1.25rem 1.5rem 0.5rem;
+    }
+    .modal-body {
+        padding: 1rem 1.5rem 1.5rem;
+    }
+    .modal-footer {
+        padding: 0.75rem 1.5rem 1.25rem;
+    }
+
+    .info-group {
+        margin-bottom: 0.75rem;
+    }
+    .info-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #8a93a3;
+        display: block;
+        margin-bottom: 0.15rem;
+    }
+    .info-value {
+        font-size: 0.95rem;
+        color: #1a2236;
+        padding: 0.25rem 0;
+    }
+    .info-value .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .certificate-status-banner .alert {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    .certificate-status-banner .alert i {
+        font-size: 1.2rem;
+    }
+
+    .certificate-preview {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+    }
+    .certificate-preview-icon {
+        font-size: 2rem;
+        color: #dc3545;
+    }
+
+    /* ============================================================
        METRIC CARDS
     ============================================================ */
     .metric-card {
@@ -568,6 +822,12 @@
             font-size: 0.7rem;
             padding: 0.3rem 0.5rem;
         }
+        .modal-body {
+            padding: 0.75rem 1rem 1rem;
+        }
+        .info-value {
+            font-size: 0.85rem;
+        }
     }
 </style>
 @endpush
@@ -593,6 +853,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Auto show modal if there's a certificate ID in URL
+    @if(request('show'))
+        setTimeout(function() {
+            const modal = new bootstrap.Modal(document.getElementById('certificateModal{{ request('show') }}'));
+            modal.show();
+        }, 500);
+    @endif
 });
 </script>
 @endpush

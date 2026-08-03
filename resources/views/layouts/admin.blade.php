@@ -379,8 +379,11 @@
             <a href="{{ route('admin.materi.index') }}" class="nav-link {{ request()->routeIs('admin.materi.*') ? 'active' : '' }}">
                 <i class="bi bi-book"></i> Materi
             </a>
-            
-            <!-- Menu Quiz dengan Submenu -->
+
+            <a href="{{ route('admin.absen.index') }}" class="nav-link {{ request()->routeIs('admin.absen.*') ? 'active' : '' }}">
+                <i class="bi bi-list-check"></i> Absen
+            </a>
+
             <a href="#" class="nav-link" onclick="toggleSubmenu('submenuQuiz')">
                 <i class="bi bi-question-circle"></i> Quiz
                 <span class="chevron" id="chevronQuiz"><i class="bi bi-chevron-right"></i></span>
@@ -394,15 +397,14 @@
             <a href="{{ route('admin.sertifikat.index') }}" class="nav-link {{ request()->routeIs('admin.sertifikat.*') ? 'active' : '' }}">
                 <i class="bi bi-award"></i> Sertifikat
             </a>
+           
 
             <!-- ========================================================== -->
             <!-- AKTIVITAS -->
             <!-- ========================================================== -->
             <div class="nav-label">📋 AKTIVITAS</div>
             
-            <a href="{{ route('admin.absen.index') }}" class="nav-link {{ request()->routeIs('admin.absen.*') ? 'active' : '' }}">
-                <i class="bi bi-list-check"></i> Absen
-            </a>
+          
             
             <a href="{{ route('admin.agenda.index') }}" class="nav-link {{ request()->routeIs('admin.agenda.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-event"></i> Agenda
@@ -425,9 +427,7 @@
                 <i class="bi bi-person-lines-fill"></i> Laporan Peserta
             </a>
             
-            <a href="{{ route('admin.laporan.certificates') }}" class="nav-link {{ request()->routeIs('admin.laporan.certificates') ? 'active' : '' }}">
-                <i class="bi bi-file-earmark-check"></i> Laporan Sertifikat
-            </a>
+
 
             <!-- ========================================================== -->
             <!-- PENGATURAN -->

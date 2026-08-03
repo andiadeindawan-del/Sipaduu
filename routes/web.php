@@ -362,7 +362,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/trainings', [ReportController::class, 'trainings'])->name('trainings');
         Route::get('/users', [ReportController::class, 'users'])->name('users');
         Route::get('/participants', [ReportController::class, 'users'])->name('participants'); // Alias
-        Route::get('/certificates', [ReportController::class, 'certificates'])->name('certificates');
+
         Route::get('/materi', [ReportController::class, 'materi'])->name('materi');
         Route::get('/quiz', [ReportController::class, 'quiz'])->name('quiz');
         Route::get('/registrations', [ReportController::class, 'registrations'])->name('registrations');

@@ -108,7 +108,7 @@
                     <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>📊 Semua</option>
                     <option value="trainings" {{ request('type') == 'trainings' ? 'selected' : '' }}>📚 Pelatihan</option>
                     <option value="participants" {{ request('type') == 'participants' ? 'selected' : '' }}>👥 Peserta</option>
-                    <option value="certificates" {{ request('type') == 'certificates' ? 'selected' : '' }}>🏆 Sertifikat</option>
+
                     <option value="registrations" {{ request('type') == 'registrations' ? 'selected' : '' }}>📝 Pendaftaran</option>
                     <option value="materi" {{ request('type') == 'materi' ? 'selected' : '' }}>📖 Materi</option>
                     <option value="quiz" {{ request('type') == 'quiz' ? 'selected' : '' }}>❓ Quiz</option>
@@ -161,11 +161,7 @@
                         <i class="bi bi-people me-1"></i> Peserta
                     </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="tab-certificates" data-bs-toggle="tab" data-bs-target="#certificates" type="button" role="tab">
-                        <i class="bi bi-award me-1"></i> Sertifikat
-                    </button>
-                </li>
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="tab-registrations" data-bs-toggle="tab" data-bs-target="#registrations" type="button" role="tab">
                         <i class="bi bi-clipboard-check me-1"></i> Pendaftaran
@@ -254,43 +250,6 @@
                 </div>
             </div>
 
-            <!-- Tab: Sertifikat -->
-            <div class="tab-pane fade" id="certificates" role="tabpanel">
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nomor Sertifikat</th>
-                                <th>Nama Sertifikat</th>
-                                <th>Peserta</th>
-                                <th>Tanggal Terbit</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($certificates ?? [] as $index => $certificate)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $certificate->nomor_sertifikat }}</td>
-                                <td>{{ $certificate->nama_sertifikat }}</td>
-                                <td>{{ $certificate->user->nama ?? $certificate->user->name ?? '-' }}</td>
-                                <td>{{ $certificate->tanggal_terbit ? $certificate->tanggal_terbit->format('d/m/Y') : '-' }}</td>
-                                <td>
-                                    <span class="badge {{ $certificate->status == 'aktif' ? 'text-bg-success' : 'text-bg-secondary' }}">
-                                        {{ ucfirst($certificate->status ?? 'Active') }}
-                                    </span>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">Tidak ada data sertifikat</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
             <!-- Tab: Pendaftaran -->
             <div class="tab-pane fade" id="registrations" role="tabpanel">
@@ -381,9 +340,7 @@
                 <a href="{{ route('admin.laporan.export', 'participants') }}" class="btn btn-outline-success btn-sm">
                     <i class="bi bi-file-spreadsheet me-1"></i> Export Peserta
                 </a>
-                <a href="{{ route('admin.laporan.export', 'certificates') }}" class="btn btn-outline-warning btn-sm">
-                    <i class="bi bi-file-spreadsheet me-1"></i> Export Sertifikat
-                </a>
+
                 <a href="{{ route('admin.laporan.export', 'registrations') }}" class="btn btn-outline-info btn-sm">
                     <i class="bi bi-file-spreadsheet me-1"></i> Export Pendaftaran
                 </a>

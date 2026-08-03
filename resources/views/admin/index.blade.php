@@ -259,92 +259,89 @@
     <!-- ========================================================== -->
     <!-- PELATIHAN BERJALAN & AKTIVITAS TERBARU -->
     <!-- ========================================================== -->
-    <div class="row g-4 mb-4">
-          <!-- Aktivitas Terbaru -->
-        <div class="col-12 col-lg-6">
-            <div class="panel h-100">
-                <div class="panel-header">
-                    <div>
-                        <h5 class="section-title">
-                            <i class="bi bi-clock-history"></i> Aktivitas Terbaru
-                        </h5>
-                        <p class="text-muted small mb-0">Aktivitas terakhir di sistem</p>
+   <div class="row g-3 mb-4">
+    <!-- Aktivitas Terbaru -->
+    <div class="col-12 col-lg-6">
+        <div class="panel h-100">
+            <div class="panel-header d-flex align-items-center justify-content-between py-2 px-3">
+                <div>
+                    <h6 class="section-title mb-0">
+                        <i class="bi bi-clock-history me-1"></i> Aktivitas Terbaru
+                    </h6>
+                </div>
+                <span class="text-muted small">Terbaru</span>
+            </div>
+            <div class="p-2 activity-list" style="max-height: 280px; overflow-y: auto;">
+                @if(isset($recentActivities) && $recentActivities->count() > 0)
+                    @foreach($recentActivities as $activity)
+                    <div class="d-flex gap-2 align-items-center py-2 px-2 border-bottom">
+                        <div class="flex-shrink-0">
+                            <div class="bg-{{ $activity['color'] ?? 'primary' }} bg-opacity-10 text-{{ $activity['color'] ?? 'primary' }} rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                <i class="bi {{ $activity['icon'] ?? 'bi-bell' }}"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 min-width-0">
+                            <p class="fw-semibold mb-0 small">{{ $activity['title'] }}</p>
+                            <p class="text-muted small mb-0 text-truncate">{{ $activity['description'] }}</p>
+                        </div>
+                        <span class="text-muted small flex-shrink-0 ms-2">{{ $activity['time'] }}</span>
                     </div>
-                </div>
-                <div class="p-3 activity-list">
-                    @if(isset($recentActivities) && $recentActivities->count() > 0)
-                        @foreach($recentActivities as $activity)
-                        <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
-                            <div class="flex-shrink-0">
-                                <div class="bg-{{ $activity['color'] ?? 'primary' }} bg-opacity-10 text-{{ $activity['color'] ?? 'primary' }} rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="bi {{ $activity['icon'] ?? 'bi-bell' }}"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="fw-semibold mb-1">{{ $activity['title'] }}</p>
-                                <p class="text-muted small mb-0">{{ $activity['description'] }}</p>
-                                <span class="text-muted small">{{ $activity['time'] }}</span>
-                            </div>
-                        </div>
-                        @endforeach
-                    @else
-                        <div class="text-center py-4">
-                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-                            <p class="text-muted">Belum ada aktivitas</p>
-                        </div>
-                    @endif
-                </div>
+                    @endforeach
+                @else
+                    <div class="text-center py-3">
+                        <i class="bi bi-inbox text-muted d-block mb-1" style="font-size: 1.5rem;"></i>
+                        <p class="text-muted small mb-0">Belum ada aktivitas</p>
+                    </div>
+                @endif
             </div>
         </div>
-        <!-- Pelatihan Berjalan -->
-        <div class="col-12 col-lg-6">
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h5 class="section-title">
-                            <i class="bi bi-journal-bookmark"></i> Pelatihan Berjalan
-                        </h5>
-                        <p class="text-muted small mb-0">Pelatihan yang sedang aktif</p>
-                    </div>
-                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-sm btn-outline-primary">
-                        Lihat Semua <i class="bi bi-chevron-right"></i>
-                    </a>
-                </div>
-                <div class="p-3">
-                    @if(isset($ongoingTrainingsList) && $ongoingTrainingsList->count() > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach($ongoingTrainingsList as $training)
-                            <div class="list-group-item px-0 py-3 border-bottom">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">{{ $training->judul }}</h6>
-                                        <p class="text-muted small mb-0">
-                                            <i class="bi bi-calendar me-1"></i>
-                                            {{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : 'TBD' }}
-                                            @if($training->tanggal_selesai)
-                                                - {{ $training->tanggal_selesai->format('d/m/Y') }}
-                                            @endif
-                                        </p>
-                                        <span class="badge bg-success">Berjalan</span>
-                                    </div>
-                                    <a href="{{ route('admin.trainings.show', $training->id) }}" class="btn btn-sm btn-primary">
-                                        Lihat <i class="bi bi-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-                            <p class="text-muted">Tidak ada pelatihan yang sedang berjalan</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Pelatihan Berjalan -->
+   <div class="col-12 col-lg-6">
+    <div class="panel h-100">
+        <div class="panel-header d-flex align-items-center justify-content-between py-1 px-3">
+            <div>
+                <h6 class="section-title mb-0" style="font-size: 0.85rem;">
+                    <i class="bi bi-journal-bookmark me-1"></i> Pelatihan Berjalan
+                </h6>
+            </div>
+            <a href="{{ route('admin.trainings.index') }}" class="text-primary small text-decoration-none">
+                Lihat Semua <i class="bi bi-chevron-right small"></i>
+            </a>
+        </div>
+        <div class="p-1" style="max-height: 200px; overflow-y: auto;">
+            @if(isset($ongoingTrainingsList) && $ongoingTrainingsList->count() > 0)
+                @foreach($ongoingTrainingsList as $training)
+                <div class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom" style="border-color: #f0f0f0 !important;">
+                    <div class="flex-grow-1 min-width-0 me-2">
+                        <div class="fw-semibold small text-truncate" style="font-size: 0.8rem;">{{ $training->judul }}</div>
+                        <div class="text-muted small" style="font-size: 0.7rem;">
+                            <i class="bi bi-calendar me-1"></i>
+                            {{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : 'TBD' }}
+                            @if($training->tanggal_selesai)
+                                - {{ $training->tanggal_selesai->format('d/m/Y') }}
+                            @endif
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                        <span class="badge bg-success" style="font-size: 0.6rem; padding: 0.2rem 0.4rem;">Aktif</span>
+                        <a href="{{ route('admin.trainings.show', $training->id) }}" class="btn btn-sm btn-primary" style="padding: 0.1rem 0.4rem; font-size: 0.7rem;">
+                            <i class="bi bi-arrow-right" style="font-size: 0.7rem;"></i>
+                        </a>
+                    </div>
+                </div>
+                @endforeach
+            @else
+                <div class="text-center py-2">
+                    <i class="bi bi-inbox text-muted d-block" style="font-size: 1.2rem;"></i>
+                    <p class="text-muted small mb-0" style="font-size: 0.75rem;">Tidak ada pelatihan</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+</div>
 
     <!-- ========================================================== -->
     <!-- RINGKASAN HARI INI & STATISTIK PENDAFTARAN -->

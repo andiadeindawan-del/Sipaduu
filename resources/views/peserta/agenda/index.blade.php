@@ -13,9 +13,6 @@
     </div>
     <div class="heading-actions">
         <div class="d-flex gap-2">
-            <a href="{{ route('peserta.dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
             <button class="btn btn-outline-primary btn-sm" onclick="window.print()">
                 <i class="bi bi-printer"></i> Cetak
             </button>
@@ -87,79 +84,46 @@
     </div>
 
     <!-- Filter -->
-    <div class="panel mb-3">
-        <div class="panel-header">
-            <div>
-                <h5 class="section-title"><i class="bi bi-funnel"></i> Filter</h5>
-                <p class="text-muted small mb-0">Filter agenda berdasarkan kriteria.</p>
+
+<div class="panel mb-3">
+    <div class="p-3">
+        <form action="{{ route('peserta.agenda.index') }}" method="GET" class="row g-3">
+            <div class="col-12 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="search" 
+                           value="{{ request('search') }}" 
+                           placeholder="Cari agenda...">
+                </div>
             </div>
-        </div>
-        <div class="p-3">
-            <form action="{{ route('peserta.agenda.index') }}" method="GET" class="row g-3">
-                <div class="col-12 col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" name="search" 
-                               value="{{ request('search') }}" 
-                               placeholder="Cari agenda...">
-                    </div>
-                </div>
-                <div class="col-12 col-md-3">
-                    <!-- PERBAIKAN: name="tipe" bukan "type" -->
-                    <select class="form-select" name="tipe">
-                        <option value="">Semua Tipe</option>
-                        <option value="online" {{ request('tipe') == 'online' ? 'selected' : '' }}>
-                            <i class="bi bi-wifi me-1"></i> Online
-                        </option>
-                        <option value="offline" {{ request('tipe') == 'offline' ? 'selected' : '' }}>
-                            <i class="bi bi-building me-1"></i> Offline
-                        </option>
-                        <option value="hybrid" {{ request('tipe') == 'hybrid' ? 'selected' : '' }}>
-                            <i class="bi bi-arrows me-1"></i> Hybrid
-                        </option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-3">
-                    <input type="date" class="form-control" name="date_from" 
-                           value="{{ request('date_from') }}" placeholder="Dari">
-                </div>
-                <div class="col-12 col-md-2">
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Filter
-                        </button>
-                        <a href="{{ route('peserta.agenda.index') }}" class="btn btn-outline-secondary" title="Reset Filter">
-                            <i class="bi bi-arrow-counterclockwise"></i>
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!-- PERBAIKAN: request('tipe') bukan request('type') -->
-        @if(request('search') || request('tipe') || request('date_from') || request('date_to'))
-        <div class="p-2 px-3 bg-light border-top">
-            <small class="text-muted">
-                <i class="bi bi-filter-circle me-1"></i>
-                Filter aktif: 
-                @if(request('search'))
-                    <span class="badge text-bg-primary">Cari: {{ request('search') }}</span>
-                @endif
-                @if(request('tipe'))
-                    <span class="badge text-bg-primary">Tipe: {{ ucfirst(request('tipe')) }}</span>
-                @endif
-                @if(request('date_from'))
-                    <span class="badge text-bg-primary">Dari: {{ request('date_from') }}</span>
-                @endif
-                @if(request('date_to'))
-                    <span class="badge text-bg-primary">Sampai: {{ request('date_to') }}</span>
-                @endif
-                <a href="{{ route('peserta.agenda.index') }}" class="text-danger ms-2">
-                    <i class="bi bi-x-circle"></i> Hapus filter
+            <div class="col-12 col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Filter
+                </button>
+            </div>
+            <div class="col-12 col-md-3">
+                <a href="{{ route('peserta.agenda.index') }}" class="btn btn-outline-secondary w-100" title="Reset Filter">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
                 </a>
-            </small>
-        </div>
-        @endif
+            </div>
+        </form>
     </div>
+    @if(request('search'))
+    <div class="p-2 px-3 bg-light border-top">
+        <small class="text-muted">
+            <i class="bi bi-filter-circle me-1"></i>
+            Filter aktif: 
+            @if(request('search'))
+                <span class="badge text-bg-primary">Cari: {{ request('search') }}</span>
+            @endif
+            <a href="{{ route('peserta.agenda.index') }}" class="text-danger ms-2">
+                <i class="bi bi-x-circle"></i> Hapus filter
+            </a>
+        </small>
+    </div>
+    @endif
+</div>
+```
 
     <!-- Agenda List -->
     <div class="panel">
@@ -167,12 +131,6 @@
             <div>
                 <h5 class="section-title"><i class="bi bi-table"></i> Daftar Agenda</h5>
                 <p class="text-muted small mb-0">Menampilkan {{ $agendas->firstItem() ?? 0 }} - {{ $agendas->lastItem() ?? 0 }} dari {{ $agendas->total() ?? 0 }} agenda</p>
-            </div>
-            <div>
-                <span class="badge text-bg-info">
-                    <i class="bi bi-info-circle me-1"></i>
-                    {{ $upcomingAgendas ?? 0 }} agenda akan datang
-                </span>
             </div>
         </div>
         <div class="table-responsive">
@@ -221,13 +179,7 @@
                                     @endif
                                 </span>
                                 <br>
-                                <small class="text-muted">
-                                    <i class="bi bi-clock me-1"></i>
-                                    {{ $agenda->jam_mulai ?? '-' }}
-                                    @if($agenda->jam_selesai)
-                                        - {{ $agenda->jam_selesai }}
-                                    @endif
-                                </small>
+                             
                             </div>
                         </td>
                         <td>
