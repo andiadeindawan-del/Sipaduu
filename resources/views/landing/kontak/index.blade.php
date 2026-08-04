@@ -121,16 +121,10 @@
                                         <i class="bi bi-facebook fs-5"></i>
                                     </a>
                                     <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                        <i class="bi bi-twitter-x fs-5"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                         <i class="bi bi-instagram fs-5"></i>
                                     </a>
                                     <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                         <i class="bi bi-youtube fs-5"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                        <i class="bi bi-linkedin fs-5"></i>
                                     </a>
                                     <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                         <i class="bi bi-whatsapp fs-5"></i>

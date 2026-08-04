@@ -1,3 +1,4 @@
+
 @extends('layouts.landing')
 
 @section('title', 'Tentang Kami')
@@ -245,7 +246,7 @@
 </section>
 
 <!-- ============================================================
-     TEAM SECTION
+     TEAM SECTION - TIM PENGEMBANG
 ============================================================ -->
 <section class="section-pad" style="padding: 4rem 0; background: #f8fafc;">
     <div class="container">
@@ -256,170 +257,133 @@
             </p>
         </div>
 
-        <!-- Struktur Segitiga: 1 - 2 - 1 -->
-        <div class="row g-4 justify-content-center">
-            <!-- Baris 1: 1 orang (Kepala Dinas) -->
-            <div class="col-12 text-center mb-3">
-                <div class="row justify-content-center">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 team-card leader-card">
-                            <div class="team-image-wrapper">
+        <!-- Struktur Tim Pengembang -->
+       <div class="col-12 mb-3">
+                <div class="row g-3 justify-content-center">
+                    <!-- Dosen Pembimbing 1 -->
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
+                            <div class="team-image-wrapper" style="height: 240px;">
                                 @php
-                                    $kadisPath = 'assets/images/ade.png';
-                                    $kadisExists = file_exists(public_path($kadisPath));
+                                    $dospem1Path = 'assets/images/ade1.jpeg';
+                                    $dospem1Exists = file_exists(public_path($dospem1Path));
                                 @endphp
-                                @if($kadisExists)
-                                    <img src="{{ asset($kadisPath) }}" 
-                                         alt="Kepala Dinas" 
-                                         class="team-image">
+                                @if($dospem1Exists)
+                                    <img src="{{ asset($dospem1Path) }}" 
+                                         alt="Dosen Pembimbing 1" 
+                                         class="team-image"
+                                         style="object-fit: cover; object-position: center top;">
                                 @else
-                                    <div class="team-placeholder bg-primary">
+                                    <div class="team-placeholder bg-success">
                                         <i class="bi bi-person-fill"></i>
                                     </div>
                                 @endif
                                 <div class="team-overlay">
-                                    <span class="badge bg-primary">Leader</span>
+                                    <span class="badge bg-success" style="font-size: 0.6rem;">Mahasiswa</span>
                                 </div>
                             </div>
-                            <div class="card-body p-4">
-                                <h6 class="fw-bold mb-0">H. MASRIADI NADI ATJO, S.E., M.Si.</h6>
-                                <p class="text-muted small">Kepala Dinas</p>
-                                <div class="social-links">
-                                    <a href="#" class="text-muted"><i class="bi bi-envelope"></i></a>
-                                    <a href="#" class="text-muted"><i class="bi bi-linkedin"></i></a>
-                                </div>
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-0" style="font-size: 0.85rem;">A.ADE INDAWAN</h6>
+                                <p class="text-muted small mb-0" style="font-size: 0.75rem;">Mahasiswa</p>
                             </div>
                         </div>
                     </div>
+
+            <!-- Baris 2: Dosen Pembimbing 1 & Dosen Pembimbing 2 -->
+            <div class="col-12 mb-3">
+                <div class="row g-3 justify-content-center">
+                    <!-- Dosen Pembimbing 1 -->
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
+                            <div class="team-image-wrapper" style="height: 240px;">
+                                @php
+                                    $dospem1Path = 'assets/images/dospem1.png';
+                                    $dospem1Exists = file_exists(public_path($dospem1Path));
+                                @endphp
+                                @if($dospem1Exists)
+                                    <img src="{{ asset($dospem1Path) }}" 
+                                         alt="Dosen Pembimbing 1" 
+                                         class="team-image"
+                                         style="object-fit: cover; object-position: center top;">
+                                @else
+                                    <div class="team-placeholder bg-success">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                @endif
+                                <div class="team-overlay">
+                                    <span class="badge bg-success" style="font-size: 0.6rem;">Dosen Pembimbing 1</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-0" style="font-size: 0.85rem;">Dr. Hj. A.ADE INDAWAN, S.Kom., MT</h6>
+                                <p class="text-muted small mb-0" style="font-size: 0.75rem;">Dosen Pembimbing 1</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dosen Pembimbing 2 -->
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
+                            <div class="team-image-wrapper" style="height: 240px;">
+                                @php
+                                    $dospem2Path = 'assets/images/dospem2.png';
+                                    $dospem2Exists = file_exists(public_path($dospem2Path));
+                                @endphp
+                                @if($dospem2Exists)
+                                    <img src="{{ asset($dospem2Path) }}" 
+                                         alt="Dosen Pembimbing 2" 
+                                         class="team-image"
+                                         style="object-fit: cover; object-position: center top;">
+                                @else
+                                    <div class="team-placeholder bg-warning">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                @endif
+                                <div class="team-overlay">
+                                    <span class="badge bg-warning" style="font-size: 0.6rem;">Dosen Pembimbing 2</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-0" style="font-size: 0.85rem;">Dr. Hj. A.ADE INDAWAN, S.Kom., MT</h6>
+                                <p class="text-muted small mb-0" style="font-size: 0.75rem;">Dosen Pembimbing 2</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Baris 2: 2 orang (Sekretaris & Kabid Industri) -->
-          <div class="col-12 mb-3">
-    <div class="row g-3 justify-content-center">
-        <!-- Card 1 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                <div class="team-image-wrapper" style="height: 240px;">
-                    @php
-                        $sekretarisPath = 'assets/images/kadis.png';
-                        $sekretarisExists = file_exists(public_path($sekretarisPath));
-                    @endphp
-                    @if($sekretarisExists)
-                        <img src="{{ asset($sekretarisPath) }}" 
-                             alt="Sekretaris Dinas" 
-                             class="team-image"
-                             style="object-fit: cover; object-position: center top;">
-                    @else
-                        <div class="team-placeholder bg-success">
-                            <i class="bi bi-person-fill"></i>
+            <!-- Baris 3: Pembimbing Lapangan -->
+            <div class="col-12 text-center">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 team-card">
+                            <div class="team-image-wrapper" style="height: 240px;">
+                                @php
+                                    $pembimbingLapPath = 'assets/images/pembimbing-lapangan.png';
+                                    $pembimbingLapExists = file_exists(public_path($pembimbingLapPath));
+                                @endphp
+                                @if($pembimbingLapExists)
+                                    <img src="{{ asset($pembimbingLapPath) }}" 
+                                         alt="Pembimbing Lapangan" 
+                                         class="team-image"
+                                         style="object-fit: cover; object-position: center top;">
+                                @else
+                                    <div class="team-placeholder bg-info">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                @endif
+                                <div class="team-overlay">
+                                    <span class="badge bg-info" style="font-size: 0.6rem;">Pembimbing Lapangan</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-0" style="font-size: 0.85rem;">Dr. Hj. A.ADE INDAWAN, S.Kom., MT</h6>
+                                <p class="text-muted small mb-0" style="font-size: 0.75rem;">Pembimbing Lapangan</p>
+                            </div>
                         </div>
-                    @endif
-                    <div class="team-overlay">
-                        <span class="badge bg-success" style="font-size: 0.6rem;">Sekretaris</span>
-                    </div>
-                </div>
-                <div class="card-body p-2">
-                    <h6 class="fw-bold mb-0" style="font-size: 0.75rem;">Dr. Hj. A.Ade Indawan, S.Kom., MT</h6>
-                    <p class="text-muted small mb-0" style="font-size: 0.65rem;">Sekretaris Dinas</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                <div class="team-image-wrapper" style="height: 240px;">
-                    @php
-                        $kabidIndustriPath = 'assets/images/kadis.png';
-                        $kabidIndustriExists = file_exists(public_path($kabidIndustriPath));
-                    @endphp
-                    @if($kabidIndustriExists)
-                        <img src="{{ asset($kabidIndustriPath) }}" 
-                             alt="Kabid Industri" 
-                             class="team-image"
-                             style="object-fit: cover; object-position: center top;">
-                    @else
-                        <div class="team-placeholder bg-warning">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
-                    @endif
-                    <div class="team-overlay">
-                        <span class="badge bg-warning" style="font-size: 0.6rem;">Kabid Industri</span>
-                    </div>
-                </div>
-                <div class="card-body p-2">
-                    <h6 class="fw-bold mb-0" style="font-size: 0.75rem;">Ir. H. Muh. Natsir, MT</h6>
-                    <p class="text-muted small mb-0" style="font-size: 0.65rem;">Kabid Industri</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                <div class="team-image-wrapper" style="height: 240px;">
-                    @php
-                        $kabidPerdaganganPath = 'assets/images/kabid-perdagangan.jpg';
-                        $kabidPerdaganganExists = file_exists(public_path($kabidPerdaganganPath));
-                    @endphp
-                    @if($kabidPerdaganganExists)
-                        <img src="{{ asset($kabidPerdaganganPath) }}" 
-                             alt="Kabid Perdagangan" 
-                             class="team-image"
-                             style="object-fit: cover; object-position: center top;">
-                    @else
-                        <div class="team-placeholder bg-info">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
-                    @endif
-                    <div class="team-overlay">
-                        <span class="badge bg-info" style="font-size: 0.6rem;">Kabid Perdagangan</span>
-                    </div>
-                </div>
-                <div class="card-body p-2">
-                    <h6 class="fw-bold mb-0" style="font-size: 0.75rem;">Hj. St. Hadijah, SE</h6>
-                    <p class="text-muted small mb-0" style="font-size: 0.65rem;">Kabid Perdagangan</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-        <div class="col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center h-100 team-card">
-                <div class="team-image-wrapper" style="height: 280px;">
-                    @php
-                        $kabidIndustriPath = 'assets/images/kadis.png';
-                        $kabidIndustriExists = file_exists(public_path($kabidIndustriPath));
-                    @endphp
-                    @if($kabidIndustriExists)
-                        <img src="{{ asset($kabidIndustriPath) }}" 
-                             alt="Kabid Industri" 
-                             class="team-image"
-                             style="object-fit: cover; object-position: center top;">
-                    @else
-                        <div class="team-placeholder bg-warning">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
-                    @endif
-                    <div class="team-overlay">
-                        <span class="badge bg-warning">Kabid Industri</span>
-                    </div>
-                </div>
-                <div class="card-body p-3">
-                    <h6 class="fw-bold mb-0" style="font-size: 0.85rem;">Ir. H. Muh. Natsir, MT</h6>
-                    <p class="text-muted small mb-0" style="font-size: 0.75rem;">Kabid Industri</p>
-                    <div class="social-links mt-1">
-                        <a href="#" class="text-muted"><i class="bi bi-envelope" style="font-size: 0.8rem;"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-linkedin" style="font-size: 0.8rem;"></i></a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-           
         </div>
     </div>
 </section>

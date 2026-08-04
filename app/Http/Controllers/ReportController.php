@@ -53,9 +53,12 @@ class ReportController extends Controller
             ->limit(10)
             ->get();
 
-        // PERBAIKAN: Menggunakan select raw untuk menghitung jumlah pelatihan
+        // PERBAIKAN: Menggunakan select raw untuk menghitung jumlah pelatihan dan sertifikat
         $participants = User::where('role', 'peserta')
-            ->select('users.*', DB::raw('(SELECT COUNT(*) FROM training_registrations WHERE training_registrations.user_id = users.id) as trainings_count'))
+            ->select('users.*', 
+                DB::raw('(SELECT COUNT(*) FROM training_registrations WHERE training_registrations.user_id = users.id AND training_registrations.status IN ("disetujui", "selesai", "terdaftar")) as trainings_count'),
+                DB::raw('(SELECT COUNT(*) FROM sertifikats WHERE sertifikats.user_id = users.id) as certificates_count')
+            )
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
@@ -120,7 +123,11 @@ class ReportController extends Controller
      */
     public function users(Request $request)
     {
-        $query = User::where('role', 'peserta');
+        $query = User::where('role', 'peserta')
+            ->select('users.*', 
+                DB::raw('(SELECT COUNT(*) FROM training_registrations WHERE training_registrations.user_id = users.id AND training_registrations.status IN ("disetujui", "selesai", "terdaftar")) as trainings_count'),
+                DB::raw('(SELECT COUNT(*) FROM sertifikats WHERE sertifikats.user_id = users.id) as certificates_count')
+            );
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -135,8 +142,13 @@ class ReportController extends Controller
         }
 
         $users = $query->orderBy('created_at', 'desc')->paginate(15);
+        
+        $totalParticipants = User::where('role', 'peserta')->count();
+        $activeParticipants = User::where('role', 'peserta')->where('status', 'aktif')->count();
+        $inactiveParticipants = User::where('role', 'peserta')->where('status', 'nonaktif')->count();
+        $avgTrainingsPerParticipant = $totalParticipants > 0 ? round(TrainingRegistration::whereIn('status', ['disetujui', 'selesai', 'terdaftar'])->count() / $totalParticipants, 1) : 0;
 
-        return view('admin.laporan.users', compact('users'));
+        return view('admin.laporan.users', compact('users', 'totalParticipants', 'activeParticipants', 'inactiveParticipants', 'avgTrainingsPerParticipant'));
     }
 
 

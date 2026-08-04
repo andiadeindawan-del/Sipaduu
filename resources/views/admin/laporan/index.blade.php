@@ -219,6 +219,7 @@
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Pelatihan Diikuti</th>
+                                <th>Sertifikat</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -234,6 +235,7 @@
                                     </span>
                                 </td>
                                 <td>{{ $participant->trainings_count ?? 0 }}</td>
+                                <td>{{ $participant->certificates_count ?? 0 }}</td>
                                 <td>
                                     <span class="badge {{ ($participant->status ?? 'aktif') == 'aktif' ? 'text-bg-success' : 'text-bg-secondary' }}">
                                         {{ ucfirst($participant->status ?? 'Active') }}
@@ -242,7 +244,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">Tidak ada data peserta</td>
+                                <td colspan="7" class="text-center py-4 text-muted">Tidak ada data peserta</td>
                             </tr>
                             @endforelse
                         </tbody>

@@ -161,7 +161,7 @@ class Training extends Model
     {
         return $query->whereHas('registrations', function($q) use ($userId) {
             $q->where('training_registrations.user_id', $userId)
-              ->whereIn('training_registrations.status', ['pending', 'registered', 'approved', 'completed']);
+              ->whereIn('training_registrations.status', ['pending', 'terdaftar', 'disetujui', 'selesai']);
         });
     }
 
@@ -172,7 +172,7 @@ class Training extends Model
     {
         return $query->whereHas('registrations', function($q) use ($userId) {
             $q->where('training_registrations.user_id', $userId)
-              ->whereIn('training_registrations.status', ['approved', 'completed']);
+              ->whereIn('training_registrations.status', ['disetujui', 'selesai']);
         });
     }
 
@@ -183,7 +183,7 @@ class Training extends Model
     {
         return $query->whereHas('registrations', function($q) use ($userId) {
             $q->where('training_registrations.user_id', $userId)
-              ->where('training_registrations.status', 'completed');
+              ->where('training_registrations.status', 'selesai');
         });
     }
 
@@ -256,7 +256,7 @@ class Training extends Model
     public function getParticipantsCountAttribute()
     {
         return $this->registrations()
-                    ->whereIn('training_registrations.status', ['approved', 'completed', 'registered'])
+                    ->whereIn('training_registrations.status', ['disetujui', 'selesai', 'terdaftar'])
                     ->count();
     }
 
@@ -353,7 +353,7 @@ class Training extends Model
         $userId = $userId ?? auth()->id();
         return $this->registrations()
                     ->where('training_registrations.user_id', $userId)
-                    ->whereIn('training_registrations.status', ['pending', 'registered', 'approved', 'completed'])
+                    ->whereIn('training_registrations.status', ['pending', 'terdaftar', 'disetujui', 'selesai'])
                     ->exists();
     }
 
@@ -362,7 +362,7 @@ class Training extends Model
         $userId = $userId ?? auth()->id();
         return $this->registrations()
                     ->where('training_registrations.user_id', $userId)
-                    ->whereIn('training_registrations.status', ['approved', 'completed'])
+                    ->whereIn('training_registrations.status', ['disetujui', 'selesai'])
                     ->exists();
     }
 
@@ -371,7 +371,7 @@ class Training extends Model
         $userId = $userId ?? auth()->id();
         return $this->registrations()
                     ->where('training_registrations.user_id', $userId)
-                    ->where('training_registrations.status', 'completed')
+                    ->where('training_registrations.status', 'selesai')
                     ->exists();
     }
 
@@ -431,7 +431,7 @@ class Training extends Model
         return $registration->certificate;
     }
 
-    public function enrollUser($userId = null, $status = 'registered')
+    public function enrollUser($userId = null, $status = 'terdaftar')
     {
         $userId = $userId ?? auth()->id();
         
