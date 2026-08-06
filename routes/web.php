@@ -19,6 +19,9 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\TrainingRegistrationController; 
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\PesertaController;
+use App\Http\Controllers\DokumentasiController;
+use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\SurveyQuestionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -169,6 +172,18 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
         Route::get('/', [PengumumanController::class, 'pesertaIndex'])->name('index');
         Route::get('/{id}', [PengumumanController::class, 'pesertaShow'])->name('show');
     });
+
+    // ============================================================
+    // DOKUMENTASI PESERTA
+    // ============================================================
+    Route::get('/dokumentasi', [PesertaController::class, 'dokumentasi'])->name('dokumentasi.index');
+
+    // ============================================================
+    // SURVEY PESERTA
+    // ============================================================
+    Route::get('/survey', [PesertaController::class, 'survey'])->name('survey.index');
+    Route::get('/survey/{survey}', [PesertaController::class, 'surveyShow'])->name('survey.show');
+    Route::post('/survey/{survey}/submit', [PesertaController::class, 'surveySubmit'])->name('survey.submit');
 });
 
 /*
@@ -227,6 +242,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('materi/{materi}/status', [MateriController::class, 'changeStatus'])->name('materi.status');
     Route::post('materi/bulk-delete', [MateriController::class, 'bulkDelete'])->name('materi.bulk-delete');
     Route::get('materi/{materi}/preview/{index?}', [MateriController::class, 'preview'])->name('materi.preview');
+
+    // ============================================================
+    // DOKUMENTASI MANAGEMENT
+    // ============================================================
+    Route::resource('dokumentasi', DokumentasiController::class);
+
+    // ============================================================
+    // SURVEY MANAGEMENT
+    // ============================================================
+    Route::resource('survey', SurveyController::class);
+    Route::resource('survey.questions', SurveyQuestionController::class)->except(['index', 'show']);
 
     // ============================================================
     // TAMBAHAN ROUTE UNTUK AJAX MATERI

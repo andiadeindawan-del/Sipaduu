@@ -879,4 +879,121 @@ class PesertaController extends Controller
 
         return view('peserta.trainings.show', compact('training', 'progress', 'registration'));
     }
+
+    /**
+     * Display list of dokumentasi for enrolled trainings.
+     */
+    public function dokumentasi()
+    {
+        $user = auth()->user();
+        $userId = $user->id;
+
+        // Get trainings the user is enrolled in
+        $enrolledTrainingIds = DB::table('training_registrations')
+            ->where('user_id', $userId)
+            ->whereIn('status', ['disetujui', 'selesai']) // assume disetujui or selesai
+            ->pluck('training_id');
+
+        $dokumentasis = \App\Models\Dokumentasi::with('training')
+            ->whereIn('training_id', $enrolledTrainingIds)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        $kategoris = \App\Models\Kategori::orderBy('nama')->get();
+
+        return view('peserta.dokumentasi.index', compact('dokumentasis', 'kategoris'));
+    }
+
+    /**
+     * Display list of surveys for enrolled trainings.
+     */
+    public function survey()
+    {
+        $user = auth()->user();
+        $userId = $user->id;
+
+        // Get trainings the user is enrolled in
+        $enrolledTrainingIds = DB::table('training_registrations')
+            ->where('user_id', $userId)
+            ->whereIn('status', ['disetujui', 'selesai'])
+            ->pluck('training_id');
+
+        // Check trainings the user has actually attended
+        $attendedTrainingIds = DB::table('absensis')
+            ->where('user_id', $userId)
+            ->where('status', 'hadir')
+            ->whereIn('training_id', $enrolledTrainingIds)
+            ->distinct()
+            ->pluck('training_id');
+
+        // Also include those whose status is explicitly marked as 'selesai'
+        $completedTrainingIds = DB::table('training_registrations')
+            ->where('user_id', $userId)
+            ->where('status', 'selesai')
+            ->pluck('training_id');
+
+        $validTrainingIds = $attendedTrainingIds->merge($completedTrainingIds)->unique();
+
+        $surveys = \App\Models\Survey::with(['training', 'responses' => function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }])
+            ->whereIn('training_id', $validTrainingIds)
+            ->where('status', 'published')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        $kategoris = \App\Models\Kategori::orderBy('nama')->get();
+
+        return view('peserta.survey.index', compact('surveys', 'kategoris'));
+    }
+
+    /**
+     * Show survey form.
+     */
+    public function surveyShow($id)
+    {
+        $user = auth()->user();
+        
+        $survey = \App\Models\Survey::with(['training', 'questions'])->findOrFail($id);
+
+        // Check if user has already responded
+        $hasResponded = \App\Models\SurveyResponse::where('survey_id', $id)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if ($hasResponded) {
+            return redirect()->route('peserta.survey.index')->with('info', 'Anda sudah mengisi survey ini.');
+        }
+
+        return view('peserta.survey.show', compact('survey'));
+    }
+
+    /**
+     * Submit survey answers.
+     */
+    public function surveySubmit(Request $request, $id)
+    {
+        $user = auth()->user();
+        
+        $survey = \App\Models\Survey::findOrFail($id);
+
+        $hasResponded = \App\Models\SurveyResponse::where('survey_id', $id)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if ($hasResponded) {
+            return redirect()->route('peserta.survey.index')->with('error', 'Anda sudah mengisi survey ini sebelumnya.');
+        }
+
+        $answers = $request->input('answers', []);
+
+        \App\Models\SurveyResponse::create([
+            'survey_id' => $survey->id,
+            'user_id' => $user->id,
+            'answers' => $answers,
+            'status' => 'completed',
+        ]);
+
+        return redirect()->route('peserta.survey.index')->with('success', 'Terima kasih, survey berhasil dikirim.');
+    }
 }

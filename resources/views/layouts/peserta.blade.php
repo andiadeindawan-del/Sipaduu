@@ -568,6 +568,12 @@
             <a href="{{ route('peserta.pengumuman.index') }}" class="nav-link {{ request()->routeIs('peserta.pengumuman.*') ? 'active' : '' }}">
                 <i class="bi bi-megaphone"></i> Pengumuman
             </a>
+            <a href="{{ route('peserta.dokumentasi.index') }}" class="nav-link {{ request()->routeIs('peserta.dokumentasi.index') ? 'active' : '' }}">
+                    <i class="bi bi-images me-2"></i>Dokumentasi
+            </a>
+            <a href="{{ route('peserta.survey.index') }}" class="nav-link {{ request()->routeIs('peserta.survey.*') ? 'active' : '' }}">
+                <i class="bi bi-ui-radios me-2"></i>Survey
+            </a>
 
             <!-- ========================================================== -->
             <!-- AKUN -->

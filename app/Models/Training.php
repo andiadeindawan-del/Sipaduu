@@ -112,6 +112,11 @@ class Training extends Model
         return $this->hasMany(Absensi::class);
     }
 
+    public function dokumentasis()
+    {
+        return $this->hasMany(Dokumentasi::class);
+    }
+
     // ============================================================
     // SCOPES
     // ============================================================

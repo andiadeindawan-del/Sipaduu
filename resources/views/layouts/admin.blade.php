@@ -394,10 +394,17 @@
                 </a>
             </div>
             
+            <a href="{{ route('admin.survey.index') }}" class="nav-link {{ request()->routeIs('admin.survey.*') ? 'active' : '' }}">
+                <i class="bi bi-ui-radios"></i> Survey
+            </a>
+            
             <a href="{{ route('admin.sertifikat.index') }}" class="nav-link {{ request()->routeIs('admin.sertifikat.*') ? 'active' : '' }}">
                 <i class="bi bi-award"></i> Sertifikat
             </a>
-           
+            
+            <a href="{{ route('admin.dokumentasi.index') }}" class="nav-link {{ request()->routeIs('admin.dokumentasi.*') ? 'active' : '' }}">
+                <i class="bi bi-images"></i> Dokumentasi
+            </a>
 
             <!-- ========================================================== -->
             <!-- AKTIVITAS -->

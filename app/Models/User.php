@@ -65,6 +65,11 @@ class User extends Authenticatable
         return $this->hasMany(Sertifikat::class);
     }
 
+    public function surveyResponses()
+    {
+        return $this->hasMany(SurveyResponse::class);
+    }
+
     public function trainingDiajar()
     {
         return $this->hasMany(Training::class, 'trainer_id');
@@ -84,6 +89,19 @@ class User extends Authenticatable
 
     /**
      * Relasi ke Quiz Attempts
+     */
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    public function surveys()
+    {
+        return $this->hasMany(Survey::class);
+    }
+
+    /**
+     * Relasi ke Quiz yang sudah dikerjakan (Many to Many melalui attempts)
      */
     public function quizAttempts()
     {
