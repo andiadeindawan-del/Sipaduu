@@ -883,7 +883,7 @@ class PesertaController extends Controller
     /**
      * Display list of dokumentasi for enrolled trainings.
      */
-    public function dokumentasi()
+    public function dokumentasi(Request $request)
     {
         $user = auth()->user();
         $userId = $user->id;
@@ -894,20 +894,36 @@ class PesertaController extends Controller
             ->whereIn('status', ['disetujui', 'selesai']) // assume disetujui or selesai
             ->pluck('training_id');
 
-        $dokumentasis = \App\Models\Dokumentasi::with('training')
-            ->whereIn('training_id', $enrolledTrainingIds)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $query = \App\Models\Dokumentasi::with('training')
+            ->whereIn('training_id', $enrolledTrainingIds);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('kategori_id')) {
+             $kategoriId = $request->kategori_id;
+             $query->whereHas('training', function($q) use ($kategoriId) {
+                 $q->where('kategori_id', $kategoriId);
+             });
+        }
+
+        $dokumentasis = $query->orderBy('created_at', 'desc')->paginate(12);
 
         $kategoris = \App\Models\Kategori::orderBy('nama')->get();
+        $trainings = \App\Models\Training::whereIn('id', $enrolledTrainingIds)->orderBy('judul')->get();
 
-        return view('peserta.dokumentasi.index', compact('dokumentasis', 'kategoris'));
+        return view('peserta.dokumentasi.index', compact('dokumentasis', 'kategoris', 'trainings'));
     }
 
     /**
      * Display list of surveys for enrolled trainings.
      */
-    public function survey()
+    public function survey(Request $request)
     {
         $user = auth()->user();
         $userId = $user->id;
@@ -934,17 +950,33 @@ class PesertaController extends Controller
 
         $validTrainingIds = $attendedTrainingIds->merge($completedTrainingIds)->unique();
 
-        $surveys = \App\Models\Survey::with(['training', 'responses' => function($q) use ($userId) {
+        $query = \App\Models\Survey::with(['training', 'responses' => function($q) use ($userId) {
                 $q->where('user_id', $userId);
             }])
             ->whereIn('training_id', $validTrainingIds)
-            ->where('status', 'published')
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->where('status', 'published');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('kategori_id')) {
+             $kategoriId = $request->kategori_id;
+             $query->whereHas('training', function($q) use ($kategoriId) {
+                 $q->where('kategori_id', $kategoriId);
+             });
+        }
+
+        $surveys = $query->orderBy('created_at', 'desc')->paginate(12);
 
         $kategoris = \App\Models\Kategori::orderBy('nama')->get();
+        $trainings = \App\Models\Training::whereIn('id', $validTrainingIds)->orderBy('judul')->get();
 
-        return view('peserta.survey.index', compact('surveys', 'kategoris'));
+        return view('peserta.survey.index', compact('surveys', 'kategoris', 'trainings'));
     }
 
     /**

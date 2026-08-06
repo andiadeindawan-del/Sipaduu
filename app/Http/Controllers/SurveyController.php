@@ -14,6 +14,14 @@ class SurveyController extends Controller
         if ($request->filled('training_id')) {
             $query->where('training_id', $request->training_id);
         }
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
         $surveys = $query->orderBy('created_at', 'desc')->paginate(10);
         $trainings = Training::all();
         

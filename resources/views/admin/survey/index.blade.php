@@ -99,7 +99,7 @@
                 <form action="{{ route('admin.survey.index') }}" method="GET" class="d-flex gap-2">
                     <input class="form-control form-control-sm" type="search" name="search" 
                            placeholder="Cari survey..." value="{{ request('search') }}" style="width: 200px;">
-                    <select name="training_id" class="form-select form-select-sm" onchange="this.form.submit()" style="min-width: 160px;">
+                    <select name="training_id" class="form-select form-select-sm" style="min-width: 160px;">
                         <option value="">Semua Pelatihan</option>
                         @foreach($trainings ?? [] as $t)
                             <option value="{{ $t->id }}" {{ request('training_id') == $t->id ? 'selected' : '' }}>

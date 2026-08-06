@@ -96,7 +96,7 @@
                     <label class="form-label fw-semibold small mb-1">
                         <i class="bi bi-funnel me-1"></i> Filter Pelatihan
                     </label>
-                    <select name="training_id" class="form-select" onchange="this.form.submit()">
+                    <select name="training_id" class="form-select">
                         <option value="">Semua Pelatihan</option>
                         @foreach($trainings ?? [] as $training)
                             <option value="{{ $training->id }}" {{ request('training_id') == $training->id ? 'selected' : '' }}>
@@ -107,10 +107,13 @@
                 </div>
                 <div class="col-12 col-md-3">
                     <label class="form-label fw-semibold small mb-1">&nbsp;</label>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-search me-1"></i> Terapkan Filter
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="bi bi-search me-1"></i> Terapkan
                         </button>
+                        <a href="{{ route('peserta.dokumentasi.index') }}" class="btn btn-outline-secondary" title="Reset Filter">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
                     </div>
                 </div>
             </form>
