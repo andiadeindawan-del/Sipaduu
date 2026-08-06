@@ -113,23 +113,56 @@
                         <hr class="my-4">
 
                         <!-- Sosial Media -->
-                        <div class="row">
+                         <div class="row">
                             <div class="col-12">
                                 <h6 class="fw-bold mb-3">Ikuti Kami</h6>
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                <div class="d-flex gap-2 flex-wrap align-items-center">
+                                    <!-- Facebook -->
+                                    <a href="https://www.facebook.com/koperindagsulbar" target="_blank" 
+                                       class="btn btn-sm social-btn social-facebook" 
+                                       title="Facebook" rel="noopener noreferrer">
                                         <i class="bi bi-facebook fs-5"></i>
                                     </a>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                    
+                                    <!-- Instagram -->
+                                    <a href="https://www.instagram.com/koperindagsulbar" target="_blank" 
+                                       class="btn btn-sm social-btn social-instagram" 
+                                       title="Instagram" rel="noopener noreferrer">
                                         <i class="bi bi-instagram fs-5"></i>
                                     </a>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                    
+                                    <!-- YouTube -->
+                                    <a href="https://www.youtube.com/@koperindagsulbar" target="_blank" 
+                                       class="btn btn-sm social-btn social-youtube" 
+                                       title="YouTube" rel="noopener noreferrer">
                                         <i class="bi bi-youtube fs-5"></i>
                                     </a>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                    
+                                    <!-- WhatsApp -->
+                                    <a href="https://wa.me/6285185656443" target="_blank" 
+                                       class="btn btn-sm social-btn social-whatsapp" 
+                                       title="WhatsApp" rel="noopener noreferrer">
                                         <i class="bi bi-whatsapp fs-5"></i>
                                     </a>
+                                    
+                                    <!-- TikTok -->
+                                    <a href="https://www.tiktok.com/@koperindagsulbar" target="_blank" 
+                                       class="btn btn-sm social-btn social-tiktok" 
+                                       title="TikTok" rel="noopener noreferrer">
+                                        <i class="bi bi-tiktok fs-5"></i>
+                                    </a>
+    
+                                    <!-- Email -->
+                                    <a href="mailto:koperindag@sulbarprov.go.id" 
+                                       class="btn btn-sm social-btn social-email" 
+                                       title="Email">
+                                        <i class="bi bi-envelope fs-5"></i>
+                                    </a>
                                 </div>
+                                <small class="text-muted d-block mt-2">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Klik ikon untuk mengunjungi halaman kami di media sosial
+                                </small>
                             </div>
                         </div>
                     </div>
