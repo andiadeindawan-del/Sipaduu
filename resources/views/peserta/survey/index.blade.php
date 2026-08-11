@@ -282,15 +282,15 @@
         gap: 1rem;
     }
     .page-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #eaf1fd, #d4e4f7);
-        color: #4e9af1;
-        font-size: 1.5rem;
+        background: linear-gradient(135deg, #f0e6ff, #dcc4ff);
+        color: #6f42c1;
+        font-size: 1.3rem;
         flex-shrink: 0;
     }
     .eyebrow {

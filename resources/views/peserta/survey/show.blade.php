@@ -218,8 +218,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #eaf1fd, #d4e4f7);
-        color: #4e9af1;
+        background: linear-gradient(135deg, #f0e6ff, #dcc4ff);
+        color: #6f42c1;
         font-size: 1.5rem;
         flex-shrink: 0;
     }

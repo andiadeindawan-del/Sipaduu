@@ -186,6 +186,19 @@
             color: var(--accent);
         }
 
+        /* Colorful Sidebar Icons */
+        #sidebar .nav-link[href*="dashboard"] i { color: #4e9af1; }
+        #sidebar .nav-link[href*="trainings"] i { color: #ff9f43; }
+        #sidebar .nav-link[href*="materi"] i { color: #e83e8c; }
+        #sidebar .nav-link[href*="absen"] i { color: #20c997; }
+        #sidebar .nav-link[href*="quiz"] i { color: #fd7e14; }
+        #sidebar .nav-link[href*="survey"] i { color: #6f42c1; }
+        #sidebar .nav-link[href*="sertifikat"] i { color: #ffc107; }
+        #sidebar .nav-link[href*="dokumentasi"] i { color: #0dcaf0; }
+        #sidebar .nav-link[href*="agenda"] i { color: #17a2b8; }
+        #sidebar .nav-link[href*="pengumuman"] i { color: #dc3545; }
+        #sidebar .nav-link[href*="profile"] i { color: #adb5bd; }
+
         #sidebar .nav-link .chevron {
             margin-left: auto;
             transition: transform .25s ease;
