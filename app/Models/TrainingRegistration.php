@@ -15,6 +15,7 @@ class TrainingRegistration extends Model
         'training_id',
         'user_id',
         'status',
+        'alasan_penolakan',
     ];
 
     protected $casts = [
@@ -107,12 +108,14 @@ class TrainingRegistration extends Model
     public function getStatusLabelAttribute()
     {
         $labels = [
-            'pending' => '⏳ Pending',
+            'pending' => '⏳ Menunggu Verifikasi',
             'terdaftar' => '📋 Registered',
             'disetujui' => '✅ Approved',
             'selesai' => '🎉 Completed',
             'rejected' => '❌ Rejected',
+            'ditolak' => '❌ Ditolak', // Menambahkan mapping ditolak
             'cancelled' => '❌ Cancelled',
+            'dibatalkan' => '❌ Dibatalkan', // Menambahkan mapping dibatalkan
         ];
         return $labels[$this->status] ?? ucfirst($this->status);
     }
@@ -125,7 +128,9 @@ class TrainingRegistration extends Model
             'disetujui' => 'badge bg-success',
             'selesai' => 'badge bg-success',
             'rejected' => 'badge bg-danger',
+            'ditolak' => 'badge bg-danger',
             'cancelled' => 'badge bg-secondary',
+            'dibatalkan' => 'badge bg-secondary',
         ];
         return $classes[$this->status] ?? 'badge bg-secondary';
     }

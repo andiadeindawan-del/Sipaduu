@@ -274,12 +274,13 @@ class TrainingController extends Controller
         $userId = $user->id;
         
         // Check if training is published or user is enrolled
-        $isEnrolled = $training->registrations()
+        $registration = $training->registrations()
             ->where('user_id', $userId)
-            ->whereIn('status', ['pending', 'disetujui'])
-            ->exists();
+            ->first();
             
-        if ($training->status !== 'published' && !$isEnrolled) {
+        $isEnrolled = $registration && in_array($registration->status, ['pending', 'disetujui']);
+            
+        if ($training->status !== 'published' && !$registration) {
             abort(404);
         }
         
@@ -314,7 +315,8 @@ class TrainingController extends Controller
             'progress',
             'participantsCount',
             'availableSlots',
-            'absensi'
+            'absensi',
+            'registration'
         ));
     }
 

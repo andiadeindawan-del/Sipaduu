@@ -39,6 +39,23 @@ class User extends Authenticatable
         // Profile
         'foto',
         'status',
+
+        // Data Pribadi UMK
+        'status_pernikahan', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama',
+        'pendidikan_terakhir', 'kode_pos_domisili', 'disabilitas', 'ktp_file',
+
+        // Data Usaha UMK
+        'jabatan_usaha', 'merek_produk', 'kode_pos_usaha', 'sektor_usaha', 'no_telepon_usaha',
+        'bidang_usaha', 'tanggal_berdiri', 'npwp_usaha', 'status_nib', 'lama_nib', 'modal_usaha',
+        'nilai_modal', 'omzet_usaha', 'nilai_omzet', 'jumlah_karyawan', 'kapasitas_produksi', 'anggota_koperasi',
+
+        // Digitalisasi & Transformasi
+        'email_usaha', 'website_usaha', 'medsos_usaha', 'marketplace', 'pengadaan_barang', 'akses_kredit',
+        'tabungan', 'perizinan_usaha', 'sertifikasi_produk', 'jangkauan_pemasaran', 'lokasi_pemasaran',
+        'status_ekspor', 'negara_ekspor', 'metode_ekspor', 'volume_ekspor', 'nilai_ekspor', 'pasok_bahan_baku', 'kemitraan',
+
+        // Informasi Tambahan
+        'permasalahan', 'kebutuhan_diklat', 'riwayat_pelatihan', 'jenis_pelatihan_diikuti', 'file_produk', 'masukan_saran',
     ];
 
     protected $hidden = [
@@ -250,6 +267,54 @@ class User extends Authenticatable
         return $this->trainings()
                     ->wherePivot('status', 'completed')
                     ->count();
+    }
+
+    public function getIsProfilLengkapAttribute(): bool
+    {
+        return empty($this->profil_incomplete_fields);
+    }
+
+    public function getProfilIncompleteFieldsAttribute(): array
+    {
+        $incomplete = [];
+
+        // Required fields (bisa disesuaikan dengan kebutuhan)
+        $required_pribadi = [
+            'nik' => 'NIK',
+            'nama' => 'Nama Lengkap',
+            'tempat_lahir' => 'Tempat Lahir',
+            'tanggal_lahir' => 'Tanggal Lahir',
+            'jenis_kelamin' => 'Jenis Kelamin',
+            'agama' => 'Agama',
+            'status_pernikahan' => 'Status Pernikahan',
+            'pendidikan_terakhir' => 'Pendidikan Terakhir',
+            'alamat_lengkap' => 'Alamat Domisili',
+            'kode_pos_domisili' => 'Kode Pos Domisili',
+            'no_telepon' => 'Nomor HP/Telepon',
+            'email' => 'Email',
+            'ktp_file' => 'Upload KTP',
+        ];
+
+        $required_usaha = [
+            'nama_usaha' => 'Nama Usaha',
+            'sektor_usaha' => 'Sektor Usaha',
+            'bidang_usaha' => 'Bidang Usaha',
+            'nib' => 'Nomor NIB',
+        ];
+
+        foreach ($required_pribadi as $field => $label) {
+            if (empty($this->$field)) {
+                $incomplete[] = 'Pribadi: ' . $label;
+            }
+        }
+
+        foreach ($required_usaha as $field => $label) {
+            if (empty($this->$field)) {
+                $incomplete[] = 'Usaha: ' . $label;
+            }
+        }
+
+        return $incomplete;
     }
 
     // ============================================================

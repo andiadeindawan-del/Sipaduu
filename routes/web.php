@@ -323,6 +323,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/export', [TrainingRegistrationController::class, 'export'])->name('export');
         Route::get('/training-info/{id}', [TrainingRegistrationController::class, 'getTrainingInfo'])->name('training-info');
         
+
         // Route untuk bulk actions
         Route::post('/bulk-approve', [TrainingRegistrationController::class, 'bulkApprove'])->name('bulk-approve');
         

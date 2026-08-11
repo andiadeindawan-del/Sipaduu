@@ -69,22 +69,91 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'nik' => 'nullable|string|max:50',
             'phone' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string|max:255',
-            'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'no_telepon' => 'nullable|string|max:20', // Menyokong form yang mengirim no_telepon
+            'alamat_lengkap' => 'nullable|string',
+            
+            // Validasi file
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ktp_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            
+            // Tambahan field untuk UMK
+            'status_pernikahan' => 'nullable|string|max:50',
+            'jenis_kelamin' => 'nullable|in:L,P',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'agama' => 'nullable|string|max:50',
+            'pendidikan_terakhir' => 'nullable|string|max:100',
+            'kode_pos_domisili' => 'nullable|string|max:20',
+            'disabilitas' => 'nullable|string|max:100',
+            
+            'nama_usaha' => 'nullable|string|max:150',
+            'jabatan_usaha' => 'nullable|string|max:100',
+            'merek_produk' => 'nullable|string|max:150',
+            'kode_pos_usaha' => 'nullable|string|max:20',
+            'sektor_usaha' => 'nullable|string|max:100',
+            'no_telepon_usaha' => 'nullable|string|max:20',
+            'bidang_usaha' => 'nullable|string|max:100',
+            'tanggal_berdiri' => 'nullable|date',
+            'npwp_usaha' => 'nullable|string|max:50',
+            'status_nib' => 'nullable|string|max:50',
+            'nib' => 'nullable|string|max:50',
+            'lama_nib' => 'nullable|string|max:50',
+            'modal_usaha' => 'nullable|string|max:50',
+            'nilai_modal' => 'nullable|numeric',
+            'omzet_usaha' => 'nullable|string|max:50',
+            'nilai_omzet' => 'nullable|numeric',
+            'jumlah_karyawan' => 'nullable|integer',
+            'kapasitas_produksi' => 'nullable|string|max:100',
+            'anggota_koperasi' => 'nullable|string|max:100',
+            
+            'email_usaha' => 'nullable|email|max:100',
+            'website_usaha' => 'nullable|string|max:100',
+            'medsos_usaha' => 'nullable|string',
+            'marketplace' => 'nullable|string',
+            'pengadaan_barang' => 'nullable|string|max:100',
+            'akses_kredit' => 'nullable|string|max:100',
+            'tabungan' => 'nullable|string|max:100',
+            'perizinan_usaha' => 'nullable|string|max:100',
+            'sertifikasi_produk' => 'nullable|string|max:100',
+            'jangkauan_pemasaran' => 'nullable|string|max:100',
+            'lokasi_pemasaran' => 'nullable|string|max:100',
+            'status_ekspor' => 'nullable|string|max:100',
+            'negara_ekspor' => 'nullable|string|max:100',
+            'metode_ekspor' => 'nullable|string|max:100',
+            'volume_ekspor' => 'nullable|string|max:100',
+            'nilai_ekspor' => 'nullable|numeric',
+            'pasok_bahan_baku' => 'nullable|string|max:100',
+            'kemitraan' => 'nullable|string|max:100',
+            
+            'permasalahan' => 'nullable|string',
+            'kebutuhan_diklat' => 'nullable|string',
+            'riwayat_pelatihan' => 'nullable|string|max:100',
+            'jenis_pelatihan_diikuti' => 'nullable|string',
+            'file_produk' => 'nullable|string|max:255',
+            'masukan_saran' => 'nullable|string',
         ]);
+
+        // Support untuk form yang lama mengirim phone bukan no_telepon
+        if (isset($validated['phone']) && !isset($validated['no_telepon'])) {
+            $validated['no_telepon'] = $validated['phone'];
+            unset($validated['phone']);
+        }
 
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
-            // Delete old avatar
             if ($user->foto && Storage::disk('public')->exists($user->foto)) {
                 Storage::disk('public')->delete($user->foto);
             }
-            
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $validated['foto'] = $path;
+            $validated['foto'] = $request->file('avatar')->store('avatars', 'public');
             unset($validated['avatar']);
+        }
+
+        // Handle KTP upload
+        if ($request->hasFile('ktp_file')) {
+            if ($user->ktp_file && Storage::disk('public')->exists($user->ktp_file)) {
+                Storage::disk('public')->delete($user->ktp_file);
+            }
+            $validated['ktp_file'] = $request->file('ktp_file')->store('ktp_files', 'public');
         }
 
         // Check if email changed
@@ -94,14 +163,11 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
-        // Redirect based on user role
         if ($user->role === 'admin') {
-            return redirect()->route('admin.profile.edit')
-                            ->with('success', '✅ Profil berhasil diperbarui.');
+            return redirect()->route('admin.profile.edit')->with('success', '✅ Profil berhasil diperbarui.');
         }
 
-        return redirect()->route('peserta.profile.index')
-                        ->with('success', '✅ Profil berhasil diperbarui.');
+        return redirect()->route('peserta.profile.index')->with('success', '✅ Profil berhasil diperbarui.');
     }
 
     /**

@@ -228,10 +228,14 @@ class TrainingRegistrationController extends Controller
 
     /**
      * Reject registration.
-     * PERBAIKAN: Gunakan status 'ditolak'
+     * PERBAIKAN: Gunakan status 'ditolak' dan simpan alasan_penolakan
      */
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:1000'
+        ]);
+
         $registration = TrainingRegistration::findOrFail($id);
 
         // Cek apakah sudah ditolak
@@ -240,12 +244,13 @@ class TrainingRegistrationController extends Controller
                 ->with('warning', '⚠️ Pendaftaran sudah ditolak sebelumnya.');
         }
 
-        // PERBAIKAN: Gunakan 'ditolak' bukan 'rejected'
+        // PERBAIKAN: Gunakan 'ditolak' dan simpan alasan
         $registration->update([
             'status' => 'ditolak',
+            'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
-        return redirect()->route('admin.pendaftaran.index')
+        return redirect()->route('admin.trainings.participants', $registration->training_id)
             ->with('success', '✅ Pendaftaran berhasil ditolak.');
     }
 

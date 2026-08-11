@@ -784,7 +784,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('landing.pelatihan*') ? 'active' : '' }}" 
                        href="{{ route('landing.pelatihan.index') }}">
-                        <i class="bi bi-journal-bookmark me-1 d-lg-none"></i> Pelatihan
+                        <i class="bi bi-journal-bookmark me-1 d-lg-none"></i> Diklat
                     </a>
                 </li>
                 <li class="nav-item">

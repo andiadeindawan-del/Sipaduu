@@ -180,7 +180,8 @@
                         <th>Peserta</th>
                         <th>Pelatihan</th>
                         <th>Tanggal Daftar</th>
-                        <th>Status</th>
+                        <th>Status Profil</th>
+                        <th>Status Pendaftaran</th>
                         <th class="text-end" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
@@ -213,37 +214,22 @@
                             </span>
                         </td>
                         <td>
-                            @php
-                                $statusMap = [
-                                    'pending' => ['label' => '⏳ Pending', 'class' => 'badge bg-warning'],
-                                    'disetujui' => ['label' => '✅ Disetujui', 'class' => 'badge bg-success'],
-                                    'ditolak' => ['label' => '❌ Ditolak', 'class' => 'badge bg-danger'],
-                                    'dibatalkan' => ['label' => '🚫 Dibatalkan', 'class' => 'badge bg-secondary'],
-                                ];
-                                $status = $statusMap[$registration->status] ?? ['label' => $registration->status, 'class' => 'badge bg-secondary'];
-                            @endphp
-                            <span class="{{ $status['class'] }}">
-                                {{ $status['label'] }}
+                            @if($registration->user->is_profil_lengkap)
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Lengkap</span>
+                            @else
+                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Belum Lengkap</span>
+                            @endif
+                        </td>
+                        <td>
+                            <span class="{!! $registration->status_badge !!}">
+                                {{ $registration->status_label }}
                             </span>
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm" role="group">
-                                @if($registration->status == 'pending')
-                                    <form action="{{ route('admin.pendaftaran.approve', $registration->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-success" title="Setujui">
-                                            <i class="bi bi-check-circle"></i>
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('admin.pendaftaran.reject', $registration->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-danger" title="Tolak" onclick="return confirm('Yakin ingin menolak pendaftaran ini?')">
-                                            <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    </form>
-                                @endif
+                                <a href="{{ route('admin.pendaftaran.show', $registration->id) }}" class="btn btn-outline-primary" title="Detail Profil">
+                                    <i class="bi bi-person-lines-fill"></i> Detail Peserta
+                                </a>
                                 @if($registration->status == 'disetujui' || $registration->status == 'pending')
                                     <form action="{{ route('admin.pendaftaran.cancel', $registration->id) }}" method="POST" class="d-inline">
                                         @csrf

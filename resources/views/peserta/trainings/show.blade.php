@@ -35,6 +35,24 @@
             </div>
             @endif
 
+            @if(isset($registration) && $registration->status === 'ditolak')
+            <div class="alert alert-danger mb-4" role="alert">
+                <h5 class="alert-heading fw-bold"><i class="bi bi-x-circle-fill me-2"></i> Pendaftaran Ditolak</h5>
+                <p>Mohon maaf, pendaftaran Anda untuk pelatihan ini ditolak oleh admin dengan alasan berikut:</p>
+                <hr>
+                <p class="mb-0 fw-semibold">{{ $registration->alasan_penolakan ?? 'Tidak ada alasan yang diberikan.' }}</p>
+                <hr>
+                <p class="mb-0 mt-2 small">Silakan lengkapi profil Anda di menu <a href="{{ route('peserta.profile.index') }}" class="fw-bold text-danger text-decoration-underline">Profil Saya</a> dan daftar kembali.</p>
+            </div>
+            @endif
+            
+            @if(isset($registration) && $registration->status === 'pending')
+            <div class="alert alert-warning mb-4" role="alert">
+                <h5 class="alert-heading fw-bold"><i class="bi bi-clock-history me-2"></i> Menunggu Verifikasi Admin</h5>
+                <p class="mb-0">Pendaftaran Anda sedang diproses dan menunggu verifikasi dari admin. Anda akan menerima notifikasi jika pendaftaran disetujui atau ditolak.</p>
+            </div>
+            @endif
+
             <!-- Main Card -->
             <div class="panel">
                 <!-- Header Image -->
@@ -60,23 +78,25 @@
                                 <div>
                                     <h3 class="fw-bold mb-2">{{ $training->judul }}</h3>
                                     <div class="d-flex flex-wrap gap-2">
-                                        <span class="badge 
-                                            @if($training->status == 'published' || $training->status == 'berjalan') 
-                                                badge-berjalan
-                                            @elseif($training->status == 'selesai') 
-                                                badge-selesai
-                                            @else 
-                                                badge-draft
-                                            @endif
-                                        ">
-                                            {{ $training->status_label }}
-                                        </span>
-                                        <span class="badge bg-primary">{{ $training->tipe_label }}</span>
-                                        @if($isEnrolled ?? false)
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-check-circle me-1"></i> Terdaftar
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <span class="badge 
+                                                @if($training->status == 'published' || $training->status == 'berjalan') 
+                                                    badge-berjalan
+                                                @elseif($training->status == 'selesai') 
+                                                    badge-selesai
+                                                @else 
+                                                    badge-draft
+                                                @endif
+                                            ">
+                                                {{ $training->status_label }}
                                             </span>
-                                        @endif
+                                            @if(isset($registration))
+                                                <span class="{!! $registration->status_badge !!}">
+                                                    {{ $registration->status_label }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <span class="badge bg-primary">{{ $training->tipe_label }}</span>
                                         @if($isCompleted ?? false)
                                             <span class="badge bg-info">
                                                 <i class="bi bi-award me-1"></i> Selesai
@@ -85,14 +105,21 @@
                                     </div>
                                 </div>
                                 <div class="d-flex gap-2 flex-wrap">
-                                    @if(!($isEnrolled ?? false) && $training->status == 'published')
-                                        <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success" 
-                                                    onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')">
-                                                <i class="bi bi-plus-circle me-2"></i> Daftar Pelatihan
-                                            </button>
-                                        </form>
+                                    @if(!isset($registration) || in_array($registration->status, ['ditolak', 'dibatalkan']))
+                                        @if(auth()->user()->is_profil_lengkap)
+                                            <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary" 
+                                                        onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')"
+                                                        {{ $availableSlots !== null && $availableSlots <= 0 ? 'disabled' : '' }}>
+                                                    <i class="bi bi-plus-circle me-2"></i> Daftar Pelatihan
+                                                </button>
+                                            </form>
+                                        @else
+                                            <div class="alert alert-warning d-inline-block py-2 mb-0">
+                                                <i class="bi bi-exclamation-triangle me-1"></i> Profil belum lengkap. <a href="{{ route('peserta.profile.index') }}" class="alert-link">Lengkapi Profil</a> untuk mendaftar.
+                                            </div>
+                                        @endif
                                     @endif
                                     @if(($isEnrolled ?? false) && ($progress ?? 0) >= 100)
                                         <form action="{{ route('peserta.trainings.complete', $training->id) }}" method="POST">
@@ -102,7 +129,7 @@
                                             </button>
                                         </form>
                                     @endif
-                                    @if($isEnrolled ?? false)
+                                    @if(isset($registration) && in_array($registration->status, ['pending', 'disetujui']))
                                         <form action="{{ route('peserta.trainings.unenroll', $training->id) }}" method="POST" 
                                               onsubmit="return confirm('Yakin ingin membatalkan pendaftaran pelatihan ini?')">
                                             @csrf
