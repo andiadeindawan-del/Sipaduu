@@ -191,16 +191,10 @@
                                     <i class="bi bi-check2-circle"></i>
                                 </span>
                             @else
-                                <form action="{{ route('peserta.absen.store') }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <input type="hidden" name="training_id" value="{{ $training->id }}">
-                                    <input type="hidden" name="tanggal" value="{{ date('Y-m-d') }}">
-                                    <input type="hidden" name="status" value="hadir">
-                                    <button type="submit" class="btn btn-success btn-sm px-4" 
-                                            onclick="return confirm('Apakah Anda yakin ingin merekam kehadiran untuk pelatihan ini?')">
-                                        <i class="bi bi-check2 me-1"></i> Absen Sekarang
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-success btn-sm px-4" 
+                                        onclick="openScanner()">
+                                    <i class="bi bi-qr-code-scan me-1"></i> Scan QR Code
+                                </button>
                             @endif
                         </td>
                     </tr>
@@ -309,6 +303,21 @@
     </div>
 </div>
 
+<!-- Modal Scanner -->
+<div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scannerModalLabel"><i class="bi bi-qr-code-scan"></i> Scan QR Code Kehadiran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="stopScanner()"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div id="reader" style="width: 100%; margin: 0 auto;"></div>
+        <p class="text-muted small mt-3 mb-0">Arahkan kamera ke QR Code yang ditampilkan Admin.</p>
+      </div>
+    </div>
+  </div>
+</div>
 @push('styles')
 <style>
     .avatar-text {
@@ -402,7 +411,53 @@
 @endpush
 
 @push('scripts')
+<!-- Load HTML5-QRCode -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
 <script>
+    let html5QrcodeScanner = null;
+
+    function openScanner() {
+        var myModal = new bootstrap.Modal(document.getElementById('scannerModal'));
+        myModal.show();
+        
+        // Ensure DOM is fully ready for scanner
+        setTimeout(function() {
+            if(!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader",
+                    { fps: 10, qrbox: {width: 250, height: 250} },
+                    /* verbose= */ false);
+                    
+                html5QrcodeScanner.render(function(decodedText, decodedResult) {
+                    // Cek URL apakah mengandung /peserta/absen/scan/
+                    if (decodedText.includes('/absen/scan/') || decodedText.includes('scan')) {
+                        html5QrcodeScanner.clear().then(() => {
+                            window.location.href = decodedText;
+                        });
+                    } else {
+                        alert('QR Code tidak dikenali oleh sistem ini.');
+                    }
+                }, function(error) {
+                    // error handler
+                });
+            }
+        }, 300);
+    }
+
+    function stopScanner() {
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.clear().then(() => {
+                html5QrcodeScanner = null;
+            });
+        }
+    }
+    
+    // Cleanup if modal closed
+    document.getElementById('scannerModal').addEventListener('hidden.bs.modal', function () {
+        stopScanner();
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         // Auto close alerts after 5 seconds
         setTimeout(function() {
@@ -411,15 +466,6 @@
                 bsAlert.close();
             });
         }, 5000);
-
-        // Confirmation before submit
-        document.querySelectorAll('form[action*="absen.store"]').forEach(function(form) {
-            form.addEventListener('submit', function(e) {
-                if (!confirm('Apakah Anda yakin ingin merekam kehadiran untuk pelatihan ini?')) {
-                    e.preventDefault();
-                }
-            });
-        });
     });
 </script>
 @endpush

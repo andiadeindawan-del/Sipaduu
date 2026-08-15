@@ -155,6 +155,9 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
         Route::post('/store', [PesertaController::class, 'absenStore'])->name('store');
         Route::get('/export', [AbsensiController::class, 'pesertaExport'])->name('export');
         Route::get('/check-status', [AbsensiController::class, 'checkStatus'])->name('check-status');
+        
+        // NEW QR CODE SCAN ROUTE
+        Route::get('/scan/{training}', [PesertaController::class, 'scanQR'])->name('scan');
     });
 
     // ============================================================
@@ -226,6 +229,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('trainings/{training}/participants', [TrainingController::class, 'participants'])->name('trainings.participants');
     Route::patch('trainings/{training}/status', [TrainingController::class, 'changeStatus'])->name('trainings.status');
     Route::get('trainings/{training}/export', [TrainingController::class, 'export'])->name('trainings.export');
+    
+    // NEW ADMIN ABSENSI ROUTES
+    Route::get('trainings/{training}/absen', [\App\Http\Controllers\AbsensiController::class, 'session'])->name('trainings.absen');
+    Route::post('trainings/{training}/absen/start', [\App\Http\Controllers\AbsensiController::class, 'startSession'])->name('trainings.absen.start');
+    Route::post('trainings/{training}/absen/stop', [\App\Http\Controllers\AbsensiController::class, 'stopSession'])->name('trainings.absen.stop');
+    Route::post('trainings/{training}/absen/mark-present', [\App\Http\Controllers\AbsensiController::class, 'markPresent'])->name('trainings.absen.mark-present');
+    Route::post('trainings/{training}/absen/mark-all', [\App\Http\Controllers\AbsensiController::class, 'markAllPresent'])->name('trainings.absen.mark-all');
 
     // ============================================================
     // KATEGORI MANAGEMENT
@@ -252,7 +262,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // SURVEY MANAGEMENT
     // ============================================================
     Route::resource('survey', SurveyController::class);
-    Route::resource('survey.questions', SurveyQuestionController::class)->except(['index', 'show']);
+    
+    // ============================================================
+    // SURVEY QUESTIONS MANAGEMENT - TAMBAHAN ROUTE LENGKAP
+    // ============================================================
+    Route::prefix('surveys/{survey}/questions')->name('survey.questions.')->group(function () {
+        Route::get('/', [SurveyQuestionController::class, 'index'])->name('index');
+        Route::get('/create', [SurveyQuestionController::class, 'create'])->name('create');
+        Route::post('/', [SurveyQuestionController::class, 'store'])->name('store');
+        Route::get('/{question}', [SurveyQuestionController::class, 'show'])->name('show');
+        Route::get('/{question}/edit', [SurveyQuestionController::class, 'edit'])->name('edit');
+        Route::put('/{question}', [SurveyQuestionController::class, 'update'])->name('update');
+        Route::delete('/{question}', [SurveyQuestionController::class, 'destroy'])->name('destroy');
+    });
 
     // ============================================================
     // TAMBAHAN ROUTE UNTUK AJAX MATERI
@@ -279,6 +301,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/create', [QuizQuestionController::class, 'create'])->name('create');
         Route::post('/', [QuizQuestionController::class, 'store'])->name('store');
         Route::get('/{question}/edit', [QuizQuestionController::class, 'edit'])->name('edit');
+        Route::get('/{question}/show', [QuizQuestionController::class, 'show'])->name('show');
         Route::put('/{question}', [QuizQuestionController::class, 'update'])->name('update');
         Route::delete('/{question}', [QuizQuestionController::class, 'destroy'])->name('destroy');
         

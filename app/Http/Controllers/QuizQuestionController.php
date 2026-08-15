@@ -15,89 +15,87 @@ class QuizQuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-/**
- * Display a listing of the resource.
- */
-public function index(Request $request, Quiz $quiz = null)
-{
-    try {
-        // Jika ada quiz_id di request, override
-        if ($request->has('quiz_id')) {
-            $quiz = Quiz::find($request->quiz_id);
-        }
-
-        // Jika tidak ada quiz, redirect
-        if (!$quiz) {
-            return redirect()->route('admin.quiz.index')
-                            ->with('error', '❌ Quiz tidak ditemukan.');
-        }
-
-        // Query dasar
-        $query = QuizQuestion::where('quiz_id', $quiz->id);
-
-        // Search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('question', 'like', "%$search%");
-            });
-        }
-
-        // Filter type
-        if ($request->filled('type')) {
-            if ($request->type === 'multiple_choice') {
-                $query->where('type', 'multiple_choice');
-            } elseif ($request->type === 'essay') {
-                $query->where('type', 'essay');
+    public function index(Request $request, Quiz $quiz = null)
+    {
+        try {
+            // Jika ada quiz_id di request, override
+            if ($request->has('quiz_id')) {
+                $quiz = Quiz::find($request->quiz_id);
             }
+
+            // Jika tidak ada quiz, redirect
+            if (!$quiz) {
+                return redirect()->route('admin.quiz.index')
+                                ->with('error', '❌ Quiz tidak ditemukan.');
+            }
+
+            // Query dasar
+            $query = QuizQuestion::where('quiz_id', $quiz->id);
+
+            // Search
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('question', 'like', "%$search%");
+                });
+            }
+
+            // Filter type
+            if ($request->filled('type')) {
+                if ($request->type === 'multiple_choice') {
+                    $query->where('type', 'multiple_choice');
+                } elseif ($request->type === 'essay') {
+                    $query->where('type', 'essay');
+                }
+            }
+
+            // Debug
+            Log::info('Questions query:', [
+                'sql' => $query->toSql(),
+                'bindings' => $query->getBindings(),
+                'count' => $query->count()
+            ]);
+
+            // Paginate
+            $questions = $query->orderBy('order', 'asc')->paginate(10);
+
+            // Statistics
+            $totalQuestions = QuizQuestion::where('quiz_id', $quiz->id)->count();
+            $multipleChoiceCount = QuizQuestion::where('quiz_id', $quiz->id)
+                                              ->where('type', 'multiple_choice')
+                                              ->count();
+            $essayCount = QuizQuestion::where('quiz_id', $quiz->id)
+                                     ->where('type', 'essay')
+                                     ->count();
+            $totalScore = QuizQuestion::where('quiz_id', $quiz->id)->sum('score') ?? 0;
+
+            // Debug
+            Log::info('Statistics:', [
+                'total' => $totalQuestions,
+                'multiple' => $multipleChoiceCount,
+                'essay' => $essayCount,
+                'score' => $totalScore
+            ]);
+
+            return view('admin.quiz.question.index', compact(
+                'questions',
+                'quiz',
+                'totalQuestions',
+                'multipleChoiceCount',
+                'essayCount',
+                'totalScore'
+            ));
+            
+        } catch (\Exception $e) {
+            Log::error('ERROR IN INDEX:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()->with('error', '❌ Gagal memuat data pertanyaan: ' . $e->getMessage());
         }
-
-        // Debug
-        Log::info('Questions query:', [
-            'sql' => $query->toSql(),
-            'bindings' => $query->getBindings(),
-            'count' => $query->count()
-        ]);
-
-        // Paginate
-        $questions = $query->orderBy('order', 'asc')->paginate(10);
-
-        // Statistics
-        $totalQuestions = QuizQuestion::where('quiz_id', $quiz->id)->count();
-        $multipleChoiceCount = QuizQuestion::where('quiz_id', $quiz->id)
-                                          ->where('type', 'multiple_choice')
-                                          ->count();
-        $essayCount = QuizQuestion::where('quiz_id', $quiz->id)
-                                 ->where('type', 'essay')
-                                 ->count();
-        $totalScore = QuizQuestion::where('quiz_id', $quiz->id)->sum('score') ?? 0;
-
-        // Debug
-        Log::info('Statistics:', [
-            'total' => $totalQuestions,
-            'multiple' => $multipleChoiceCount,
-            'essay' => $essayCount,
-            'score' => $totalScore
-        ]);
-
-        return view('admin.quiz.question.index', compact(
-            'questions',
-            'quiz',
-            'totalQuestions',
-            'multipleChoiceCount',
-            'essayCount',
-            'totalScore'
-        ));
-        
-    } catch (\Exception $e) {
-        Log::error('ERROR IN INDEX:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        return back()->with('error', '❌ Gagal memuat data pertanyaan: ' . $e->getMessage());
     }
-}
+
     /**
      * Show the form for creating a new resource.
      */
@@ -131,85 +129,85 @@ public function index(Request $request, Quiz $quiz = null)
     /**
      * Store a newly created resource in storage.
      */
- public function store(Request $request)
-{
-    try {
-        $validated = $request->validate([
-            'quiz_id' => 'required|exists:quizzes,id',
-            'question' => 'required|string|max:5000',
-            'type' => ['required', Rule::in(['multiple_choice', 'true_false', 'essay'])],
-            'points' => 'nullable|integer|min:1|max:100',
-            'options' => 'nullable|array',
-            'options.*' => 'nullable|string|max:1000',
-            'correct_answer' => 'nullable|string|max:255',
-            'essay_answer_key' => 'nullable|string|max:5000',
-            'order' => 'nullable|integer|min:0',
-        ]);
+    public function store(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'quiz_id' => 'required|exists:quizzes,id',
+                'question' => 'required|string|max:5000',
+                'type' => ['required', Rule::in(['multiple_choice', 'true_false', 'essay'])],
+                'points' => 'nullable|integer|min:1|max:100',
+                'options' => 'nullable|array',
+                'options.*' => 'nullable|string|max:1000',
+                'correct_answer' => 'nullable|string|max:255',
+                'essay_answer_key' => 'nullable|string|max:5000',
+                'order' => 'nullable|integer|min:0',
+            ]);
 
-        // PERBAIKAN: Gunakan 'score' untuk database
-        $questionData = [
-            'quiz_id' => $validated['quiz_id'],
-            'question' => $validated['question'],
-            'type' => $validated['type'],
-            'score' => $validated['points'] ?? 1, // points dari form -> score di database
-            'order' => $validated['order'] ?? 0,
-            'essay_answer_key' => $validated['essay_answer_key'] ?? null,
-        ];
+            // PERBAIKAN: Gunakan 'score' untuk database
+            $questionData = [
+                'quiz_id' => $validated['quiz_id'],
+                'question' => $validated['question'],
+                'type' => $validated['type'],
+                'score' => $validated['points'] ?? 1, // points dari form -> score di database
+                'order' => $validated['order'] ?? 0,
+                'essay_answer_key' => $validated['essay_answer_key'] ?? null,
+            ];
 
-        // Cek tipe
-        if ($validated['type'] === 'multiple_choice') {
-            // Filter options
-            $filteredOptions = array_filter($validated['options'] ?? [], function($value) {
-                return !empty(trim($value));
-            });
-            
-            if (count($filteredOptions) < 2) {
-                return back()->withErrors(['options' => 'Minimal 2 pilihan jawaban untuk soal pilihan ganda.'])
-                             ->withInput();
+            // Cek tipe
+            if ($validated['type'] === 'multiple_choice') {
+                // Filter options
+                $filteredOptions = array_filter($validated['options'] ?? [], function($value) {
+                    return !empty(trim($value));
+                });
+                
+                if (count($filteredOptions) < 2) {
+                    return back()->withErrors(['options' => 'Minimal 2 pilihan jawaban untuk soal pilihan ganda.'])
+                                 ->withInput();
+                }
+                
+                $questionData['options'] = array_values($filteredOptions);
+                $questionData['correct_answer'] = $validated['correct_answer'] ?? 'A';
+            } elseif ($validated['type'] === 'true_false') {
+                $questionData['options'] = null;
+                $questionData['correct_answer'] = $validated['correct_answer'] ?? 'true';
+            } else {
+                // Essay
+                $questionData['options'] = null;
+                $questionData['correct_answer'] = null;
             }
+
+            // Set order jika tidak diisi
+            if (empty($questionData['order']) || $questionData['order'] == 0) {
+                $maxOrder = QuizQuestion::where('quiz_id', $validated['quiz_id'])->max('order') ?? 0;
+                $questionData['order'] = $maxOrder + 1;
+            }
+
+            // Debug: Log data sebelum create
+            Log::info('Creating question with data:', $questionData);
+
+            $question = QuizQuestion::create($questionData);
+
+            // Debug: Log setelah create
+            Log::info('Question created:', ['id' => $question->id, 'data' => $question->toArray()]);
+
+            return redirect()->route('admin.quiz.questions.index', $validated['quiz_id'])
+                            ->with('success', '✅ Pertanyaan berhasil ditambahkan.');
+                            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
             
-            $questionData['options'] = array_values($filteredOptions);
-            $questionData['correct_answer'] = $validated['correct_answer'] ?? 'A';
-        } elseif ($validated['type'] === 'true_false') {
-            $questionData['options'] = null;
-            $questionData['correct_answer'] = $validated['correct_answer'] ?? 'true';
-        } else {
-            // Essay
-            $questionData['options'] = null;
-            $questionData['correct_answer'] = null;
+        } catch (\Exception $e) {
+            Log::error('ERROR STORING QUESTION:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->all()
+            ]);
+            
+            return back()->with('error', '❌ Gagal menambahkan pertanyaan: ' . $e->getMessage())
+                         ->withInput();
         }
-
-        // Set order jika tidak diisi
-        if (empty($questionData['order']) || $questionData['order'] == 0) {
-            $maxOrder = QuizQuestion::where('quiz_id', $validated['quiz_id'])->max('order') ?? 0;
-            $questionData['order'] = $maxOrder + 1;
-        }
-
-        // Debug: Log data sebelum create
-        Log::info('Creating question with data:', $questionData);
-
-        $question = QuizQuestion::create($questionData);
-
-        // Debug: Log setelah create
-        Log::info('Question created:', ['id' => $question->id, 'data' => $question->toArray()]);
-
-        return redirect()->route('admin.quiz.questions.index', $validated['quiz_id'])
-                        ->with('success', '✅ Pertanyaan berhasil ditambahkan.');
-                        
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return back()->withErrors($e->errors())->withInput();
-        
-    } catch (\Exception $e) {
-        Log::error('ERROR STORING QUESTION:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-            'input' => $request->all()
-        ]);
-        
-        return back()->with('error', '❌ Gagal menambahkan pertanyaan: ' . $e->getMessage())
-                     ->withInput();
     }
-}
 
     /**
      * Display the specified resource.
@@ -222,6 +220,11 @@ public function index(Request $request, Quiz $quiz = null)
             
             if ($question->quiz_id !== $quiz->id) {
                 abort(404, 'Pertanyaan tidak ditemukan dalam quiz ini.');
+            }
+            
+            // Decode options if needed
+            if ($question->options && is_string($question->options)) {
+                $question->options = json_decode($question->options, true) ?? [];
             }
             
             return view('admin.quiz.question.show', compact('question', 'quiz'));

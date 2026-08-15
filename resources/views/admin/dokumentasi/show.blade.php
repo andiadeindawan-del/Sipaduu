@@ -3,12 +3,13 @@
 @section('title', 'Detail Dokumentasi')
 
 @section('header')
-<div class="page-heading">
+<div class="page-heading d-flex justify-content-between align-items-center">
     <div class="page-heading-copy">
         <span class="page-icon"><i class="bi bi-images"></i></span>
         <div>
-            <p class="eyebrow mb-1">Management</p>
+            <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Detail Dokumentasi</h1>
+            <p class="text-muted mb-0">Informasi lengkap dokumentasi <strong>{{ $dokumentasi->judul }}</strong></p>
         </div>
     </div>
 </div>
@@ -16,162 +17,203 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
-    <!-- Alert Messages -->
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-circle-fill me-2"></i>
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
-    <!-- Detail -->
-    <div class="panel">
-        <div class="panel-header">
-            <div>
-                <h5 class="section-title"><i class="bi bi-info-circle"></i> Informasi Dokumentasi</h5>
-                <p class="text-muted small mb-0">Detail lengkap dokumentasi <strong>{{ $dokumentasi->judul }}</strong></p>
+    <div class="row">
+        <div class="col-12 col-lg-8 mx-auto">
+            <!-- Alert Messages -->
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <div class="d-flex gap-2">
-                <a href="{{ route('admin.dokumentasi.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali
-                </a>
+            @endif
+
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        </div>
-        <div class="panel-body p-4">
-            <div class="row g-4">
-                <!-- Judul -->
-                <div class="col-12">
-                    <div class="detail-item">
-                        <label class="text-muted small fw-semibold d-block mb-1">Judul</label>
-                        <p class="fw-semibold fs-5 mb-0">{{ $dokumentasi->judul }}</p>
-                    </div>
+            @endif
+
+            <!-- Main Card -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h5 class="section-title"><i class="bi bi-info-circle"></i> Informasi Dokumentasi</h5>
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle-fill me-1"></i> Aktif
+                    </span>
                 </div>
 
-                <!-- Pelatihan -->
-                <div class="col-12 col-md-6">
-                    <div class="detail-item">
-                        <label class="text-muted small fw-semibold d-block mb-1">Pelatihan</label>
-                        <p class="mb-0">
-                            <i class="bi bi-journal-bookmark text-primary me-1"></i>
-                            {{ $dokumentasi->training->judul ?? '-' }}
-                        </p>
-                    </div>
-                </div>
+                <div class="p-4">
+                    <div class="row g-4">
+                        <!-- Judul -->
+                        <div class="col-12">
+                            <div class="info-item p-3 bg-light rounded-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-circle bg-primary text-white">
+                                        <i class="bi bi-text-paragraph"></i>
+                                    </div>
+                                    <div>
+                                        <label class="text-muted small fw-semibold text-uppercase d-block">Judul</label>
+                                        <p class="fw-semibold mb-0 fs-5">{{ $dokumentasi->judul }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Status -->
-                <div class="col-12 col-md-6">
-                    <div class="detail-item">
-                        <label class="text-muted small fw-semibold d-block mb-1">Status</label>
-                        <p class="mb-0">
-                            <span class="badge bg-success">
-                                <i class="bi bi-check-circle-fill me-1"></i> Aktif
-                            </span>
-                        </p>
-                    </div>
-                </div>
+                        <!-- Info Grid -->
+                        <div class="col-12">
+                            <div class="row g-3">
+                                <!-- Pelatihan -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-info text-white">
+                                                <i class="bi bi-journal-bookmark"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Pelatihan</label>
+                                                <p class="fw-semibold mb-0">
+                                                    {{ $dokumentasi->training->judul ?? '-' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <!-- Link -->
-                <div class="col-12">
-                    <div class="detail-item">
-                        <label class="text-muted small fw-semibold d-block mb-1">Link</label>
-                        <div class="p-3 bg-light rounded d-flex align-items-center justify-content-between flex-wrap gap-2">
-                            <a href="{{ $dokumentasi->link }}" target="_blank" 
-                               class="text-primary text-decoration-none text-break">
-                                <i class="bi bi-link-45deg me-1"></i>
-                                {{ $dokumentasi->link }}
-                            </a>
-                            <a href="{{ $dokumentasi->link }}" target="_blank" 
-                               class="btn btn-sm btn-success">
-                                <i class="bi bi-box-arrow-up-right me-1"></i> Buka Link
-                            </a>
+                                <!-- Status -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-success text-white">
+                                                <i class="bi bi-check-circle"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Status</label>
+                                                <p class="fw-semibold mb-0">
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle-fill me-1"></i> Aktif
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Link -->
+                        <div class="col-12">
+                            <div class="info-item p-3 bg-light rounded-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-circle bg-warning text-white">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <label class="text-muted small fw-semibold text-uppercase d-block">Link</label>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <a href="{{ $dokumentasi->link }}" target="_blank" 
+                                               class="text-primary text-decoration-none text-truncate" 
+                                               style="max-width: 400px; word-break: break-all;">
+                                                <i class="bi bi-link-45deg me-1"></i>
+                                                {{ $dokumentasi->link }}
+                                            </a>
+                                            <a href="{{ $dokumentasi->link }}" target="_blank" 
+                                               class="btn btn-sm btn-success">
+                                                <i class="bi bi-box-arrow-up-right me-1"></i> Buka Link
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="copyLink('{{ $dokumentasi->link }}')" title="Salin Link">
+                                                <i class="bi bi-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deskripsi -->
+                        @if($dokumentasi->deskripsi)
+                        <div class="col-12">
+                            <div class="info-item p-3 bg-light rounded-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-circle bg-secondary text-white">
+                                        <i class="bi bi-file-text"></i>
+                                    </div>
+                                    <div>
+                                        <label class="text-muted small fw-semibold text-uppercase d-block">Deskripsi</label>
+                                        <p class="mb-0" style="white-space: pre-line;">{{ $dokumentasi->deskripsi }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Meta Info -->
+                        <div class="col-12">
+                            <hr>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-info text-white">
+                                                <i class="bi bi-clock"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Dibuat</label>
+                                                <p class="fw-semibold mb-0">
+                                                    <i class="bi bi-calendar-plus me-1"></i>
+                                                    {{ $dokumentasi->created_at ? $dokumentasi->created_at->format('d/m/Y H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-warning text-white">
+                                                <i class="bi bi-clock-history"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Diperbarui</label>
+                                                <p class="fw-semibold mb-0">
+                                                    <i class="bi bi-calendar-check me-1"></i>
+                                                    {{ $dokumentasi->updated_at ? $dokumentasi->updated_at->format('d/m/Y H:i') : '-' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ route('admin.dokumentasi.edit', $dokumentasi->id) }}" class="btn btn-warning">
+                                    <i class="bi bi-pencil me-1"></i> Edit
+                                </a>
+                                <form action="{{ route('admin.dokumentasi.destroy', $dokumentasi->id) }}" method="POST" class="d-inline" 
+                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumentasi {{ $dokumentasi->judul }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash me-1"></i> Hapus
+                                    </button>
+                                </form>
+                                <div class="ms-auto">
+                                    <a href="{{ route('admin.dokumentasi.index') }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Deskripsi -->
-                @if($dokumentasi->deskripsi)
-                <div class="col-12">
-                    <div class="detail-item">
-                        <label class="text-muted small fw-semibold d-block mb-1">Deskripsi</label>
-                        <p class="mb-0" style="white-space: pre-line;">{{ $dokumentasi->deskripsi }}</p>
-                    </div>
-                </div>
-                @endif
-
-                <!-- Timestamps -->
-                <div class="col-12">
-                    <hr>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-6">
-                            <label class="text-muted small fw-semibold d-block mb-1">Dibuat</label>
-                            <p class="mb-0">
-                                <i class="bi bi-calendar-plus me-1"></i>
-                                {{ $dokumentasi->created_at ? $dokumentasi->created_at->format('d/m/Y H:i') : '-' }}
-                            </p>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="text-muted small fw-semibold d-block mb-1">Diperbarui</label>
-                            <p class="mb-0">
-                                <i class="bi bi-calendar-check me-1"></i>
-                                {{ $dokumentasi->updated_at ? $dokumentasi->updated_at->format('d/m/Y H:i') : '-' }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="col-12">
-                    <hr>
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-danger" 
-                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ $dokumentasi->id }}">
-                            <i class="bi bi-trash me-1"></i> Hapus
-                        </button>
-                        <a href="{{ route('admin.dokumentasi.edit', $dokumentasi->id) }}" class="btn btn-warning">
-                            <i class="bi bi-pencil me-1"></i> Edit
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     MODAL DELETE
-============================================================ -->
-<div class="modal fade" id="deleteModal{{ $dokumentasi->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                    Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus dokumentasi <strong>{{ $dokumentasi->judul }}</strong>?</p>
-                <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('admin.dokumentasi.destroy', $dokumentasi->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Hapus
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -216,6 +258,11 @@
         color: #8a93a3;
         font-weight: 600;
     }
+    .heading-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
 
     /* ============================================================
        PANEL
@@ -255,29 +302,35 @@
         color: #4e9af1;
     }
 
-    .panel-body {
-        background: #fff;
-    }
-
     /* ============================================================
-       DETAIL ITEMS
+       INFO ITEMS
     ============================================================ */
-    .detail-item {
-        padding: 0.5rem 0;
+    .info-item {
+        transition: all 0.2s ease;
     }
-    .detail-item:not(:last-child) {
-        border-bottom: 1px solid #f0f0f0;
+    .info-item:hover {
+        background-color: #e9ecef !important;
     }
-    .detail-item label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #8a93a3;
+    
+    .icon-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
-    .detail-item p {
-        font-size: 0.95rem;
-        color: #1a2236;
+    .icon-circle i {
+        font-size: 20px;
     }
+    
+    .bg-primary { background-color: #0d6efd; }
+    .bg-success { background-color: #198754; }
+    .bg-info { background-color: #0dcaf0; }
+    .bg-warning { background-color: #ffc107; }
+    .bg-secondary { background-color: #6c757d; }
+    .text-white { color: #fff; }
 
     /* ============================================================
        BADGE
@@ -336,13 +389,12 @@
         box-shadow: 0 4px 12px rgba(40, 199, 111, 0.3);
     }
     
-    .btn-secondary {
-        background: #e2e8f0;
+    .btn-outline-secondary {
         border-color: #e2e8f0;
         color: #4a5568;
     }
-    .btn-secondary:hover {
-        background: #d5dce6;
+    .btn-outline-secondary:hover {
+        background: #e2e8f0;
         border-color: #d5dce6;
     }
     
@@ -382,6 +434,9 @@
         .page-heading-copy {
             width: 100%;
         }
+        .heading-actions {
+            width: 100%;
+        }
         .panel-header {
             flex-direction: column;
             align-items: flex-start;
@@ -389,19 +444,31 @@
         .panel-body {
             padding: 1.25rem !important;
         }
-        .d-flex.justify-content-end {
+        .d-flex.flex-wrap.gap-2 {
             flex-direction: column;
-            gap: 0.5rem !important;
         }
-        .d-flex.justify-content-end .btn {
+        .d-flex.flex-wrap.gap-2 .btn {
             width: 100%;
         }
-        .p-3.bg-light {
+        .ms-auto {
+            margin-left: 0 !important;
+        }
+        .d-flex.align-items-center.gap-2.flex-wrap {
             flex-direction: column;
             align-items: flex-start !important;
         }
-        .p-3.bg-light .btn {
+        .d-flex.align-items-center.gap-2.flex-wrap .btn {
             width: 100%;
+        }
+        .text-truncate {
+            max-width: 100% !important;
+        }
+        .icon-circle {
+            width: 36px;
+            height: 36px;
+        }
+        .icon-circle i {
+            font-size: 16px;
         }
     }
 
@@ -428,42 +495,64 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto close alerts after 5 seconds
+    // ============================================================
+    // AUTO CLOSE ALERTS
+    // ============================================================
     setTimeout(function() {
         document.querySelectorAll('.alert').forEach(function(alert) {
             const bsAlert = new bootstrap.Alert(alert);
             bsAlert.close();
         });
     }, 5000);
-
-    // Copy link to clipboard
-    const linkElement = document.querySelector('.p-3.bg-light a');
-    if (linkElement) {
-        linkElement.addEventListener('click', function(e) {
-            // Only if user wants to copy (Ctrl+Click or Shift+Click)
-            if (e.ctrlKey || e.shiftKey) {
-                e.preventDefault();
-                const link = this.href;
-                navigator.clipboard.writeText(link).then(function() {
-                    // Show temporary feedback
-                    const btn = document.querySelector('.p-3.bg-light .btn-success');
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Tersalin!';
-                    btn.classList.remove('btn-success');
-                    btn.classList.add('btn-info');
-                    setTimeout(function() {
-                        btn.innerHTML = originalText;
-                        btn.classList.remove('btn-info');
-                        btn.classList.add('btn-success');
-                    }, 2000);
-                }).catch(function() {
-                    // Fallback
-                    alert('Link: ' + link);
-                });
-            }
-        });
-    }
 });
+
+// ============================================================
+// COPY LINK TO CLIPBOARD
+// ============================================================
+function copyLink(link) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(link).then(function() {
+            // Show feedback
+            showCopyFeedback('Link berhasil disalin!');
+        }).catch(function() {
+            // Fallback
+            fallbackCopy(link);
+        });
+    } else {
+        fallbackCopy(link);
+    }
+}
+
+function fallbackCopy(link) {
+    // Create temporary input
+    const input = document.createElement('input');
+    input.value = link;
+    document.body.appendChild(input);
+    input.select();
+    try {
+        document.execCommand('copy');
+        showCopyFeedback('Link berhasil disalin!');
+    } catch (e) {
+        alert('Link: ' + link);
+    }
+    document.body.removeChild(input);
+}
+
+function showCopyFeedback(message) {
+    // Find the copy button
+    const copyBtn = document.querySelector('[onclick*="copyLink"]');
+    if (copyBtn) {
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>';
+        copyBtn.classList.remove('btn-outline-secondary');
+        copyBtn.classList.add('btn-success');
+        setTimeout(function() {
+            copyBtn.innerHTML = originalText;
+            copyBtn.classList.remove('btn-success');
+            copyBtn.classList.add('btn-outline-secondary');
+        }, 2000);
+    }
+}
 </script>
 @endpush
 @endsection

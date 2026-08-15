@@ -3,23 +3,13 @@
 @section('title', 'Detail Agenda')
 
 @section('header')
-<div class="page-heading">
+<div class="page-heading d-flex justify-content-between align-items-center">
     <div class="page-heading-copy">
         <span class="page-icon"><i class="bi bi-calendar-event"></i></span>
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Detail Agenda</h1>
-            <p class="text-muted mb-0">Informasi lengkap agenda {{ $agenda->judul }}.</p>
-        </div>
-    </div>
-    <div class="heading-actions">
-        <div class="d-flex gap-2">
-            <a href="{{ route('admin.agenda.edit', $agenda->id) }}" class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a href="{{ route('admin.agenda.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
+            <p class="text-muted mb-0">Informasi lengkap agenda <strong>{{ $agenda->judul }}</strong></p>
         </div>
     </div>
 </div>
@@ -49,23 +39,28 @@
             <!-- Main Card -->
             <div class="panel">
                 <div class="panel-header">
-                    <h5 class="section-title"><i class="bi bi-info-circle"></i> Informasi Agenda</h5>
-                    <span class="badge {{ $agenda->status_badge ?? 'text-bg-primary' }}">
+                    <div>
+                        <h5 class="section-title"><i class="bi bi-info-circle"></i> Informasi Agenda</h5>
+                    </div>
+                    <span class="badge {{ $agenda->status_badge ?? 'badge-draft' }}">
                         <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
                         {{ $agenda->status_label ?? ucfirst($agenda->status) }}
                     </span>
                 </div>
+
                 <div class="p-4">
                     <div class="row g-4">
                         <!-- Judul -->
                         <div class="col-12">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-text-paragraph fs-4 text-primary"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Judul</label>
-                                    <p class="fw-semibold mb-0 fs-5">{{ $agenda->judul }}</p>
+                            <div class="info-item p-3 bg-light rounded-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-circle bg-primary text-white">
+                                        <i class="bi bi-text-paragraph"></i>
+                                    </div>
+                                    <div>
+                                        <label class="text-muted small fw-semibold text-uppercase d-block">Judul</label>
+                                        <p class="fw-semibold mb-0 fs-5">{{ $agenda->judul }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -73,155 +68,194 @@
                         <!-- Deskripsi -->
                         @if($agenda->deskripsi)
                         <div class="col-12">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-file-text fs-4 text-info"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Deskripsi</label>
-                                    <p class="mb-0">{{ $agenda->deskripsi }}</p>
+                            <div class="info-item p-3 bg-light rounded-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="icon-circle bg-secondary text-white">
+                                        <i class="bi bi-file-text"></i>
+                                    </div>
+                                    <div>
+                                        <label class="text-muted small fw-semibold text-uppercase d-block">Deskripsi</label>
+                                        <p class="mb-0" style="white-space: pre-line;">{{ $agenda->deskripsi }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         @endif
 
-                        <!-- Pelatihan -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-journal-bookmark fs-4 text-success"></i>
+                        <!-- Info Grid -->
+                        <div class="col-12">
+                            <div class="row g-3">
+                                <!-- Pelatihan -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-success text-white">
+                                                <i class="bi bi-journal-bookmark"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Pelatihan</label>
+                                                @if($agenda->training)
+                                                <p class="fw-semibold mb-0">
+                                                    <a href="{{ route('admin.trainings.show', $agenda->training->id) }}" class="text-decoration-none">
+                                                        {{ $agenda->training->judul }}
+                                                    </a>
+                                                </p>
+                                                @else
+                                                <p class="text-muted mb-0">-</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Pelatihan</label>
-                                    @if($agenda->training)
-                                    <p class="fw-semibold mb-0">
-                                        <a href="{{ route('admin.trainings.show', $agenda->training->id) }}" class="text-decoration-none">
-                                            {{ $agenda->training->judul }}
-                                        </a>
-                                    </p>
-                                    @else
-                                    <p class="text-muted">-</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Status -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-toggle-on fs-4 text-warning"></i>
+                                <!-- Status -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-warning text-white">
+                                                <i class="bi bi-toggle-on"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Status</label>
+                                                <p class="fw-semibold mb-0">
+                                                    <span class="badge {{ $agenda->status_badge ?? 'badge-draft' }}">
+                                                        <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
+                                                        {{ $agenda->status_label ?? ucfirst($agenda->status) }}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Status</label>
-                                    <p class="fw-semibold mb-0">
-                                        <span class="badge {{ $agenda->status_badge ?? 'text-bg-primary' }}">
-                                            <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
-                                            {{ $agenda->status_label ?? ucfirst($agenda->status) }}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Tanggal -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-calendar3 fs-4 text-primary"></i>
+                                <!-- Tanggal -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-info text-white">
+                                                <i class="bi bi-calendar3"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Tanggal</label>
+                                                <p class="fw-semibold mb-0">
+                                                    {{ $agenda->tanggal ? $agenda->tanggal->format('d F Y') : '-' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Tanggal</label>
-                                    <p class="fw-semibold mb-0">
-                                        {{ $agenda->tanggal ? $agenda->tanggal->format('d F Y') : '-' }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Waktu -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-clock fs-4 text-info"></i>
+                                <!-- Waktu -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-primary text-white">
+                                                <i class="bi bi-clock"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Waktu</label>
+                                                <p class="fw-semibold mb-0">
+                                                    {{ $agenda->waktu_mulai ? date('H:i', strtotime($agenda->waktu_mulai)) : '-' }}
+                                                    {{ $agenda->waktu_selesai ? ' - ' . date('H:i', strtotime($agenda->waktu_selesai)) : '' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Waktu</label>
-                                    <p class="fw-semibold mb-0">
-                                        {{ $agenda->waktu_mulai ? date('H:i', strtotime($agenda->waktu_mulai)) : '-' }}
-                                        {{ $agenda->waktu_selesai ? ' - ' . date('H:i', strtotime($agenda->waktu_selesai)) : '' }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Durasi -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-hourglass-split fs-4 text-secondary"></i>
+                                <!-- Durasi -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-secondary text-white">
+                                                <i class="bi bi-hourglass-split"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Durasi</label>
+                                                <p class="fw-semibold mb-0">
+                                                    @php
+                                                        $durasi = $agenda->duration ?? null;
+                                                    @endphp
+                                                    @if($durasi)
+                                                        @php
+                                                            $hours = floor($durasi);
+                                                            $minutes = round(($durasi - $hours) * 60);
+                                                        @endphp
+                                                        @if($hours > 0 && $minutes > 0)
+                                                            {{ $hours }} jam {{ $minutes }} menit
+                                                        @elseif($hours > 0)
+                                                            {{ $hours }} jam
+                                                        @else
+                                                            {{ $minutes }} menit
+                                                        @endif
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Durasi</label>
-                                    <p class="fw-semibold mb-0">
-                                        @php
-                                            $durasi = $agenda->duration ?? null;
-                                        @endphp
-                                        @if($durasi)
-                                            @php
-                                                $hours = floor($durasi);
-                                                $minutes = round(($durasi - $hours) * 60);
-                                            @endphp
-                                            @if($hours > 0 && $minutes > 0)
-                                                {{ $hours }} jam {{ $minutes }} menit
-                                            @elseif($hours > 0)
-                                                {{ $hours }} jam
-                                            @else
-                                                {{ $minutes }} menit
-                                            @endif
-                                        @else
-                                            -
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Lokasi -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-geo-alt fs-4 text-danger"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Lokasi</label>
-                                    <p class="fw-semibold mb-0">{{ $agenda->lokasi ?? '-' }}</p>
+                                <!-- Lokasi -->
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-danger text-white">
+                                                <i class="bi bi-geo-alt"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Lokasi</label>
+                                                <p class="fw-semibold mb-0">{{ $agenda->lokasi ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Meta Info -->
                         <div class="col-12">
-                            <hr class="my-2">
-                            <div class="d-flex justify-content-between text-muted small flex-wrap gap-2">
-                                <span>
-                                    <i class="bi bi-clock me-1"></i> 
-                                    Dibuat: {{ $agenda->created_at ? $agenda->created_at->format('d/m/Y H:i') : '-' }}
-                                </span>
-                                <span>
-                                    <i class="bi bi-clock-history me-1"></i> 
-                                    Diperbarui: {{ $agenda->updated_at ? $agenda->updated_at->format('d/m/Y H:i') : '-' }}
-                                </span>
+                            <hr>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-info text-white">
+                                                <i class="bi bi-clock"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Dibuat</label>
+                                                <p class="fw-semibold mb-0">{{ $agenda->created_at ? $agenda->created_at->format('d/m/Y H:i') : '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-warning text-white">
+                                                <i class="bi bi-clock-history"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Diperbarui</label>
+                                                <p class="fw-semibold mb-0">{{ $agenda->updated_at ? $agenda->updated_at->format('d/m/Y H:i') : '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="col-12 mt-2">
-                            <hr class="my-2">
-                            <div class="d-flex gap-2 flex-wrap">
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex flex-wrap gap-2">
                                 <a href="{{ route('admin.agenda.edit', $agenda->id) }}" class="btn btn-warning">
-                                    <i class="bi bi-pencil me-1"></i> Edit Agenda
+                                    <i class="bi bi-pencil me-1"></i> Edit
                                 </a>
+                                
                                 @if($agenda->status == 'cancelled')
                                 <form action="{{ route('admin.agenda.update', $agenda->id) }}" method="POST" class="d-inline">
                                     @csrf
@@ -251,10 +285,21 @@
                                     </button>
                                 </form>
                                 @endif
-                                <button type="button" class="btn btn-outline-danger" 
-                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <i class="bi bi-trash me-1"></i> Hapus
-                                </button>
+
+                                <form action="{{ route('admin.agenda.destroy', $agenda->id) }}" method="POST" class="d-inline" 
+                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus agenda {{ $agenda->judul }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash me-1"></i> Hapus
+                                    </button>
+                                </form>
+
+                                <div class="ms-auto">
+                                    <a href="{{ route('admin.agenda.index') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -263,47 +308,43 @@
 
             <!-- Related Data Card -->
             @if($agenda->training)
-            <div class="panel mt-3">
+            <div class="panel mt-4">
                 <div class="panel-header">
                     <h5 class="section-title"><i class="bi bi-link-45deg"></i> Data Terkait</h5>
                 </div>
                 <div class="p-4">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="bi bi-journal-bookmark text-success me-2"></i>
-                                        Pelatihan
-                                    </h6>
-                                    <p class="card-text">
-                                        <a href="{{ route('admin.trainings.show', $agenda->training->id) }}" class="text-decoration-none fw-semibold">
-                                            {{ $agenda->training->judul }}
-                                        </a>
-                                    </p>
-                                    <p class="text-muted small">
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        {{ $agenda->training->tanggal_mulai ? $agenda->training->tanggal_mulai->format('d/m/Y') : '-' }}
-                                        {{ $agenda->training->tanggal_selesai ? ' - ' . $agenda->training->tanggal_selesai->format('d/m/Y') : '' }}
-                                    </p>
-                                </div>
+                            <div class="related-card p-3 bg-light rounded-3">
+                                <h6 class="fw-bold text-success">
+                                    <i class="bi bi-journal-bookmark me-2"></i>
+                                    Pelatihan
+                                </h6>
+                                <p class="fw-semibold mb-1">
+                                    <a href="{{ route('admin.trainings.show', $agenda->training->id) }}" class="text-decoration-none">
+                                        {{ $agenda->training->judul }}
+                                    </a>
+                                </p>
+                                <p class="text-muted small mb-0">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    {{ $agenda->training->tanggal_mulai ? $agenda->training->tanggal_mulai->format('d/m/Y') : '-' }}
+                                    {{ $agenda->training->tanggal_selesai ? ' - ' . $agenda->training->tanggal_selesai->format('d/m/Y') : '' }}
+                                </p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="bi bi-people text-primary me-2"></i>
-                                        Peserta Terdaftar
-                                    </h6>
-                                    <p class="card-text">
-                                        <span class="fw-bold">{{ $agenda->training->participants_count ?? $agenda->training->participants()->count() ?? 0 }}</span>
-                                        peserta
-                                    </p>
-                                    <a href="{{ route('admin.trainings.participants', $agenda->training->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-eye"></i> Lihat Peserta
-                                    </a>
-                                </div>
+                            <div class="related-card p-3 bg-light rounded-3">
+                                <h6 class="fw-bold text-primary">
+                                    <i class="bi bi-people me-2"></i>
+                                    Peserta Terdaftar
+                                </h6>
+                                <p class="fw-bold fs-4 mb-1">
+                                    {{ $agenda->training->participants_count ?? $agenda->training->participants()->count() ?? 0 }}
+                                    <span class="text-muted fs-6 fw-normal">peserta</span>
+                                </p>
+                                <a href="{{ route('admin.trainings.participants', $agenda->training->id) }}" class="btn btn-sm btn-outline-primary mt-1">
+                                    <i class="bi bi-eye"></i> Lihat Peserta
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -314,79 +355,315 @@
     </div>
 </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                    Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus agenda <strong>{{ $agenda->judul }}</strong>?</p>
-                @if($agenda->status == 'ongoing' || $agenda->status == 'completed')
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Agenda ini sudah {{ $agenda->status == 'ongoing' ? 'sedang berlangsung' : 'selesai' }}. Menghapus akan menghapus semua data terkait.
-                </div>
-                @endif
-                @if($agenda->tanggal)
-                <div class="alert alert-light">
-                    <p class="text-muted small mb-0">Tanggal: {{ $agenda->tanggal->format('d/m/Y') }}</p>
-                </div>
-                @endif
-                <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('admin.agenda.destroy', $agenda->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Hapus
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 @push('styles')
 <style>
+    /* ============================================================
+       PAGE HEADING
+    ============================================================ */
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .page-heading-copy {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .page-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #2563eb;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+    .eyebrow {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #8a93a3;
+        font-weight: 600;
+    }
+    .heading-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    /* ============================================================
+       PANEL
+    ============================================================ */
     .panel {
         background: #fff;
-        border-radius: 0.75rem;
+        border-radius: .75rem;
         box-shadow: 0 1px 4px rgba(0,0,0,.06);
         overflow: hidden;
     }
+    .panel:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    }
+    
     .panel-header {
-        padding: 1rem 1.25rem;
+        padding: .9rem 1.25rem;
         border-bottom: 1px solid #f0f0f0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: .75rem;
+        background: #fafbfc;
     }
+    
     .section-title {
         display: flex;
         align-items: center;
         gap: .5rem;
         margin: 0;
         font-size: 1rem;
+        font-weight: 600;
+        color: #1a2236;
     }
+    
     .section-title i {
-        color: var(--primary);
+        color: #4e9af1;
     }
-    .bg-light {
-        background-color: #f8f9fa !important;
+
+    /* ============================================================
+       INFO ITEMS
+    ============================================================ */
+    .info-item {
+        transition: all 0.2s ease;
     }
-    .card {
+    .info-item:hover {
+        background-color: #e9ecef !important;
+    }
+    
+    .icon-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .icon-circle i {
+        font-size: 20px;
+    }
+    
+    .bg-primary { background-color: #0d6efd; }
+    .bg-success { background-color: #198754; }
+    .bg-info { background-color: #0dcaf0; }
+    .bg-warning { background-color: #ffc107; }
+    .bg-danger { background-color: #dc3545; }
+    .bg-secondary { background-color: #6c757d; }
+    .text-white { color: #fff; }
+
+    /* ============================================================
+       BADGE
+    ============================================================ */
+    .badge {
+        font-weight: 500;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+    
+    .badge-draft {
+        background: #e2e8f0 !important;
+        color: #4a5568 !important;
+    }
+    .badge-published {
+        background: #d4edda !important;
+        color: #155724 !important;
+    }
+    .badge-secondary {
+        background: #e2e8f0 !important;
+        color: #6c757d !important;
+    }
+    .badge.bg-success {
+        background: #d4edda !important;
+        color: #155724 !important;
+    }
+    .badge.bg-warning {
+        background: #fff3cd !important;
+        color: #856404 !important;
+    }
+    .badge.bg-danger {
+        background: #f8d7da !important;
+        color: #721c24 !important;
+    }
+
+    /* ============================================================
+       RELATED CARD
+    ============================================================ */
+    .related-card {
+        transition: all 0.2s ease;
+    }
+    .related-card:hover {
+        background-color: #e9ecef !important;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+        border-radius: 0.5rem;
+        padding: 0.45rem 1.2rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-warning {
+        background: #ff9f43;
+        border-color: #ff9f43;
+        color: #fff;
+    }
+    .btn-warning:hover {
+        background: #f08c2e;
+        border-color: #f08c2e;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 159, 67, 0.3);
+    }
+    
+    .btn-danger {
+        background: #f56565;
+        border-color: #f56565;
+        color: #fff;
+    }
+    .btn-danger:hover {
+        background: #e53e3e;
+        border-color: #e53e3e;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
+    }
+    
+    .btn-success {
+        background: #28c76f;
+        border-color: #28c76f;
+        color: #fff;
+    }
+    .btn-success:hover {
+        background: #1fb45e;
+        border-color: #1fb45e;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 199, 111, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #e2e8f0;
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    .btn-secondary:hover {
+        background: #d5dce6;
+        border-color: #d5dce6;
+    }
+    
+    .btn-outline-secondary {
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    .btn-outline-secondary:hover {
+        background: #e2e8f0;
+        border-color: #d5dce6;
+    }
+    
+    .btn-sm {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* ============================================================
+       ALERT
+    ============================================================ */
+    .alert {
+        border-radius: 0.75rem;
         border: none;
-        box-shadow: 0 1px 3px rgba(0,0,0,.06);
+        padding: 0.75rem 1rem;
+    }
+    .alert-success {
+        background: #ecfdf5;
+        color: #065f46;
+    }
+    .alert-danger {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+    .alert-dismissible .btn-close {
+        padding: 1rem;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+        .page-heading {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .page-heading-copy {
+            width: 100%;
+        }
+        .heading-actions {
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .panel-body {
+            padding: 1.25rem !important;
+        }
+        .d-flex.flex-wrap.gap-2 {
+            flex-direction: column;
+        }
+        .d-flex.flex-wrap.gap-2 .btn {
+            width: 100%;
+        }
+        .ms-auto {
+            margin-left: 0 !important;
+        }
+        .icon-circle {
+            width: 36px;
+            height: 36px;
+        }
+        .icon-circle i {
+            font-size: 16px;
+        }
+        .row.g-3 > [class*="col-"] {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+    }
+
+    /* ============================================================
+       ANIMATION
+    ============================================================ */
+    .panel {
+        animation: fadeInUp 0.4s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 @endpush

@@ -30,6 +30,10 @@ class User extends Authenticatable
         'nama_usaha',
         'nib',
         'jenis_usaha',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'desa',
         'alamat_lengkap',
         
         // Employee (untuk admin/trainer)
@@ -94,8 +98,8 @@ class User extends Authenticatable
 
     public function trainingDiikuti()
     {
-        return $this->belongsToMany(Training::class, 'training_participants', 'user_id', 'training_id')
-                    ->withPivot('status', 'registered_at')
+        return $this->belongsToMany(Training::class, 'training_registrations', 'user_id', 'training_id')
+                    ->withPivot('status', 'tanggal_daftar', 'nilai_akhir', 'status_kelulusan')
                     ->withTimestamps();
     }
 
@@ -274,47 +278,87 @@ class User extends Authenticatable
         return empty($this->profil_incomplete_fields);
     }
 
+    // Define required fields in one place
+    public function getRequiredProfilFields()
+    {
+        return [
+            'Pribadi' => [
+                'nik' => 'NIK',
+                'nama' => 'Nama Lengkap',
+                'tempat_lahir' => 'Tempat Lahir',
+                'tanggal_lahir' => 'Tanggal Lahir',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'agama' => 'Agama',
+                'status_pernikahan' => 'Status Pernikahan',
+                'pendidikan_terakhir' => 'Pendidikan Terakhir',
+                'provinsi' => 'Provinsi',
+                'kabupaten' => 'Kabupaten/Kota',
+                'kecamatan' => 'Kecamatan',
+                'desa' => 'Desa/Kelurahan',
+                'alamat_lengkap' => 'Alamat Detail',
+                'kode_pos_domisili' => 'Kode Pos Domisili',
+                'no_telepon' => 'Nomor HP/Telepon',
+                'email' => 'Email',
+                'ktp_file' => 'Upload KTP',
+            ],
+            'Usaha' => [
+                'nama_usaha' => 'Nama Usaha',
+                'sektor_usaha' => 'Sektor Usaha',
+                'bidang_usaha' => 'Bidang Usaha',
+                'nib' => 'Nomor NIB',
+            ]
+        ];
+    }
+
     public function getProfilIncompleteFieldsAttribute(): array
     {
         $incomplete = [];
+        $required_fields = $this->getRequiredProfilFields();
 
-        // Required fields (bisa disesuaikan dengan kebutuhan)
-        $required_pribadi = [
-            'nik' => 'NIK',
-            'nama' => 'Nama Lengkap',
-            'tempat_lahir' => 'Tempat Lahir',
-            'tanggal_lahir' => 'Tanggal Lahir',
-            'jenis_kelamin' => 'Jenis Kelamin',
-            'agama' => 'Agama',
-            'status_pernikahan' => 'Status Pernikahan',
-            'pendidikan_terakhir' => 'Pendidikan Terakhir',
-            'alamat_lengkap' => 'Alamat Domisili',
-            'kode_pos_domisili' => 'Kode Pos Domisili',
-            'no_telepon' => 'Nomor HP/Telepon',
-            'email' => 'Email',
-            'ktp_file' => 'Upload KTP',
-        ];
-
-        $required_usaha = [
-            'nama_usaha' => 'Nama Usaha',
-            'sektor_usaha' => 'Sektor Usaha',
-            'bidang_usaha' => 'Bidang Usaha',
-            'nib' => 'Nomor NIB',
-        ];
-
-        foreach ($required_pribadi as $field => $label) {
-            if (empty($this->$field)) {
-                $incomplete[] = 'Pribadi: ' . $label;
-            }
-        }
-
-        foreach ($required_usaha as $field => $label) {
-            if (empty($this->$field)) {
-                $incomplete[] = 'Usaha: ' . $label;
+        foreach ($required_fields as $category => $fields) {
+            foreach ($fields as $field => $label) {
+                if (empty($this->$field)) {
+                    $incomplete[] = $category . ': ' . $label;
+                }
             }
         }
 
         return $incomplete;
+    }
+
+    public function getProfilCompletedFieldsAttribute(): array
+    {
+        $completed = [];
+        $required_fields = $this->getRequiredProfilFields();
+
+        foreach ($required_fields as $category => $fields) {
+            foreach ($fields as $field => $label) {
+                if (!empty($this->$field)) {
+                    $completed[] = $category . ': ' . $label;
+                }
+            }
+        }
+
+        return $completed;
+    }
+
+    public function getProfilCompletionPercentageAttribute(): int
+    {
+        $required_fields = $this->getRequiredProfilFields();
+        $totalFields = 0;
+        $completedFields = 0;
+
+        foreach ($required_fields as $category => $fields) {
+            foreach ($fields as $field => $label) {
+                $totalFields++;
+                if (!empty($this->$field)) {
+                    $completedFields++;
+                }
+            }
+        }
+
+        if ($totalFields === 0) return 100;
+        return (int) round(($completedFields / $totalFields) * 100);
     }
 
     // ============================================================

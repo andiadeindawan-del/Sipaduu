@@ -544,9 +544,20 @@ public function enroll(Request $request, Training $training)
     $user = auth()->user();
 
     // Cek apakah user sudah terdaftar
-    if ($training->registrations()->where('user_id', $user->id)->exists()) {
-        return redirect()->back()
-                        ->with('error', '⚠️ Anda sudah terdaftar dalam pelatihan ini.');
+    $existingRegistration = $training->registrations()->where('user_id', $user->id)->first();
+    
+    if ($existingRegistration) {
+        if ($existingRegistration->status === 'ditolak' || $existingRegistration->status === 'dibatalkan') {
+            // Re-enroll
+            $existingRegistration->update([
+                'status' => 'pending',
+            ]);
+            return redirect()->back()
+                            ->with('success', '✅ Berhasil mendaftar kembali. Mohon tunggu konfirmasi admin.');
+        } else {
+            return redirect()->back()
+                            ->with('error', '⚠️ Anda sudah terdaftar dalam pelatihan ini.');
+        }
     }
 
     // Cek kuota

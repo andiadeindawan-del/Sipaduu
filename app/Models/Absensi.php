@@ -19,6 +19,7 @@ class Absensi extends Model
         'waktu_checkout',
         'status',
         'status_hadir',
+        'metode',
         'keterangan',
         'lokasi',
         'ip_address',

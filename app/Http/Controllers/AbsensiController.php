@@ -588,4 +588,132 @@ class AbsensiController extends Controller
             ]
         ]);
     }
+
+    /**
+     * ========================================================
+     * QR CODE ATTENDANCE METHODS (NEW)
+     * ========================================================
+     */
+
+    public function session(Training $training)
+    {
+        // Get all approved participants
+        $participants = $training->registrations()
+            ->with('user')
+            ->where('status', 'disetujui')
+            ->get();
+
+        $today = now()->format('Y-m-d');
+
+        // Check attendance today for these participants
+        $absensiHariIni = Absensi::where('training_id', $training->id)
+            ->whereDate('tanggal', $today)
+            ->get()
+            ->keyBy('user_id');
+
+        $hadirCount = 0;
+        foreach ($participants as $participant) {
+            $absen = $absensiHariIni->get($participant->user_id);
+            $participant->absen_status = $absen ? $absen->status : 'Belum Hadir';
+            $participant->waktu_absen = $absen ? $absen->waktu_checkin : null;
+            $participant->metode_absen = $absen ? $absen->metode : null;
+            if ($participant->absen_status == 'hadir') {
+                $hadirCount++;
+            }
+        }
+
+        $belumHadirCount = $participants->count() - $hadirCount;
+        $persentase = $participants->count() > 0 ? round(($hadirCount / $participants->count()) * 100, 2) : 0;
+
+        return view('admin.absen.session', compact(
+            'training',
+            'participants',
+            'hadirCount',
+            'belumHadirCount',
+            'persentase',
+            'today'
+        ));
+    }
+
+    public function startSession(Training $training)
+    {
+        $training->is_absen_open = true;
+        $training->absen_token = \Illuminate\Support\Str::random(32);
+        $training->save();
+
+        return back()->with('success', 'Sesi absensi berhasil dibuka.');
+    }
+
+    public function stopSession(Training $training)
+    {
+        $training->is_absen_open = false;
+        $training->absen_token = null;
+        $training->save();
+
+        return back()->with('success', 'Sesi absensi berhasil ditutup.');
+    }
+
+    public function markPresent(Training $training, Request $request)
+    {
+        $userIds = $request->input('user_ids', []);
+        
+        if (empty($userIds)) {
+            return back()->with('error', 'Pilih minimal satu peserta.');
+        }
+
+        $today = now()->format('Y-m-d');
+        $now = now();
+
+        foreach ($userIds as $userId) {
+            // Check if user is approved
+            $isApproved = \App\Models\TrainingRegistration::where('training_id', $training->id)
+                ->where('user_id', $userId)
+                ->where('status', 'disetujui')
+                ->exists();
+
+            if ($isApproved) {
+                // Upsert absensi
+                Absensi::updateOrCreate(
+                    [
+                        'user_id' => $userId,
+                        'training_id' => $training->id,
+                        'tanggal' => $today,
+                    ],
+                    [
+                        'status' => 'hadir',
+                        'waktu_checkin' => $now,
+                        'jam_masuk' => $now->format('H:i:s'),
+                        'metode' => 'Manual oleh Admin',
+                    ]
+                );
+            }
+        }
+
+        return back()->with('success', 'Peserta terpilih berhasil ditandai hadir.');
+    }
+
+    public function markAllPresent(Training $training)
+    {
+        $participants = $training->registrations()->where('status', 'disetujui')->get();
+        $today = now()->format('Y-m-d');
+        $now = now();
+
+        foreach ($participants as $participant) {
+            Absensi::updateOrCreate(
+                [
+                    'user_id' => $participant->user_id,
+                    'training_id' => $training->id,
+                    'tanggal' => $today,
+                ],
+                [
+                    'status' => 'hadir',
+                    'waktu_checkin' => $now,
+                    'jam_masuk' => $now->format('H:i:s'),
+                    'metode' => 'Manual oleh Admin',
+                ]
+            );
+        }
+
+        return back()->with('success', 'Seluruh peserta berhasil ditandai hadir.');
+    }
 }

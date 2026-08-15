@@ -83,6 +83,10 @@ class ProfileController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'agama' => 'nullable|string|max:50',
             'pendidikan_terakhir' => 'nullable|string|max:100',
+            'provinsi' => 'nullable|string|max:100',
+            'kabupaten' => 'nullable|string|max:100',
+            'kecamatan' => 'nullable|string|max:100',
+            'desa' => 'nullable|string|max:100',
             'kode_pos_domisili' => 'nullable|string|max:20',
             'disabilitas' => 'nullable|string|max:100',
             
@@ -129,7 +133,7 @@ class ProfileController extends Controller
             'kebutuhan_diklat' => 'nullable|string',
             'riwayat_pelatihan' => 'nullable|string|max:100',
             'jenis_pelatihan_diikuti' => 'nullable|string',
-            'file_produk' => 'nullable|string|max:255',
+            'file_produk' => 'nullable|file|mimes:pdf,jpeg,png,jpg,doc,docx|max:5120',
             'masukan_saran' => 'nullable|string',
         ]);
 
@@ -154,6 +158,14 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->ktp_file);
             }
             $validated['ktp_file'] = $request->file('ktp_file')->store('ktp_files', 'public');
+        }
+
+        // Handle File Produk upload
+        if ($request->hasFile('file_produk')) {
+            if ($user->file_produk && Storage::disk('public')->exists($user->file_produk)) {
+                Storage::disk('public')->delete($user->file_produk);
+            }
+            $validated['file_produk'] = $request->file('file_produk')->store('produk_files', 'public');
         }
 
         // Check if email changed

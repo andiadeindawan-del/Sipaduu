@@ -3,18 +3,14 @@
 @section('title', 'Tambah Pengumuman')
 
 @section('header')
-<div class="page-heading">
+<div class="page-heading d-flex justify-content-between align-items-center">
     <div class="page-heading-copy">
         <span class="page-icon"><i class="bi bi-megaphone"></i></span>
         <div>
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Tambah Pengumuman</h1>
+            <p class="text-muted mb-0">Buat pengumuman baru untuk semua pengguna</p>
         </div>
-    </div>
-    <div class="heading-actions">
-        <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
     </div>
 </div>
 @endsection
@@ -26,69 +22,65 @@
             <!-- Alert Errors -->
             @if($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Terjadi kesalahan!</strong>
-                <ul class="mb-0 mt-2">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Ada kesalahan!</strong> Silakan periksa kembali formulir di bawah ini.
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             @endif
 
             <div class="panel">
                 <div class="panel-header">
-                    <h5 class="section-title"><i class="bi bi-megaphone"></i> Form Tambah Pengumuman</h5>
-                    <p class="text-muted small mb-0">Isi data pengumuman dengan lengkap.</p>
+                    <div>
+                        <h5 class="section-title"><i class="bi bi-megaphone text-primary"></i> Form Tambah Pengumuman</h5>
+                        <p class="text-muted small mb-0">Isi data pengumuman dengan lengkap</p>
+                    </div>
+                    <span class="badge bg-info">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Baru
+                    </span>
                 </div>
+
                 <div class="p-4">
                     <form action="{{ route('admin.pengumuman.store') }}" method="POST" id="pengumumanForm" enctype="multipart/form-data">
                         @csrf
 
-                        <div class="row g-3">
-                            <!-- Pilih Pelatihan -->
+                        <div class="row g-4">
+                            <!-- Training & Kategori -->
                             <div class="col-12 col-md-6">
                                 <label for="training_id" class="form-label fw-semibold">
-                                    Pelatihan
+                                    <i class="bi bi-journal-bookmark me-1"></i> Training
                                 </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-journal-bookmark"></i></span>
-                                    <select class="form-select @error('training_id') is-invalid @enderror" 
-                                            id="training_id" name="training_id">
-                                        <option value="">Pilih Pelatihan (Opsional)</option>
-                                        @foreach($trainings ?? [] as $training)
-                                        <option value="{{ $training->id }}" {{ old('training_id') == $training->id ? 'selected' : '' }}>
-                                            {{ $training->judul }}
-                                            @if($training->tanggal_mulai)
-                                                ({{ $training->tanggal_mulai->format('d/m/Y') }} - {{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '...' }})
-                                            @endif
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <small class="text-muted">Kosongkan jika pengumuman untuk semua pelatihan.</small>
+                                <select class="form-select @error('training_id') is-invalid @enderror" 
+                                        id="training_id" name="training_id">
+                                    <option value="">Pilih Training (Opsional)</option>
+                                    @foreach($trainings ?? [] as $training)
+                                    <option value="{{ $training->id }}" {{ old('training_id') == $training->id ? 'selected' : '' }}>
+                                        {{ $training->judul }}
+                                        @if($training->tanggal_mulai)
+                                            ({{ $training->tanggal_mulai->format('d/m/Y') }} - {{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '...' }})
+                                        @endif
+                                    </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Kosongkan jika pengumuman untuk semua training.</small>
                                 @error('training_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Pilih Kategori -->
                             <div class="col-12 col-md-6">
                                 <label for="kategori_id" class="form-label fw-semibold">
-                                    Kategori
+                                    <i class="bi bi-tag me-1"></i> Kategori
                                 </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                                    <select class="form-select @error('kategori_id') is-invalid @enderror" 
-                                            id="kategori_id" name="kategori_id">
-                                        <option value="">Pilih Kategori (Opsional)</option>
-                                        @foreach($kategoris ?? [] as $kategori)
-                                        <option value="{{ $kategori->id }}" {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                            {{ $kategori->nama }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <select class="form-select @error('kategori_id') is-invalid @enderror" 
+                                        id="kategori_id" name="kategori_id">
+                                    <option value="">Pilih Kategori (Opsional)</option>
+                                    @foreach($kategoris ?? [] as $kategori)
+                                    <option value="{{ $kategori->id }}" {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>
+                                        {{ $kategori->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
                                 <small class="text-muted">Kosongkan jika tidak ada kategori.</small>
                                 @error('kategori_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -97,31 +89,27 @@
 
                             <!-- Judul -->
                             <div class="col-12">
-                                <label for="judul" class="form-label fw-semibold">
-                                    Judul Pengumuman <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+                                <div class="form-floating">
                                     <input type="text" class="form-control @error('judul') is-invalid @enderror" 
                                            id="judul" name="judul" value="{{ old('judul') }}" 
                                            placeholder="Masukkan judul pengumuman" required>
+                                    <label for="judul">
+                                        <i class="bi bi-text-paragraph me-1"></i> Judul Pengumuman <span class="text-danger">*</span>
+                                    </label>
                                 </div>
                                 @error('judul')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                <div class="invalid-feedback d-block mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Deskripsi Singkat -->
+                            <!-- Deskripsi -->
                             <div class="col-12">
                                 <label for="deskripsi" class="form-label fw-semibold">
-                                    Deskripsi Singkat
+                                    <i class="bi bi-file-text me-1"></i> Deskripsi Singkat
                                 </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-file-text"></i></span>
-                                    <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
-                                              id="deskripsi" name="deskripsi" rows="2" 
-                                              placeholder="Deskripsi singkat pengumuman (opsional)">{{ old('deskripsi') }}</textarea>
-                                </div>
+                                <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
+                                          id="deskripsi" name="deskripsi" rows="2" 
+                                          placeholder="Deskripsi singkat pengumuman (opsional)">{{ old('deskripsi') }}</textarea>
                                 <small class="text-muted">Ringkasan singkat tentang pengumuman.</small>
                                 @error('deskripsi')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -131,33 +119,34 @@
                             <!-- Konten -->
                             <div class="col-12">
                                 <label for="konten" class="form-label fw-semibold">
-                                    Konten <span class="text-danger">*</span>
+                                    <i class="bi bi-file-richtext me-1"></i> Konten <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-file-richtext"></i></span>
-                                    <textarea class="form-control @error('konten') is-invalid @enderror" 
-                                              id="konten" name="konten" rows="6" 
-                                              placeholder="Masukkan konten pengumuman lengkap..." required>{{ old('konten') }}</textarea>
-                                </div>
-                                <small class="text-muted">Konten lengkap pengumuman. Bisa menggunakan HTML.</small>
+                                <textarea class="form-control @error('konten') is-invalid @enderror" 
+                                          id="konten" name="konten" rows="6" 
+                                          placeholder="Masukkan konten pengumuman lengkap..." required>{{ old('konten') }}</textarea>
+                                <small class="text-muted">Konten lengkap pengumuman.</small>
                                 @error('konten')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Gambar Pengumuman -->
+                            <!-- Gambar -->
                             <div class="col-12">
                                 <label for="gambar" class="form-label fw-semibold">
-                                    Gambar Pengumuman
+                                    <i class="bi bi-image me-1"></i> Gambar Pengumuman
                                 </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-image"></i></span>
-                                    <input type="file" class="form-control @error('gambar') is-invalid @enderror" 
-                                           id="gambar" name="gambar" accept="image/jpeg,image/png,image/jpg" onchange="previewImage(this)">
-                                </div>
-                                <small class="text-muted">Opsional. Format: JPG, JPEG, PNG. Max: 2MB.</small>
+                                <input type="file" class="form-control @error('gambar') is-invalid @enderror" 
+                                       id="gambar" name="gambar" accept="image/jpeg,image/png,image/jpg" 
+                                       onchange="previewImage(this)">
+                                <small class="text-muted">Format: JPG, JPEG, PNG. Max: 2MB. Kosongkan jika tidak ingin menambahkan gambar.</small>
                                 <div id="imagePreviewContainer" class="mt-2 d-none">
-                                    <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+                                    <div class="p-2 bg-light rounded-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-eye me-1"></i> Preview Gambar
+                                        </label>
+                                        <img id="imagePreview" src="#" alt="Preview" 
+                                             style="max-height: 200px; width: auto; border-radius: 8px; border: 1px solid #dee2e6;">
+                                    </div>
                                 </div>
                                 @error('gambar')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -165,124 +154,126 @@
                             </div>
 
                             <!-- Tanggal -->
-                            <div class="col-12 col-md-6">
-                                <label for="tanggal" class="form-label fw-semibold">
-                                    Tanggal Publikasi <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-                                    <input type="date" class="form-control @error('tanggal') is-invalid @enderror" 
-                                           id="tanggal" name="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}" 
-                                           required>
-                                </div>
-                                <small class="text-muted">Tanggal pengumuman akan dipublikasikan.</small>
-                                @error('tanggal')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Tanggal Selesai -->
-                            <div class="col-12 col-md-6">
-                                <label for="tanggal_selesai" class="form-label fw-semibold">
-                                    Tanggal Berakhir
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
-                                    <input type="date" class="form-control @error('tanggal_selesai') is-invalid @enderror" 
-                                           id="tanggal_selesai" name="tanggal_selesai" value="{{ old('tanggal_selesai') }}">
-                                </div>
-                                <small class="text-muted">Tanggal pengumuman akan berakhir (opsional).</small>
-                                @error('tanggal_selesai')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Status -->
-                            <div class="col-12 col-md-6">
-                                <label for="status" class="form-label fw-semibold">
-                                    Status <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
-                                    <select class="form-select @error('status') is-invalid @enderror" 
-                                            id="status" name="status" required>
-                                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>📝 Draft</option>
-                                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>✅ Published</option>
-                                        <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>📦 Archived</option>
-                                    </select>
-                                </div>
-                                <small class="text-muted">Draft: belum dipublikasikan, Published: tersedia, Archived: diarsipkan.</small>
-                                @error('status')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Target Audience -->
-                            <div class="col-12 col-md-6">
-                                <label for="target_audience" class="form-label fw-semibold">
-                                    Target Audiens
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-people"></i></span>
-                                    <select class="form-select @error('target_audience') is-invalid @enderror" 
-                                            id="target_audience" name="target_audience">
-                                        <option value="all" {{ old('target_audience') == 'all' ? 'selected' : '' }}>📢 Semua</option>
-                                        <option value="peserta" {{ old('target_audience') == 'peserta' ? 'selected' : '' }}>👥 Peserta</option>
-                                        <option value="trainer" {{ old('target_audience') == 'trainer' ? 'selected' : '' }}>👨‍🏫 Trainer</option>
-                                        <option value="admin" {{ old('target_audience') == 'admin' ? 'selected' : '' }}>🛡️ Admin</option>
-                                    </select>
-                                </div>
-                                <small class="text-muted">Pilih target audiens pengumuman.</small>
-                                @error('target_audience')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Is Pinned -->
                             <div class="col-12">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input @error('is_pinned') is-invalid @enderror" 
-                                           type="checkbox" id="is_pinned" name="is_pinned" value="1"
-                                           {{ old('is_pinned') ? 'checked' : '' }}>
-                                    <label class="form-check-label fw-semibold" for="is_pinned">
-                                        <i class="bi bi-pin text-primary me-1"></i>
-                                        Sematkan Pengumuman
-                                    </label>
-                                    <small class="d-block text-muted">Pengumuman akan muncul di bagian atas.</small>
-                                </div>
-                                @error('is_pinned')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <label for="tanggal" class="form-label fw-semibold">
+                                            <i class="bi bi-calendar3 me-1"></i> Tanggal Publikasi <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control @error('tanggal') is-invalid @enderror" 
+                                               id="tanggal" name="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}" required>
+                                        @error('tanggal')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
 
-                            <!-- Preview -->
-                            <div class="col-12">
-                                <hr class="my-2">
-                                <h6 class="fw-semibold text-muted">
-                                    <i class="bi bi-eye me-2"></i>Preview
-                                </h6>
-                                <div class="p-3 border rounded bg-light" id="previewContainer">
-                                    <div class="preview-content">
-                                        <p class="text-muted">Preview akan muncul setelah Anda mengetik judul dan konten.</p>
+                                    <div class="col-12 col-md-6">
+                                        <label for="tanggal_selesai" class="form-label fw-semibold">
+                                            <i class="bi bi-calendar-x me-1"></i> Tanggal Berakhir
+                                        </label>
+                                        <input type="date" class="form-control @error('tanggal_selesai') is-invalid @enderror" 
+                                               id="tanggal_selesai" name="tanggal_selesai" value="{{ old('tanggal_selesai') }}">
+                                        <small class="text-muted">Kosongkan jika tidak ada batas waktu.</small>
+                                        @error('tanggal_selesai')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Status & Target Audience -->
+                            <div class="col-12">
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <label for="status" class="form-label fw-semibold">
+                                            <i class="bi bi-toggle-on me-1"></i> Status <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select @error('status') is-invalid @enderror" 
+                                                id="status" name="status" required>
+                                            <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>📝 Draft</option>
+                                            <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>✅ Published</option>
+                                            <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>📦 Archived</option>
+                                        </select>
+                                        @error('status')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <label for="target_audience" class="form-label fw-semibold">
+                                            <i class="bi bi-people me-1"></i> Target Audiens <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select @error('target_audience') is-invalid @enderror" 
+                                                id="target_audience" name="target_audience" required>
+                                            <option value="all" {{ old('target_audience', 'all') == 'all' ? 'selected' : '' }}>🌍 Semua</option>
+                                            <option value="peserta" {{ old('target_audience') == 'peserta' ? 'selected' : '' }}>👤 Peserta</option>
+                                            <option value="trainer" {{ old('target_audience') == 'trainer' ? 'selected' : '' }}>👨‍🏫 Trainer</option>
+                                            <option value="admin" {{ old('target_audience') == 'admin' ? 'selected' : '' }}>🛡️ Admin</option>
+                                        </select>
+                                        @error('target_audience')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pin -->
+                            <div class="col-12">
+                                <div class="p-3 bg-light rounded-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input @error('is_pinned') is-invalid @enderror" 
+                                               type="checkbox" id="is_pinned" name="is_pinned" value="1"
+                                               {{ old('is_pinned') ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="is_pinned">
+                                            <i class="bi bi-pin-fill text-warning me-1"></i>
+                                            Pin Pengumuman
+                                        </label>
+                                        <small class="d-block text-muted">Pengumuman yang di-pin akan muncul di bagian atas.</small>
+                                    </div>
+                                    @error('is_pinned')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Preview -->
+                            <div class="col-12">
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label class="form-label fw-semibold mb-0">
+                                        <i class="bi bi-eye me-1"></i> Preview Pengumuman
+                                    </label>
+                                    <button type="button" class="btn btn-sm btn-outline-success" onclick="previewPengumuman()">
+                                        <i class="bi bi-arrow-repeat me-1"></i> Refresh Preview
+                                    </button>
+                                </div>
+                                <div class="p-3 border rounded-3 bg-light mt-2" id="previewContainer" style="min-height: 100px;">
+                                    <div class="preview-content text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Preview akan muncul setelah Anda mengisi judul dan konten.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="col-12">
+                                <hr class="my-2">
+                            </div>
+
                             <!-- Submit Buttons -->
-                            <div class="col-12 mt-4">
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <div class="col-12">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="submit" class="btn btn-primary px-4" id="submitBtn">
                                         <i class="bi bi-save me-1"></i> Simpan Pengumuman
                                     </button>
-                                    <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-circle me-1"></i> Batal
-                                    </a>
                                     <button type="reset" class="btn btn-outline-warning">
                                         <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                                     </button>
-                                    <button type="button" class="btn btn-outline-success" onclick="previewPengumuman()">
-                                        <i class="bi bi-eye me-1"></i> Preview
-                                    </button>
+                                    <div class="ms-auto">
+                                        <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -293,9 +284,335 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    /* ============================================================
+       PAGE HEADING
+    ============================================================ */
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .page-heading-copy {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .page-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #d97706;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+    .eyebrow {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #8a93a3;
+        font-weight: 600;
+    }
+    .heading-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    /* ============================================================
+       PANEL
+    ============================================================ */
+    .panel {
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+    .panel:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    }
+    
+    .panel-header {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+        background: #fafbfc;
+    }
+    
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2236;
+    }
+    
+    .section-title i {
+        color: #4e9af1;
+    }
+
+    /* ============================================================
+       FORM FLOATING
+    ============================================================ */
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        height: calc(3.5rem + 2px);
+        padding: 1rem 0.75rem;
+        border-radius: 0.5rem;
+        border-color: #e2e8f0;
+    }
+    .form-floating > .form-control:focus,
+    .form-floating > .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.15);
+    }
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+        color: #8a93a3;
+    }
+
+    /* ============================================================
+       FORM
+    ============================================================ */
+    .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.4rem;
+        color: #1a2236;
+    }
+    
+    .form-control, .form-select {
+        border-color: #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.15);
+    }
+    
+    .form-control.is-invalid, .form-select.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+    .invalid-feedback {
+        font-size: 0.8rem;
+        color: #dc3545;
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* ============================================================
+       BADGE
+    ============================================================ */
+    .badge {
+        font-weight: 500;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+    .badge.bg-info {
+        background: #cfe2ff !important;
+        color: #084298 !important;
+    }
+
+    /* ============================================================
+       PREVIEW
+    ============================================================ */
+    .preview-content {
+        max-height: 300px;
+        overflow-y: auto;
+        line-height: 1.8;
+    }
+    .preview-content::-webkit-scrollbar {
+        width: 6px;
+    }
+    .preview-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    .preview-content::-webkit-scrollbar-thumb {
+        background: #c1c7cd;
+        border-radius: 4px;
+    }
+    .preview-content::-webkit-scrollbar-thumb:hover {
+        background: #a8b0b8;
+    }
+    #previewContainer {
+        transition: all 0.3s ease;
+    }
+    #previewContainer:hover {
+        background: #e9ecef !important;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+        border-radius: 0.5rem;
+        padding: 0.45rem 1.2rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+        background: #4e9af1;
+        border-color: #4e9af1;
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background: #3d8ae0;
+        border-color: #3d8ae0;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(78, 154, 241, 0.3);
+    }
+    
+    .btn-outline-warning {
+        border-color: #ff9f43;
+        color: #ff9f43;
+    }
+    .btn-outline-warning:hover {
+        background: #ff9f43;
+        border-color: #ff9f43;
+        color: #fff;
+    }
+    
+    .btn-outline-secondary {
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    .btn-outline-secondary:hover {
+        background: #e2e8f0;
+        border-color: #d5dce6;
+    }
+    
+    .btn-outline-success {
+        border-color: #28c76f;
+        color: #28c76f;
+    }
+    .btn-outline-success:hover {
+        background: #28c76f;
+        border-color: #28c76f;
+        color: #fff;
+    }
+    
+    .btn-sm {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* ============================================================
+       ALERT
+    ============================================================ */
+    .alert {
+        border-radius: 0.75rem;
+        border: none;
+        padding: 0.75rem 1rem;
+    }
+    .alert-danger {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+    .alert-dismissible .btn-close {
+        padding: 1rem;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+        .page-heading {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .page-heading-copy {
+            width: 100%;
+        }
+        .heading-actions {
+            width: 100%;
+        }
+        .panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .panel-body {
+            padding: 1.25rem !important;
+        }
+        .d-flex.flex-wrap.gap-2 {
+            flex-direction: column;
+        }
+        .d-flex.flex-wrap.gap-2 .btn {
+            width: 100%;
+        }
+        .ms-auto {
+            margin-left: 0 !important;
+        }
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            height: calc(3rem + 2px);
+            padding: 0.75rem 0.75rem;
+        }
+        .form-floating > label {
+            padding: 0.75rem;
+        }
+        .row.g-3 > [class*="col-"] {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 0.5rem;
+        }
+    }
+
+    /* ============================================================
+       ANIMATION
+    ============================================================ */
+    .panel {
+        animation: fadeInUp 0.4s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
-window.previewImage = function(input) {
+// ============================================================
+// PREVIEW IMAGE
+// ============================================================
+function previewImage(input) {
     const previewContainer = document.getElementById('imagePreviewContainer');
     const previewImage = document.getElementById('imagePreview');
     
@@ -333,30 +650,44 @@ document.addEventListener('DOMContentLoaded', function() {
             'archived': '📦 Archived'
         };
 
+        const statusClasses = {
+            'draft': 'text-bg-secondary',
+            'published': 'text-bg-success',
+            'archived': 'text-bg-secondary'
+        };
+
         const targetLabels = {
-            'all': '📢 Semua',
-            'peserta': '👥 Peserta',
+            'all': '🌍 Semua',
+            'peserta': '👤 Peserta',
             'trainer': '👨‍🏫 Trainer',
             'admin': '🛡️ Admin'
         };
 
         const previewContainer = document.getElementById('previewContainer');
+        
+        let formattedDate = '-';
+        if (tanggal) {
+            const date = new Date(tanggal);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            formattedDate = date.toLocaleDateString('id-ID', options);
+        }
+
         previewContainer.innerHTML = `
             <div class="preview-content">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                     <h5 class="fw-bold mb-2">${judul}</h5>
-                    ${isPinned ? '<span class="badge text-bg-primary"><i class="bi bi-pin me-1"></i> Pinned</span>' : ''}
+                    ${isPinned ? '<span class="badge text-bg-warning"><i class="bi bi-pin-fill me-1"></i> Pinned</span>' : ''}
                 </div>
                 ${deskripsi ? `<p class="text-muted small mb-2">${deskripsi}</p>` : ''}
                 <div class="mb-2">
-                    <span class="badge ${status === 'published' ? 'text-bg-success' : status === 'draft' ? 'text-bg-secondary' : 'text-bg-secondary'}">
+                    <span class="badge ${statusClasses[status] || 'text-bg-secondary'}">
                         ${statusLabels[status] || status}
                     </span>
                     <span class="badge text-bg-info ms-1">${targetLabels[target] || target}</span>
-                    ${tanggal ? `<span class="badge text-bg-light ms-1"><i class="bi bi-calendar3 me-1"></i>${tanggal}</span>` : ''}
+                    ${tanggal ? `<span class="badge text-bg-light ms-1"><i class="bi bi-calendar3 me-1"></i>${formattedDate}</span>` : ''}
                 </div>
                 <div class="border-top pt-2 mt-2">
-                    ${konten}
+                    ${konten.replace(/\n/g, '<br>')}
                 </div>
             </div>
         `;
@@ -393,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (errors.length > 0) {
                 e.preventDefault();
-                alert(errors.join('\n'));
+                alert('❌ ' + errors.join('\n'));
                 return false;
             }
 
@@ -446,59 +777,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // INITIAL PREVIEW
     // ============================================================
-    setTimeout(previewPengumuman, 500);
+    setTimeout(previewPengumuman, 300);
 
     // ============================================================
-    // FOCUS SEARCH ON KEYBOARD SHORTCUT
+    // FOCUS ON FIRST INPUT
     // ============================================================
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === '/') {
-            e.preventDefault();
-            const searchInput = document.querySelector('input[name="search"]');
-            if (searchInput) {
-                searchInput.focus();
-                searchInput.select();
-            }
-        }
-    });
+    const firstInput = document.querySelector('input[name="judul"]');
+    if (firstInput) {
+        firstInput.focus();
+    }
 });
 </script>
-@endpush
-
-@push('styles')
-<style>
-    .panel {
-        background: #fff;
-        border-radius: 0.75rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,.06);
-        overflow: hidden;
-    }
-    .panel-header {
-        padding: 1rem 1.25rem;
-        border-bottom: 1px solid #f0f0f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: .75rem;
-    }
-    .section-title {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-        margin: 0;
-        font-size: 1rem;
-    }
-    .section-title i {
-        color: var(--primary);
-    }
-    .bg-light {
-        background-color: #f8f9fa !important;
-    }
-    .preview-content {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-</style>
 @endpush
 @endsection

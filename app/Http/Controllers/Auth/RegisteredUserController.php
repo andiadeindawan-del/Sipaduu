@@ -38,8 +38,17 @@ class RegisteredUserController extends Controller
             'nama_usaha' => ['required', 'string', 'max:100'],
             'nib' => ['required', 'string', 'max:30', 'unique:users'],
             'jenis_usaha' => ['required', 'in:formal,non_formal'],
+            'provinsi' => ['required', 'string', 'max:100'],
+            'kabupaten' => ['required', 'string', 'max:100'],
+            'kecamatan' => ['required', 'string', 'max:100'],
+            'desa' => ['required', 'string', 'max:100'],
             'alamat_lengkap' => ['required', 'string', 'max:500'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'provinsi.required' => 'Provinsi wajib dipilih.',
+            'kabupaten.required' => 'Kabupaten/Kota wajib dipilih.',
+            'kecamatan.required' => 'Kecamatan wajib dipilih.',
+            'desa.required' => 'Desa/Kelurahan wajib dipilih.',
         ]);
 
         $user = User::create([
@@ -50,6 +59,10 @@ class RegisteredUserController extends Controller
             'nama_usaha' => $request->nama_usaha,
             'nib' => $request->nib,
             'jenis_usaha' => $request->jenis_usaha,
+            'provinsi' => $request->provinsi,
+            'kabupaten' => $request->kabupaten,
+            'kecamatan' => $request->kecamatan,
+            'desa' => $request->desa,
             'alamat_lengkap' => $request->alamat_lengkap,
             'password' => Hash::make($request->password),
             'role' => 'peserta',

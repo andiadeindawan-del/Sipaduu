@@ -110,9 +110,9 @@
                                             <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary" 
-                                                        onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')"
+                                                        onclick="return confirm('Yakin ingin {{ isset($registration) && $registration->status == 'ditolak' ? 'mendaftar kembali' : 'mendaftar' }} pelatihan ini?')"
                                                         {{ $availableSlots !== null && $availableSlots <= 0 ? 'disabled' : '' }}>
-                                                    <i class="bi bi-plus-circle me-2"></i> Daftar Pelatihan
+                                                    <i class="bi bi-plus-circle me-2"></i> {{ isset($registration) && $registration->status == 'ditolak' ? 'Daftar Kembali' : 'Daftar Pelatihan' }}
                                                 </button>
                                             </form>
                                         @else

@@ -93,10 +93,10 @@
                 </a>
                 @endif
                 
-                {{-- Tombol Tambah dengan modal --}}
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+                {{-- Tombol Tambah --}}
+                <a href="{{ route('admin.trainings.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Tambah
-                </button>
+                </a>
             </div>
         </div>
         <div class="table-responsive">
@@ -161,26 +161,24 @@
                         </td>
                         <td class="text-end">
                             <div class="d-flex gap-1 justify-content-end">
-                                {{-- Tombol Show dengan modal --}}
-                                <button type="button" class="badge bg-info text-white border-0 p-2" 
-                                        data-bs-toggle="modal" data-bs-target="#showModal{{ $training->id }}" 
-                                        title="Lihat">
+                                {{-- Link Show --}}
+                                <a href="{{ route('admin.trainings.show', $training->id) }}" class="badge bg-info text-white border-0 p-2 text-decoration-none" title="Lihat">
                                     <i class="bi bi-eye"></i> Lihat
-                                </button>
+                                </a>
                                 
-                                {{-- Tombol Edit dengan modal --}}
-                                <button type="button" class="badge bg-warning text-dark border-0 p-2" 
-                                        data-bs-toggle="modal" data-bs-target="#editModal{{ $training->id }}" 
-                                        title="Edit">
+                                {{-- Link Edit --}}
+                                <a href="{{ route('admin.trainings.edit', $training->id) }}" class="badge bg-warning text-dark border-0 p-2 text-decoration-none" title="Edit">
                                     <i class="bi bi-pencil"></i> Edit
-                                </button>
+                                </a>
                                 
-                                {{-- Tombol Delete dengan modal --}}
-                                <button type="button" class="badge bg-danger text-white border-0 p-2" 
-                                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ $training->id }}" 
-                                        title="Hapus">
-                                    <i class="bi bi-trash"></i> Hapus
-                                </button>
+                                {{-- Tombol Delete dengan form --}}
+                                <form action="{{ route('admin.trainings.destroy', $training->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pelatihan {{ $training->judul }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="badge bg-danger text-white border-0 p-2" title="Hapus">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -204,9 +202,9 @@
                         <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
                     </a>
                     @endif
-                    <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <a href="{{ route('admin.trainings.create') }}" class="btn btn-primary btn-sm mt-2">
                         <i class="bi bi-plus-circle"></i> Tambah Pelatihan
-                    </button>
+                    </a>
                 </div>
             </div>
             @endif
@@ -224,325 +222,4 @@
         @endif
     </div>
 </div>
-
-<!-- ============================================================ -->
-<!-- MODAL CREATE -->
-<!-- ============================================================ -->
-<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="{{ route('admin.trainings.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Pelatihan
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Judul Pelatihan <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="judul" placeholder="Masukkan judul pelatihan" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Kategori</label>
-                            <select class="form-select" name="kategori_id">
-                                <option value="">Pilih Kategori</option>
-                                @foreach($kategoris ?? [] as $kategori)
-                                <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Deskripsi</label>
-                            <textarea class="form-control" name="deskripsi" rows="3" placeholder="Deskripsi pelatihan"></textarea>
-                        </div>
-                        <!-- Trainer DIHAPUS -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tipe</label>
-                            <select class="form-select" name="tipe">
-                                <option value="online">Online</option>
-                                <option value="offline">Offline</option>
-                                <option value="hybrid">Hybrid</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal_mulai" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tanggal Selesai <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal_selesai" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Kapasitas</label>
-                            <input type="number" class="form-control" name="kapasitas" placeholder="Maksimal peserta" min="1">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="berjalan">Berjalan</option>
-                                <option value="selesai">Selesai</option>
-                                <option value="dibatalkan">Dibatalkan</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Lokasi</label>
-                            <input type="text" class="form-control" name="lokasi" placeholder="Lokasi pelatihan">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Link Meeting</label>
-                            <input type="url" class="form-control" name="link_meeting" placeholder="https://meet.google.com/...">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Gambar</label>
-                            <input type="file" class="form-control" name="gambar" accept="image/*">
-                            <small class="text-muted">Format: JPG, PNG, JPEG. Maksimal 2MB.</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- MODAL SHOW -->
-<!-- ============================================================ -->
-@foreach($trainings ?? [] as $training)
-<div class="modal fade" id="showModal{{ $training->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-info-circle text-info me-2"></i>Detail Pelatihan
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    @if($training->gambar)
-                    <div class="col-12 text-center">
-                        <img src="{{ asset('storage/' . $training->gambar) }}" alt="{{ $training->judul }}" 
-                             style="max-width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;">
-                    </div>
-                    @endif
-                    <div class="col-12">
-                        <h5 class="fw-bold">{{ $training->judul }}</h5>
-                        <p class="text-muted">{{ $training->deskripsi ?? 'Tidak ada deskripsi' }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Kategori</label>
-                        <p class="fw-semibold mb-0">{{ $training->kategori->nama ?? '-' }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Tipe</label>
-                        <p class="fw-semibold mb-0">{{ ucfirst($training->tipe ?? 'Online') }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Status</label>
-                        <p class="fw-semibold mb-0">
-                            <span class="badge {{ $statusMap[$training->status]['class'] ?? 'badge-draft' }}">
-                                {{ $statusMap[$training->status]['label'] ?? $training->status }}
-                            </span>
-                        </p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Tanggal Mulai</label>
-                        <p class="fw-semibold mb-0">{{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : '-' }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Tanggal Selesai</label>
-                        <p class="fw-semibold mb-0">{{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '-' }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Lokasi</label>
-                        <p class="fw-semibold mb-0">{{ $training->lokasi ?? '-' }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Kapasitas</label>
-                        <p class="fw-semibold mb-0">{{ $training->kapasitas ?? 'Tak terbatas' }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Peserta Terdaftar</label>
-                        <p class="fw-semibold mb-0">{{ $training->participants_count ?? 0 }}</p>
-                    </div>
-                    <div class="col-6">
-                        <label class="text-muted small fw-semibold">Dibuat</label>
-                        <p class="fw-semibold mb-0">{{ $training->created_at ? $training->created_at->format('d/m/Y H:i') : '-' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $training->id }}" data-bs-dismiss="modal">
-                    <i class="bi bi-pencil me-1"></i> Edit
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- MODAL EDIT -->
-<!-- ============================================================ -->
-<div class="modal fade" id="editModal{{ $training->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="{{ route('admin.trainings.update', $training->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-pencil-square text-warning me-2"></i>Edit Pelatihan
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Judul Pelatihan <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="judul" value="{{ $training->judul }}" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Kategori</label>
-                            <select class="form-select" name="kategori_id">
-                                <option value="">Pilih Kategori</option>
-                                @foreach($kategoris ?? [] as $kategori)
-                                <option value="{{ $kategori->id }}" {{ $training->kategori_id == $kategori->id ? 'selected' : '' }}>
-                                    {{ $kategori->nama }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Deskripsi</label>
-                            <textarea class="form-control" name="deskripsi" rows="3">{{ $training->deskripsi }}</textarea>
-                        </div>
-                        <!-- Trainer DIHAPUS -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tipe</label>
-                            <select class="form-select" name="tipe">
-                                <option value="online" {{ $training->tipe == 'online' ? 'selected' : '' }}>Online</option>
-                                <option value="offline" {{ $training->tipe == 'offline' ? 'selected' : '' }}>Offline</option>
-                                <option value="hybrid" {{ $training->tipe == 'hybrid' ? 'selected' : '' }}>Hybrid</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal_mulai" value="{{ $training->tanggal_mulai?->format('Y-m-d') }}" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Tanggal Selesai <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal_selesai" value="{{ $training->tanggal_selesai?->format('Y-m-d') }}" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Kapasitas</label>
-                            <input type="number" class="form-control" name="kapasitas" value="{{ $training->kapasitas }}" min="1">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="draft" {{ $training->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="published" {{ $training->status == 'published' ? 'selected' : '' }}>Published</option>
-                                <option value="berjalan" {{ $training->status == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
-                                <option value="selesai" {{ $training->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                <option value="dibatalkan" {{ $training->status == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Lokasi</label>
-                            <input type="text" class="form-control" name="lokasi" value="{{ $training->lokasi }}">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Link Meeting</label>
-                            <input type="url" class="form-control" name="link_meeting" value="{{ $training->link_meeting }}">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Gambar</label>
-                            @if($training->gambar)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $training->gambar) }}" alt="{{ $training->judul }}" 
-                                     style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px;">
-                                <small class="text-muted d-block">Gambar saat ini</small>
-                            </div>
-                            @endif
-                            <input type="file" class="form-control" name="gambar" accept="image/*">
-                            <small class="text-muted">Format: JPG, PNG, JPEG. Maksimal 2MB.</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning">
-                        <i class="bi bi-save me-1"></i> Update
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- MODAL DELETE -->
-<!-- ============================================================ -->
-<div class="modal fade" id="deleteModal{{ $training->id }}" tabindex="-1" 
-     aria-labelledby="deleteModalLabel{{ $training->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel{{ $training->id }}">
-                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                    Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus pelatihan <strong>{{ $training->judul }}</strong>?</p>
-                @if(($training->participants_count ?? 0) > 0)
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Pelatihan ini memiliki <strong>{{ $training->participants_count }}</strong> peserta. 
-                    Menghapus pelatihan akan menghapus semua data pendaftaran.
-                </div>
-                @endif
-                <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('admin.trainings.destroy', $training->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Hapus
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Auto close alerts after 5 seconds
-        setTimeout(function() {
-            document.querySelectorAll('.alert').forEach(function(alert) {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
-    });
-</script>
-@endpush
 @endsection

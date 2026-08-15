@@ -108,10 +108,9 @@
                 </p>
             </div>
             <div class="d-flex gap-2 flex-wrap">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal" 
-                        onclick="setMateriId({{ $selectedMateri->id }})">
+                <a href="{{ route('admin.quiz.create', ['materi_id' => $selectedMateri->id]) }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Tambah Quiz untuk Materi Ini
-                </button>
+                </a>
                 <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-x-circle"></i> Hapus Filter
                 </a>
@@ -146,9 +145,9 @@
                     @endif
                 </form>
                 
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+                <a href="{{ route('admin.quiz.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Tambah Quiz
-                </button>
+                </a>
             </div>
         </div>
         <div class="table-responsive">
@@ -223,18 +222,14 @@
                         <td class="text-end">
                             <div class="d-flex gap-1 justify-content-end" role="group">
                                 <!-- Lihat -->
-                                <button type="button" class="btn btn-info" 
-                                        data-bs-toggle="modal" data-bs-target="#showModal{{ $quiz->id }}" 
-                                        title="Lihat Detail">
+                                <a href="{{ route('admin.quiz.show', $quiz->id) }}" class="btn btn-info" title="Lihat Detail">
                                     <i class="bi bi-eye"></i> 
-                                </button>
+                                </a>
                                 
                                 <!-- Edit -->
-                                <button type="button" class="btn btn-warning" 
-                                        data-bs-toggle="modal" data-bs-target="#editModal{{ $quiz->id }}" 
-                                        title="Edit Quiz">
+                                <a href="{{ route('admin.quiz.edit', $quiz->id) }}" class="btn btn-warning" title="Edit Quiz">
                                     <i class="bi bi-pencil"></i> 
-                                </button>
+                                </a>
                                 
                                 <!-- Pertanyaan -->
                                 <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" 
@@ -251,11 +246,13 @@
                                 @endif
                                 
                                 <!-- Hapus -->
-                                <button type="button" class="btn btn-danger" 
-                                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ $quiz->id }}" 
-                                        title="Hapus Quiz">
-                                    <i class="bi bi-trash"></i> 
-                                </button>
+                                <form action="{{ route('admin.quiz.destroy', $quiz->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus quiz {{ $quiz->judul }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" title="Hapus Quiz">
+                                        <i class="bi bi-trash"></i> 
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -289,14 +286,14 @@
                         <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
                     </a>
                     @endif
-                    <button type="button" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <a href="{{ route('admin.quiz.create') }}" class="btn btn-primary btn-sm mt-2">
                         <i class="bi bi-plus-circle"></i> 
                         @if(request('materi_id') && isset($selectedMateri))
                             Tambah Quiz untuk Materi Ini
                         @else
                             Tambah Quiz
                         @endif
-                    </button>
+                    </a>
                 </div>
             </div>
             @endif
@@ -315,369 +312,6 @@
     </div>
 </div>
 
-<!-- ============================================================
-     MODAL CREATE
-============================================================ -->
-<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="{{ route('admin.quiz.store') }}" method="POST" id="createForm">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Quiz
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <input type="hidden" name="materi_id" id="createMateriId" value="{{ request('materi_id') }}">
-                        
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Judul Quiz <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
-                                <input type="text" class="form-control" name="judul" placeholder="Masukkan judul quiz" required>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Deskripsi</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-file-text"></i></span>
-                                <textarea class="form-control" name="deskripsi" rows="2" placeholder="Deskripsi quiz (opsional)"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Training <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-journal-bookmark"></i></span>
-                                <select class="form-select" name="training_id" required>
-                                    <option value="">Pilih Training</option>
-                                    @foreach($trainings ?? [] as $training)
-                                    <option value="{{ $training->id }}">{{ $training->judul }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Materi</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-book"></i></span>
-                                <select class="form-select" name="materi_id" id="createMateriSelect">
-                                    <option value="">Pilih Materi (Opsional)</option>
-                                    @foreach($materis ?? [] as $materi)
-                                    <option value="{{ $materi->id }}" {{ request('materi_id') == $materi->id ? 'selected' : '' }}>
-                                        {{ $materi->judul }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <small class="text-muted">Kosongkan jika quiz tidak terkait dengan materi tertentu.</small>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Durasi (menit)</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                                <input type="number" class="form-control" name="durasi" placeholder="30" min="1">
-                            </div>
-                            <small class="text-muted">Waktu pengerjaan quiz.</small>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Nilai Minimal <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-star"></i></span>
-                                <input type="number" class="form-control" name="passing_score" value="70" min="0" max="100" required>
-                                <span class="input-group-text">%</span>
-                            </div>
-                            <small class="text-muted">Nilai minimal untuk lulus.</small>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Maks. Percobaan <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
-                                <input type="number" class="form-control" name="max_attempt" value="1" min="1" max="10" required>
-                            </div>
-                            <small class="text-muted">Batas maksimal pengulangan quiz.</small>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
-                                <select class="form-select" name="status" required>
-                                    <option value="draft">📝 Draft</option>
-                                    <option value="published" selected>✅ Published</option>
-                                    <option value="archived">📦 Archived</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     MODAL SHOW
-============================================================ -->
-@foreach($quizzes ?? [] as $quiz)
-<div class="modal fade" id="showModal{{ $quiz->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-eye text-info me-2"></i>Detail Quiz
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="text-muted small fw-semibold">Judul</label>
-                        <p class="fw-semibold fs-5">{{ $quiz->judul }}</p>
-                    </div>
-                    @if($quiz->deskripsi)
-                    <div class="col-12">
-                        <label class="text-muted small fw-semibold">Deskripsi</label>
-                        <p>{{ $quiz->deskripsi }}</p>
-                    </div>
-                    @endif
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Training</label>
-                        @if($quiz->training)
-                        <p class="fw-semibold">{{ $quiz->training->judul }}</p>
-                        @else
-                        <p class="text-muted">-</p>
-                        @endif
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Materi</label>
-                        @if($quiz->materi)
-                        <p class="fw-semibold">
-                            <a href="{{ route('admin.materi.show', $quiz->materi->id) }}" class="text-decoration-none">
-                                {{ $quiz->materi->judul }}
-                            </a>
-                        </p>
-                        @else
-                        <p class="text-muted">-</p>
-                        @endif
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Durasi</label>
-                        <p>{{ $quiz->durasi ? $quiz->durasi . ' menit' : '-' }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Nilai Minimal</label>
-                        <p>{{ $quiz->passing_score ?? 70 }}%</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Total Pertanyaan</label>
-                        <p>{{ $quiz->questions_count ?? 0 }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Status</label>
-                        <p>
-                            @php
-                                $statusMap = [
-                                    'draft' => ['label' => 'Draft', 'class' => 'badge-draft'],
-                                    'published' => ['label' => 'Published', 'class' => 'badge-published'],
-                                    'archived' => ['label' => 'Archived', 'class' => 'badge-secondary'],
-                                ];
-                                $status = $statusMap[$quiz->status] ?? ['label' => $quiz->status, 'class' => 'badge-draft'];
-                            @endphp
-                            <span class="badge {{ $status['class'] }}">{{ $status['label'] }}</span>
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Dibuat</label>
-                        <p>{{ $quiz->created_at ? $quiz->created_at->format('d/m/Y H:i') : '-' }}</p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="text-muted small fw-semibold">Diperbarui</label>
-                        <p>{{ $quiz->updated_at ? $quiz->updated_at->format('d/m/Y H:i') : '-' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $quiz->id }}" data-bs-dismiss="modal">
-                    <i class="bi bi-pencil"></i> Edit
-                </button>
-                <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" class="btn btn-success">
-                    <i class="bi bi-list-ol"></i> Kelola Pertanyaan
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
-<!-- ============================================================
-     MODAL EDIT
-============================================================ -->
-@foreach($quizzes ?? [] as $quiz)
-<div class="modal fade" id="editModal{{ $quiz->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="{{ route('admin.quiz.update', $quiz->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-pencil-square text-warning me-2"></i>Edit Quiz
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Judul Quiz <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
-                                <input type="text" class="form-control" name="judul" value="{{ $quiz->judul }}" required>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Deskripsi</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-file-text"></i></span>
-                                <textarea class="form-control" name="deskripsi" rows="2">{{ $quiz->deskripsi }}</textarea>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Training <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-journal-bookmark"></i></span>
-                                <select class="form-select" name="training_id" required>
-                                    <option value="">Pilih Training</option>
-                                    @foreach($trainings ?? [] as $training)
-                                    <option value="{{ $training->id }}" {{ $quiz->training_id == $training->id ? 'selected' : '' }}>
-                                        {{ $training->judul }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Materi</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-book"></i></span>
-                                <select class="form-select" name="materi_id">
-                                    <option value="">Pilih Materi (Opsional)</option>
-                                    @foreach($materis ?? [] as $materi)
-                                    <option value="{{ $materi->id }}" {{ $quiz->materi_id == $materi->id ? 'selected' : '' }}>
-                                        {{ $materi->judul }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Durasi (menit)</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                                <input type="number" class="form-control" name="durasi" value="{{ $quiz->durasi }}" min="1">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Nilai Minimal <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-star"></i></span>
-                                <input type="number" class="form-control" name="passing_score" value="{{ $quiz->passing_score ?? 70 }}" min="0" max="100" required>
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Maks. Percobaan <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
-                                <input type="number" class="form-control" name="max_attempt" value="{{ $quiz->max_attempt ?? 1 }}" min="1" max="10" required>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
-                                <select class="form-select" name="status" required>
-                                    <option value="draft" {{ $quiz->status == 'draft' ? 'selected' : '' }}>📝 Draft</option>
-                                    <option value="published" {{ $quiz->status == 'published' ? 'selected' : '' }}>✅ Published</option>
-                                    <option value="archived" {{ $quiz->status == 'archived' ? 'selected' : '' }}>📦 Archived</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <hr>
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted small fw-semibold">Dibuat</label>
-                                    <p class="fw-semibold mb-0">{{ $quiz->created_at ? $quiz->created_at->format('d/m/Y H:i') : '-' }}</p>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted small fw-semibold">Diperbarui</label>
-                                    <p class="fw-semibold mb-0">{{ $quiz->updated_at ? $quiz->updated_at->format('d/m/Y H:i') : '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning">
-                        <i class="bi bi-save me-1"></i> Update
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endforeach
-
-<!-- ============================================================
-     MODAL DELETE
-============================================================ -->
-@foreach($quizzes ?? [] as $quiz)
-<div class="modal fade" id="deleteModal{{ $quiz->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                    Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus quiz <strong>{{ $quiz->judul }}</strong>?</p>
-                @if(($quiz->questions_count ?? 0) > 0)
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Quiz ini memiliki <strong>{{ $quiz->questions_count }}</strong> pertanyaan. 
-                    Menghapus quiz akan menghapus semua pertanyaan terkait.
-                </div>
-                @endif
-                <p class="text-muted small">Tindakan ini tidak dapat dibatalkan.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('admin.quiz.destroy', $quiz->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Hapus
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -690,39 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bsAlert.close();
         });
     }, 5000);
-
-    // ============================================================
-    // SET MATERI ID FOR CREATE
-    // ============================================================
-    window.setMateriId = function(materiId) {
-        document.getElementById('createMateriId').value = materiId;
-        document.getElementById('createMateriSelect').value = materiId;
-    };
-
-    // ============================================================
-    // FILTER AUTO SUBMIT
-    // ============================================================
-    document.querySelectorAll('form[method="GET"] select[name="status"], form[method="GET"] select[name="materi_id"]').forEach(function(select) {
-        select.addEventListener('change', function() {
-            this.closest('form').submit();
-        });
-    });
-
-    // ============================================================
-    // DURASI & PASSING SCORE VALIDATION
-    // ============================================================
-    document.querySelectorAll('input[name="durasi"]').forEach(function(input) {
-        input.addEventListener('input', function() {
-            if (this.value < 0) this.value = 1;
-        });
-    });
-
-    document.querySelectorAll('input[name="passing_score"]').forEach(function(input) {
-        input.addEventListener('input', function() {
-            if (this.value < 0) this.value = 0;
-            if (this.value > 100) this.value = 100;
-        });
-    });
 });
 </script>
 @endpush

@@ -3,7 +3,7 @@
 @section('title', 'Detail Pelatihan')
 
 @section('header')
-<div class="page-heading">
+<div class="page-heading d-flex justify-content-between align-items-center">
     <div class="page-heading-copy">
         <span class="page-icon"><i class="bi bi-eye"></i></span>
         <div>
@@ -11,7 +11,6 @@
             <h1 class="h3 mb-0">Detail Pelatihan</h1>
         </div>
     </div>
-  
 </div>
 @endsection
 
@@ -46,234 +45,210 @@
                     </span>
                 </div>
                 <div class="p-4">
-                    <div class="row g-4">
-                        <!-- Gambar -->
+                    <!-- Gambar & Judul -->
+                    <div class="row g-4 mb-4">
                         @if($training->gambar)
                         <div class="col-12 text-center mb-3">
                             <img src="{{ asset('storage/' . $training->gambar) }}" 
                                  alt="{{ $training->judul }}" 
-                                 style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd; padding: 4px;">
+                                 class="img-fluid rounded-3 shadow-sm" 
+                                 style="max-height: 300px; object-fit: cover; border: 1px solid #e9ecef;">
                         </div>
                         @endif
 
-                        <!-- Judul -->
                         <div class="col-12">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-text-paragraph fs-4 text-primary"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Judul Pelatihan</label>
-                                    <p class="fw-semibold mb-0 fs-5">{{ $training->judul }}</p>
-                                </div>
+                            <h3 class="fw-bold mb-0">{{ $training->judul }}</h3>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                                <span class="badge {{ $training->status == 'published' ? 'badge-published' : ($training->status == 'berjalan' ? 'badge-berjalan' : ($training->status == 'selesai' ? 'badge-selesai' : ($training->status == 'dibatalkan' ? 'badge-dibatalkan' : 'badge-draft'))) }}">
+                                    <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
+                                    {{ ucfirst($training->status) }}
+                                </span>
+                                @if($training->kategori)
+                                <span class="badge text-bg-info">
+                                    <i class="bi bi-tag me-1"></i>
+                                    {{ $training->kategori->nama }}
+                                </span>
+                                @endif
+                                <span class="badge {{ $training->tipe == 'online' ? 'text-bg-primary' : ($training->tipe == 'offline' ? 'text-bg-secondary' : 'text-bg-warning') }}">
+                                    <i class="bi bi-laptop me-1"></i>
+                                    {{ ucfirst($training->tipe) }}
+                                </span>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Kategori & Tipe -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-tag fs-4 text-info"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Kategori</label>
-                                    <p class="fw-semibold mb-0">
-                                        @if($training->kategori)
-                                        <span class="badge text-bg-info">{{ $training->kategori->nama }}</span>
-                                        @else
-                                        <span class="text-muted">-</span>
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-laptop fs-4 text-success"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Tipe Pelatihan</label>
-                                    <p class="fw-semibold mb-0">
-                                        <span class="badge {{ $training->tipe == 'online' ? 'text-bg-primary' : ($training->tipe == 'offline' ? 'text-bg-secondary' : 'text-bg-warning') }}">
-                                            {{ ucfirst($training->tipe) }}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Trainer -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-person-badge fs-4 text-primary"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Trainer</label>
-                                    @if($training->trainer)
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="avatar-text avatar-sm">
-                                            {{ strtoupper(substr($training->trainer->nama ?? 'T', 0, 2)) }}
-                                        </div>
-                                        <div>
-                                            <p class="fw-semibold mb-0">{{ $training->trainer->nama ?? 'Trainer' }}</p>
-                                            <p class="text-muted small mb-0">{{ $training->trainer->email }}</p>
-                                        </div>
-                                    </div>
-                                    @else
-                                    <p class="text-muted">-</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Status -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-toggle-on fs-4 text-warning"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Status</label>
-                                    <p class="fw-semibold mb-0">
-                                        <span class="badge {{ $training->status == 'published' ? 'badge-published' : ($training->status == 'berjalan' ? 'badge-berjalan' : ($training->status == 'selesai' ? 'badge-selesai' : ($training->status == 'dibatalkan' ? 'badge-dibatalkan' : 'badge-draft'))) }}">
-                                            {{ ucfirst($training->status) }}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tanggal -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-calendar3 fs-4 text-primary"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Tanggal Mulai</label>
-                                    <p class="fw-semibold mb-0">{{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-calendar3 fs-4 text-danger"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Tanggal Selesai</label>
-                                    <p class="fw-semibold mb-0">{{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Lokasi & Link Meeting -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-geo-alt fs-4 text-secondary"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Lokasi</label>
-                                    <p class="fw-semibold mb-0">{{ $training->lokasi ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-link fs-4 text-info"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Link Meeting</label>
-                                    @if($training->link_meeting)
-                                    <a href="{{ $training->link_meeting }}" target="_blank" class="fw-semibold">
-                                        {{ $training->link_meeting }}
-                                    </a>
-                                    @else
-                                    <p class="text-muted">-</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Kapasitas & Peserta -->
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-people fs-4 text-success"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Kapasitas</label>
-                                    <p class="fw-semibold mb-0">{{ $training->kapasitas ?? 'Tidak terbatas' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-people-fill fs-4 text-primary"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Peserta Terdaftar</label>
-                                    <p class="fw-semibold mb-0">
-                                        {{ $participantsCount ?? 0 }} peserta
-                                        @if($training->kapasitas)
-                                        <span class="text-muted small">({{ $availableSlots ?? 0 }} slot tersedia)</span>
-                                        @endif
-                                    </p>
-                                    <a href="{{ route('admin.trainings.participants', $training->id) }}" class="btn btn-sm btn-outline-primary mt-1">
-                                        <i class="bi bi-eye"></i> Lihat Peserta
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
+                    <!-- Informasi Utama -->
+                    <div class="row g-4">
                         <!-- Deskripsi -->
                         @if($training->deskripsi)
                         <div class="col-12">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-file-text fs-4 text-info"></i>
-                                </div>
-                                <div>
-                                    <label class="text-muted small fw-semibold">Deskripsi</label>
-                                    <p class="mb-0">{{ $training->deskripsi }}</p>
-                                </div>
+                            <div class="info-card bg-light p-3 rounded-3">
+                                <label class="text-muted small fw-semibold text-uppercase mb-1">
+                                    <i class="bi bi-file-text me-1"></i> Deskripsi
+                                </label>
+                                <p class="mb-0">{{ $training->deskripsi }}</p>
                             </div>
                         </div>
                         @endif
 
-                        <!-- Meta Info -->
+                        <!-- Info Grid -->
                         <div class="col-12">
-                            <hr class="my-2">
-                            <div class="d-flex justify-content-between text-muted small">
-                                <span>
-                                    <i class="bi bi-clock me-1"></i> 
-                                    Dibuat: {{ $training->created_at ? $training->created_at->format('d/m/Y H:i') : '-' }}
-                                </span>
-                                <span>
-                                    <i class="bi bi-clock-history me-1"></i> 
-                                    Diperbarui: {{ $training->updated_at ? $training->updated_at->format('d/m/Y H:i') : '-' }}
-                                </span>
+                            <div class="row g-3">
+                                <!-- Tanggal Mulai -->
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-primary text-white">
+                                                <i class="bi bi-calendar3"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Tanggal Mulai</label>
+                                                <p class="fw-semibold mb-0">{{ $training->tanggal_mulai ? $training->tanggal_mulai->format('d/m/Y') : '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tanggal Selesai -->
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-danger text-white">
+                                                <i class="bi bi-calendar3"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Tanggal Selesai</label>
+                                                <p class="fw-semibold mb-0">{{ $training->tanggal_selesai ? $training->tanggal_selesai->format('d/m/Y') : '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kapasitas -->
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-success text-white">
+                                                <i class="bi bi-people"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Kapasitas</label>
+                                                <p class="fw-semibold mb-0">{{ $training->kapasitas ?? 'Tidak terbatas' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Peserta -->
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-info text-white">
+                                                <i class="bi bi-people-fill"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Peserta Terdaftar</label>
+                                                <p class="fw-semibold mb-0">
+                                                    {{ $participantsCount ?? 0 }} 
+                                                    @if($training->kapasitas)
+                                                    <span class="text-muted small">/ {{ $training->kapasitas }}</span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Lokasi -->
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-secondary text-white">
+                                                <i class="bi bi-geo-alt"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Lokasi</label>
+                                                <p class="fw-semibold mb-0">{{ $training->lokasi ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Link Meeting -->
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="info-item p-3 bg-light rounded-3 h-100">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="icon-circle bg-warning text-white">
+                                                <i class="bi bi-link"></i>
+                                            </div>
+                                            <div>
+                                                <label class="text-muted small fw-semibold text-uppercase d-block">Link Meeting</label>
+                                                @if($training->link_meeting)
+                                                <a href="{{ $training->link_meeting }}" target="_blank" class="fw-semibold text-truncate d-inline-block" style="max-width: 150px;">
+                                                    {{ Str::limit($training->link_meeting, 30) }}
+                                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                                </a>
+                                                @else
+                                                <p class="text-muted mb-0">-</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informasi Tambahan -->
+                        <div class="col-12">
+                            <div class="row g-3">
+                                @if($training->trainer)
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3">
+                                        <label class="text-muted small fw-semibold text-uppercase d-block mb-2">
+                                            <i class="bi bi-person-badge me-1"></i> Trainer
+                                        </label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-text avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;">
+                                                {{ strtoupper(substr($training->trainer->nama ?? 'T', 0, 2)) }}
+                                            </div>
+                                            <div>
+                                                <p class="fw-semibold mb-0">{{ $training->trainer->nama ?? 'Trainer' }}</p>
+                                                <p class="text-muted small mb-0">{{ $training->trainer->email }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
+                                <div class="col-12 col-md-6">
+                                    <div class="info-item p-3 bg-light rounded-3">
+                                        <label class="text-muted small fw-semibold text-uppercase d-block mb-2">
+                                            <i class="bi bi-clock me-1"></i> Informasi Waktu
+                                        </label>
+                                        <div class="small">
+                                            <div><i class="bi bi-clock me-1"></i> Dibuat: {{ $training->created_at ? $training->created_at->format('d/m/Y H:i') : '-' }}</div>
+                                            <div><i class="bi bi-clock-history me-1"></i> Diperbarui: {{ $training->updated_at ? $training->updated_at->format('d/m/Y H:i') : '-' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="col-12 mt-2">
-                            <hr class="my-2">
-                            <div class="d-flex gap-2 flex-wrap">
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
                                 <a href="{{ route('admin.trainings.edit', $training->id) }}" class="btn btn-warning">
-                                    <i class="bi bi-pencil me-1"></i> Edit Pelatihan
+                                    <i class="bi bi-pencil me-1"></i> Edit
                                 </a>
-                                <a href="{{ route('admin.trainings.export', $training->id) }}" class="btn btn-success">
-                                    <i class="bi bi-download me-1"></i> Export Peserta
+                                <a href="{{ route('admin.trainings.participants', $training->id) }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-people me-1"></i> Peserta
+                                </a>
+                                <a href="{{ route('admin.trainings.absen', $training->id) }}" class="btn btn-success">
+                                    <i class="bi bi-qr-code-scan me-1"></i> Absensi
+                                </a>
+                                <a href="{{ route('admin.trainings.export', $training->id) }}" class="btn btn-outline-success">
+                                    <i class="bi bi-download me-1"></i> Export
                                 </a>
                                 <form action="{{ route('admin.trainings.destroy', $training->id) }}" method="POST" class="d-inline">
                                     @csrf
@@ -283,9 +258,9 @@
                                         <i class="bi bi-trash me-1"></i> Hapus
                                     </button>
                                 </form>
-                                <div class="heading-actions">
-                                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-secondary btn-sm">
-                                        <i class="bi bi-arrow-left"></i> Kembali
+                                <div class="ms-auto">
+                                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali
                                     </a>
                                 </div>
                             </div>
@@ -296,4 +271,44 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .icon-circle i {
+        font-size: 18px;
+    }
+    .info-item {
+        transition: all 0.2s ease;
+    }
+    .info-item:hover {
+        background-color: #e9ecef !important;
+    }
+    .avatar-text {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .bg-primary { background-color: #0d6efd; }
+    .bg-danger { background-color: #dc3545; }
+    .bg-success { background-color: #198754; }
+    .bg-info { background-color: #0dcaf0; }
+    .bg-secondary { background-color: #6c757d; }
+    .bg-warning { background-color: #ffc107; }
+    .text-white { color: #fff; }
+</style>
+@endpush
 @endsection

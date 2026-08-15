@@ -1028,4 +1028,65 @@ class PesertaController extends Controller
 
         return redirect()->route('peserta.survey.index')->with('success', 'Terima kasih, survey berhasil dikirim.');
     }
+
+    /**
+     * Scan QR Code Absensi
+     */
+    public function scanQR(Request $request, \App\Models\Training $training)
+    {
+        // Require auth
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('warning', 'Silakan login terlebih dahulu untuk melakukan absensi.');
+        }
+
+        $user = auth()->user();
+        $token = $request->query('token');
+
+        $status = 'error';
+        $message = 'Terjadi kesalahan sistem.';
+
+        // 1. Check token and if session is open
+        if (!$training->is_absen_open || $training->absen_token !== $token) {
+            $message = 'Sesi absensi untuk pelatihan ini belum dibuka atau sudah ditutup.';
+            return view('peserta.absen.scan_result', compact('training', 'status', 'message'));
+        }
+
+        // 2. Check if user is registered and approved
+        $registration = \App\Models\TrainingRegistration::where('training_id', $training->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$registration || $registration->status !== 'disetujui') {
+            $message = 'Anda tidak terdaftar atau belum mendapatkan persetujuan untuk mengikuti pelatihan ini.';
+            return view('peserta.absen.scan_result', compact('training', 'status', 'message'));
+        }
+
+        // 3. Check for duplicate attendance today
+        $today = now()->format('Y-m-d');
+        $existingAbsen = Absensi::where('training_id', $training->id)
+            ->where('user_id', $user->id)
+            ->whereDate('tanggal', $today)
+            ->first();
+
+        if ($existingAbsen) {
+            $message = 'Anda sudah melakukan absensi untuk pelatihan ini hari ini.';
+            return view('peserta.absen.scan_result', compact('training', 'status', 'message'));
+        }
+
+        // 4. Record attendance
+        Absensi::create([
+            'user_id' => $user->id,
+            'training_id' => $training->id,
+            'tanggal' => $today,
+            'jam_masuk' => now()->format('H:i:s'),
+            'waktu_checkin' => now(),
+            'status' => 'hadir',
+            'metode' => 'QR Code',
+        ]);
+
+        $status = 'success';
+        $message = 'Berhasil! Anda telah tercatat hadir pada pelatihan ini.';
+        
+        return view('peserta.absen.scan_result', compact('training', 'status', 'message'));
+    }
 }

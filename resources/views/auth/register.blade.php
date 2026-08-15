@@ -429,6 +429,11 @@
                 </div>
             @endif
 
+            <div class="alert alert-info" style="background-color: #e8f4f8; color: #1a3a4a; border: 1px solid #d4e8f0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span><strong>Keterangan:</strong> Field yang ditandai dengan tanda (<span class="text-danger" style="color:red">*</span>) merupakan data wajib yang harus diisi. Field yang bertanda <strong>(Opsional)</strong> tidak wajib diisi.</span>
+            </div>
+
             @if($errors->any())
                 <div class="alert alert-danger">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -442,7 +447,7 @@
                 <div class="field-grid">
                     <!-- NIK -->
                     <div class="field">
-                        <label for="nik">NIK</label>
+                        <label for="nik">NIK <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 15h4M6 11h.01"/><circle cx="16" cy="11" r="1.5"/></svg>
                             <input type="text"
@@ -460,7 +465,7 @@
 
                     <!-- Nama Lengkap -->
                     <div class="field">
-                        <label for="nama">Nama Lengkap</label>
+                        <label for="nama">Nama Lengkap <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
                             <input type="text"
@@ -480,7 +485,7 @@
                 <div class="field-grid">
                     <!-- Email -->
                     <div class="field">
-                        <label for="email">Email</label>
+                        <label for="email">Email <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
                             <input type="email"
@@ -498,7 +503,7 @@
 
                     <!-- No Telepon -->
                     <div class="field">
-                        <label for="no_telepon">No. Telepon</label>
+                        <label for="no_telepon">No. Telepon <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 3a2 2 0 01-.5 2L8 10a16 16 0 006 6l1.3-1.2a2 2 0 012-.5c1 .3 2 .5 3 .6a2 2 0 011.7 2z"/></svg>
                             <input type="text"
@@ -518,7 +523,7 @@
                 <div class="field-grid">
                     <!-- Nama Usaha -->
                     <div class="field">
-                        <label for="nama_usaha">Nama Usaha</label>
+                        <label for="nama_usaha">Nama Usaha <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1m4 0h1m-6 4h1m4 0h1m-6 4h1m4 0h1"/></svg>
                             <input type="text"
@@ -536,7 +541,7 @@
 
                     <!-- NIB -->
                     <div class="field">
-                        <label for="nib">NIB</label>
+                        <label for="nib">NIB <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
                             <input type="text"
@@ -556,7 +561,7 @@
                 <div class="field-grid">
                     <!-- Jenis Usaha -->
                     <div class="field">
-                        <label for="jenis_usaha">Jenis Usaha</label>
+                        <label for="jenis_usaha">Jenis Usaha <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.7L12.7 20.6a2 2 0 01-2.8 0L2 12.7V4a2 2 0 012-2h8.7a2 2 0 011.4.6l6.5 6.5a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
                             <select class="@error('jenis_usaha') is-invalid @enderror"
@@ -572,36 +577,79 @@
                             <div class="err">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
 
-                    <!-- Alamat Lengkap -->
+                <!-- ALAMAT SULAWESI BARAT -->
+                <div class="field-grid">
                     <div class="field">
-                        <label for="alamat_lengkap">Alamat Lengkap</label>
+                        <label for="provinsi">Provinsi <span style="color:red">*</span></label>
                         <div class="control">
-                            <svg class="icon-top" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                            <textarea class="@error('alamat_lengkap') is-invalid @enderror"
-                                      id="alamat_lengkap"
-                                      name="alamat_lengkap"
-                                      rows="1"
-                                      placeholder="Alamat lengkap"
-                                      required>{{ old('alamat_lengkap') }}</textarea>
+                            <select class="@error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
+                                <option value="Sulawesi Barat">Sulawesi Barat</option>
+                            </select>
                         </div>
-                        @error('alamat_lengkap')
-                            <div class="err">{{ $message }}</div>
-                        @enderror
+                        @error('provinsi') <div class="err">{{ $message }}</div> @enderror
                     </div>
+                    
+                    <div class="field">
+                        <label for="kabupaten">Kabupaten/Kota <span style="color:red">*</span></label>
+                        <div class="control">
+                            <select class="@error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten" required disabled>
+                                <option value="">Pilih Kabupaten/Kota</option>
+                            </select>
+                        </div>
+                        @error('kabupaten') <div class="err">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+
+                <div class="field-grid">
+                    <div class="field">
+                        <label for="kecamatan">Kecamatan <span style="color:red">*</span></label>
+                        <div class="control">
+                            <select class="@error('kecamatan') is-invalid @enderror" id="kecamatan" name="kecamatan" required disabled>
+                                <option value="">Pilih Kecamatan</option>
+                            </select>
+                        </div>
+                        @error('kecamatan') <div class="err">{{ $message }}</div> @enderror
+                    </div>
+                    
+                    <div class="field">
+                        <label for="desa">Desa/Kelurahan <span style="color:red">*</span></label>
+                        <div class="control">
+                            <select class="@error('desa') is-invalid @enderror" id="desa" name="desa" required disabled>
+                                <option value="">Pilih Desa/Kelurahan</option>
+                            </select>
+                        </div>
+                        @error('desa') <div class="err">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="alamat_lengkap">Alamat Detail <span style="color:red">*</span></label>
+                    <div class="control">
+                        <textarea class="@error('alamat_lengkap') is-invalid @enderror"
+                                  id="alamat_lengkap"
+                                  name="alamat_lengkap"
+                                  rows="2"
+                                  placeholder="Nama jalan, RT/RW, Dusun, dll"
+                                  required>{{ old('alamat_lengkap') }}</textarea>
+                    </div>
+                    @error('alamat_lengkap')
+                        <div class="err">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="field-grid">
                     <!-- Password -->
                     <div class="field">
-                        <label for="password">Kata Sandi</label>
+                        <label for="password">Kata Sandi <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
                             <input type="password"
                                    class="@error('password') is-invalid @enderror"
                                    id="password"
                                    name="password"
-                                   placeholder="Min. 8 karakter"
+                                   placeholder="Minimal 8 karakter"
                                    required>
                         </div>
                         @error('password')
@@ -609,9 +657,9 @@
                         @enderror
                     </div>
 
-                    <!-- Konfirmasi Password -->
+                    <!-- Confirm Password -->
                     <div class="field">
-                        <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+                        <label for="password_confirmation">Ulangi Kata Sandi <span style="color:red">*</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/><path d="M12 15v2"/></svg>
                             <input type="password"
@@ -641,4 +689,84 @@
     </div>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let wilayahData = [];
+        
+        const kabSelect = document.getElementById('kabupaten');
+        const kecSelect = document.getElementById('kecamatan');
+        const desaSelect = document.getElementById('desa');
+
+        fetch('/data/wilayah-sulbar.json')
+            .then(response => response.json())
+            .then(data => {
+                wilayahData = data;
+                
+                // Populate Kabupaten
+                kabSelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+                data.forEach(kab => {
+                    const option = document.createElement('option');
+                    option.value = kab.name;
+                    option.textContent = kab.name;
+                    kabSelect.appendChild(option);
+                });
+                kabSelect.disabled = false;
+                
+                // Restore old value if any
+                const oldKab = "{{ old('kabupaten') }}";
+                if (oldKab) {
+                    kabSelect.value = oldKab;
+                    kabSelect.dispatchEvent(new Event('change'));
+                }
+            });
+
+        kabSelect.addEventListener('change', function() {
+            kecSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            desaSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+            kecSelect.disabled = true;
+            desaSelect.disabled = true;
+
+            const selectedKab = wilayahData.find(k => k.name === this.value);
+            if (selectedKab && selectedKab.kecamatan) {
+                selectedKab.kecamatan.forEach(kec => {
+                    const option = document.createElement('option');
+                    option.value = kec.name;
+                    option.textContent = kec.name;
+                    kecSelect.appendChild(option);
+                });
+                kecSelect.disabled = false;
+                
+                const oldKec = "{{ old('kecamatan') }}";
+                if (oldKec && kecSelect.querySelector(`option[value="${oldKec}"]`)) {
+                    kecSelect.value = oldKec;
+                    kecSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+
+        kecSelect.addEventListener('change', function() {
+            desaSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+            desaSelect.disabled = true;
+
+            const selectedKab = wilayahData.find(k => k.name === kabSelect.value);
+            if (selectedKab) {
+                const selectedKec = selectedKab.kecamatan.find(k => k.name === this.value);
+                if (selectedKec && selectedKec.desa) {
+                    selectedKec.desa.forEach(desa => {
+                        const option = document.createElement('option');
+                        option.value = desa.name;
+                        option.textContent = desa.name;
+                        desaSelect.appendChild(option);
+                    });
+                    desaSelect.disabled = false;
+                    
+                    const oldDesa = "{{ old('desa') }}";
+                    if (oldDesa && desaSelect.querySelector(`option[value="${oldDesa}"]`)) {
+                        desaSelect.value = oldDesa;
+                    }
+                }
+            }
+        });
+    });
+</script>
 </html>
