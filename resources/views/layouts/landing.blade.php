@@ -796,7 +796,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('landing.agenda*') ? 'active' : '' }}" 
                        href="{{ route('landing.agenda.index') }}">
-                        <i class="bi bi-calendar-event me-1 d-lg-none"></i> Agenda
+                        <i class="bi bi-calendar-event me-1 d-lg-none"></i> Webinar
                     </a>
                 </li>
                 <li class="nav-item">

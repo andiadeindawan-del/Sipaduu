@@ -568,9 +568,19 @@
                                     id="jenis_usaha"
                                     name="jenis_usaha"
                                     required>
-                                <option value="">Pilih jenis usaha</option>
-                                <option value="formal" @selected(old('jenis_usaha') === 'formal')>Formal</option>
-                                <option value="non_formal" @selected(old('jenis_usaha') === 'non_formal')>Non Formal</option>
+                                <option value="">Pilih Jenis Usaha</option>
+                                <option value="Perdagangan" @selected(old('jenis_usaha') === 'Perdagangan')>Perdagangan</option>
+                                <option value="Jasa" @selected(old('jenis_usaha') === 'Jasa')>Jasa</option>
+                                <option value="Makanan dan Minuman/Kuliner" @selected(old('jenis_usaha') === 'Makanan dan Minuman/Kuliner')>Makanan dan Minuman/Kuliner</option>
+                                <option value="Pertanian" @selected(old('jenis_usaha') === 'Pertanian')>Pertanian</option>
+                                <option value="Perkebunan" @selected(old('jenis_usaha') === 'Perkebunan')>Perkebunan</option>
+                                <option value="Peternakan" @selected(old('jenis_usaha') === 'Peternakan')>Peternakan</option>
+                                <option value="Perikanan" @selected(old('jenis_usaha') === 'Perikanan')>Perikanan</option>
+                                <option value="Industri/Pengolahan" @selected(old('jenis_usaha') === 'Industri/Pengolahan')>Industri/Pengolahan</option>
+                                <option value="Kerajinan" @selected(old('jenis_usaha') === 'Kerajinan')>Kerajinan</option>
+                                <option value="Pariwisata" @selected(old('jenis_usaha') === 'Pariwisata')>Pariwisata</option>
+                                <option value="Teknologi/Informasi" @selected(old('jenis_usaha') === 'Teknologi/Informasi')>Teknologi/Informasi</option>
+                                <option value="Lainnya" @selected(old('jenis_usaha') === 'Lainnya')>Lainnya</option>
                             </select>
                         </div>
                         @error('jenis_usaha')

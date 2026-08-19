@@ -1,4 +1,4 @@
-@extends('layouts.peserta')
+@extends('layouts.admin')
 
 @section('title', 'Profil Saya')
 
@@ -40,7 +40,7 @@
                     <h5 class="section-title"><i class="bi bi-person-lines-fill"></i> Data Profil (UMK)</h5>
                 </div>
                 
-                <form action="{{ route('peserta.profile.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     

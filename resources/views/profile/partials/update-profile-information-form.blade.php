@@ -78,8 +78,16 @@
                 <x-input-label for="jenis_usaha" :value="__('Business Type')" />
                 <select id="jenis_usaha" name="jenis_usaha" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                     <option value="">{{ __('Select business type') }}</option>
-                    <option value="formal" @selected(old('jenis_usaha', $user->jenis_usaha) === 'formal')>{{ __('Formal') }}</option>
-                    <option value="non_formal" @selected(old('jenis_usaha', $user->jenis_usaha) === 'non_formal')>{{ __('Non Formal') }}</option>
+                    @php
+                        $validSectors = ['Perdagangan', 'Jasa', 'Makanan dan Minuman/Kuliner', 'Pertanian', 'Perkebunan', 'Peternakan', 'Perikanan', 'Industri/Pengolahan', 'Kerajinan', 'Pariwisata', 'Teknologi/Informasi', 'Lainnya'];
+                        $currentJenis = old('jenis_usaha', $user->jenis_usaha);
+                    @endphp
+                    @foreach($validSectors as $sector)
+                        <option value="{{ $sector }}" {{ $currentJenis == $sector ? 'selected' : '' }}>{{ $sector }}</option>
+                    @endforeach
+                    @if($currentJenis && !in_array($currentJenis, $validSectors))
+                        <option value="{{ $currentJenis }}" selected>{{ ucfirst(str_replace('_', ' ', $currentJenis)) }}</option>
+                    @endif
                 </select>
                 <x-input-error class="mt-2" :messages="$errors->get('jenis_usaha')" />
             </div>

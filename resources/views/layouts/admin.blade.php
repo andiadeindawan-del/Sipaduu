@@ -431,7 +431,7 @@
           
             
             <a href="{{ route('admin.agenda.index') }}" class="nav-link {{ request()->routeIs('admin.agenda.*') ? 'active' : '' }}">
-                <i class="bi bi-calendar-event"></i> Agenda
+                <i class="bi bi-calendar-event"></i> Webinar
             </a>
             
             <a href="{{ route('admin.pengumuman.index') }}" class="nav-link {{ request()->routeIs('admin.pengumuman.*') ? 'active' : '' }}">

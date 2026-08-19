@@ -212,24 +212,9 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-outline-primary btn-sm w-100 mt-2" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#detail{{ $pengumuman->id }}">
-                            <i class="bi bi-chevron-down me-1"></i> Baca Selengkapnya
-                        </button>
-
-                        <div class="collapse mt-2" id="detail{{ $pengumuman->id }}">
-                            <div class="announcement-detail">
-                                <div class="announcement-content-text">
-                                    {!! nl2br(e($pengumuman->konten)) !!}
-                                </div>
-                                @if($pengumuman->deskripsi)
-                                <div class="announcement-description">
-                                    <small class="text-muted">{{ $pengumuman->deskripsi }}</small>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
+                        <a href="{{ route('peserta.pengumuman.show', $pengumuman->id) }}" class="btn btn-primary btn-sm w-100 mt-2">
+                            <i class="bi bi-eye me-1"></i> Lihat Detail
+                        </a>
                     </div>
                 </div>
             </div>

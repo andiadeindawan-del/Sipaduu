@@ -37,7 +37,7 @@ class RegisteredUserController extends Controller
             'no_telepon' => ['required', 'string', 'max:20'],
             'nama_usaha' => ['required', 'string', 'max:100'],
             'nib' => ['required', 'string', 'max:30', 'unique:users'],
-            'jenis_usaha' => ['required', 'in:formal,non_formal'],
+            'jenis_usaha' => ['required', 'string', 'max:255'],
             'provinsi' => ['required', 'string', 'max:100'],
             'kabupaten' => ['required', 'string', 'max:100'],
             'kecamatan' => ['required', 'string', 'max:100'],

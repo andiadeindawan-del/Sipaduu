@@ -54,14 +54,6 @@
     $inProgressPercent = $totalTrainings > 0 ? round((($totalTrainings - $totalCertificates) / $totalTrainings) * 100) : 0;
     $progressColor = $completedPercent >= 80 ? '#28c76f' : ($completedPercent >= 50 ? '#ff9f43' : '#6c757d');
     
-    // Greeting berdasarkan waktu
-    $hours = date('H');
-    $greeting = '';
-    if ($hours < 12) $greeting = 'Selamat pagi! ☀️';
-    elseif ($hours < 15) $greeting = 'Selamat siang! 🌤️';
-    elseif ($hours < 18) $greeting = 'Selamat sore! 🌅';
-    else $greeting = 'Selamat malam! 🌙';
-    
     // ============================================================
     // HELPER FUNCTION UNTUK FORMAT TANGGAL
     // ============================================================
@@ -78,29 +70,6 @@
 <div class="container-fluid px-3 px-lg-4 py-4">
     <!-- Profile Completion Status -->
     @include('components.profile-completion', ['user' => auth()->user()])
-
-    <!-- Welcome Banner -->
-    <div class="panel mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-        <div class="p-4">
-            <div class="row align-items-center">
-                <div class="col-12 col-md-8">
-                    <h4 class="fw-bold mb-1">
-                        <i class="bi bi-hand-thumbs-up me-2" style="color: #ff9f43;"></i>
-                        {{ $greeting }} {{ auth()->user()->nama ?? auth()->user()->name ?? 'Peserta' }}!
-                    </h4>
-                    <p class="text-muted mb-0">
-                        Terus semangat dalam belajar dan kembangkan potensi terbaik Anda.
-                    </p>
-                </div>
-                <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
-                    <span class="badge px-3 py-2 rounded-pill" style="font-size: 0.9rem; background: #6c757d; color: #fff;">
-                        <i class="bi bi-award me-1"></i>
-                        {{ $totalCertificates }} Sertifikat
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Statistics Cards -->
     <section class="row g-3 mb-4" aria-label="Dashboard metrics">

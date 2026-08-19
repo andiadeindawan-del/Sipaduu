@@ -578,7 +578,7 @@
             <div class="nav-label">Informasi</div>
 
             <a href="{{ route('peserta.agenda.index') }}" class="nav-link {{ request()->routeIs('peserta.agenda.*') ? 'active' : '' }}">
-                <i class="bi bi-calendar-event"></i> Agenda
+                <i class="bi bi-calendar-event"></i> Webinar
             </a>
             
             <a href="{{ route('peserta.pengumuman.index') }}" class="nav-link {{ request()->routeIs('peserta.pengumuman.*') ? 'active' : '' }}">

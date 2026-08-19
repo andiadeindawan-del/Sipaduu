@@ -12,7 +12,7 @@
         </div>
     </div>
     <div>
-        <a href="{{ route('admin.trainings.show', $training->id) }}" class="btn btn-outline-secondary">
+        <a href="{{ route('admin.trainings.show', $training->id) }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Kembali
         </a>
     </div>

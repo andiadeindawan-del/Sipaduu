@@ -60,6 +60,9 @@ class User extends Authenticatable
 
         // Informasi Tambahan
         'permasalahan', 'kebutuhan_diklat', 'riwayat_pelatihan', 'jenis_pelatihan_diikuti', 'file_produk', 'masukan_saran',
+        
+        // Dokumen Tambahan
+        'nib_file', 'npwp_file',
     ];
 
     protected $hidden = [

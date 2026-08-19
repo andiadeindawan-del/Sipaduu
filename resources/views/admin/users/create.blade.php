@@ -220,8 +220,18 @@
                                     <select class="form-select @error('jenis_usaha') is-invalid @enderror" 
                                             id="jenis_usaha" name="jenis_usaha">
                                         <option value="">Select Type</option>
-                                        <option value="formal" {{ old('jenis_usaha') == 'formal' ? 'selected' : '' }}>Formal</option>
-                                        <option value="non_formal" {{ old('jenis_usaha') == 'non_formal' ? 'selected' : '' }}>Non Formal</option>
+                                        <option value="Perdagangan" {{ old('jenis_usaha') == 'Perdagangan' ? 'selected' : '' }}>Perdagangan</option>
+                                        <option value="Jasa" {{ old('jenis_usaha') == 'Jasa' ? 'selected' : '' }}>Jasa</option>
+                                        <option value="Makanan dan Minuman/Kuliner" {{ old('jenis_usaha') == 'Makanan dan Minuman/Kuliner' ? 'selected' : '' }}>Makanan dan Minuman/Kuliner</option>
+                                        <option value="Pertanian" {{ old('jenis_usaha') == 'Pertanian' ? 'selected' : '' }}>Pertanian</option>
+                                        <option value="Perkebunan" {{ old('jenis_usaha') == 'Perkebunan' ? 'selected' : '' }}>Perkebunan</option>
+                                        <option value="Peternakan" {{ old('jenis_usaha') == 'Peternakan' ? 'selected' : '' }}>Peternakan</option>
+                                        <option value="Perikanan" {{ old('jenis_usaha') == 'Perikanan' ? 'selected' : '' }}>Perikanan</option>
+                                        <option value="Industri/Pengolahan" {{ old('jenis_usaha') == 'Industri/Pengolahan' ? 'selected' : '' }}>Industri/Pengolahan</option>
+                                        <option value="Kerajinan" {{ old('jenis_usaha') == 'Kerajinan' ? 'selected' : '' }}>Kerajinan</option>
+                                        <option value="Pariwisata" {{ old('jenis_usaha') == 'Pariwisata' ? 'selected' : '' }}>Pariwisata</option>
+                                        <option value="Teknologi/Informasi" {{ old('jenis_usaha') == 'Teknologi/Informasi' ? 'selected' : '' }}>Teknologi/Informasi</option>
+                                        <option value="Lainnya" {{ old('jenis_usaha') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                                     </select>
                                 </div>
                                 @error('jenis_usaha')

@@ -74,7 +74,9 @@ class ProfileController extends Controller
             
             // Validasi file
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ktp_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'npwp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             
             // Tambahan field untuk UMK
             'status_pernikahan' => 'nullable|string|max:50',
@@ -158,6 +160,22 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->ktp_file);
             }
             $validated['ktp_file'] = $request->file('ktp_file')->store('ktp_files', 'public');
+        }
+
+        // Handle NIB upload
+        if ($request->hasFile('nib_file')) {
+            if ($user->nib_file && Storage::disk('public')->exists($user->nib_file)) {
+                Storage::disk('public')->delete($user->nib_file);
+            }
+            $validated['nib_file'] = $request->file('nib_file')->store('nib_files', 'public');
+        }
+
+        // Handle NPWP upload
+        if ($request->hasFile('npwp_file')) {
+            if ($user->npwp_file && Storage::disk('public')->exists($user->npwp_file)) {
+                Storage::disk('public')->delete($user->npwp_file);
+            }
+            $validated['npwp_file'] = $request->file('npwp_file')->store('npwp_files', 'public');
         }
 
         // Handle File Produk upload
@@ -261,8 +279,45 @@ class ProfileController extends Controller
                             ->with('success', '✅ Foto profil berhasil dihapus.');
         }
 
-        return redirect()->route('peserta.profile.index')
-                        ->with('success', '✅ Foto profil berhasil dihapus.');
+        return back()->with('success', '✅ Foto profil berhasil dihapus.');
+    }
+
+    /**
+     * View user's profile document securely
+     */
+    public function viewDocument(Request $request, $type, $userId = null)
+    {
+        $viewer = Auth::user();
+        
+        // Target user is either explicitly provided (for admin) or self
+        $targetUserId = $userId ?: $viewer->id;
+        $targetUser = \App\Models\User::findOrFail($targetUserId);
+
+        // Security check: only admin can view others' documents, users can only view their own
+        if ($viewer->id !== $targetUser->id && $viewer->role !== 'admin') {
+            abort(403, 'Unauthorized access to document.');
+        }
+
+        // Map type to database column
+        $column = match($type) {
+            'ktp' => 'ktp_file',
+            'nib' => 'nib_file',
+            'npwp' => 'npwp_file',
+            'produk' => 'file_produk',
+            default => null
+        };
+
+        if (!$column || !$targetUser->$column) {
+            abort(404, 'Document not found.');
+        }
+
+        $path = $targetUser->$column;
+
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404, 'File not found on storage.');
+        }
+
+        return response()->file(storage_path('app/public/' . $path));
     }
 
     /**

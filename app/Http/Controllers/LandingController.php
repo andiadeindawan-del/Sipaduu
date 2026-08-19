@@ -275,7 +275,8 @@ class LandingController extends Controller
     public function pengumuman(Request $request)
     {
         $query = Pengumuman::with(['training', 'creator'])
-            ->where('status', 'published');
+            ->where('status', 'published')
+            ->where('jenis_pengumuman', 'umum');
 
         // Search
         if ($request->filled('search')) {
@@ -310,6 +311,7 @@ class LandingController extends Controller
     {
         $pengumuman = Pengumuman::with(['training', 'creator'])
             ->where('status', 'published')
+            ->where('jenis_pengumuman', 'umum')
             ->findOrFail($id);
 
         // Increment views

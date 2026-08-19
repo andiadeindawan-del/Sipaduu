@@ -163,7 +163,9 @@
                         </th>
                         <th style="width: 50px;">#</th>
                         <th>Judul</th>
-                        <th>Kategori</th>
+                        <th>Jenis</th>
+                        <th>Pelatihan</th>
+                        <th>File</th>
                         <th>Tanggal</th>
                         <th>Status</th>
                         <th class="text-end" style="width: 160px;">Aksi</th>
@@ -182,10 +184,26 @@
                             </div>
                         </td>
                         <td>
-                            @if($item->kategori)
-                            <span>{{ $item->kategori->nama }}</span>
+                            @if($item->jenis_pengumuman == 'umum')
+                                <span class="badge bg-primary">Umum</span>
                             @else
-                            <span class="text-muted">-</span>
+                                <span class="badge bg-info">Peserta</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($item->training)
+                                <span class="text-muted">{{ $item->training->judul }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($item->file_path)
+                                <a href="{{ route('pengumuman.file', $item->id) }}" target="_blank" class="btn btn-sm btn-outline-primary" title="Lihat File">
+                                    <i class="bi bi-file-earmark-text"></i> PDF/Doc
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
@@ -196,8 +214,8 @@
                         <td>
                             @php
                                 $statusMap = [
-                                    'published' => ['label' => '✅ Published', 'class' => 'text-bg-success'],
-                                    'draft' => ['label' => '📝 Draft', 'class' => 'text-bg-secondary'],
+                                    'published' => ['label' => '✅ Aktif', 'class' => 'text-bg-success'],
+                                    'draft' => ['label' => '📝 Tidak Aktif', 'class' => 'text-bg-secondary'],
                                     'archived' => ['label' => '📦 Archived', 'class' => 'text-bg-secondary'],
                                 ];
                                 $status = $statusMap[$item->status] ?? ['label' => $item->status ?? 'Unknown', 'class' => 'text-bg-secondary'];

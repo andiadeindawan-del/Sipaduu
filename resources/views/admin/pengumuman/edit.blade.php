@@ -51,14 +51,29 @@
                         @method('PUT')
 
                         <div class="row g-4">
-                            <!-- Training & Kategori -->
+                            <!-- Jenis Pengumuman -->
                             <div class="col-12 col-md-6">
+                                <label for="jenis_pengumuman" class="form-label fw-semibold">
+                                    <i class="bi bi-tag-fill me-1"></i> Jenis Pengumuman <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select @error('jenis_pengumuman') is-invalid @enderror" 
+                                        id="jenis_pengumuman" name="jenis_pengumuman" required onchange="toggleTrainingField()">
+                                    <option value="umum" {{ old('jenis_pengumuman', $pengumuman->jenis_pengumuman) == 'umum' ? 'selected' : '' }}>Pengumuman Umum</option>
+                                    <option value="peserta" {{ old('jenis_pengumuman', $pengumuman->jenis_pengumuman) == 'peserta' ? 'selected' : '' }}>Pengumuman Khusus Peserta</option>
+                                </select>
+                                @error('jenis_pengumuman')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Training & Kategori -->
+                            <div class="col-12 col-md-6" id="training_field_container">
                                 <label for="training_id" class="form-label fw-semibold">
-                                    <i class="bi bi-journal-bookmark me-1"></i> Training
+                                    <i class="bi bi-journal-bookmark me-1"></i> Pelatihan Tujuan
                                 </label>
                                 <select class="form-select @error('training_id') is-invalid @enderror" 
                                         id="training_id" name="training_id">
-                                    <option value="">Pilih Training (Opsional)</option>
+                                    <option value="">Pilih Pelatihan (Opsional - Semua Peserta)</option>
                                     @foreach($trainings ?? [] as $training)
                                     <option value="{{ $training->id }}" {{ old('training_id', $pengumuman->training_id) == $training->id ? 'selected' : '' }}>
                                         {{ $training->judul }}
@@ -68,6 +83,7 @@
                                     </option>
                                     @endforeach
                                 </select>
+                                <small class="text-muted">Pilih pelatihan jika pengumuman hanya untuk peserta pelatihan tertentu.</small>
                                 @error('training_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -128,6 +144,30 @@
                                           id="konten" name="konten" rows="6" 
                                           placeholder="Isi pengumuman..." required>{{ old('konten', $pengumuman->konten) }}</textarea>
                                 @error('konten')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- File Lampiran -->
+                            <div class="col-12">
+                                <label for="file_pengumuman" class="form-label fw-semibold">
+                                    <i class="bi bi-file-earmark-arrow-up me-1"></i> File Lampiran
+                                </label>
+                                @if($pengumuman->file_path)
+                                <div class="mb-2 p-2 bg-light rounded-3 d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="fw-semibold mb-0">File Saat Ini:</p>
+                                        <small class="text-muted">{{ $pengumuman->file_name ?? 'lampiran' }}</small>
+                                    </div>
+                                    <a href="{{ route('pengumuman.file', $pengumuman->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="bi bi-eye"></i> Lihat
+                                    </a>
+                                </div>
+                                @endif
+                                <input type="file" class="form-control @error('file_pengumuman') is-invalid @enderror" 
+                                       id="file_pengumuman" name="file_pengumuman" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
+                                <small class="text-muted">Format: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, JPG, JPEG, PNG. Max: 10MB. Kosongkan jika tidak ingin mengubah.</small>
+                                @error('file_pengumuman')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -221,8 +261,8 @@
                                         </label>
                                         <select class="form-select @error('status') is-invalid @enderror" 
                                                 id="status" name="status" required>
-                                            <option value="draft" {{ old('status', $pengumuman->status) == 'draft' ? 'selected' : '' }}>📝 Draft</option>
-                                            <option value="published" {{ old('status', $pengumuman->status) == 'published' ? 'selected' : '' }}>✅ Published</option>
+                                            <option value="draft" {{ old('status', $pengumuman->status) == 'draft' ? 'selected' : '' }}>📝 Tidak Aktif (Draft)</option>
+                                            <option value="published" {{ old('status', $pengumuman->status) == 'published' ? 'selected' : '' }}>✅ Aktif (Published)</option>
                                             <option value="archived" {{ old('status', $pengumuman->status) == 'archived' ? 'selected' : '' }}>📦 Archived</option>
                                         </select>
                                         @error('status')
@@ -673,7 +713,19 @@ function previewImage(input) {
     }
 }
 
+function toggleTrainingField() {
+    const jenis = document.getElementById('jenis_pengumuman').value;
+    const trainingField = document.getElementById('training_field_container');
+    if (jenis === 'umum') {
+        trainingField.style.display = 'none';
+        document.getElementById('training_id').value = '';
+    } else {
+        trainingField.style.display = 'block';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    toggleTrainingField();
     // ============================================================
     // VALIDASI TANGGAL
     // ============================================================

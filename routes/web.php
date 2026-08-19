@@ -42,6 +42,7 @@ Route::get('/kontak', [LandingController::class, 'kontak'])->name('landing.konta
 Route::post('/kontak', [LandingController::class, 'kontakSend'])->name('landing.kontak.send');
 Route::get('/pengumuman', [LandingController::class, 'pengumuman'])->name('landing.pengumuman.index');
 Route::get('/pengumuman/{id}', [LandingController::class, 'pengumumanShow'])->name('landing.pengumuman.show');
+Route::get('/pengumuman/{id}/file', [PengumumanController::class, 'viewFile'])->name('pengumuman.file');
 Route::get('/agenda', [LandingController::class, 'agenda'])->name('landing.agenda.index');
 Route::get('/agenda/{id}', [LandingController::class, 'agendaShow'])->name('landing.agenda.show');
 
@@ -74,6 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile/statistics', [ProfileController::class, 'getStatistics'])->name('profile.statistics');
+    Route::get('/profile/document/{type}/{userId?}', [ProfileController::class, 'viewDocument'])->name('profile.document');
 
     // Sertifikat User
     Route::get('/sertifikat/my-certificates', [SertifikatController::class, 'userCertificates'])->name('sertifikat.user');

@@ -174,12 +174,12 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#digital" type="button" role="tab">
-                                <i class="bi bi-globe2 me-1"></i> Digital & Transformasi
+                                <i class="bi bi-globe2 me-1"></i> Digital & Pemasaran
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tambahan" type="button" role="tab">
-                                <i class="bi bi-info-circle me-1"></i> Pelatihan
+                                <i class="bi bi-info-circle me-1"></i> Kebutuhan Pelatihan
                             </button>
                         </li>
                         <li class="nav-item">

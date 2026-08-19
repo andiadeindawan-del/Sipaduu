@@ -167,7 +167,9 @@ class PengumumanController extends Controller
             'target_audience' => 'required|in:all,peserta,trainer,admin',
             'status' => 'required|in:draft,published,archived',
             'is_pinned' => 'nullable|boolean',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'jenis_pengumuman' => 'required|in:umum,peserta',
+            'file_pengumuman' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png|max:10240'
         ]);
         
         $validated['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
@@ -176,6 +178,12 @@ class PengumumanController extends Controller
 
         if ($request->hasFile('gambar')) {
             $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
+        }
+
+        if ($request->hasFile('file_pengumuman')) {
+            $file = $request->file('file_pengumuman');
+            $validated['file_path'] = $file->store('pengumuman_files');
+            $validated['file_name'] = $file->getClientOriginalName();
         }
 
         Pengumuman::create($validated);
@@ -219,7 +227,9 @@ class PengumumanController extends Controller
             'target_audience' => 'required|in:all,peserta,trainer,admin',
             'status' => 'required|in:draft,published,archived',
             'is_pinned' => 'nullable|boolean',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'jenis_pengumuman' => 'required|in:umum,peserta',
+            'file_pengumuman' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png|max:10240'
         ]);
         
         $validated['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
@@ -229,6 +239,15 @@ class PengumumanController extends Controller
                 Storage::disk('public')->delete($pengumuman->gambar);
             }
             $validated['gambar'] = $request->file('gambar')->store('pengumuman', 'public');
+        }
+
+        if ($request->hasFile('file_pengumuman')) {
+            if ($pengumuman->file_path) {
+                Storage::delete($pengumuman->file_path);
+            }
+            $file = $request->file('file_pengumuman');
+            $validated['file_path'] = $file->store('pengumuman_files');
+            $validated['file_name'] = $file->getClientOriginalName();
         }
 
         $pengumuman->update($validated);
@@ -244,6 +263,10 @@ class PengumumanController extends Controller
     {
         if ($pengumuman->gambar) {
             Storage::disk('public')->delete($pengumuman->gambar);
+        }
+
+        if ($pengumuman->file_path) {
+            Storage::delete($pengumuman->file_path);
         }
 
         $pengumuman->delete();
@@ -290,19 +313,11 @@ class PengumumanController extends Controller
 
         $callback = function() use ($pengumumans) {
             $handle = fopen('php://output', 'w');
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            fputcsv($handle, [
-                'No',
-                'Judul',
-                'Pelatihan',
-                'Isi',
-                'Status',
-                'Tanggal Dibuat'
-            ]);
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['No', 'Judul', 'Training', 'Konten', 'Status', 'Tanggal']);
 
             foreach ($pengumumans as $index => $pengumuman) {
-                fputcsv($handle, [
+                fputcsv($file, [
                     $index + 1,
                     $pengumuman->judul,
                     $pengumuman->training->judul ?? 'Umum',
@@ -312,9 +327,45 @@ class PengumumanController extends Controller
                 ]);
             }
 
-            fclose($handle);
+            fclose($file);
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Download or view the pengumuman file securely.
+     */
+    public function viewFile($id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+        
+        if (!$pengumuman->file_path) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        if ($pengumuman->jenis_pengumuman === 'peserta') {
+            if (!Auth::check() || Auth::user()->role !== 'peserta') {
+                abort(403, 'Anda tidak memiliki akses ke pengumuman ini.');
+            }
+
+            if ($pengumuman->training_id) {
+                $user = Auth::user();
+                $hasAccess = \App\Models\TrainingRegistration::where('user_id', $user->id)
+                    ->where('training_id', $pengumuman->training_id)
+                    ->whereIn('status', ['pending', 'registered', 'approved', 'completed'])
+                    ->exists();
+
+                if (!$hasAccess) {
+                    abort(403, 'Anda tidak memiliki akses ke pengumuman ini.');
+                }
+            }
+        }
+
+        if (!Storage::exists($pengumuman->file_path)) {
+            abort(404, 'File fisik tidak ditemukan.');
+        }
+
+        return Storage::response($pengumuman->file_path, $pengumuman->file_name);
     }
 }

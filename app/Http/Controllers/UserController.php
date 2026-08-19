@@ -115,7 +115,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'nik'         => ['required', 'string', 'max:30', Rule::unique('users')->ignore($user->id)],
+            'nik'         => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
             'nama'        => 'required|string|max:100',
             'email'       => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password'    => 'nullable|string|min:8|confirmed',
@@ -124,7 +124,73 @@ class UserController extends Controller
             'departemen'  => 'nullable|string|max:100',
             'jabatan'     => 'nullable|string|max:100',
             'no_telepon'  => 'nullable|string|max:20',
+            
+            // Validasi file
             'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'npwp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'file_produk' => 'nullable|file|mimes:pdf,jpeg,png,jpg,doc,docx|max:5120',
+            
+            // Tambahan field untuk UMK
+            'status_pernikahan' => 'nullable|string|max:50',
+            'jenis_kelamin' => 'nullable|in:L,P',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'agama' => 'nullable|string|max:50',
+            'pendidikan_terakhir' => 'nullable|string|max:100',
+            'provinsi' => 'nullable|string|max:100',
+            'kabupaten' => 'nullable|string|max:100',
+            'kecamatan' => 'nullable|string|max:100',
+            'desa' => 'nullable|string|max:100',
+            'alamat_lengkap' => 'nullable|string',
+            'kode_pos_domisili' => 'nullable|string|max:20',
+            'disabilitas' => 'nullable|string|max:100',
+            
+            'nama_usaha' => 'nullable|string|max:150',
+            'jabatan_usaha' => 'nullable|string|max:100',
+            'merek_produk' => 'nullable|string|max:150',
+            'kode_pos_usaha' => 'nullable|string|max:20',
+            'sektor_usaha' => 'nullable|string|max:100',
+            'no_telepon_usaha' => 'nullable|string|max:20',
+            'bidang_usaha' => 'nullable|string|max:100',
+            'tanggal_berdiri' => 'nullable|date',
+            'npwp_usaha' => 'nullable|string|max:50',
+            'status_nib' => 'nullable|string|max:50',
+            'nib' => 'nullable|string|max:50',
+            'lama_nib' => 'nullable|string|max:50',
+            'modal_usaha' => 'nullable|string|max:50',
+            'nilai_modal' => 'nullable|numeric',
+            'omzet_usaha' => 'nullable|string|max:50',
+            'nilai_omzet' => 'nullable|numeric',
+            'jumlah_karyawan' => 'nullable|integer',
+            'kapasitas_produksi' => 'nullable|string|max:100',
+            'anggota_koperasi' => 'nullable|string|max:100',
+            
+            'email_usaha' => 'nullable|email|max:100',
+            'website_usaha' => 'nullable|string|max:100',
+            'medsos_usaha' => 'nullable|string',
+            'marketplace' => 'nullable|string',
+            'pengadaan_barang' => 'nullable|string|max:100',
+            'akses_kredit' => 'nullable|string|max:100',
+            'tabungan' => 'nullable|string|max:100',
+            'perizinan_usaha' => 'nullable|string|max:100',
+            'sertifikasi_produk' => 'nullable|string|max:100',
+            'jangkauan_pemasaran' => 'nullable|string|max:100',
+            'lokasi_pemasaran' => 'nullable|string|max:100',
+            'status_ekspor' => 'nullable|string|max:100',
+            'negara_ekspor' => 'nullable|string|max:100',
+            'metode_ekspor' => 'nullable|string|max:100',
+            'volume_ekspor' => 'nullable|string|max:100',
+            'nilai_ekspor' => 'nullable|numeric',
+            'pasok_bahan_baku' => 'nullable|string|max:100',
+            'kemitraan' => 'nullable|string|max:100',
+            
+            'permasalahan' => 'nullable|string',
+            'kebutuhan_diklat' => 'nullable|string',
+            'riwayat_pelatihan' => 'nullable|string|max:100',
+            'jenis_pelatihan_diikuti' => 'nullable|string',
+            'masukan_saran' => 'nullable|string',
         ]);
 
         $data = $validated;
@@ -136,15 +202,43 @@ class UserController extends Controller
         }
 
         if ($request->hasFile('foto')) {
-            if ($user->foto) {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
                 Storage::disk('public')->delete($user->foto);
             }
-            $data['foto'] = $request->file('foto')->store('users', 'public');
+            $data['foto'] = $request->file('foto')->store('avatars', 'public');
+        }
+
+        if ($request->hasFile('ktp_file')) {
+            if ($user->ktp_file && Storage::disk('public')->exists($user->ktp_file)) {
+                Storage::disk('public')->delete($user->ktp_file);
+            }
+            $data['ktp_file'] = $request->file('ktp_file')->store('ktp_files', 'public');
+        }
+
+        if ($request->hasFile('nib_file')) {
+            if ($user->nib_file && Storage::disk('public')->exists($user->nib_file)) {
+                Storage::disk('public')->delete($user->nib_file);
+            }
+            $data['nib_file'] = $request->file('nib_file')->store('nib_files', 'public');
+        }
+
+        if ($request->hasFile('npwp_file')) {
+            if ($user->npwp_file && Storage::disk('public')->exists($user->npwp_file)) {
+                Storage::disk('public')->delete($user->npwp_file);
+            }
+            $data['npwp_file'] = $request->file('npwp_file')->store('npwp_files', 'public');
+        }
+
+        if ($request->hasFile('file_produk')) {
+            if ($user->file_produk && Storage::disk('public')->exists($user->file_produk)) {
+                Storage::disk('public')->delete($user->file_produk);
+            }
+            $data['file_produk'] = $request->file('file_produk')->store('produk_files', 'public');
         }
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'User berhasil diperbarui.');
     }
 

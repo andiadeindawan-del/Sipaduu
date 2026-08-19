@@ -163,20 +163,7 @@
                                 <p class="fw-semibold mb-0">{{ $user->disabilitas ?? '-' }}</p>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4">
-                            <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Dokumen KTP</label>
-                                <p class="fw-semibold mb-0">
-                                    @if($user->ktp_file)
-                                        <a href="{{ Storage::url($user->ktp_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye me-1"></i> Lihat KTP
-                                        </a>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
+                        <!-- KTP Moved to Dokumen Section -->
                         <div class="col-12">
                             <div class="detail-item">
                                 <label class="text-muted small fw-semibold text-uppercase">Alamat Domisili</label>
@@ -457,18 +444,80 @@
                                 <p class="fw-semibold mb-0">{{ $user->masukan_saran ?? '-' }}</p>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">File Produk</label>
-                                <p class="fw-semibold mb-0">
-                                    @if($user->file_produk)
-                                        <a href="{{ Storage::url($user->file_produk) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-download me-1"></i> Download File Produk
-                                        </a>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
-                                </p>
+                        <!-- File Produk moved to Dokumen Section -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOKUMEN PESERTA -->
+            <div class="panel mt-4 border-0 shadow-sm">
+                <div class="panel-header bg-light">
+                    <h5 class="section-title fw-bold mb-0"><i class="bi bi-folder-fill me-2 text-primary"></i> Dokumen Peserta</h5>
+                </div>
+                <div class="p-4">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <label class="text-muted small fw-semibold text-uppercase d-block mb-2">KTP</label>
+                                @if($user->ktp_file)
+                                    <a href="{{ route('profile.document', ['type' => 'ktp', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-primary w-100">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i> Lihat / Download
+                                    </a>
+                                @else
+                                    <span class="badge bg-secondary">Belum diupload</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <label class="text-muted small fw-semibold text-uppercase d-block mb-2">NIB</label>
+                                @if($user->nib_file)
+                                    <a href="{{ route('profile.document', ['type' => 'nib', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-primary w-100">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i> Lihat / Download
+                                    </a>
+                                @else
+                                    <span class="badge bg-secondary">Belum diupload</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <label class="text-muted small fw-semibold text-uppercase d-block mb-2">NPWP</label>
+                                @if($user->npwp_file)
+                                    <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-primary w-100">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i> Lihat / Download
+                                    </a>
+                                @else
+                                    <span class="badge bg-secondary">Belum diupload</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <label class="text-muted small fw-semibold text-uppercase d-block mb-2">Foto Profil</label>
+                                @if($user->foto)
+                                    <a href="{{ asset('storage/' . $user->foto) }}" target="_blank" class="btn btn-sm btn-info text-white w-100">
+                                        <i class="bi bi-image me-1"></i> Lihat Foto
+                                    </a>
+                                @else
+                                    <span class="badge bg-secondary">Belum diupload</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <label class="text-muted small fw-semibold text-uppercase d-block mb-2">File Produk (Katalog/Brosur)</label>
+                                @if($user->file_produk)
+                                    <a href="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-primary w-100">
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Lihat / Download
+                                    </a>
+                                @else
+                                    <span class="badge bg-secondary">Belum diupload</span>
+                                @endif
                             </div>
                         </div>
                     </div>
