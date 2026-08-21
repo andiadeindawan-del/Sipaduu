@@ -1,4 +1,3 @@
-
 @extends('layouts.landing')
 
 @section('title', 'Tentang Kami')
@@ -11,7 +10,7 @@
 <section class="section-pad" style="padding: 4rem 0;">
     <div class="container">
         <div class="row align-items-center g-5">
-            <div class="col-lg-5">
+            <div class="col-lg-4">
                 <div class="position-relative">
                     <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
                         @php
@@ -21,71 +20,71 @@
                         @if($kadisExists)
                             <img src="{{ asset($kadisPath) }}" 
                                  alt="Kepala Dinas Koperindag Sulawesi Barat" 
-                                 class="img-fluid w-100" style="height: 450px; object-fit: cover; object-position: top;">
+                                 class="img-fluid w-100" style="height: 350px; object-fit: cover; object-position: top;">
                         @else
-                            <div class="bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 450px;">
+                            <div class="bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 350px;">
                                 <i class="bi bi-person fs-1 text-primary"></i>
                             </div>
                         @endif
-                        <div class="position-absolute bottom-0 start-0 end-0 p-4" 
+                        <div class="position-absolute bottom-0 start-0 end-0 p-3" 
                              style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
-                            <h5 class="text-white mb-0 fw-bold">H. MASRIADI NADI ATJO, S.E., M.Si.</h5>
-                            <p class="text-white-50 mb-0 small">Kepala Dinas Koperindag Provinsi Sulawesi Barat</p>
+                            <h5 class="text-white mb-0 fw-bold" style="font-size: 0.95rem;">H. MASRIADI NADI ATJO, S.E., M.Si.</h5>
+                            <p class="text-white-50 mb-0 small" style="font-size: 0.7rem;">Kepala Dinas Koperindag Provinsi Sulawesi Barat</p>
                         </div>
                     </div>
                     
                     <!-- Decorative Elements -->
                     <div class="position-absolute bottom-0 start-0 translate-middle">
-                        <div class="bg-success bg-opacity-10 rounded-circle" style="width: 60px; height: 60px;"></div>
+                        <div class="bg-success bg-opacity-10 rounded-circle" style="width: 50px; height: 50px;"></div>
                     </div>
                    
                 </div>
             </div>
-            <div class="col-lg-7">
+            <div class="col-lg-8">
                 <div class="mb-4">
-                    <h2 class="fw-bold mb-1">PROFIL PIMPINAN</h2>
+                    <h2 class="fw-bold mb-1" style="font-size: 1.8rem;">PROFIL PIMPINAN</h2>
                     
-                    <div class="text-muted" style="line-height: 1.8;">
+                    <div class="text-muted" style="line-height: 1.8; font-size: 0.95rem;">
                         <p><strong>H. Masriadi Nadi Atjo, S.E., M.Si.</strong> adalah Kepala Dinas Koperasi, Perindustrian, dan Perdagangan (Koperindag) Provinsi Sulawesi Barat. Beliau memiliki pengalaman panjang di bidang pemerintahan dan pengembangan sumber daya manusia.</p>
                         <p>Di bawah kepemimpinannya, Dinas Koperindag Provinsi Sulawesi Barat terus berkomitmen untuk meningkatkan kompetensi dan daya saing pelaku usaha di bidang koperasi, industri, dan perdagangan melalui berbagai program pelatihan dan pengembangan SDM.</p>
                         <p>Beliau merupakan sosok visioner yang selalu mendorong inovasi dan pemanfaatan teknologi dalam pengembangan sumber daya manusia, termasuk melalui platform SIPADU (Sistem Pengembangan SDM Usaha) yang menjadi andalan dalam pelatihan dan sertifikasi.</p>
                     </div>
 
                     <!-- Informasi Detail Pimpinan -->
-                    <div class="row g-3 mt-3">
+                    <div class="row g-2 mt-3">
                         <div class="col-md-6">
                             <div class="d-flex align-items-center gap-2 p-2 bg-light rounded-3">
-                                <i class="bi bi-calendar text-primary"></i>
+                                <i class="bi bi-calendar text-primary" style="font-size: 0.9rem;"></i>
                                 <div>
-                                    <small class="text-muted d-block">Tempat, Tanggal Lahir</small>
-                                    <span class="fw-semibold">Makassar, 15 Maret 1968</span>
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">Tempat, Tanggal Lahir</small>
+                                    <span class="fw-semibold" style="font-size: 0.85rem;">Makassar, 15 Maret 1968</span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center gap-2 p-2 bg-light rounded-3">
-                                <i class="bi bi-mortarboard text-primary"></i>
+                                <i class="bi bi-mortarboard text-primary" style="font-size: 0.9rem;"></i>
                                 <div>
-                                    <small class="text-muted d-block">Pendidikan Terakhir</small>
-                                    <span class="fw-semibold">S2 Magister Manajemen (M.Si)</span>
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">Pendidikan Terakhir</small>
+                                    <span class="fw-semibold" style="font-size: 0.85rem;">S2 Magister Manajemen (M.Si)</span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center gap-2 p-2 bg-light rounded-3">
-                                <i class="bi bi-briefcase text-primary"></i>
+                                <i class="bi bi-briefcase text-primary" style="font-size: 0.9rem;"></i>
                                 <div>
-                                    <small class="text-muted d-block">Jabatan</small>
-                                    <span class="fw-semibold">Kepala Dinas Koperindag Sulbar</span>
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">Jabatan</small>
+                                    <span class="fw-semibold" style="font-size: 0.85rem;">Kepala Dinas Koperindag Sulbar</span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center gap-2 p-2 bg-light rounded-3">
-                                <i class="bi bi-clock-history text-primary"></i>
+                                <i class="bi bi-clock-history text-primary" style="font-size: 0.9rem;"></i>
                                 <div>
-                                    <small class="text-muted d-block">Masa Jabatan</small>
-                                    <span class="fw-semibold">2021 - Sekarang</span>
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">Masa Jabatan</small>
+                                    <span class="fw-semibold" style="font-size: 0.85rem;">2021 - Sekarang</span>
                                 </div>
                             </div>
                         </div>
@@ -246,131 +245,71 @@
 </section>
 
 <!-- ============================================================
-     TEAM SECTION - TIM PENGEMBANG (4 ORANG)
+     TEAM SECTION - TIM PENGEMBANG (HANYA NAMA)
 ============================================================ -->
 <section class="section-pad" style="padding: 4rem 0; background: #f8fafc;">
     <div class="container">
-        <div class="text-center mb-4">
+        <div class="text-center mb-5">
             <h2 class="display-5 fw-bold mb-2">Tim Pengembang</h2>
             <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
                 Orang-orang di balik pengembangan platform SIPADU.
             </p>
         </div>
 
-        <!-- Grid Tim Pengembang - 4 Orang -->
-        <div class="row g-3 justify-content-center">
-            <!-- Mahasiswa -->
-            <div class="col-6 col-sm-4 col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                    <div class="team-image-wrapper" style="height: 160px;">
-                        @php
-                            $mahasiswaPath = 'assets/images/mahasiswa.png';
-                            $mahasiswaExists = file_exists(public_path($mahasiswaPath));
-                        @endphp
-                        @if($mahasiswaExists)
-                            <img src="{{ asset($mahasiswaPath) }}" 
-                                 alt="Mahasiswa" 
-                                 class="team-image"
-                                 style="object-fit: cover; object-position: center top;">
-                        @else
-                            <div class="team-placeholder bg-primary">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                        @endif
-                        <div class="team-overlay">
-                            <span class="badge bg-primary" style="font-size: 0.5rem; padding: 0.2rem 0.5rem;">Mahasiswa</span>
+        <!-- Struktur Tim Pengembang - Hanya Nama -->
+        <div class="team-structure">
+            <!-- Baris 1: Mahasiswa (1 orang) -->
+            <div class="team-row row justify-content-center mb-3">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                    <div class="team-item text-center">
+                        <div class="team-line">
+                            <div class="team-dot"></div>
                         </div>
-                    </div>
-                    <div class="card-body p-2">
-                        <h6 class="fw-bold mb-0" style="font-size: 0.75rem; line-height: 1.2;">A. ADE INDAWAN</h6>
-                        <p class="text-muted small mb-0" style="font-size: 0.65rem;">Mahasiswa</p>
+                        <div class="team-name-box">
+                            <h6 class="team-name">A. ADE INDAWAN</h6>
+                            <span class="team-label">Mahasiswa</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dosen Pembimbing 1 -->
-            <div class="col-6 col-sm-4 col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                    <div class="team-image-wrapper" style="height: 160px;">
-                        @php
-                            $dospem1Path = 'assets/images/dospem1.png';
-                            $dospem1Exists = file_exists(public_path($dospem1Path));
-                        @endphp
-                        @if($dospem1Exists)
-                            <img src="{{ asset($dospem1Path) }}" 
-                                 alt="Dosen Pembimbing 1" 
-                                 class="team-image"
-                                 style="object-fit: cover; object-position: center top;">
-                        @else
-                            <div class="team-placeholder bg-success">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                        @endif
-                        <div class="team-overlay">
-                            <span class="badge bg-success" style="font-size: 0.5rem; padding: 0.2rem 0.5rem;">Dosen 1</span>
+            <!-- Baris 2: Dosen Pembimbing 1 & Dosen Pembimbing 2 (2 orang) -->
+            <div class="team-row row justify-content-center mb-3">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="team-item text-center">
+                        <div class="team-line">
+                            <div class="team-dot"></div>
+                        </div>
+                        <div class="team-name-box">
+                            <h6 class="team-name">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
+                            <span class="team-label">Dosen Pembimbing 1</span>
                         </div>
                     </div>
-                    <div class="card-body p-2">
-                        <h6 class="fw-bold mb-0" style="font-size: 0.75rem; line-height: 1.2;">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
-                        <p class="text-muted small mb-0" style="font-size: 0.65rem;">Dosen Pembimbing 1</p>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="team-item text-center">
+                        <div class="team-line">
+                            <div class="team-dot"></div>
+                        </div>
+                        <div class="team-name-box">
+                            <h6 class="team-name">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
+                            <span class="team-label">Dosen Pembimbing 2</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dosen Pembimbing 2 -->
-            <div class="col-6 col-sm-4 col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                    <div class="team-image-wrapper" style="height: 160px;">
-                        @php
-                            $dospem2Path = 'assets/images/dospem2.png';
-                            $dospem2Exists = file_exists(public_path($dospem2Path));
-                        @endphp
-                        @if($dospem2Exists)
-                            <img src="{{ asset($dospem2Path) }}" 
-                                 alt="Dosen Pembimbing 2" 
-                                 class="team-image"
-                                 style="object-fit: cover; object-position: center top;">
-                        @else
-                            <div class="team-placeholder bg-warning">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                        @endif
-                        <div class="team-overlay">
-                            <span class="badge bg-warning text-dark" style="font-size: 0.5rem; padding: 0.2rem 0.5rem;">Dosen 2</span>
+            <!-- Baris 3: Pembimbing Lapangan (1 orang) -->
+            <div class="team-row row justify-content-center">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                    <div class="team-item text-center">
+                        <div class="team-line">
+                            <div class="team-dot"></div>
                         </div>
-                    </div>
-                    <div class="card-body p-2">
-                        <h6 class="fw-bold mb-0" style="font-size: 0.75rem; line-height: 1.2;">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
-                        <p class="text-muted small mb-0" style="font-size: 0.65rem;">Dosen Pembimbing 2</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pembimbing Lapangan -->
-            <div class="col-6 col-sm-4 col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center team-card">
-                    <div class="team-image-wrapper" style="height: 160px;">
-                        @php
-                            $pembimbingLapPath = 'assets/images/pembimbing-lapangan.png';
-                            $pembimbingLapExists = file_exists(public_path($pembimbingLapPath));
-                        @endphp
-                        @if($pembimbingLapExists)
-                            <img src="{{ asset($pembimbingLapPath) }}" 
-                                 alt="Pembimbing Lapangan" 
-                                 class="team-image"
-                                 style="object-fit: cover; object-position: center top;">
-                        @else
-                            <div class="team-placeholder bg-info">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                        @endif
-                        <div class="team-overlay">
-                            <span class="badge bg-info" style="font-size: 0.5rem; padding: 0.2rem 0.5rem;">Lapangan</span>
+                        <div class="team-name-box">
+                            <h6 class="team-name">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
+                            <span class="team-label">Pembimbing Lapangan</span>
                         </div>
-                    </div>
-                    <div class="card-body p-2">
-                        <h6 class="fw-bold mb-0" style="font-size: 0.75rem; line-height: 1.2;">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
-                        <p class="text-muted small mb-0" style="font-size: 0.65rem;">Pembimbing Lapangan</p>
                     </div>
                 </div>
             </div>
@@ -451,84 +390,81 @@
     }
 
     /* ============================================================
-       TEAM CARD
+       TEAM STRUCTURE - HANYA NAMA
     ============================================================ */
-    .team-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background: #fff;
-        border: 1px solid #f0f0f0;
+    .team-structure {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem 0;
     }
-    .team-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10) !important;
+
+    .team-row {
+        position: relative;
+    }
+
+    .team-item {
+        padding: 0.5rem 0;
+    }
+
+    .team-line {
+        position: relative;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .team-line::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to bottom, #4e9af1, #6ab0f5);
+        opacity: 0.3;
+    }
+
+    .team-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #4e9af1;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .team-name-box {
+        background: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+
+    .team-name-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         border-color: #d4e4f7;
     }
 
-    .team-image-wrapper {
-        position: relative;
-        overflow: hidden;
-        height: 160px;
-        background: #f8fafc;
-    }
-
-    .team-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center top;
-        transition: transform 0.4s ease;
-    }
-
-    .team-card:hover .team-image {
-        transform: scale(1.05);
-    }
-
-    .team-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        color: rgba(255,255,255,0.7);
-    }
-
-    .team-placeholder.bg-primary { background: #4e9af1; }
-    .team-placeholder.bg-success { background: #28c76f; }
-    .team-placeholder.bg-warning { background: #ff9f43; }
-    .team-placeholder.bg-info { background: #17a2b8; }
-
-    .team-overlay {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-    }
-
-    .team-overlay .badge {
-        font-weight: 500;
-        padding: 0.2rem 0.5rem;
-        font-size: 0.5rem;
-        letter-spacing: 0.3px;
-        border-radius: 4px;
-        text-transform: uppercase;
-    }
-
-    .team-card .card-body {
-        padding: 0.6rem 0.6rem 0.7rem;
-    }
-
-    .team-card .card-body h6 {
-        font-size: 0.75rem;
+    .team-name {
         font-weight: 700;
-        margin-bottom: 0;
-        line-height: 1.2;
+        font-size: 0.95rem;
         color: #1a2236;
+        margin-bottom: 0.1rem;
     }
 
-    .team-card .card-body p {
-        font-size: 0.65rem;
-        margin-bottom: 0;
+    .team-label {
+        font-size: 0.7rem;
         color: #8a93a3;
+        display: block;
+        font-weight: 500;
+        letter-spacing: 0.3px;
     }
 
     /* ============================================================
@@ -565,9 +501,13 @@
        RESPONSIVE
     ============================================================ */
     @media (max-width: 992px) {
-        .col-lg-3 {
+        .col-lg-4 {
             flex: 0 0 auto;
-            width: 33.333%;
+            width: 40%;
+        }
+        .col-lg-8 {
+            flex: 0 0 auto;
+            width: 60%;
         }
     }
 
@@ -596,46 +536,60 @@
             padding: 0.5rem 1.5rem !important;
             font-size: 0.95rem !important;
         }
-        
-        .col-sm-4 {
+
+        .col-lg-4 {
+            flex: 0 0 auto;
+            width: 60%;
+            margin: 0 auto;
+        }
+        .col-lg-8 {
+            flex: 0 0 auto;
+            width: 100%;
+        }
+
+        .team-name {
+            font-size: 0.85rem;
+        }
+        .team-name-box {
+            padding: 0.6rem 1rem;
+        }
+        .team-line {
+            height: 20px;
+        }
+        .team-dot {
+            width: 10px;
+            height: 10px;
+        }
+        .col-sm-6 {
             flex: 0 0 auto;
             width: 50%;
-        }
-        
-        .team-image-wrapper {
-            height: 130px;
-        }
-        
-        .team-card .card-body h6 {
-            font-size: 0.7rem;
-        }
-        
-        .team-card .card-body p {
-            font-size: 0.6rem;
         }
     }
 
     @media (max-width: 576px) {
-        .col-6 {
+        .col-lg-4 {
             flex: 0 0 auto;
-            width: 50%;
+            width: 80%;
         }
-        
-        .team-image-wrapper {
-            height: 120px;
+        .team-name {
+            font-size: 0.75rem;
         }
-        
-        .team-card .card-body h6 {
-            font-size: 0.65rem;
+        .team-name-box {
+            padding: 0.5rem 0.75rem;
         }
-        
-        .team-card .card-body p {
-            font-size: 0.55rem;
+        .team-label {
+            font-size: 0.6rem;
         }
-        
-        .team-overlay .badge {
-            font-size: 0.45rem;
-            padding: 0.15rem 0.4rem;
+        .team-line {
+            height: 15px;
+        }
+        .team-dot {
+            width: 8px;
+            height: 8px;
+        }
+        .col-sm-6 {
+            flex: 0 0 auto;
+            width: 100%;
         }
     }
 </style>
@@ -686,4 +640,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endpush
 @endsection
-```

@@ -191,7 +191,7 @@
                         <th>Tanggal Terbit</th>
                         <th>Kadaluarsa</th>
                         <th>Status</th>
-                        <th class="text-end">Aksi</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -120,7 +120,7 @@
                         <th scope="col">Departemen</th>
                         <th scope="col">Status</th>
                         <th scope="col">Bergabung</th>
-                        <th scope="col" class="text-end" style="width: 160px;">Aksi</th>
+                        <th scope="col" class="text-center" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -152,8 +152,8 @@
                             @endif
                         </td>
                         <td>{{ $user->created_at ? $user->created_at->format('d/m/Y') : '-' }}</td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 {{-- Link Show --}}
                                 <a href="{{ route('admin.users.show', $user->id) }}" class="badge bg-info text-white border-0 p-2 text-decoration-none" title="Lihat">
                                     <i class="bi bi-eye"></i> Lihat
@@ -258,6 +258,13 @@
         letter-spacing: 0.5px;
         color: #6c757d;
         border-bottom: 2px solid #f0f0f0;
+    }
+    nav[aria-label="User pagination"] svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    nav[aria-label="User pagination"] p {
+        margin-bottom: 0;
     }
 </style>
 @endpush

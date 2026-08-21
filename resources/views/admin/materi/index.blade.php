@@ -111,7 +111,7 @@
                         <th>Durasi</th>
                         <th>File</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 160px;">Aksi</th>
+                        <th class="text-center" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -173,22 +173,22 @@
                                 {{ $status['label'] }}
                             </span>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 {{-- Link Show --}}
                                 <a href="{{ route('admin.materi.show', $materi->id) }}" class="badge bg-info text-white border-0 p-2 text-decoration-none" title="Lihat">
-                                    <i class="bi bi-eye"></i> 
+                                    <i class="bi bi-eye"></i> Lihat
                                 </a>
                                 
                                 {{-- Link Edit --}}
                                 <a href="{{ route('admin.materi.edit', $materi->id) }}" class="badge bg-warning text-dark border-0 p-2 text-decoration-none" title="Edit">
-                                    <i class="bi bi-pencil"></i> 
+                                    <i class="bi bi-pencil"></i> Edit
                                 </a>
                                 
                                 @if($materi->hasFile())
                                 <a href="{{ route('admin.materi.download', $materi->id) }}" 
                                    class="badge bg-success text-white text-decoration-none p-2" title="Download">
-                                    <i class="bi bi-download"></i> 
+                                    <i class="bi bi-download"></i> Download
                                 </a>
                                 @endif
                                 
@@ -196,7 +196,7 @@
                                 <form action="{{ route('admin.materi.destroy', $materi->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus materi {{ $materi->judul }}?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="badge bg-danger text-white border-0 p-2" title="Hapus">
+                                    <button type="submit" class="badge bg-danger text-white border-0 p-2" title="Hapus"> Hapus
                                         <i class="bi bi-trash"></i> 
                                     </button>
                                 </form>

@@ -202,7 +202,7 @@
                                                         <th>Nama File</th>
                                                         <th>Tipe</th>
                                                         <th>Ukuran</th>
-                                                        <th class="text-end">Aksi</th>
+                                                        <th class="text-center">Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

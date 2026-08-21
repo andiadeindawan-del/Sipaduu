@@ -153,7 +153,7 @@
                         <th>Pelatihan</th>
                         <th>Tanggal</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 100px;">Aksi</th>
+                        <th class="text-center" style="width: 100px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,8 +208,8 @@
                             <small class="text-muted">{{ Str::limit($absen->keterangan, 20) }}</small>
                             @endif
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 <a href="{{ route('admin.absen.show', $absen->id) }}" 
                                    class="badge bg-info text-white text-decoration-none p-2" title="Lihat">
                                     <i class="bi bi-eye"></i>

@@ -174,7 +174,7 @@
                             <th>Pelatihan</th>
                             <th>Tanggal Daftar</th>
                             <th>Status</th>
-                            <th class="text-end">Aksi</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -209,7 +209,7 @@
                                     <i class="bi bi-clock me-1"></i> Pending
                                 </span>
                             </td>
-                           <td class="text-end">
+                           <td class="text-center">
     <div class="btn-group btn-group-sm" role="group">
         @if($registration->status == 'pending')
             <form action="{{ url('/admin/pendaftaran/' . $registration->id . '/approve') }}" method="POST" class="d-inline">
@@ -454,7 +454,7 @@
                         <th>Usaha</th>
                         <th>Status</th>
                         <th>Bergabung</th>
-                        <th class="text-end">Aksi</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

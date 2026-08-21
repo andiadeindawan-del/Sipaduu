@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Tambah Quiz')
@@ -10,11 +11,6 @@
             <p class="eyebrow">Manajemen</p>
             <h1 class="h3 mb-0">Tambah Quiz</h1>
         </div>
-    </div>
-    <div class="heading-actions">
-        <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
     </div>
 </div>
 @endsection
@@ -325,12 +321,15 @@
                                     <button type="submit" class="btn btn-primary">
                                         <i class="bi bi-save me-1"></i> Simpan Quiz
                                     </button>
-                                    <a href="{{ route('admin.quiz.index') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ route('admin.quiz.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-x-circle me-1"></i> Batal
                                     </a>
-                                    <button type="reset" class="btn btn-outline-warning">
+                                    <button type="reset" class="btn btn-warning">
                                         <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                                     </button>
+                                    <a href="{{ route('admin.quiz.index') }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali
+                                    </a>
                                 </div>
                             </div>
                         </div>

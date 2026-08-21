@@ -146,7 +146,7 @@
                         <th style="width: 50px;">#</th>
                         <th>Pertanyaan</th>
                         <th>Tipe</th>
-                        <th class="text-end" style="width: 120px;">Aksi</th>
+                        <th class="text-center" style="width: 120px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -178,8 +178,8 @@
                                 <span class="badge bg-secondary">{{ $q->tipe }}</span>
                             @endif
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 <a href="{{ route('admin.survey.questions.edit', [$survey->id, $q->id]) }}" 
                                    class="badge bg-warning text-dark text-decoration-none p-2" title="Edit">
                                     <i class="bi bi-pencil"></i> 

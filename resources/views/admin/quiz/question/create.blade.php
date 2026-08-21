@@ -1,3 +1,4 @@
+```blade
 @extends('layouts.admin')
 
 @section('title', 'Tambah Pertanyaan Quiz')
@@ -16,11 +17,6 @@
                 @endif
             </p>
         </div>
-    </div>
-    <div class="heading-actions">
-        <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
     </div>
 </div>
 @endsection
@@ -276,12 +272,15 @@
                                     <button type="submit" class="btn btn-primary" id="submitBtn">
                                         <i class="bi bi-save me-1"></i> Simpan Pertanyaan
                                     </button>
-                                    <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" class="btn btn-outline-secondary">
+                                    <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" class="btn btn-secondary">
                                         <i class="bi bi-x-circle me-1"></i> Batal
                                     </a>
-                                    <button type="reset" class="btn btn-outline-warning">
+                                    <button type="reset" class="btn btn-warning">
                                         <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                                     </button>
+                                    <a href="{{ route('admin.quiz.questions.index', $quiz->id) }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -524,3 +523,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endpush
 @endsection
+```

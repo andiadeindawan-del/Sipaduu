@@ -49,7 +49,7 @@
                         <th>Status Profil</th>
                         <th>KTP</th>
                         <th>Status Pendaftaran</th>
-                        <th class="text-end" style="width: 120px;">Aksi</th>
+                        <th class="text-center" style="width: 120px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

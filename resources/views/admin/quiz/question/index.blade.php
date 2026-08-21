@@ -171,7 +171,7 @@
                         <th>Tipe</th>
                         <th>Nilai</th>
                         <th>Urutan</th>
-                        <th class="text-end" style="width: 120px;">Aksi</th>
+                        <th class="text-center" style="width: 120px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,18 +227,18 @@
                             <span class="text-muted">{{ $question->order ?? $loop->iteration }}</span>
                         </td>
                         <td class="text-end">
-                            <div class="btn-group btn-group-sm" role="group">
+                            <div class="d-flex gap-1 justify-content-center" role="group">
                                 <a href="{{ route('admin.quiz.questions.show', ['quiz' => $question->quiz_id, 'question' => $question->id]) }}" class="btn btn-info" title="Lihat Detail">
-                                    <i class="bi bi-eye"></i> LIhat
+                                    <i class="bi bi-eye"></i> 
                                 </a>
                                 <a href="{{ route('admin.quiz.questions.edit', ['quiz' => $question->quiz_id, 'question' => $question->id]) }}" class="btn btn-warning" title="Edit">
-                                    <i class="bi bi-pencil"></i> Edit
+                                    <i class="bi bi-pencil"></i> 
                                 </a>
                                 <form action="{{ route('admin.quiz.questions.destroy', ['quiz' => $question->quiz_id, 'question' => $question->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pertanyaan ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger" title="Hapus">
-                                        <i class="bi bi-trash"></i> Hapus
+                                        <i class="bi bi-trash"></i> 
                                     </button>
                                 </form>
                             </div>

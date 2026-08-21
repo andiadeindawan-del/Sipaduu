@@ -186,7 +186,7 @@
                         <th>Tanggal Daftar</th>
                         <th>Status Profil</th>
                         <th>Status Pendaftaran</th>
-                        <th class="text-end" style="width: 200px;">Aksi</th>
+                        <th class="text-center" style="width: 200px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -257,8 +257,8 @@
                                 <span class="badge badge-secondary">{{ ucfirst($registration->status) }}</span>
                             @endif
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 <a href="{{ route('admin.pendaftaran.show', $registration->id) }}" 
                                    class="btn btn-outline-primary btn-sm" title="Detail Peserta">
                                     <i class="bi bi-person-lines-fill"></i>

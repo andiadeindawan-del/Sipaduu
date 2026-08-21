@@ -126,7 +126,7 @@
                         <th scope="col">Peserta</th>
                         <th scope="col">Tanggal Terbit</th>
                         <th scope="col">Status</th>
-                        <th scope="col" class="text-end" style="width: 160px;">Aksi</th>
+                        <th scope="col" class="text-center" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

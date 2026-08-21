@@ -237,7 +237,7 @@
                                                 <th>Nama File</th>
                                                 <th>Tipe</th>
                                                 <th>Ukuran</th>
-                                                <th class="text-end">Aksi</th>
+                                                <th class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -263,8 +263,8 @@
                                                         -
                                                     @endif
                                                 </td>
-                                                <td class="text-end">
-                                                    <div class="d-flex gap-1 justify-content-end">
+                                                <td class="text-center">
+                                                    <div class="d-flex gap-1 justify-content-center">
                                                         @if(!empty($file['path']))
                                                             <a href="{{ route('admin.materi.download', ['materi' => $materi->id, 'index' => $index]) }}" 
                                                                class="btn btn-sm btn-success" target="_blank" title="Download">

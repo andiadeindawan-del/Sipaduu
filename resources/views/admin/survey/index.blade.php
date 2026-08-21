@@ -157,7 +157,7 @@
                         <th>Pertanyaan</th>
                         <th>Respon</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 200px;">Aksi</th>
+                        <th class="text-center" style="width: 200px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -204,8 +204,8 @@
                                 {{ $status['label'] }}
                             </span>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 {{-- Link Show/Detail --}}
                                 <a href="{{ route('admin.survey.show', $survey->id) }}" class="badge bg-info text-white border-0 p-2 text-decoration-none" title="Detail & Respon">
                                     <i class="bi bi-eye"></i> 

@@ -12,11 +12,6 @@
             <p class="text-muted mb-0">Buat pelatihan baru untuk peserta.</p>
         </div>
     </div>
-    <div class="heading-actions">
-        <a href="{{ route('admin.trainings.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
-    </div>
 </div>
 @endsection
 
@@ -54,7 +49,6 @@
                                 @enderror
                             </div>
 
-                          
                             <!-- Judul -->
                             <div class="col-12">
                                 <label for="judul" class="form-label fw-semibold">Judul Pelatihan <span class="text-danger">*</span></label>
@@ -218,8 +212,11 @@
                                     <button type="submit" class="btn btn-primary">
                                         <i class="bi bi-save me-1"></i> Simpan
                                     </button>
-                                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-x-circle me-1"></i> Batal
+                                    </a>
+                                    <a href="{{ route('admin.trainings.index') }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i> Kembali
                                     </a>
                                 </div>
                             </div>
@@ -231,10 +228,227 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    /* ============================================================
+       PAGE HEADING
+    ============================================================ */
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .page-heading-copy {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .page-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #eaf1fd, #d4e4f7);
+        color: #4e9af1;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+    .eyebrow {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #8a93a3;
+        font-weight: 600;
+    }
+    .heading-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       PANEL
+    ============================================================ */
+    .panel {
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+    .panel:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    }
+    
+    .panel-header {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+        background: #fafbfc;
+    }
+    
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2236;
+    }
+    
+    .section-title i {
+        color: #4e9af1;
+    }
+
+    /* ============================================================
+       FORM
+    ============================================================ */
+    .form-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+    .form-control {
+        border-radius: 0.5rem;
+        border-color: #e2e8f0;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.15);
+    }
+    .form-select {
+        border-radius: 0.5rem;
+        border-color: #e2e8f0;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.15);
+    }
+    .input-group-text {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        color: #4a5568;
+        font-size: 0.9rem;
+    }
+    .input-group .form-control {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .input-group .form-select {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .text-muted {
+        font-size: 0.75rem;
+        color: #8a93a3 !important;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+    .btn-primary {
+        background: #4e9af1;
+        border-color: #4e9af1;
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background: #3a7bc8;
+        border-color: #3a7bc8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(78, 154, 241, 0.3);
+    }
+    .btn-outline-secondary {
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    .btn-outline-secondary:hover {
+        background: #e2e8f0;
+        border-color: #d5dce6;
+    }
+    .btn-sm {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+        .page-heading {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .page-heading-copy {
+            width: 100%;
+        }
+        .heading-actions {
+            width: 100%;
+        }
+        .heading-actions .btn {
+            width: 100%;
+        }
+        .panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .p-4 {
+            padding: 1.25rem !important;
+        }
+        .d-flex.gap-2 {
+            flex-wrap: wrap;
+        }
+        .d-flex.gap-2 .btn {
+            flex: 1;
+            min-width: 100px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .col-12.col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .input-group-text {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .form-control,
+        .form-select {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.6rem;
+        }
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Preview Gambar
+        // ============================================================
+        // PREVIEW GAMBAR
+        // ============================================================
         const gambarInput = document.getElementById('gambar');
         const imagePreview = document.getElementById('imagePreview');
         const imagePreviewContainer = document.getElementById('imagePreviewContainer');
@@ -256,7 +470,9 @@
             });
         }
 
-        // Validasi Tanggal
+        // ============================================================
+        // VALIDASI TANGGAL
+        // ============================================================
         const tanggalMulai = document.getElementById('tanggal_mulai');
         const tanggalSelesai = document.getElementById('tanggal_selesai');
 
@@ -277,6 +493,16 @@
                 tanggalSelesai.setAttribute('min', tanggalMulai.value);
             }
         }
+
+        // ============================================================
+        // AUTO CLOSE ALERTS
+        // ============================================================
+        setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
     });
 </script>
 @endpush

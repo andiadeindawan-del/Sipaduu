@@ -49,7 +49,7 @@ class AgendaController extends Controller
                          ->paginate(15)
                          ->withQueryString();
 
-        $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+        $trainings = Training::whereIn('status', ['draft', 'published', 'berjalan', 'selesai'])->orderBy('judul')->get();
 
         // Statistics
         $totalAgendas = Agenda::count();
@@ -151,7 +151,7 @@ class AgendaController extends Controller
      */
     public function create()
     {
-        $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+        $trainings = Training::whereIn('status', ['draft', 'published', 'berjalan', 'selesai'])->orderBy('judul')->get();
         return view('admin.agenda.create', compact('trainings'));
     }
 
@@ -195,7 +195,7 @@ class AgendaController extends Controller
      */
     public function edit(Agenda $agenda)
     {
-        $trainings = Training::where('status', 'published')->orderBy('judul')->get();
+        $trainings = Training::whereIn('status', ['draft', 'published', 'berjalan', 'selesai'])->orderBy('judul')->get();
         return view('admin.agenda.edit', compact('agenda', 'trainings'));
     }
 

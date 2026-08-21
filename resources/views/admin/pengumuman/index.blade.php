@@ -168,7 +168,7 @@
                         <th>File</th>
                         <th>Tanggal</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 160px;">Aksi</th>
+                        <th class="text-center" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,7 +225,7 @@
                             </span>
                         </td>
                         <td class="text-end">
-                            <div class="btn-group btn-group-sm" role="group">
+                            <div class="d-flex gap-1 justify-content-center" role="group">
                                 <a href="{{ route('admin.pengumuman.show', $item->id) }}" class="btn btn-info" title="Lihat">
                                     <i class="bi bi-eye"></i> Lihat
                                 </a>

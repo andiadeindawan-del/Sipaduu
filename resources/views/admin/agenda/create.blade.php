@@ -112,25 +112,25 @@
                                     </div>
 
                                     <div class="col-12 col-md-4">
-                                        <label for="waktu_mulai" class="form-label fw-semibold">
+                                        <label for="jam_mulai" class="form-label fw-semibold">
                                             <i class="bi bi-clock me-1"></i> Waktu Mulai <span class="text-danger">*</span>
                                         </label>
-                                        <input type="time" class="form-control @error('waktu_mulai') is-invalid @enderror" 
-                                               id="waktu_mulai" name="waktu_mulai" value="{{ old('waktu_mulai', '08:00') }}" 
+                                        <input type="time" class="form-control @error('jam_mulai') is-invalid @enderror" 
+                                               id="jam_mulai" name="jam_mulai" value="{{ old('jam_mulai', '08:00') }}" 
                                                required>
-                                        @error('waktu_mulai')
+                                        @error('jam_mulai')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div class="col-12 col-md-4">
-                                        <label for="waktu_selesai" class="form-label fw-semibold">
+                                        <label for="jam_selesai" class="form-label fw-semibold">
                                             <i class="bi bi-clock me-1"></i> Waktu Selesai <span class="text-danger">*</span>
                                         </label>
-                                        <input type="time" class="form-control @error('waktu_selesai') is-invalid @enderror" 
-                                               id="waktu_selesai" name="waktu_selesai" value="{{ old('waktu_selesai', '10:00') }}" 
+                                        <input type="time" class="form-control @error('jam_selesai') is-invalid @enderror" 
+                                               id="jam_selesai" name="jam_selesai" value="{{ old('jam_selesai', '10:00') }}" 
                                                required>
-                                        @error('waktu_selesai')
+                                        @error('jam_selesai')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -154,6 +154,22 @@
                                 @enderror
                             </div>
 
+                            <!-- Tipe -->
+                            <div class="col-12 col-md-6">
+                                <label for="tipe" class="form-label fw-semibold">
+                                    <i class="bi bi-tags me-1"></i> Tipe <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select @error('tipe') is-invalid @enderror" 
+                                        id="tipe" name="tipe" required>
+                                    <option value="online" {{ old('tipe', 'online') == 'online' ? 'selected' : '' }}>?? Online</option>
+                                    <option value="offline" {{ old('tipe') == 'offline' ? 'selected' : '' }}>?? Offline</option>
+                                    <option value="hybrid" {{ old('tipe') == 'hybrid' ? 'selected' : '' }}>?? Hybrid</option>
+                                </select>
+                                @error('tipe')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Status -->
                             <div class="col-12 col-md-6">
                                 <label for="status" class="form-label fw-semibold">
@@ -161,12 +177,10 @@
                                 </label>
                                 <select class="form-select @error('status') is-invalid @enderror" 
                                         id="status" name="status" required>
-                                    <option value="upcoming" {{ old('status', 'upcoming') == 'upcoming' ? 'selected' : '' }}>📅 Akan Datang</option>
-                                    <option value="ongoing" {{ old('status') == 'ongoing' ? 'selected' : '' }}>⏳ Sedang Berlangsung</option>
-                                    <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>✅ Selesai</option>
-                                    <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>❌ Dibatalkan</option>
-                                    <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>📝 Draft</option>
-                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>📢 Published</option>
+                                    <option value="draft" {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}>?? Draft</option>
+                                    <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>?? Published</option>
+                                    <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>? Selesai</option>
+                                    <option value="dibatalkan" {{ old('status') == 'dibatalkan' ? 'selected' : '' }}>? Dibatalkan</option>
                                 </select>
                                 @error('status')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -620,8 +634,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // ELEMENTS
     // ============================================================
     const tanggalInput = document.getElementById('tanggal');
-    const waktuMulai = document.getElementById('waktu_mulai');
-    const waktuSelesai = document.getElementById('waktu_selesai');
+    const waktuMulai = document.getElementById('jam_mulai');
+    const waktuSelesai = document.getElementById('jam_selesai');
     const statusSelect = document.getElementById('status');
     const judulInput = document.getElementById('judul');
     const lokasiInput = document.getElementById('lokasi');
@@ -783,8 +797,8 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             const judul = document.getElementById('judul').value.trim();
             const tanggal = document.getElementById('tanggal').value;
-            const waktuMulai = document.getElementById('waktu_mulai').value;
-            const waktuSelesai = document.getElementById('waktu_selesai').value;
+            const waktuMulai = document.getElementById('jam_mulai').value;
+            const waktuSelesai = document.getElementById('jam_selesai').value;
 
             let errors = [];
 
@@ -800,12 +814,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!waktuMulai) {
                 errors.push('⚠️ Waktu mulai wajib diisi.');
-                document.getElementById('waktu_mulai').classList.add('is-invalid');
+                document.getElementById('jam_mulai').classList.add('is-invalid');
             }
 
             if (!waktuSelesai) {
                 errors.push('⚠️ Waktu selesai wajib diisi.');
-                document.getElementById('waktu_selesai').classList.add('is-invalid');
+                document.getElementById('jam_selesai').classList.add('is-invalid');
             }
 
             if (waktuMulai && waktuSelesai) {
@@ -816,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (startMinutes >= endMinutes) {
                     errors.push('⚠️ Waktu selesai harus setelah waktu mulai.');
-                    document.getElementById('waktu_selesai').classList.add('is-invalid');
+                    document.getElementById('jam_selesai').classList.add('is-invalid');
                 }
             }
 

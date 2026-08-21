@@ -162,7 +162,7 @@
                         <th>Pertanyaan</th>
                         <th>Durasi</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 180px;">Aksi</th>
+                        <th class="text-center" style="width: 180px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -219,8 +219,8 @@
                                 {{ $status['label'] }}
                             </span>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end" role="group">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center" role="group">
                                 <!-- Lihat -->
                                 <a href="{{ route('admin.quiz.show', $quiz->id) }}" class="btn btn-info" title="Lihat Detail">
                                     <i class="bi bi-eye"></i> 

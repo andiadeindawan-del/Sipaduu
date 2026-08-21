@@ -105,7 +105,7 @@
                         <th>Pertanyaan</th>
                         <th>Tipe</th>
                         <th>Urutan</th>
-                        <th class="text-end" style="width: 150px;">Aksi</th>
+                        <th class="text-center" style="width: 150px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,8 +129,8 @@
                         <td>
                             <span class="text-muted">{{ $question->order ?? $loop->iteration }}</span>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex gap-1 justify-content-end">
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
                                 <a href="{{ route('admin.survey.questions.edit', [$survey->id, $question->id]) }}" 
                                    class="badge bg-warning text-dark border-0 p-2 text-decoration-none" title="Edit">
                                     <i class="bi bi-pencil"></i>
