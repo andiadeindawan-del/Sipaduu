@@ -344,7 +344,7 @@ class TrainingController extends Controller
             'tipe' => 'required|in:online,offline,hybrid',
             'lokasi' => 'nullable|string|max:255',
             'link_meeting' => 'nullable|url|max:255',
-            'tanggal_mulai' => 'required|date|after_or_equal:today',
+            'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'kapasitas' => 'nullable|integer|min:1',
             'status' => 'required|in:draft,published,berjalan,selesai,dibatalkan',

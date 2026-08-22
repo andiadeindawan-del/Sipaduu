@@ -477,9 +477,6 @@
         const tanggalSelesai = document.getElementById('tanggal_selesai');
 
         if (tanggalMulai && tanggalSelesai) {
-            const today = new Date().toISOString().split('T')[0];
-            tanggalMulai.setAttribute('min', today);
-
             tanggalMulai.addEventListener('change', function() {
                 if (this.value) {
                     tanggalSelesai.setAttribute('min', this.value);
