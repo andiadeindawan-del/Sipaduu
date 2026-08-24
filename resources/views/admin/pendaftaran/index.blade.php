@@ -16,9 +16,6 @@
         <a href="{{ route('admin.pendaftaran.export') }}" class="btn btn-success btn-sm">
             <i class="bi bi-download"></i> Export
         </a>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
     </div>
 </div>
 @endsection

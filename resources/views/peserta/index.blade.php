@@ -71,64 +71,7 @@
     <!-- Profile Completion Status -->
     @include('components.profile-completion', ['user' => auth()->user()])
 
-    <!-- Statistics Cards -->
-    <section class="row g-3 mb-4" aria-label="Dashboard metrics">
-        <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card" style="border-left-color: #6c757d;">
-                <div class="metric-top">
-                    <span class="metric-label">Total Pelatihan</span>
-                    <span class="metric-icon" style="color: #6c757d;"><i class="bi bi-journal-bookmark"></i></span>
-                </div>
-                <div class="metric-value">{{ $totalTrainings }}</div>
-                <div class="metric-meta">
-                    <span style="color: #6c757d;">Semua</span>
-                    <span>pelatihan</span>
-                </div>
-            </article>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card" style="border-left-color: #28c76f;">
-                <div class="metric-top">
-                    <span class="metric-label">Sertifikat Diperoleh</span>
-                    <span class="metric-icon" style="color: #28c76f;"><i class="bi bi-award"></i></span>
-                </div>
-                <div class="metric-value">{{ $totalCertificates }}</div>
-                <div class="metric-meta">
-                    <span style="color: #28c76f;">Selesai</span>
-                    <span>sertifikat</span>
-                </div>
-            </article>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card" style="border-left-color: #ff9f43;">
-                <div class="metric-top">
-                    <span class="metric-label">Quiz Dikerjakan</span>
-                    <span class="metric-icon" style="color: #ff9f43;"><i class="bi bi-question-circle"></i></span>
-                </div>
-                <div class="metric-value">{{ $totalQuizAttempts }}</div>
-                <div class="metric-meta">
-                    <span style="color: #ff9f43;">Total</span>
-                    <span>quiz</span>
-                </div>
-            </article>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3">
-            <article class="metric-card" style="border-left-color: #17a2b8;">
-                <div class="metric-top">
-                    <span class="metric-label">Rata-rata Nilai Quiz</span>
-                    <span class="metric-icon" style="color: #17a2b8;"><i class="bi bi-star"></i></span>
-                </div>
-                <div class="metric-value">{{ number_format($averageQuizScore, 1) }}</div>
-                <div class="metric-meta">
-                    <span style="color: #17a2b8;">Keseluruhan</span>
-                    <span>nilai</span>
-                </div>
-            </article>
-        </div>
-    </section>
+    
 
     <!-- Progress Overview -->
     @if($totalTrainings > 0)
