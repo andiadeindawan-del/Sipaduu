@@ -242,7 +242,7 @@ class Training extends Model
             return false;
         }
 
-        if ($this->tanggal_selesai && $this->tanggal_selesai < now()) {
+        if ($this->tanggal_selesai && $this->tanggal_selesai < now()->startOfDay()) {
             return false;
         }
 
@@ -511,7 +511,9 @@ class Training extends Model
         }
         
         if ($this->status === 'published' || $this->status === 'berjalan') {
-            return $this->tanggal_selesai < now();
+            if ($this->tanggal_selesai) {
+                return $this->tanggal_selesai < now()->startOfDay();
+            }
         }
         
         return false;

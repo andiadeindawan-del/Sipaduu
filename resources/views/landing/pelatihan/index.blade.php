@@ -137,27 +137,33 @@
                                    class="btn btn-primary btn-sm flex-grow-1">
                                     <i class="bi bi-eye me-1"></i> Detail
                                 </a>
-                                @auth
-                                    @if(auth()->user()->role === 'peserta')
-                                        @if(!$training->isEnrolled())
-                                            <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success btn-sm" 
-                                                        onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')">
-                                                    <i class="bi bi-plus-circle"></i> Daftar
-                                                </button>
-                                            </form>
-                                        @else
-                                            <span class="btn btn-sm btn-outline-success disabled">
-                                                <i class="bi bi-check-circle"></i> Terdaftar
-                                            </span>
-                                        @endif
-                                    @endif
+                                @if($training->isCompletedTraining())
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="bi bi-check-circle"></i> Pelatihan Selesai
+                                    </button>
                                 @else
-                                    <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
-                                    </a>
-                                @endauth
+                                    @auth
+                                        @if(auth()->user()->role === 'peserta')
+                                            @if(!$training->isEnrolled())
+                                                <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success btn-sm" 
+                                                            onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')">
+                                                        <i class="bi bi-plus-circle"></i> Daftar
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="btn btn-sm btn-outline-success disabled">
+                                                    <i class="bi bi-check-circle"></i> Terdaftar
+                                                </span>
+                                            @endif
+                                        @endif
+                                    @else
+                                        <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                                        </a>
+                                    @endauth
+                                @endif
                             </div>
                         </div>
                     </div>

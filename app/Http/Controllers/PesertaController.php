@@ -212,9 +212,8 @@ class PesertaController extends Controller
         $availableTrainings = Training::with(['kategori', 'registrations' => function($q) use ($userId) {
             $q->where('user_id', $userId);
         }])
-        ->where('status', 'published')
-        ->where('tanggal_mulai', '>=', now())
-        ->orderBy('tanggal_mulai', 'asc')
+        ->whereIn('status', ['published', 'selesai', 'berjalan'])
+        ->orderBy('tanggal_mulai', 'desc')
         ->limit(6)
         ->get();
 
@@ -564,11 +563,11 @@ class PesertaController extends Controller
         // Training yang tersedia untuk absen
         $availableTrainings = Training::with('absensis')
             ->whereHas('registrations', function($q) use ($userId) {
-            $q->where('user_id', $userId)
-              ->whereIn('status', ['disetujui']);
-        })
-        ->where('status', 'published')
-        ->paginate(10);
+                $q->where('user_id', $userId)
+                  ->whereIn('status', ['disetujui']);
+            })
+            ->whereIn('status', ['published', 'selesai', 'berjalan'])
+            ->paginate(10);
 
         return view('peserta.absen.index', compact(
             'riwayatAbsensi',

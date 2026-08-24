@@ -334,8 +334,7 @@ class DashboardController extends Controller
             ->get();
 
         // Available trainings (not enrolled yet)
-        $availableTrainings = Training::where('status', 'published')
-            ->where('trainings.tanggal_mulai', '>=', now())
+        $availableTrainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])
             ->whereDoesntHave('participants', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })

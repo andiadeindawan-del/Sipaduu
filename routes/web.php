@@ -466,4 +466,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';Route::get('/test-training', function() { return \App\Models\Training::where('status', 'published')->get()->map(fn($t) => ['id' => $t->id, 'judul' => $t->judul, 'tanggal_selesai' => $t->tanggal_selesai, 'isCompleted' => $t->isCompletedTraining(), 'isAvailable' => $t->is_available]); });

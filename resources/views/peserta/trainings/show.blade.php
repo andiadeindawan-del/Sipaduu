@@ -106,7 +106,11 @@
                                 </div>
                                 <div class="d-flex gap-2 flex-wrap">
                                     @if(!isset($registration) || in_array($registration->status, ['ditolak', 'dibatalkan']))
-                                        @if(auth()->user()->is_profil_lengkap)
+                                        @if($training->isCompletedTraining())
+                                            <button class="btn btn-secondary" disabled>
+                                                <i class="bi bi-check-circle me-2"></i> Pelatihan Telah Selesai
+                                            </button>
+                                        @elseif(auth()->user()->is_profil_lengkap)
                                             <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary" 

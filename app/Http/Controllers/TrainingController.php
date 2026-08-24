@@ -128,7 +128,7 @@ class TrainingController extends Controller
                 $q->whereHas('registrations', function($q2) use ($userId) {
                     $q2->where('user_id', $userId)
                        ->whereIn('status', ['disetujui']);
-                })->orWhere('trainings.status', 'published');
+                })->orWhereIn('trainings.status', ['published', 'selesai', 'berjalan']);
             });
         }
 
@@ -523,8 +523,7 @@ class TrainingController extends Controller
      */
     public function available()
     {
-        $trainings = Training::where('status', 'published')
-            ->where('tanggal_mulai', '>=', now())
+        $trainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])
             ->with(['kategori', 'trainer'])
             ->withCount(['registrations as participants_count' => function($q) {
                 $q->whereIn('status', ['disetujui']);
@@ -571,9 +570,9 @@ public function enroll(Request $request, Training $training)
     }
 
     // Cek status training
-    if ($training->status !== 'published' || $training->tanggal_mulai < now()) {
+    if ($training->status !== 'published' || $training->tanggal_selesai < now()->startOfDay()) {
         return redirect()->back()
-                        ->with('error', '⚠️ Pelatihan sudah tidak tersedia.');
+                        ->with('error', '⚠️ Pelatihan sudah selesai atau tidak tersedia.');
     }
 
     // PERBAIKAN: Gunakan status 'pending' sesuai ENUM

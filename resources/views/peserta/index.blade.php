@@ -422,8 +422,8 @@
                                     <i class="bi bi-calendar me-1"></i>
                                     {{ formatTanggal($training->tanggal_mulai) }}
                                 </span>
-                                <a href="{{ route('peserta.trainings.show', $training->id) }}" class="btn btn-sm btn-outline-primary rounded-pill">
-                                    Daftar <i class="bi bi-arrow-right ms-1"></i>
+                                <a href="{{ route('peserta.trainings.show', $training->id) }}" class="btn btn-sm {{ $training->isCompletedTraining() ? 'btn-outline-secondary' : 'btn-outline-primary' }} rounded-pill">
+                                    {{ $training->isCompletedTraining() ? 'Selesai' : 'Daftar' }} <i class="bi bi-arrow-right ms-1"></i>
                                 </a>
                             </div>
                         </div>

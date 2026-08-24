@@ -21,7 +21,7 @@ class LandingController extends Controller
     public function index()
     {
         // Get popular trainings
-        $popularTrainings = Training::where('status', 'published')
+        $popularTrainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])
             ->withCount(['registrations as participants_count' => function($q) {
                 $q->whereIn('status', ['disetujui', 'completed']);
             }])
@@ -112,7 +112,7 @@ class LandingController extends Controller
      */
     public function pelatihan(Request $request)
     {
-        $query = Training::where('status', 'published')
+        $query = Training::whereIn('status', ['published', 'selesai', 'berjalan'])
             ->with(['kategori', 'trainer'])
             ->withCount(['registrations as participants_count' => function($q) {
                 $q->whereIn('status', ['disetujui', 'completed']);
@@ -150,7 +150,7 @@ class LandingController extends Controller
      */
     public function pelatihanDetail($id)
     {
-        $training = Training::where('status', 'published')
+        $training = Training::whereIn('status', ['published', 'selesai', 'berjalan'])
             ->with(['kategori', 'trainer', 'materis', 'quizzes'])
             ->withCount(['registrations as participants_count' => function($q) {
                 $q->whereIn('status', ['disetujui', 'completed']);

@@ -241,13 +241,19 @@
                                 <i class="bi bi-eye me-1"></i> Lihat Detail
                             </a>
                             @if(!$training->isRegistered() && $training->status == 'published')
-                                <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary btn-sm" 
-                                            onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')">
-                                        <i class="bi bi-plus-circle"></i> Daftar
+                                @if($training->isCompletedTraining())
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="bi bi-check-circle"></i> Pelatihan Selesai
                                     </button>
-                                </form>
+                                @else
+                                    <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary btn-sm" 
+                                                onclick="return confirm('Yakin ingin mendaftar pelatihan ini?')">
+                                            <i class="bi bi-plus-circle"></i> Daftar
+                                        </button>
+                                    </form>
+                                @endif
                             @endif
                             @if($training->isRegistered() && $training->status == 'selesai')
                                 <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-info btn-sm">

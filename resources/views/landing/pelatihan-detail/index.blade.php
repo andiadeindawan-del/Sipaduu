@@ -179,6 +179,10 @@
                                             <i class="bi bi-plus-circle me-2"></i> Daftar Pelatihan
                                         </button>
                                     </form>
+                                @elseif($training->isCompletedTraining())
+                                    <button class="btn btn-secondary btn-lg px-4" disabled>
+                                        <i class="bi bi-check-circle me-2"></i> Pelatihan Telah Selesai
+                                    </button>
                                 @else
                                     <button class="btn btn-secondary btn-lg px-4" disabled>
                                         <i class="bi bi-clock me-2"></i> Pelatihan Belum Tersedia
