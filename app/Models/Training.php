@@ -210,18 +210,26 @@ class Training extends Model
 
     public function getStatusLabelAttribute()
     {
+        if ($this->isCompletedTraining()) {
+            return 'Selesai';
+        }
+
         $labels = [
-            'draft' => '📝 Draft',
-            'published' => '✅ Published',
-            'berjalan' => '🔄 Berjalan',
-            'selesai' => '✅ Selesai',
-            'dibatalkan' => '❌ Dibatalkan'
+            'draft' => 'Draft',
+            'published' => 'Published',
+            'berjalan' => 'Berjalan',
+            'selesai' => 'Selesai',
+            'dibatalkan' => 'Dibatalkan'
         ];
         return $labels[$this->status] ?? ucfirst($this->status);
     }
 
     public function getStatusBadgeAttribute()
     {
+        if ($this->isCompletedTraining()) {
+            return 'badge bg-info';
+        }
+
         $classes = [
             'draft' => 'badge bg-secondary',
             'published' => 'badge bg-success',

@@ -31,7 +31,7 @@ class LandingController extends Controller
 
         // Get statistics - DATA REAL DARI SISTEM
         $totalUsers = User::count();
-        $totalTrainings = Training::where('status', 'published')->count();
+        $totalTrainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])->count();
         $totalCertificates = Sertifikat::count();
         $totalMateri = Materi::where('status', 'published')->count();
         $totalQuizzes = Quiz::where('status', 'published')->count();
@@ -193,7 +193,7 @@ class LandingController extends Controller
      */
     public function tentang()
     {
-        $totalTrainings = Training::where('status', 'published')->count();
+        $totalTrainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])->count();
         $totalParticipants = User::where('role', 'peserta')->count();
         $totalCertificates = Sertifikat::count();
         $totalInstructors = User::where('role', 'trainer')->count();

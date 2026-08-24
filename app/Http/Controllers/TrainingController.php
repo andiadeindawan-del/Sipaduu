@@ -280,7 +280,7 @@ class TrainingController extends Controller
             
         $isEnrolled = $registration && in_array($registration->status, ['pending', 'disetujui']);
             
-        if ($training->status !== 'published' && !$registration) {
+        if (!in_array($training->status, ['published', 'selesai', 'berjalan']) && !$registration) {
             abort(404);
         }
         
@@ -570,9 +570,9 @@ public function enroll(Request $request, Training $training)
     }
 
     // Cek status training
-    if ($training->status !== 'published' || $training->tanggal_selesai < now()->startOfDay()) {
+    if (!in_array($training->status, ['published', 'berjalan']) || ($training->tanggal_selesai && $training->tanggal_selesai < now()->startOfDay())) {
         return redirect()->back()
-                        ->with('error', '⚠️ Pelatihan sudah selesai atau tidak tersedia.');
+                        ->with('error', '❌ Pelatihan sudah selesai atau tidak tersedia untuk pendaftaran.');
     }
 
     // PERBAIKAN: Gunakan status 'pending' sesuai ENUM

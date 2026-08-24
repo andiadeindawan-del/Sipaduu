@@ -160,10 +160,10 @@
                         <!-- Status Badge -->
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <span class="badge 
-                                @if($training->status == 'published' || $training->status == 'berjalan') 
-                                    badge-berjalan
-                                @elseif($training->status == 'selesai') 
+                                @if($training->isCompletedTraining() || $training->status == 'selesai') 
                                     badge-selesai
+                                @elseif($training->status == 'published' || $training->status == 'berjalan') 
+                                    badge-berjalan
                                 @else 
                                     badge-draft
                                 @endif

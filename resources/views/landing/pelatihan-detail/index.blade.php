@@ -190,12 +190,18 @@
                                 @endif
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login untuk Daftar
-                            </a>
-                            <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg px-4">
-                                <i class="bi bi-person-plus me-2"></i> Daftar Akun
-                            </a>
+                            @if($training->isCompletedTraining())
+                                <button class="btn btn-secondary btn-lg px-4" disabled>
+                                    <i class="bi bi-check-circle me-2"></i> Pelatihan Telah Selesai
+                                </button>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login untuk Daftar
+                                </a>
+                                <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg px-4">
+                                    <i class="bi bi-person-plus me-2"></i> Daftar Akun
+                                </a>
+                            @endif
                         @endauth
                         
                         <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-outline-secondary btn-lg px-4">
