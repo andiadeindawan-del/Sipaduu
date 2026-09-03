@@ -4,51 +4,59 @@
 
 @section('content')
 
-
-
 <!-- ============================================================
      PENGUMUMAN LIST - GRID CARD SEGI EMPAT
 ============================================================ -->
 <section class="section-pad">
     <div class="container">
-        <!-- Filter -->
+        <!-- Filter (Diperkecil & Rapi) -->
         <div class="panel mb-4">
             <div class="p-3">
-                <form action="{{ route('landing.pengumuman.index') }}" method="GET" class="row g-3 align-items-end">
-                    <div class="col-12 col-md-8">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control" name="search" 
+                <form action="{{ route('landing.pengumuman.index') }}" method="GET" class="row g-2 align-items-center">
+                    <!-- Input Cari Pengumuman -->
+                    <div class="col-12 col-md-8 col-lg-9">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light text-muted border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="search" 
                                    value="{{ request('search') }}" 
                                    placeholder="Cari pengumuman...">
+                            @if(request('search'))
+                            <a href="{{ route('landing.pengumuman.index', request()->except('search')) }}" class="btn btn-outline-secondary" title="Hapus teks pencarian">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                            @endif
                         </div>
                     </div>
-                    <div class="col-6 col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Cari
-                        </button>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <a href="{{ route('landing.pengumuman.index') }}" class="btn btn-outline-secondary w-100" title="Reset Filter">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset
-                        </a>
+
+                    <!-- Tombol Aksi (Cari & Reset) -->
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <div class="d-flex gap-1 justify-content-start justify-content-md-end">
+                            <button type="submit" class="btn btn-primary btn-sm flex-fill flex-md-grow-0 px-3" title="Terapkan Pencarian">
+                                <i class="bi bi-search me-1"></i> Cari
+                            </button>
+                            <a href="{{ route('landing.pengumuman.index') }}" class="btn btn-outline-secondary btn-sm px-2" title="Reset Filter">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                            </a>
+                        </div>
                     </div>
                 </form>
-            </div>
-            @if(request('search'))
-            <div class="p-2 px-3 bg-light border-top">
-                <small class="text-muted">
-                    <i class="bi bi-filter-circle me-1"></i>
-                    Filter aktif: 
-                    @if(request('search'))
-                        <span class="badge text-bg-primary">Cari: "{{ request('search') }}"</span>
-                    @endif
-                    <a href="{{ route('landing.pengumuman.index') }}" class="text-danger ms-2">
-                        <i class="bi bi-x-circle"></i> Hapus filter
+
+                @if(request('search'))
+                <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-1 flex-wrap">
+                        <small class="text-muted me-1"><i class="bi bi-filter-circle me-1"></i>Filter aktif:</small>
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-normal">
+                            <i class="bi bi-search me-1"></i> Cari: "{{ request('search') }}"
+                        </span>
+                    </div>
+                    <a href="{{ route('landing.pengumuman.index') }}" class="small text-danger text-decoration-none">
+                        <i class="bi bi-x-circle me-1"></i>Hapus filter
                     </a>
-                </small>
+                </div>
+                @endif
             </div>
-            @endif
         </div>
 
         <!-- Pengumuman Grid Cards -->
@@ -315,6 +323,63 @@
     .badge-category { background: #d6d8db; color: #1b1e21; }
 
     /* ============================================================
+       FORM CONTROLS & PANEL
+    ============================================================ */
+    .panel {
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+    .panel-header {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: 0;
+        font-size: 1rem;
+    }
+    .section-title i {
+        color: #4e9af1;
+    }
+
+    .form-control, .form-select {
+        border-color: #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.12);
+    }
+
+    .input-group-text {
+        border-color: #e2e8f0;
+        font-size: 0.85rem;
+    }
+
+    .badge.bg-primary.bg-opacity-10 {
+        background: rgba(78, 154, 241, 0.12) !important;
+        padding: 0.35rem 0.65rem;
+    }
+
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    /* ============================================================
        EMPTY STATE
     ============================================================ */
     .empty-state {
@@ -356,35 +421,6 @@
     }
     .hero .text-white-50 {
         color: rgba(255,255,255,0.7) !important;
-    }
-
-    /* ============================================================
-       PANEL
-    ============================================================ */
-    .panel {
-        background: #fff;
-        border-radius: .75rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,.06);
-        overflow: hidden;
-    }
-    .panel-header {
-        padding: .9rem 1.25rem;
-        border-bottom: 1px solid #f0f0f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: .75rem;
-    }
-    .section-title {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-        margin: 0;
-        font-size: 1rem;
-    }
-    .section-title i {
-        color: #4e9af1;
     }
 
     /* ============================================================

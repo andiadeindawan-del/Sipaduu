@@ -541,7 +541,7 @@
 
                     <!-- NIB -->
                     <div class="field">
-                        <label for="nib">NIB <span style="color:red">*</span></label>
+                        <label for="nib">NIB <span class="text-muted" style="font-weight:normal; font-size:0.9em">(Opsional)</span></label>
                         <div class="control">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
                             <input type="text"
@@ -549,41 +549,9 @@
                                    id="nib"
                                    name="nib"
                                    value="{{ old('nib') }}"
-                                   placeholder="Nomor Induk Berusaha"
-                                   required>
+                                   placeholder="Nomor Induk Berusaha">
                         </div>
                         @error('nib')
-                            <div class="err">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="field-grid">
-                    <!-- Jenis Usaha -->
-                    <div class="field">
-                        <label for="jenis_usaha">Jenis Usaha <span style="color:red">*</span></label>
-                        <div class="control">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.7L12.7 20.6a2 2 0 01-2.8 0L2 12.7V4a2 2 0 012-2h8.7a2 2 0 011.4.6l6.5 6.5a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
-                            <select class="@error('jenis_usaha') is-invalid @enderror"
-                                    id="jenis_usaha"
-                                    name="jenis_usaha"
-                                    required>
-                                <option value="">Pilih Jenis Usaha</option>
-                                <option value="Perdagangan" @selected(old('jenis_usaha') === 'Perdagangan')>Perdagangan</option>
-                                <option value="Jasa" @selected(old('jenis_usaha') === 'Jasa')>Jasa</option>
-                                <option value="Makanan dan Minuman/Kuliner" @selected(old('jenis_usaha') === 'Makanan dan Minuman/Kuliner')>Makanan dan Minuman/Kuliner</option>
-                                <option value="Pertanian" @selected(old('jenis_usaha') === 'Pertanian')>Pertanian</option>
-                                <option value="Perkebunan" @selected(old('jenis_usaha') === 'Perkebunan')>Perkebunan</option>
-                                <option value="Peternakan" @selected(old('jenis_usaha') === 'Peternakan')>Peternakan</option>
-                                <option value="Perikanan" @selected(old('jenis_usaha') === 'Perikanan')>Perikanan</option>
-                                <option value="Industri/Pengolahan" @selected(old('jenis_usaha') === 'Industri/Pengolahan')>Industri/Pengolahan</option>
-                                <option value="Kerajinan" @selected(old('jenis_usaha') === 'Kerajinan')>Kerajinan</option>
-                                <option value="Pariwisata" @selected(old('jenis_usaha') === 'Pariwisata')>Pariwisata</option>
-                                <option value="Teknologi/Informasi" @selected(old('jenis_usaha') === 'Teknologi/Informasi')>Teknologi/Informasi</option>
-                                <option value="Lainnya" @selected(old('jenis_usaha') === 'Lainnya')>Lainnya</option>
-                            </select>
-                        </div>
-                        @error('jenis_usaha')
                             <div class="err">{{ $message }}</div>
                         @enderror
                     </div>

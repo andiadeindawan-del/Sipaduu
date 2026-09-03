@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -69,17 +70,18 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'nik' => 'nullable|string|max:50',
             'phone' => 'nullable|string|max:20',
-            'no_telepon' => 'nullable|string|max:20', // Menyokong form yang mengirim no_telepon
+            'no_telepon' => 'nullable|string|max:20',
             'alamat_lengkap' => 'nullable|string',
             
-            // Validasi file
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // Validasi file - Wajib jika belum ada
+            'avatar' => [$user->foto ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'npwp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+            'npwp_file' => [$user->npwp_file ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
+            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
             
             // Tambahan field untuk UMK
-            'status_pernikahan' => 'nullable|string|max:50',
+            'status_pernikahan' => 'required|string|in:Menikah,Belum Menikah,Cerai Hidup,Cerai Mati',
             'jenis_kelamin' => 'nullable|in:L,P',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
@@ -89,56 +91,77 @@ class ProfileController extends Controller
             'kabupaten' => 'nullable|string|max:100',
             'kecamatan' => 'nullable|string|max:100',
             'desa' => 'nullable|string|max:100',
-            'kode_pos_domisili' => 'nullable|string|max:20',
-            'disabilitas' => 'nullable|string|max:100',
+            'alamat_lengkap' => 'nullable|string',
             
             'nama_usaha' => 'nullable|string|max:150',
-            'jabatan_usaha' => 'nullable|string|max:100',
+            'status_usaha' => 'required|string|in:Aktif,Tidak Aktif',
+            'bentuk_usaha' => 'required|string|in:Perorangan,PT Perorangan,UD,CV,PT,Koperasi',
+            'jabatan_usaha' => 'required|string|max:100',
             'merek_produk' => 'nullable|string|max:150',
-            'kode_pos_usaha' => 'nullable|string|max:20',
-            'sektor_usaha' => 'nullable|string|max:100',
-            'no_telepon_usaha' => 'nullable|string|max:20',
-            'bidang_usaha' => 'nullable|string|max:100',
-            'tanggal_berdiri' => 'nullable|date',
-            'npwp_usaha' => 'nullable|string|max:50',
-            'status_nib' => 'nullable|string|max:50',
+            'kbli_id' => 'required|array|min:1',
+            'kbli_id.*' => 'exists:kblis,id',
+            'kbli_utama' => 'required|exists:kblis,id',
+            'no_telepon_usaha' => 'required|string|max:20',
+            'tanggal_berdiri' => 'required|date',
+            'npwp_usaha' => 'required|string|max:50',
             'nib' => 'nullable|string|max:50',
-            'lama_nib' => 'nullable|string|max:50',
             'modal_usaha' => 'nullable|string|max:50',
             'nilai_modal' => 'nullable|numeric',
             'omzet_usaha' => 'nullable|string|max:50',
             'nilai_omzet' => 'nullable|numeric',
-            'jumlah_karyawan' => 'nullable|integer',
+            'karyawan_tetap_laki_laki' => 'required|integer|min:0',
+            'karyawan_tetap_perempuan' => 'required|integer|min:0',
+            'karyawan_tidak_tetap_laki_laki' => 'required|integer|min:0',
+            'karyawan_tidak_tetap_perempuan' => 'required|integer|min:0',
             'kapasitas_produksi' => 'nullable|string|max:100',
-            'anggota_koperasi' => 'nullable|string|max:100',
             
-            'email_usaha' => 'nullable|email|max:100',
-            'website_usaha' => 'nullable|string|max:100',
-            'medsos_usaha' => 'nullable|string',
-            'marketplace' => 'nullable|string',
-            'pengadaan_barang' => 'nullable|string|max:100',
-            'akses_kredit' => 'nullable|string|max:100',
-            'tabungan' => 'nullable|string|max:100',
-            'perizinan_usaha' => 'nullable|string|max:100',
-            'sertifikasi_produk' => 'nullable|string|max:100',
-            'jangkauan_pemasaran' => 'nullable|string|max:100',
-            'lokasi_pemasaran' => 'nullable|string|max:100',
-            'status_ekspor' => 'nullable|string|max:100',
-            'negara_ekspor' => 'nullable|string|max:100',
-            'metode_ekspor' => 'nullable|string|max:100',
+            'provinsi_usaha' => 'required|string|max:100',
+            'kabupaten_usaha' => 'required|string|max:100',
+            'kecamatan_usaha' => 'required|string|max:100',
+            'desa_usaha' => 'required|string|max:100',
+            'alamat_usaha' => 'required|string',
+            
+            'email_usaha' => 'required|email|max:100',
+            'judul_usaha_online' => 'nullable|string|max:255',
+            'website_usaha' => 'nullable|url|max:255',
+            'facebook_usaha' => 'nullable|url|max:255',
+            'instagram_usaha' => 'nullable|url|max:255',
+            'tiktok_usaha' => 'nullable|url|max:255',
+            'shopee' => 'nullable|url|max:255',
+            'tokopedia' => 'nullable|url|max:255',
+            'lazada' => 'nullable|url|max:255',
+            'blibli' => 'nullable|url|max:255',
+            'marketplace_lainnya_nama' => 'nullable|array',
+            'marketplace_lainnya_nama.*' => 'nullable|string|max:150',
+            'marketplace_lainnya_link' => 'nullable|array',
+            'marketplace_lainnya_link.*' => 'nullable|url|max:255',
+            'pengadaan_barang' => 'nullable|string|max:150',
+            'akses_kredit' => 'nullable|string|max:150',
+            'tabungan' => 'nullable|string|max:150',
+            'perizinan_usaha' => 'nullable|string|max:150',
+            'sertifikasi_produk' => 'nullable|string|max:150',
+            'jangkauan_pemasaran' => 'nullable|string|max:150',
+            'lokasi_pemasaran' => 'nullable|string|max:150',
+            'pasok_bahan_baku' => 'nullable|string|max:150',
+            'kemitraan' => 'nullable|string|max:150',
+            'status_ekspor' => 'nullable|string|max:150',
+            'negara_ekspor' => 'nullable|string',
+            'metode_ekspor' => 'nullable|string|max:150',
             'volume_ekspor' => 'nullable|string|max:100',
             'nilai_ekspor' => 'nullable|numeric',
-            'pasok_bahan_baku' => 'nullable|string|max:100',
-            'kemitraan' => 'nullable|string|max:100',
-            
             'permasalahan' => 'nullable|string',
             'kebutuhan_diklat' => 'nullable|string',
-            'riwayat_pelatihan' => 'nullable|string|max:100',
+            'riwayat_pelatihan' => 'nullable|string',
             'jenis_pelatihan_diikuti' => 'nullable|string',
-            'file_produk' => 'nullable|file|mimes:pdf,jpeg,png,jpg,doc,docx|max:5120',
             'masukan_saran' => 'nullable|string',
+            'anggota_koperasi' => 'nullable|string|max:150',
         ]);
 
+        // Auto kalkulasi total karyawan
+        $validated['total_karyawan_tetap'] = ((int) ($validated['karyawan_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tetap_perempuan'] ?? 0));
+        $validated['total_karyawan_tidak_tetap'] = ((int) ($validated['karyawan_tidak_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tidak_tetap_perempuan'] ?? 0));
+        $validated['total_tenaga_kerja'] = $validated['total_karyawan_tetap'] + $validated['total_karyawan_tidak_tetap'];
+        
         // Support untuk form yang lama mengirim phone bukan no_telepon
         if (isset($validated['phone']) && !isset($validated['no_telepon'])) {
             $validated['no_telepon'] = $validated['phone'];
@@ -191,7 +214,36 @@ class ProfileController extends Controller
             $validated['email_verified_at'] = null;
         }
 
+        // Sinkronisasi name dengan nama agar tidak ada ketimpangan data antara peserta dan admin
+        if (isset($validated['name'])) {
+            $validated['nama'] = $validated['name'];
+        }
+
         $user->update($validated);
+
+        // Handle Multiple KBLI Saving
+        if ($request->has('kbli_id')) {
+            $user->kblis()->delete();
+            $kbliIds = $request->input('kbli_id');
+            $utamaId = $request->input('kbli_utama');
+            
+            // make unique and validate against actual DB to prevent spoofing
+            $savedIds = [];
+            $validKblis = \App\Models\Kbli::whereIn('id', $kbliIds)->pluck('id')->toArray();
+
+            foreach ($kbliIds as $index => $kId) {
+                if (!empty($kId) && in_array($kId, $validKblis) && !in_array($kId, $savedIds)) {
+                    $user->kblis()->create([
+                        'kbli_id' => $kId,
+                        'is_utama' => ($kId == $utamaId) ? true : false,
+                    ]);
+                    $savedIds[] = $kId;
+                }
+            }
+        } elseif ($request->isMethod('put') || $request->isMethod('post')) {
+            $user->kblis()->delete();
+        }
+
 
         if ($user->role === 'admin') {
             return redirect()->route('admin.profile.edit')->with('success', '✅ Profil berhasil diperbarui.');

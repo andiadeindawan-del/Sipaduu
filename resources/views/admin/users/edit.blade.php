@@ -136,16 +136,19 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Status Pernikahan <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="status_pernikahan" value="{{ old('status_pernikahan', $user->status_pernikahan) }}">
+                                        <select class="form-select" name="status_pernikahan" required>
+                                            <option value="">Pilih...</option>
+                                            <option value="Belum Menikah" {{ old('status_pernikahan', $user->status_pernikahan) == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                            <option value="Menikah" {{ old('status_pernikahan', $user->status_pernikahan) == 'Menikah' ? 'selected' : '' }}>Menikah</option>
+                                            <option value="Cerai Mati" {{ old('status_pernikahan', $user->status_pernikahan) == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati</option>
+                                            <option value="Cerai Hidup" {{ old('status_pernikahan', $user->status_pernikahan) == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
+                                        </select>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Pendidikan Terakhir <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="pendidikan_terakhir" value="{{ old('pendidikan_terakhir', $user->pendidikan_terakhir) }}">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Status Disabilitas</label>
-                                        <input type="text" class="form-control" name="disabilitas" value="{{ old('disabilitas', $user->disabilitas) }}">
-                                    </div>
+                                    
                                     <div class="col-12 mt-4">
                                         <h6 class="fw-bold mb-3 border-bottom pb-2">Alamat Domisili</h6>
                                     </div>
@@ -181,10 +184,7 @@
                                         <label class="form-label fw-semibold">Alamat Detail <span class="text-danger">*</span></label>
                                         <textarea class="form-control" name="alamat_lengkap" rows="2" placeholder="Nama Jalan, RT/RW, Dusun">{{ old('alamat_lengkap', $user->alamat_lengkap) }}</textarea>
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Kode Pos <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="kode_pos_domisili" value="{{ old('kode_pos_domisili', $user->kode_pos_domisili) }}">
-                                    </div>
+                                    
                                 </div>
                             </div>
 
@@ -194,57 +194,99 @@
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Nama Usaha <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="nama_usaha" value="{{ old('nama_usaha', $user->nama_usaha) }}">
-                                    </div>
+                                    </div>\n
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Status Usaha <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="status_usaha" required>
+                                        <option value="">-- Pilih --</option>
+                                        <option value="Aktif" {{ old('status_usaha', $user->status_usaha) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="Tidak Aktif" {{ old('status_usaha', $user->status_usaha) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Bentuk Usaha <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="bentuk_usaha" required>
+                                        <option value="">-- Pilih --</option>
+                                        <option value="Perorangan" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'Perorangan' ? 'selected' : '' }}>Perorangan</option>
+                                        <option value="PT Perorangan" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'PT Perorangan' ? 'selected' : '' }}>PT Perorangan</option>
+                                        <option value="UD" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'UD' ? 'selected' : '' }}>UD</option>
+                                        <option value="CV" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'CV' ? 'selected' : '' }}>CV</option>
+                                        <option value="PT" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'PT' ? 'selected' : '' }}>PT</option>
+                                        <option value="Koperasi" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'Koperasi' ? 'selected' : '' }}>Koperasi</option>
+                                    </select>
+                                </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Jabatan dalam Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="jabatan_usaha" value="{{ old('jabatan_usaha', $user->jabatan_usaha) }}">
+                                        <label class="form-label fw-semibold">Jabatan/Posisi dalam Usaha <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="jabatan_usaha" required value="{{ old('jabatan_usaha', $user->jabatan_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Merek Produk <span class="text-muted">(Opsional)</span></label>
                                         <input type="text" class="form-control" name="merek_produk" value="{{ old('merek_produk', $user->merek_produk) }}">
                                     </div>
+
+                                <div class="col-12 mt-4 mb-2">
+                                    <h6 class="fw-bold border-bottom pb-2">KBLI / Kegiatan Usaha <small class="text-muted fw-normal">(Bisa lebih dari satu)</small></h6>
+                                    <p class="text-muted small mb-2">Cari KBLI berdasarkan kode, judul, atau uraian kegiatan.</p>
+                                </div>
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <select id="kbli-search-input" class="form-control" style="width: 100%"></select>
+                                    </div>
+                                    
+                                    <h6 class="fw-bold small text-muted mb-2">KBLI YANG DIPILIH:</h6>
+                                    <div id="kbli-selected-list" class="d-flex flex-column gap-2 mb-3">
+                                        @foreach($user->kblis as $kbli)
+                                            @if($kbli->kbli)
+                                            <div class="card bg-light border kbli-selected-card" data-id="{{ $kbli->kbli_id }}">
+                                                <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold text-dark">{{ $kbli->kbli->kode }} - {{ $kbli->kbli->judul }}</div>
+                                                        <div class="form-check mt-1">
+                                                            <input class="form-check-input kbli-utama-radio" type="radio" name="kbli_utama" value="{{ $kbli->kbli_id }}" id="utama_{{ $kbli->kbli_id }}" {{ $kbli->is_utama ? 'checked' : '' }} required>
+                                                            <label class="form-check-label small" for="utama_{{ $kbli->kbli_id }}">
+                                                                Jadikan KBLI Utama
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 btn-remove-kbli ms-2">
+                                                        <i class="bi bi-x-lg"></i> Hapus
+                                                    </button>
+                                                    <input type="hidden" name="kbli_id[]" value="{{ $kbli->kbli_id }}">
+                                                </div>
+                                            </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                    <small class="text-muted d-block"><span class="text-danger">*</span> Pilih minimal 1 KBLI dan tentukan KBLI utama.</small>
+                                </div>
+
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Kode Pos Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="kode_pos_usaha" value="{{ old('kode_pos_usaha', $user->kode_pos_usaha) }}">
+                                        <label class="form-label fw-semibold">Tanggal Berdiri Usaha <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" name="tanggal_berdiri" required value="{{ old('tanggal_berdiri', $user->tanggal_berdiri) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Nomor Telepon Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="no_telepon_usaha" value="{{ old('no_telepon_usaha', $user->no_telepon_usaha) }}">
+                                        <label class="form-label fw-semibold">Nomor NPWP Usaha <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="npwp_usaha" required value="{{ old('npwp_usaha', $user->npwp_usaha) }}">
                                     </div>
+                                    
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Sektor Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="sektor_usaha" value="{{ old('sektor_usaha', $user->sektor_usaha) }}">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Bidang Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="bidang_usaha" value="{{ old('bidang_usaha', $user->bidang_usaha) }}">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Tanggal Berdiri Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="date" class="form-control" name="tanggal_berdiri" value="{{ old('tanggal_berdiri', $user->tanggal_berdiri) }}">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Nomor NPWP Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="npwp_usaha" value="{{ old('npwp_usaha', $user->npwp_usaha) }}">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Status NIB <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="status_nib" value="{{ old('status_nib', $user->status_nib) }}">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Nomor NIB <span class="text-danger">*</span></label>
+                                        <label class="form-label fw-semibold">Nomor NIB <span class="text-muted">(Opsional)</span></label>
                                         <input type="text" class="form-control" name="nib" value="{{ old('nib', $user->nib) }}">
                                     </div>
+                                    
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Lama Kepemilikan NIB <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="lama_nib" value="{{ old('lama_nib', $user->lama_nib) }}">
+                                        <label class="form-label fw-semibold">Sumber Pendanaan / Modal <span class="text-muted">(Opsional)</span></label>
+                                        <select class="form-select" name="modal_usaha">
+                                            <option value="">-- Pilih --</option>
+                                            <option value="Modal Sendiri" {{ old('modal_usaha', $user->modal_usaha) == 'Modal Sendiri' ? 'selected' : '' }}>Modal Sendiri</option>
+                                            <option value="Pinjaman Bank" {{ old('modal_usaha', $user->modal_usaha) == 'Pinjaman Bank' ? 'selected' : '' }}>Pinjaman Bank</option>
+                                            <option value="Pinjaman Koperasi" {{ old('modal_usaha', $user->modal_usaha) == 'Pinjaman Koperasi' ? 'selected' : '' }}>Pinjaman Koperasi</option>
+                                            <option value="Bantuan Pemerintah" {{ old('modal_usaha', $user->modal_usaha) == 'Bantuan Pemerintah' ? 'selected' : '' }}>Bantuan Pemerintah</option>
+                                            <option value="Lainnya" {{ old('modal_usaha', $user->modal_usaha) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                        </select>
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Kategori Modal Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="modal_usaha" value="{{ old('modal_usaha', $user->modal_usaha) }}">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Nilai Modal (Rp) <span class="text-muted">(Opsional)</span></label>
+                                        <label class="form-label fw-semibold">Nilai Modal (Rp) / Tahun <span class="text-muted">(Opsional)</span></label>
                                         <input type="number" class="form-control" name="nilai_modal" value="{{ old('nilai_modal', $user->nilai_modal) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -252,25 +294,103 @@
                                         <input type="text" class="form-control" name="omzet_usaha" value="{{ old('omzet_usaha', $user->omzet_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Nilai Omzet (Rp) <span class="text-muted">(Opsional)</span></label>
+                                        <label class="form-label fw-semibold">Nilai Omzet (Rp) / Tahun <span class="text-muted">(Opsional)</span></label>
                                         <input type="number" class="form-control" name="nilai_omzet" value="{{ old('nilai_omzet', $user->nilai_omzet) }}">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Jumlah Karyawan <span class="text-muted">(Opsional)</span></label>
-                                        <input type="number" class="form-control" name="jumlah_karyawan" value="{{ old('jumlah_karyawan', $user->jumlah_karyawan) }}">
+                                    
+                                <div class="col-12 mt-4 mb-2">
+                                  <div class="col-12 mt-4 mb-2">
+                                      <h6 class="fw-bold border-bottom pb-2">Data Tenaga Kerja <span class="text-danger">*</span></h6>
+                                  </div>
+                                  
+                                    <!-- KARYAWAN TETAP -->
+                                    <div class="col-12 mt-2">
+                                        <div class="card bg-light border-0 shadow-sm">
+                                            <div class="card-header bg-primary text-white fw-bold">
+                                                TOTAL KARYAWAN TETAP
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row g-3">
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label fw-semibold">Laki-laki <span class="text-danger">*</span></label>
+                                                        <input type="number" class="form-control karyawan-input" id="tetap_laki_laki" name="karyawan_tetap_laki_laki" value="{{ old('karyawan_tetap_laki_laki', $user->karyawan_tetap_laki_laki ?? 0) }}" min="0" step="1" required>
+                                                    </div>
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label fw-semibold">Perempuan <span class="text-danger">*</span></label>
+                                                        <input type="number" class="form-control karyawan-input" id="tetap_perempuan" name="karyawan_tetap_perempuan" value="{{ old('karyawan_tetap_perempuan', $user->karyawan_tetap_perempuan ?? 0) }}" min="0" step="1" required>
+                                                    </div>
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label fw-semibold">Total</label>
+                                                        <input type="number" class="form-control" id="total_tetap" readonly value="{{ old('total_karyawan_tetap', $user->total_karyawan_tetap ?? 0) }}" style="background-color: #e9ecef; font-weight: bold;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Kapasitas Produksi <span class="text-muted">(Opsional)</span></label>
+
+                                    <!-- KARYAWAN TIDAK TETAP -->
+                                    <div class="col-12 mt-3">
+                                        <div class="card bg-light border-0 shadow-sm">
+                                            <div class="card-header bg-secondary text-white fw-bold">
+                                                TOTAL KARYAWAN TIDAK TETAP
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row g-3">
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label fw-semibold">Laki-laki <span class="text-danger">*</span></label>
+                                                        <input type="number" class="form-control karyawan-input" id="tidak_tetap_laki_laki" name="karyawan_tidak_tetap_laki_laki" value="{{ old('karyawan_tidak_tetap_laki_laki', $user->karyawan_tidak_tetap_laki_laki ?? 0) }}" min="0" step="1" required>
+                                                    </div>
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label fw-semibold">Perempuan <span class="text-danger">*</span></label>
+                                                        <input type="number" class="form-control karyawan-input" id="tidak_tetap_perempuan" name="karyawan_tidak_tetap_perempuan" value="{{ old('karyawan_tidak_tetap_perempuan', $user->karyawan_tidak_tetap_perempuan ?? 0) }}" min="0" step="1" required>
+                                                    </div>
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label fw-semibold">Total</label>
+                                                        <input type="number" class="form-control" id="total_tidak_tetap" readonly value="{{ old('total_karyawan_tidak_tetap', $user->total_karyawan_tidak_tetap ?? 0) }}" style="background-color: #e9ecef; font-weight: bold;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TOTAL KESELURUHAN -->
+                                    <div class="col-12 mt-3">
+                                        <div class="card border-primary shadow-sm text-center">
+                                            <div class="card-body bg-primary text-white rounded">
+                                                <h5 class="fw-bold mb-2">TOTAL TENAGA KERJA</h5>
+                                                <h2 class="mb-0 fw-bold" id="grand_total">{{ old('total_tenaga_kerja', $user->total_tenaga_kerja ?? 0) }}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 mt-3">
+                                        <label class="form-label fw-semibold">Kapasitas Produksi / Tahun <span class="text-muted">(Opsional)</span></label>
                                         <input type="text" class="form-control" name="kapasitas_produksi" value="{{ old('kapasitas_produksi', $user->kapasitas_produksi) }}">
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Anggota Koperasi <span class="text-muted">(Opsional)</span></label>
-                                        <select class="form-select" name="anggota_koperasi">
-                                            <option value="">Pilih Status</option>
-                                            <option value="Ya" @selected(old('anggota_koperasi', $user->anggota_koperasi) == 'Ya')>Ya</option>
-                                            <option value="Tidak" @selected(old('anggota_koperasi', $user->anggota_koperasi) == 'Tidak')>Tidak</option>
-                                        </select>
-                                    </div>
+
+                                <div class="col-12 mt-4 mb-2">
+                                    <h6 class="fw-bold border-bottom pb-2">Alamat Usaha <span class="text-danger">*</span></h6>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Provinsi Usaha <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="provinsi_usaha" required value="{{ old('provinsi_usaha', $user->provinsi_usaha) }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Kabupaten/Kota Usaha <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="kabupaten_usaha" required value="{{ old('kabupaten_usaha', $user->kabupaten_usaha) }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Kecamatan Usaha <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="kecamatan_usaha" required value="{{ old('kecamatan_usaha', $user->kecamatan_usaha) }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold">Desa/Kelurahan Usaha <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="desa_usaha" required value="{{ old('desa_usaha', $user->desa_usaha) }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Alamat Lengkap Usaha <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" name="alamat_usaha" rows="2" required>{{ old('alamat_usaha', $user->alamat_usaha) }}</textarea>
+                                </div>
+                                    
                                 </div>
                             </div>
 
@@ -278,21 +398,119 @@
                             <div class="tab-pane fade" id="digital" role="tabpanel" aria-labelledby="digital-tab">
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Email Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="email" class="form-control" name="email_usaha" value="{{ old('email_usaha', $user->email_usaha) }}">
-                                    </div>
+                                        
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Website Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="url" class="form-control" name="website_usaha" value="{{ old('website_usaha', $user->website_usaha) }}">
+                                        <label class="form-label fw-semibold">Kontak Usaha (No. Telepon/HP) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="no_telepon_usaha" required value="{{ old('no_telepon_usaha', $user->no_telepon_usaha) }}">
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">Media Sosial Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <textarea class="form-control" name="medsos_usaha" rows="2">{{ old('medsos_usaha', $user->medsos_usaha) }}</textarea>
+                                    <label class="form-label fw-semibold">Email Usaha <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="email_usaha" required value="{{ old('email_usaha', $user->email_usaha) }}">
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">Marketplace yang Digunakan <span class="text-muted">(Opsional)</span></label>
-                                        <textarea class="form-control" name="marketplace" rows="2">{{ old('marketplace', $user->marketplace) }}</textarea>
+                                    
+                                    <!-- INFORMASI USAHA ONLINE -->
+                                    <div class="col-12 mt-4">
+                                        <div class="card bg-light border-0 shadow-sm">
+                                            <div class="card-header bg-primary text-white fw-bold">
+                                                <i class="bi bi-globe me-2"></i>INFORMASI USAHA ONLINE
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row g-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Judul Usaha <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="text" class="form-control" name="judul_usaha_online" value="{{ old('judul_usaha_online', $user->judul_usaha_online) }}" placeholder="Contoh: Toko Kue Andi">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Website Usaha <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="website_usaha" value="{{ old('website_usaha', $user->website_usaha) }}" placeholder="https://www.contoh.com">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Facebook <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="facebook_usaha" value="{{ old('facebook_usaha', $user->facebook_usaha) }}" placeholder="https://facebook.com/contoh">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Instagram <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="instagram_usaha" value="{{ old('instagram_usaha', $user->instagram_usaha) }}" placeholder="https://instagram.com/contoh">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">TikTok <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="tiktok_usaha" value="{{ old('tiktok_usaha', $user->tiktok_usaha) }}" placeholder="https://tiktok.com/@contoh">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <!-- MARKETPLACE -->
+                                    <div class="col-12 mt-4">
+                                        <div class="card bg-light border-0 shadow-sm">
+                                            <div class="card-header bg-secondary text-white fw-bold">
+                                                <i class="bi bi-shop me-2"></i>MARKETPLACE YANG DIGUNAKAN
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row g-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Shopee <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="shopee" value="{{ old('shopee', $user->shopee) }}" placeholder="https://shopee.co.id/contoh">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Tokopedia <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="tokopedia" value="{{ old('tokopedia', $user->tokopedia) }}" placeholder="https://www.tokopedia.com/contoh">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Lazada <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="lazada" value="{{ old('lazada', $user->lazada) }}" placeholder="https://www.lazada.co.id/shop/contoh">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Blibli <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="blibli" value="{{ old('blibli', $user->blibli) }}" placeholder="https://www.blibli.com/merchant/contoh">
+                                                    </div>
+                                                    
+                                                    <div class="col-12 mt-4 border-top pt-3">
+                                                        <label class="form-label fw-bold">Marketplace Lainnya <span class="text-muted fw-normal">(Opsional)</span></label>
+                                                        <div id="marketplace-container">
+                                                            @php
+                                                                $oldM = old('marketplace_lainnya_nama');
+                                                                $oldL = old('marketplace_lainnya_link');
+                                                                $dbM = $user->marketplace_lainnya ?? [];
+                                                            @endphp
+
+                                                            @if($oldM && is_array($oldM))
+                                                                @foreach($oldM as $idx => $n)
+                                                                    <div class="row g-2 mb-2 mp-row">
+                                                                        <div class="col-md-5">
+                                                                            <input type="text" class="form-control" name="marketplace_lainnya_nama[]" value="{{ $n }}" placeholder="Nama Marketplace (cth: Bukalapak)">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="url" class="form-control" name="marketplace_lainnya_link[]" value="{{ $oldL[$idx] ?? '' }}" placeholder="Link Marketplace (https://...)">
+                                                                        </div>
+                                                                        <div class="col-md-1 d-flex align-items-center">
+                                                                            <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @elseif(!empty($dbM) && is_array($dbM))
+                                                                @foreach($dbM as $item)
+                                                                    <div class="row g-2 mb-2 mp-row">
+                                                                        <div class="col-md-5">
+                                                                            <input type="text" class="form-control" name="marketplace_lainnya_nama[]" value="{{ $item['nama'] ?? '' }}" placeholder="Nama Marketplace (cth: Bukalapak)">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="url" class="form-control" name="marketplace_lainnya_link[]" value="{{ $item['link'] ?? '' }}" placeholder="Link Marketplace (https://...)">
+                                                                        </div>
+                                                                        <div class="col-md-1 d-flex align-items-center">
+                                                                            <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
+                                                        </div>
+                                                        <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-mp-btn"><i class="bi bi-plus-circle me-1"></i> Tambahkan Marketplace Lainnya</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Pernah ikut Pengadaan Barang/Jasa? <span class="text-muted">(Opsional)</span></label>
                                         <select class="form-select" name="pengadaan_barang">
@@ -383,8 +601,13 @@
                                         <label class="form-label fw-semibold">Masukan dan Saran</label>
                                         <textarea class="form-control" name="masukan_saran" rows="3">{{ old('masukan_saran', $user->masukan_saran) }}</textarea>
                                     </div>
-                                </div>
-                            </div>
+                                    
+                                      <div class="col-12 mt-3">
+                                          <label class="form-label fw-semibold">Anggota Koperasi <span class="text-muted">(Opsional)</span></label>
+                                          <input type="text" class="form-control" name="anggota_koperasi" placeholder="Nama koperasi jika menjadi anggota" value="{{ old('anggota_koperasi', $user->anggota_koperasi) }}">
+                                      </div>
+                                  </div>
+                              </div>
 
                             <!-- TAB DOKUMEN & FOTO -->
                             <div class="tab-pane fade" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
@@ -428,7 +651,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Upload NPWP <span class="text-muted fw-normal">(Opsional)</span></label>
+                                        <label class="form-label fw-semibold">Upload NPWP <span class="text-danger">*</span></label>
                                         
                                         @if($user->npwp_file)
                                             <div class="mb-3">
@@ -436,36 +659,36 @@
                                                 @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
                                                     <img src="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" alt="NPWP" class="img-thumbnail" style="max-height: 150px;">
                                                 @else
-                                                    <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-pdf"></i> Lihat/Download NPWP</a>
+                                                    <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-pdf"></i> Lihat Dokumen NPWP</a>
                                                 @endif
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('npwp_file') is-invalid @enderror" name="npwp_file" accept=".jpg,.jpeg,.png,.pdf">
+                                        <input type="file" class="form-control @error('npwp_file') is-invalid @enderror" name="npwp_file" accept=".jpg,.jpeg,.png,.pdf" {{ $user->npwp_file ? '' : 'required' }}>
                                         <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB.</small>
                                         @error('npwp_file')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Upload Foto Profil (Avatar)</label>
+                                        <label class="form-label fw-semibold">Upload Foto Profil (Avatar) <span class="text-danger">*</span></label>
                                         
                                         @if($user->foto)
                                             <div class="mb-3">
                                                 <img src="{{ asset('storage/' . $user->foto) }}" alt="Avatar" class="img-thumbnail" style="max-height: 100px;">
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control" name="foto" accept="image/*">
+                                        <input type="file" class="form-control" name="foto" accept="image/*" {{ $user->foto ? '' : 'required' }}>
                                         <small class="text-muted">Format: JPG, PNG, GIF. Maksimal 2MB.</small>
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Upload File Produk (Katalog/Brosur)</label>
+                                        <label class="form-label fw-semibold">Upload File Produk (Katalog/Brosur) <span class="text-danger">*</span></label>
                                         
                                         @if($user->file_produk)
                                             <div class="mb-3">
                                                 <a href="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-arrow-down"></i> Lihat/Download File Produk</a>
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('file_produk') is-invalid @enderror" name="file_produk" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                                        <input type="file" class="form-control @error('file_produk') is-invalid @enderror" name="file_produk" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" {{ $user->file_produk ? '' : 'required' }}>
                                         <small class="text-muted">Format: PDF, DOC, JPG, PNG. Maksimal 5MB.</small>
                                         @error('file_produk')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -591,7 +814,269 @@
             }
         });
     });
+
+    $(document).on('click', '.remove-mp', function() {
+        $(this).closest('.mp-row').remove();
+    });
+
 </script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    
+    // === HIERARCHICAL KBLI LOGIC ===
+    let kbliIndex = 0;
+    const userKblis = {!! $user->kblis()->with('kbli')->get()->toJson() !!};
+    
+    function fetchCategories(selectElem, selectedValue = null) {
+        $.ajax({
+            url: '/api/kbli/categories',
+            method: 'GET',
+            success: function(res) {
+                selectElem.empty().append('<option value="">Pilih Kategori</option>');
+                res.forEach(item => {
+                    let selected = (selectedValue === item.kategori_kode) ? 'selected' : '';
+                    selectElem.append(`<option value="${item.kategori_kode}" ${selected}>${item.kategori_kode} - ${item.kategori_nama}</option>`);
+                });
+            }
+        });
+    }
+
+    function fetchGolongans(kategoriKode, selectElem, selectedValue = null) {
+        if (!kategoriKode) {
+            selectElem.empty().append('<option value="">Pilih Golongan</option>').prop('disabled', true);
+            return;
+        }
+        $.ajax({
+            url: '/api/kbli/golongans',
+            method: 'GET',
+            data: { kategori: kategoriKode },
+            success: function(res) {
+                selectElem.empty().append('<option value="">Pilih Golongan</option>').prop('disabled', false);
+                res.forEach(item => {
+                    let selected = (selectedValue === item.golongan_pokok_kode) ? 'selected' : '';
+                    selectElem.append(`<option value="${item.golongan_pokok_kode}" ${selected}>${item.golongan_pokok_kode} - ${item.golongan_pokok_nama}</option>`);
+                });
+            }
+        });
+    }
+
+    function addKbliRow(data = null) {
+        let isUtama = data ? data.is_utama : (kbliIndex === 0);
+        let id = kbliIndex++;
+        let labelUsaha = (id === 0) ? 'JENIS USAHA UTAMA' : 'USAHA LAINNYA #' + (id + 1);
+        
+        let html = `
+        <div class="card mb-3 kbli-row shadow-sm border-0" data-index="${id}">
+            <div class="card-header bg-light border-bottom-0 d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-primary"><i class="bi bi-tag-fill me-2"></i>${labelUsaha}</span>
+                ${id > 0 ? '<button type="button" class="btn btn-sm btn-outline-danger border-0 btn-remove-row"><i class="bi bi-trash"></i> Hapus</button>' : ''}
+            </div>
+            <div class="card-body bg-white border">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold small">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-select select-kategori" required>
+                            <option value="">Pilih Kategori</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold small">Golongan <span class="text-danger">*</span></label>
+                        <select class="form-select select-golongan" required disabled>
+                            <option value="">Pilih Golongan</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold small">KBLI / Kegiatan Usaha <span class="text-danger">*</span></label>
+                        <select class="form-control select-kbli" required disabled>
+                            ${data && data.kbli ? `<option value="${data.kbli.id}" selected>${data.kbli.kode} - ${data.kbli.judul}</option>` : '<option value="">Pilih KBLI...</option>'}
+                        </select>
+                        <input type="hidden" name="kbli_id[]" class="kbli-id-hidden" value="${data ? data.kbli_id : ''}">
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 bg-light rounded text-muted small uraian-box">
+                            ${data && data.kbli ? data.kbli.uraian : 'Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.'}
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input kbli-utama-radio" type="radio" name="kbli_utama" value="${data ? data.kbli_id : id}" id="utama_${id}" ${isUtama ? 'checked' : ''} required>
+                            <label class="form-check-label fw-bold text-dark" for="utama_${id}">
+                                ⭐ Jadikan KBLI Utama
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+        
+        let $row = $(html);
+        $('#kbli-repeater-container').append($row);
+        
+        let $selectKategori = $row.find('.select-kategori');
+        let $selectGolongan = $row.find('.select-golongan');
+        let $selectKbli = $row.find('.select-kbli');
+        let $uraianBox = $row.find('.uraian-box');
+        let $hiddenId = $row.find('.kbli-id-hidden');
+        let $radioUtama = $row.find('.kbli-utama-radio');
+        
+        // Fetch init categories
+        let initKat = data && data.kbli ? data.kbli.kategori_kode : null;
+        let initGol = data && data.kbli ? data.kbli.golongan_pokok_kode : null;
+        fetchCategories($selectKategori, initKat);
+        if (initKat) {
+            fetchGolongans(initKat, $selectGolongan, initGol);
+            $selectKbli.prop('disabled', false);
+        }
+
+        // Kategori Change Event
+        $selectKategori.on('change', function() {
+            let val = $(this).val();
+            $selectGolongan.empty().append('<option value="">Pilih Golongan</option>').prop('disabled', true);
+            $selectKbli.empty().prop('disabled', true);
+            $hiddenId.val('');
+            $radioUtama.val(id); // reset fallback
+            $uraianBox.html('Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.');
+            if (val) fetchGolongans(val, $selectGolongan);
+        });
+
+        // Golongan Change Event
+        $selectGolongan.on('change', function() {
+            let val = $(this).val();
+            $selectKbli.empty().prop('disabled', !val);
+            $hiddenId.val('');
+            $radioUtama.val(id);
+            $uraianBox.html('Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.');
+        });
+        
+        // Init Select2 for this row
+        $selectKbli.select2({
+            ajax: {
+                url: '/api/kbli/search',
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return { 
+                        q: params.term || '',
+                        kategori: $selectKategori.val(),
+                        golongan: $selectGolongan.val()
+                    };
+                },
+                processResults: function (res) {
+                    return { results: res };
+                }
+            },
+            placeholder: 'Pilih KBLI...',
+            minimumInputLength: 0,
+            templateResult: function (kbli) {
+                if (kbli.loading) return kbli.text;
+                return $(
+                    "<div class='p-1'>" +
+                    "<div class='fw-bold text-dark'>" + kbli.text + "</div>" +
+                    "<div class='small text-muted mt-1'>Uraian: " + (kbli.uraian || '-') + "</div>" +
+                    "</div>"
+                );
+            },
+            templateSelection: function (kbli) {
+                return kbli.text || kbli.id || 'Pilih KBLI...';
+            }
+        }).on('select2:select', function(e) {
+            let item = e.params.data;
+            $hiddenId.val(item.id);
+            $radioUtama.val(item.id); // set radio to actual ID
+            $uraianBox.html(`<strong>Uraian:</strong><br/>${item.uraian}`);
+        }).on('select2:clear', function() {
+            $hiddenId.val('');
+            $radioUtama.val(id);
+            $uraianBox.html('Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.');
+        });
+    }
+
+    // Initialize existing or empty row
+    if (userKblis && userKblis.length > 0) {
+        userKblis.forEach(function(uk) {
+            addKbliRow(uk);
+        });
+    } else {
+        addKbliRow();
+    }
+
+    $('#btn-add-usaha').on('click', function() {
+        addKbliRow();
+    });
+
+    $(document).on('click', '.btn-remove-row', function() {
+        var row = $(this).closest('.kbli-row');
+        var isUtama = row.find('.kbli-utama-radio').is(':checked');
+        row.remove();
+        
+        // Jika Utama dihapus, jadikan row pertama sebagai utama
+        if (isUtama && $('.kbli-row').length > 0) {
+            $('.kbli-row').first().find('.kbli-utama-radio').prop('checked', true);
+        }
+    });
+
+
+    // Handle hapus KBLI dari daftar
+    $(document).on('click', '.btn-remove-kbli', function() {
+        var card = $(this).closest('.kbli-selected-card');
+        var isUtama = card.find('.kbli-utama-radio').is(':checked');
+        card.remove();
+        
+        // Jika yang dihapus adalah KBLI Utama, otomatis pindahkan ke KBLI pertama (jika ada)
+        if (isUtama && $('.kbli-selected-card').length > 0) {
+            $('.kbli-selected-card').first().find('.kbli-utama-radio').prop('checked', true);
+        }
+    });
+    // Add Marketplace Lainnya dynamically
+    $('#add-mp-btn').on('click', function() {
+        let html = `
+            <div class="row g-2 mb-2 mp-row">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" name="marketplace_lainnya_nama[]" placeholder="Nama Marketplace (cth: Bukalapak)">
+                </div>
+                <div class="col-md-6">
+                    <input type="url" class="form-control" name="marketplace_lainnya_link[]" placeholder="Link Marketplace (https://...)">
+                </div>
+                <div class="col-md-1 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+        `;
+        $('#marketplace-container').append(html);
+    });
+
+    $(document).on('click', '.remove-mp', function() {
+        $(this).closest('.mp-row').remove();
+    });
+
+    // Auto-calculate total karyawan
+    function calculateTotalKaryawan() {
+        var tetapL = parseInt($('#tetap_laki_laki').val()) || 0;
+        var tetapP = parseInt($('#tetap_perempuan').val()) || 0;
+        var totalTetap = tetapL + tetapP;
+        $('#total_tetap').val(totalTetap);
+
+        var tidakTetapL = parseInt($('#tidak_tetap_laki_laki').val()) || 0;
+        var tidakTetapP = parseInt($('#tidak_tetap_perempuan').val()) || 0;
+        var totalTidakTetap = tidakTetapL + tidakTetapP;
+        $('#total_tidak_tetap').val(totalTidakTetap);
+
+        var grandTotal = totalTetap + totalTidakTetap;
+        $('#grand_total').text(grandTotal);
+    }
+    
+    $('.karyawan-input').on('input', calculateTotalKaryawan);
+});
+</script>
+
+
 @endpush
 @endsection
 

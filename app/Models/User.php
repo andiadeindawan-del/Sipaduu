@@ -52,9 +52,11 @@ class User extends Authenticatable
         'jabatan_usaha', 'merek_produk', 'kode_pos_usaha', 'sektor_usaha', 'no_telepon_usaha',
         'bidang_usaha', 'tanggal_berdiri', 'npwp_usaha', 'status_nib', 'lama_nib', 'modal_usaha',
         'nilai_modal', 'omzet_usaha', 'nilai_omzet', 'jumlah_karyawan', 'kapasitas_produksi', 'anggota_koperasi',
+        'karyawan_tetap_laki_laki', 'karyawan_tetap_perempuan', 'total_karyawan_tetap', 'karyawan_tidak_tetap_laki_laki', 'karyawan_tidak_tetap_perempuan', 'total_karyawan_tidak_tetap', 'total_tenaga_kerja',
+        'provinsi_usaha', 'kabupaten_usaha', 'kecamatan_usaha', 'desa_usaha', 'alamat_usaha',
 
         // Digitalisasi & Transformasi
-        'email_usaha', 'website_usaha', 'medsos_usaha', 'marketplace', 'pengadaan_barang', 'akses_kredit',
+        'email_usaha', 'website_usaha', 'medsos_usaha', 'marketplace', 'facebook_usaha', 'instagram_usaha', 'tiktok_usaha', 'pengadaan_barang', 'akses_kredit',
         'tabungan', 'perizinan_usaha', 'sertifikasi_produk', 'jangkauan_pemasaran', 'lokasi_pemasaran',
         'status_ekspor', 'negara_ekspor', 'metode_ekspor', 'volume_ekspor', 'nilai_ekspor', 'pasok_bahan_baku', 'kemitraan',
 
@@ -74,7 +76,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed', 'marketplace_lainnya' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -299,16 +301,22 @@ class User extends Authenticatable
                 'kecamatan' => 'Kecamatan',
                 'desa' => 'Desa/Kelurahan',
                 'alamat_lengkap' => 'Alamat Detail',
-                'kode_pos_domisili' => 'Kode Pos Domisili',
                 'no_telepon' => 'Nomor HP/Telepon',
                 'email' => 'Email',
                 'ktp_file' => 'Upload KTP',
             ],
             'Usaha' => [
                 'nama_usaha' => 'Nama Usaha',
+                'status_usaha' => 'Status Usaha',
+                'bentuk_usaha' => 'Bentuk Usaha',
+                'jabatan_usaha' => 'Jabatan dalam Usaha',
                 'sektor_usaha' => 'Sektor Usaha',
                 'bidang_usaha' => 'Bidang Usaha',
-                'nib' => 'Nomor NIB',
+                'npwp_usaha' => 'Nomor NPWP',
+                'email_usaha' => 'Email Usaha',
+                'facebook_usaha' => 'Facebook Usaha',
+                'instagram_usaha' => 'Instagram Usaha',
+                'tiktok_usaha' => 'TikTok Usaha',
             ]
         ];
     }
@@ -490,5 +498,10 @@ class User extends Authenticatable
         
         $quiz = Quiz::find($quizId);
         return $attempt->score >= ($quiz->passing_score ?? 70);
+    }
+
+    public function kblis()
+    {
+        return $this->hasMany(UserKbli::class);
     }
 }

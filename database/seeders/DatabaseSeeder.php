@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(KbliSeeder::class);
         // ============================================================
         // HAPUS ATAU KOMENTARI SEEDER DEFAULT LARAVEL
         // ============================================================

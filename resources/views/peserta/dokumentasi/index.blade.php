@@ -73,15 +73,12 @@
         </div>
     </div>
 
-    <!-- Search & Filter -->
+    <!-- Search & Filter (Tombol Terapkan diperkecil) -->
     <div class="panel mb-4">
         <div class="panel-body p-3">
-            <form action="{{ route('peserta.dokumentasi.index') }}" method="GET" class="row g-2 align-items-end">
+            <form action="{{ route('peserta.dokumentasi.index') }}" method="GET" class="row g-2 align-items-center">
                 <div class="col-12 col-md-5">
-                    <label class="form-label fw-semibold small mb-1">
-                        <i class="bi bi-search me-1"></i> Cari Dokumentasi
-                    </label>
-                    <div class="input-group">
+                    <div class="input-group input-group-sm">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
                         <input type="text" name="search" class="form-control" 
                                placeholder="Cari judul atau deskripsi..." value="{{ request('search') }}">
@@ -92,11 +89,8 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
-                    <label class="form-label fw-semibold small mb-1">
-                        <i class="bi bi-funnel me-1"></i> Filter Pelatihan
-                    </label>
-                    <select name="training_id" class="form-select">
+                <div class="col-12 col-md-5">
+                    <select name="training_id" class="form-select form-select-sm">
                         <option value="">Semua Pelatihan</option>
                         @foreach($trainings ?? [] as $training)
                             <option value="{{ $training->id }}" {{ request('training_id') == $training->id ? 'selected' : '' }}>
@@ -105,13 +99,12 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-3">
-                    <label class="form-label fw-semibold small mb-1">&nbsp;</label>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1">
-                            <i class="bi bi-search me-1"></i> Terapkan
+                <div class="col-12 col-md-2">
+                    <div class="d-flex gap-1 justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-sm px-2" title="Terapkan Filter">
+                            <i class="bi bi-search me-1"></i> Cari
                         </button>
-                        <a href="{{ route('peserta.dokumentasi.index') }}" class="btn btn-outline-secondary" title="Reset Filter">
+                        <a href="{{ route('peserta.dokumentasi.index') }}" class="btn btn-outline-secondary btn-sm px-2" title="Reset Filter">
                             <i class="bi bi-arrow-counterclockwise"></i>
                         </a>
                     </div>
@@ -559,9 +552,9 @@
     ============================================================ */
     .btn {
         border-radius: 0.5rem;
-        padding: 0.4rem 1.2rem;
+        padding: 0.35rem 0.8rem;
         font-weight: 500;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         transition: all 0.2s ease;
     }
     

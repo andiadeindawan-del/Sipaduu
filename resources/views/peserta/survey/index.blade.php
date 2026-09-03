@@ -73,30 +73,29 @@
         </div>
     </div>
 
-    <!-- Search & Filter -->
+    <!-- Search & Filter Panel (Disesuaikan Ringkas & Rapi) -->
     <div class="panel mb-4">
         <div class="panel-body p-3">
-            <form action="{{ route('peserta.survey.index') }}" method="GET" class="row g-2 align-items-end">
+            <form action="{{ route('peserta.survey.index') }}" method="GET" class="row g-2 align-items-center">
+                <!-- Input Cari Survey -->
                 <div class="col-12 col-md-5">
-                    <label class="form-label fw-semibold small mb-1">
-                        <i class="bi bi-search me-1"></i> Cari Survey
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <input type="text" name="search" class="form-control" 
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-start-0 ps-0" 
                                placeholder="Cari judul survey..." value="{{ request('search') }}">
                         @if(request('search'))
-                        <a href="{{ route('peserta.survey.index') }}" class="btn btn-outline-secondary" title="Hapus pencarian">
+                        <a href="{{ route('peserta.survey.index', request()->except('search')) }}" class="btn btn-outline-secondary" title="Hapus pencarian">
                             <i class="bi bi-x-lg"></i>
                         </a>
                         @endif
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
-                    <label class="form-label fw-semibold small mb-1">
-                        <i class="bi bi-funnel me-1"></i> Filter Pelatihan
-                    </label>
-                    <select name="training_id" class="form-select">
+
+                <!-- Dropdown Filter Pelatihan -->
+                <div class="col-12 col-md-5">
+                    <select name="training_id" class="form-select form-select-sm">
                         <option value="">Semua Pelatihan</option>
                         @foreach($trainings ?? [] as $training)
                             <option value="{{ $training->id }}" {{ request('training_id') == $training->id ? 'selected' : '' }}>
@@ -105,27 +104,27 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-3">
-                    <label class="form-label fw-semibold small mb-1">&nbsp;</label>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1">
-                            <i class="bi bi-search me-1"></i> Terapkan
+
+                <!-- Tombol Aksi -->
+                <div class="col-12 col-md-2">
+                    <div class="d-flex gap-1 justify-content-start justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-sm flex-fill flex-md-grow-0 px-3" title="Terapkan Filter">
+                            <i class="bi bi-search me-1"></i> Cari
                         </button>
-                        <a href="{{ route('peserta.survey.index') }}" class="btn btn-outline-secondary" title="Reset Filter">
+                        <a href="{{ route('peserta.survey.index') }}" class="btn btn-outline-secondary btn-sm px-2" title="Reset Filter">
                             <i class="bi bi-arrow-counterclockwise"></i>
                         </a>
                     </div>
                 </div>
             </form>
             
-            <!-- Active Filters -->
+            <!-- Active Filters Indicator -->
             @if(request('search') || request('training_id'))
-            <div class="mt-2 pt-2 border-top">
-                <small class="text-muted">
-                    <i class="bi bi-filter-circle me-1"></i>
-                    Filter aktif: 
+            <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-1 flex-wrap">
+                    <small class="text-muted me-1"><i class="bi bi-filter-circle me-1"></i>Filter aktif:</small>
                     @if(request('search'))
-                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-normal">
                             <i class="bi bi-search me-1"></i> {{ request('search') }}
                         </span>
                     @endif
@@ -133,14 +132,15 @@
                         @php
                             $trainingName = $trainings->where('id', request('training_id'))->first();
                         @endphp
-                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-normal">
                             <i class="bi bi-journal-bookmark-fill me-1"></i> {{ $trainingName ? $trainingName->judul : '' }}
                         </span>
                     @endif
-                    <a href="{{ route('peserta.survey.index') }}" class="text-danger ms-1 text-decoration-none">
-                        <i class="bi bi-x-circle"></i> Reset semua
-                    </a>
-                </small>
+                </div>
+
+                <a href="{{ route('peserta.survey.index') }}" class="small text-danger text-decoration-none">
+                    <i class="bi bi-x-circle me-1"></i>Reset semua
+                </a>
             </div>
             @endif
         </div>
@@ -251,7 +251,7 @@
                     @endif
                 </p>
                 @if(request('search') || request('training_id'))
-                <a href="{{ route('peserta.survey.index') }}" class="btn btn-outline-primary mt-3">
+                <a href="{{ route('peserta.survey.index') }}" class="btn btn-outline-primary mt-3 btn-sm">
                     <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
                 </a>
                 @endif
@@ -352,7 +352,7 @@
     }
 
     /* ============================================================
-       PANEL
+       PANEL & FORM CONTROLS
     ============================================================ */
     .panel {
         background: #fff;
@@ -365,6 +365,28 @@
     }
     .panel-body {
         background: #fff;
+    }
+
+    .form-control, .form-select {
+        border-color: #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.12);
+    }
+
+    .input-group-text {
+        border-color: #e2e8f0;
+        font-size: 0.85rem;
+    }
+
+    .badge.bg-primary.bg-opacity-10 {
+        background: rgba(78, 154, 241, 0.12) !important;
+        padding: 0.35rem 0.65rem;
     }
 
     /* ============================================================
@@ -559,57 +581,11 @@
     }
 
     /* ============================================================
-       FORM
-    ============================================================ */
-    .form-label {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #4a5568;
-        margin-bottom: 0.25rem;
-    }
-    
-    .input-group-text {
-        background: #f8fafc;
-        border-color: #e2e8f0;
-        color: #8a93a3;
-        font-size: 0.8rem;
-    }
-    
-    .form-control, .form-select {
-        border-color: #e2e8f0;
-        border-radius: 0.5rem;
-        padding: 0.4rem 0.75rem;
-        font-size: 0.85rem;
-        transition: all 0.2s ease;
-    }
-    
-    .form-control:focus, .form-select:focus {
-        border-color: #4e9af1;
-        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.12);
-    }
-    
-    .input-group .form-control {
-        border-radius: 0 0.5rem 0.5rem 0;
-    }
-    
-    .input-group .input-group-text:first-child {
-        border-radius: 0.5rem 0 0 0.5rem;
-    }
-
-    .badge.bg-primary.bg-opacity-10 {
-        background: rgba(78, 154, 241, 0.12) !important;
-        padding: 0.3rem 0.7rem;
-        font-weight: 500;
-    }
-
-    /* ============================================================
        BUTTONS
     ============================================================ */
     .btn {
         border-radius: 0.5rem;
-        padding: 0.4rem 1.2rem;
         font-weight: 500;
-        font-size: 0.85rem;
         transition: all 0.2s ease;
     }
     
@@ -632,15 +608,6 @@
     .btn-outline-secondary:hover {
         background: #f7fafc;
         border-color: #d5dce6;
-    }
-    
-    .btn-outline-primary {
-        border-color: #4e9af1;
-        color: #4e9af1;
-    }
-    .btn-outline-primary:hover {
-        background: #4e9af1;
-        color: #fff;
     }
 
     /* ============================================================
@@ -692,8 +659,6 @@
     .card-survey:nth-child(8) { animation-delay: 0.40s; }
     .card-survey:nth-child(9) { animation-delay: 0.45s; }
     .card-survey:nth-child(10) { animation-delay: 0.50s; }
-    .card-survey:nth-child(11) { animation-delay: 0.55s; }
-    .card-survey:nth-child(12) { animation-delay: 0.60s; }
     
     @keyframes fadeInUp {
         from {

@@ -86,47 +86,52 @@
         </div>
     </div>
 
-    <!-- Filter Section -->
-<div class="panel mb-4">
-    <div class="p-3">
-        <form action="{{ route('peserta.pengumuman.index') }}" method="GET" class="row g-3 align-items-end">
-            <div class="col-12 col-md-6">
-                <label class="form-label fw-semibold small">Cari</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" name="search" 
-                           value="{{ request('search') }}" 
-                           placeholder="Cari pengumuman...">
+    <!-- Filter Section (Disesuaikan Seperti View Agenda) -->
+    <div class="panel mb-4">
+        <div class="panel-body p-3">
+            <form action="{{ route('peserta.pengumuman.index') }}" method="GET" class="row g-2 align-items-center">
+                <div class="col-12 col-md-8 col-lg-9">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" name="search" 
+                               value="{{ request('search') }}" 
+                               placeholder="Cari pengumuman...">
+                        @if(request('search'))
+                        <a href="{{ route('peserta.pengumuman.index', request()->except('search')) }}" class="btn btn-outline-secondary" title="Hapus teks pencarian">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                        @endif
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-3">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search"></i> Cari
-                </button>
-            </div>
-            <div class="col-12 col-md-3">
-                <a href="{{ route('peserta.pengumuman.index') }}" class="btn btn-outline-secondary w-100" title="Reset Filter">
-                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="d-flex gap-1 justify-content-start justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-sm flex-fill flex-md-grow-0 px-3" title="Terapkan Filter">
+                            <i class="bi bi-search me-1"></i> Cari
+                        </button>
+                        <a href="{{ route('peserta.pengumuman.index') }}" class="btn btn-outline-secondary btn-sm px-2" title="Reset Filter">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            @if(request('search'))
+            <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-1 flex-wrap">
+                    <small class="text-muted me-1"><i class="bi bi-filter-circle me-1"></i>Filter aktif:</small>
+                    <span class="badge bg-primary bg-opacity-10 text-primary fw-normal">
+                        <i class="bi bi-search me-1"></i> Cari: {{ request('search') }}
+                    </span>
+                </div>
+                <a href="{{ route('peserta.pengumuman.index') }}" class="small text-danger text-decoration-none">
+                    <i class="bi bi-x-circle me-1"></i>Hapus filter
                 </a>
             </div>
-        </form>
-    </div>
-    @if(request('search'))
-    <div class="p-2 px-3 bg-light border-top">
-        <small class="text-muted">
-            <i class="bi bi-filter-circle me-1"></i>
-            Filter aktif: 
-            @if(request('search'))
-                <span class="badge text-bg-primary">Cari: {{ request('search') }}</span>
             @endif
-            <a href="{{ route('peserta.pengumuman.index') }}" class="text-danger ms-2">
-                <i class="bi bi-x-circle"></i> Hapus filter
-            </a>
-        </small>
+        </div>
     </div>
-    @endif
-</div>
-```
 
     <!-- Pengumuman Grid Cards - SEGI EMPAT -->
     @if($pengumumans && $pengumumans->count() > 0)
@@ -310,7 +315,7 @@
     }
 
     /* ============================================================
-       PANEL
+       PANEL & FORM CONTROLS
     ============================================================ */
     .panel {
         background: #fff;
@@ -336,6 +341,34 @@
     }
     .section-title i {
         color: #4e9af1;
+    }
+
+    .form-control, .form-select {
+        border-color: #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.12);
+    }
+
+    .input-group-text {
+        border-color: #e2e8f0;
+        font-size: 0.85rem;
+    }
+
+    .badge.bg-primary.bg-opacity-10 {
+        background: rgba(78, 154, 241, 0.12) !important;
+        padding: 0.35rem 0.65rem;
+    }
+
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
 
     /* ============================================================

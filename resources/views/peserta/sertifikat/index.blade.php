@@ -12,23 +12,6 @@
             <p class="text-muted mb-0">Kumpulkan dan kelola semua sertifikat yang telah Anda peroleh.</p>
         </div>
     </div>
-    <div class="heading-actions">
-        <div class="d-flex gap-2 flex-wrap">
-            <form action="{{ route('peserta.sertifikat.index') }}" method="GET" class="d-flex gap-2">
-                <div class="input-group input-group-sm" style="width: 220px;">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Cari sertifikat..." value="{{ request('search') }}">
-                </div>
-                <button type="submit" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-search"></i> Cari
-                </button>
-                <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
-                    <i class="bi bi-arrow-counterclockwise"></i>
-                </a>
-            </form>
-        </div>
-    </div>
 </div>
 @endsection
 
@@ -107,38 +90,62 @@
         </div>
     </div>
 
-    <!-- Filter Tabs -->
+    <!-- Filter Tabs & Pencarian (Digabung) -->
     <div class="panel mb-3">
         <div class="panel-header">
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ route('peserta.sertifikat.index') }}" 
-                   class="btn btn-sm {{ !request('filter') ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-grid"></i> Semua
-                </a>
-                <a href="{{ route('peserta.sertifikat.index', ['filter' => 'aktif']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'aktif' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-check-circle"></i> Aktif
-                </a>
-                <a href="{{ route('peserta.sertifikat.index', ['filter' => 'expired']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'expired' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-clock"></i> Kadaluarsa
-                </a>
-                <a href="{{ route('peserta.sertifikat.index', ['filter' => 'revoked']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'revoked' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-x-circle"></i> Dicabut
-                </a>
-            </div>
-            @if(request('filter') || request('search'))
-            <div>
-                <span class="badge bg-light text-muted">
-                    <i class="bi bi-filter-circle me-1"></i>
-                    Filter aktif
-                    <a href="{{ route('peserta.sertifikat.index') }}" class="text-danger ms-1" title="Hapus filter">
-                        <i class="bi bi-x-circle"></i>
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
+                <!-- Filter Buttons & Info Badge -->
+                <div class="d-flex gap-2 flex-wrap align-items-center">
+                    <a href="{{ route('peserta.sertifikat.index', array_merge(request()->except('filter', 'page'))) }}" 
+                       class="btn btn-sm {{ !request('filter') ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-grid"></i> Semua
                     </a>
-                </span>
+                    <a href="{{ route('peserta.sertifikat.index', array_merge(request()->except('page'), ['filter' => 'aktif'])) }}" 
+                       class="btn btn-sm {{ request('filter') == 'aktif' ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-check-circle"></i> Aktif
+                    </a>
+                    <a href="{{ route('peserta.sertifikat.index', array_merge(request()->except('page'), ['filter' => 'expired'])) }}" 
+                       class="btn btn-sm {{ request('filter') == 'expired' ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-clock"></i> Kadaluarsa
+                    </a>
+                    <a href="{{ route('peserta.sertifikat.index', array_merge(request()->except('page'), ['filter' => 'revoked'])) }}" 
+                       class="btn btn-sm {{ request('filter') == 'revoked' ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-x-circle"></i> Dicabut
+                    </a>
+
+                    @if(request('filter') || request('search'))
+                    <div>
+                        <span class="badge bg-light text-muted ms-1">
+                            <i class="bi bi-filter-circle me-1"></i>
+                            Filter aktif
+                            <a href="{{ route('peserta.sertifikat.index') }}" class="text-danger ms-1" title="Hapus filter">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        </span>
+                    </div>
+                    @endif
+                </div>
+
+                <!-- Form Pencarian -->
+                <div class="d-flex gap-2 flex-wrap">
+                    <form action="{{ route('peserta.sertifikat.index') }}" method="GET" class="d-flex gap-2">
+                        @if(request('filter'))
+                            <input type="hidden" name="filter" value="{{ request('filter') }}">
+                        @endif
+                        <div class="input-group input-group-sm" style="width: 220px;">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Cari sertifikat..." value="{{ request('search') }}">
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-search"></i> 
+                        </button>
+                        <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    </form>
+                </div>
             </div>
-            @endif
         </div>
     </div>
 
@@ -398,7 +405,6 @@
                                             Sertifikat dalam format PDF
                                         </p>
                                     </div>
-                                  
                                 </div>
                             </div>
                             @endif

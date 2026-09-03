@@ -11,20 +11,6 @@
             <h1 class="h3 mb-0">Daftar Quiz</h1>
         </div>
     </div>
-    <div class="heading-actions">
-        <div class="d-flex gap-2 flex-wrap">
-            <form action="{{ route('peserta.quiz.index') }}" method="GET" class="d-flex gap-2">
-                <input type="text" name="search" class="form-control form-control-sm" 
-                       placeholder="Cari quiz..." value="{{ request('search') }}" style="width: 200px;">
-                <button type="submit" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-search"></i>
-                </button>
-                <a href="{{ route('peserta.quiz.index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-counterclockwise"></i>
-                </a>
-            </form>
-        </div>
-    </div>
 </div>
 @endsection
 
@@ -86,26 +72,46 @@
         </div>
     </div>
 
-    <!-- Filter Tabs -->
+    <!-- Filter Tabs & Pencarian (Digabung) -->
     <div class="panel mb-3">
         <div class="panel-header">
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ route('peserta.quiz.index') }}" 
-                   class="btn btn-sm {{ !request('filter') ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-grid"></i> Semua
-                </a>
-                <a href="{{ route('peserta.quiz.index', ['filter' => 'completed']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'completed' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-check-circle"></i> Selesai
-                </a>
-                <a href="{{ route('peserta.quiz.index', ['filter' => 'in_progress']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'in_progress' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-clock"></i> Sedang Dikerjakan
-                </a>
-                <a href="{{ route('peserta.quiz.index', ['filter' => 'not_started']) }}" 
-                   class="btn btn-sm {{ request('filter') == 'not_started' ? 'btn-success' : 'btn-outline-secondary' }}">
-                    <i class="bi bi-hourglass-split"></i> Belum Dikerjakan
-                </a>
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
+                <!-- Filter Buttons -->
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{{ route('peserta.quiz.index', array_merge(request()->except('filter', 'page'))) }}" 
+                       class="btn btn-sm {{ !request('filter') ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-grid"></i> Semua
+                    </a>
+                    <a href="{{ route('peserta.quiz.index', array_merge(request()->except('page'), ['filter' => 'completed'])) }}" 
+                       class="btn btn-sm {{ request('filter') == 'completed' ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-check-circle"></i> Selesai
+                    </a>
+                    <a href="{{ route('peserta.quiz.index', array_merge(request()->except('page'), ['filter' => 'in_progress'])) }}" 
+                       class="btn btn-sm {{ request('filter') == 'in_progress' ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-clock"></i> Sedang Dikerjakan
+                    </a>
+                    <a href="{{ route('peserta.quiz.index', array_merge(request()->except('page'), ['filter' => 'not_started'])) }}" 
+                       class="btn btn-sm {{ request('filter') == 'not_started' ? 'btn-success' : 'btn-outline-secondary' }}">
+                        <i class="bi bi-hourglass-split"></i> Belum Dikerjakan
+                    </a>
+                </div>
+
+                <!-- Form Pencarian -->
+                <div class="d-flex gap-2 flex-wrap">
+                    <form action="{{ route('peserta.quiz.index') }}" method="GET" class="d-flex gap-2">
+                        @if(request('filter'))
+                            <input type="hidden" name="filter" value="{{ request('filter') }}">
+                        @endif
+                        <input type="text" name="search" class="form-control form-control-sm" 
+                               placeholder="Cari quiz..." value="{{ request('search') }}" style="width: 200px;">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="{{ route('peserta.quiz.index') }}" class="btn btn-outline-secondary btn-sm" title="Reset">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

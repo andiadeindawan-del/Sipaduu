@@ -203,8 +203,14 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Merek Produk</label>
-                                <p class="fw-semibold mb-0">{{ $user->merek_produk ?? '-' }}</p>
+                                <label class="text-muted small fw-semibold text-uppercase">Status Usaha</label>
+                                <p class="fw-semibold mb-0">{{ $user->status_usaha ?? '-' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="detail-item">
+                                <label class="text-muted small fw-semibold text-uppercase">Bentuk Usaha</label>
+                                <p class="fw-semibold mb-0">{{ $user->bentuk_usaha ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -215,22 +221,58 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
+                                <label class="text-muted small fw-semibold text-uppercase">Merek Produk</label>
+                                <p class="fw-semibold mb-0">{{ $user->merek_produk ?? '-' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="detail-item">
                                 <label class="text-muted small fw-semibold text-uppercase">Tanggal Berdiri</label>
                                 <p class="fw-semibold mb-0">{{ $user->tanggal_berdiri ? \Carbon\Carbon::parse($user->tanggal_berdiri)->format('d M Y') : '-' }}</p>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+
+                        <div class="col-12 mt-3">
                             <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Sektor Usaha</label>
-                                <p class="fw-semibold mb-0">{{ $user->sektor_usaha ?? '-' }}</p>
+                                <label class="text-muted small fw-semibold text-uppercase">KBLI / Kegiatan Usaha</label>
+                                @if($user->kblis->count() > 0)
+                                    <ul class="list-unstyled mb-0 mt-2">
+                                    @foreach($user->kblis as $kbli)
+                                        <li class="mb-2 p-2 bg-light rounded border">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div>
+                                                    @if($kbli->is_utama)
+                                                        <span class="badge bg-primary me-1">KBLI Utama</span>
+                                                    @else
+                                                        <span class="badge bg-secondary me-1">KBLI Tambahan</span>
+                                                    @endif
+                                                    <strong>{{ $kbli->kbli ? $kbli->kbli->kode : 'N/A' }}</strong> - {{ $kbli->kbli ? $kbli->kbli->judul : 'KBLI Tidak Ditemukan' }}
+                                                </div>
+                                                @if($kbli->kbli && $kbli->kbli->versi)
+                                                    <span class="badge bg-info text-dark border">{{ $kbli->kbli->versi }}</span>
+                                                @endif
+                                            </div>
+                                            @if($kbli->kbli)
+                                            <div class="mt-2 small text-muted">
+                                                <ul class="list-unstyled ms-3 border-start ps-3 mb-0" style="font-size: 0.85rem;">
+                                                    @if($kbli->kbli->kategori_kode)<li><strong>Kategori:</strong> {{ $kbli->kbli->kategori_kode }} - {{ $kbli->kbli->kategori_nama }}</li>@endif
+                                                    @if($kbli->kbli->golongan_pokok_kode)<li><strong>Gol. Pokok:</strong> {{ $kbli->kbli->golongan_pokok_kode }} - {{ $kbli->kbli->golongan_pokok_nama }}</li>@endif
+                                                    @if($kbli->kbli->golongan_kode)<li><strong>Golongan:</strong> {{ $kbli->kbli->golongan_kode }} - {{ $kbli->kbli->golongan_nama }}</li>@endif
+                                                    @if($kbli->kbli->subgolongan_kode)<li><strong>Subgolongan:</strong> {{ $kbli->kbli->subgolongan_kode }} - {{ $kbli->kbli->subgolongan_nama }}</li>@endif
+                                                    @if($kbli->kbli->kelompok_kode)<li><strong>Kelompok:</strong> {{ $kbli->kbli->kelompok_kode }} - {{ $kbli->kbli->kelompok_nama }}</li>@endif
+                                                    @if($kbli->kbli->uraian)<li class="mt-1"><strong>Uraian:</strong> <span class="text-muted">{{ $kbli->kbli->uraian }}</span></li>@endif
+                                                </ul>
+                                            </div>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                    </ul>
+                                @else
+                                    <p class="fw-semibold mb-0">-</p>
+                                @endif
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Bidang Usaha</label>
-                                <p class="fw-semibold mb-0">{{ $user->bidang_usaha ?? '-' }}</p>
-                            </div>
-                        </div>
+
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
                                 <label class="text-muted small fw-semibold text-uppercase">No. Telepon Usaha</label>
@@ -239,13 +281,29 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Jumlah Karyawan</label>
-                                <p class="fw-semibold mb-0">{{ $user->jumlah_karyawan ? $user->jumlah_karyawan . ' orang' : '-' }}</p>
+                                <label class="text-muted small fw-semibold text-uppercase">Data Tenaga Kerja</label>
+                                <div class="bg-light p-3 rounded mt-2">
+                                    <p class="fw-semibold mb-1 border-bottom pb-1">Karyawan Tetap</p>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span>Laki-laki: {{ $user->karyawan_tetap_laki_laki ?? '-' }}</span>
+                                        <span>Perempuan: {{ $user->karyawan_tetap_perempuan ?? '-' }}</span>
+                                        <strong>Total: {{ $user->total_karyawan_tetap ?? '-' }}</strong>
+                                    </div>
+                                    <p class="fw-semibold mb-1 border-bottom pb-1">Karyawan Tidak Tetap</p>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span>Laki-laki: {{ $user->karyawan_tidak_tetap_laki_laki ?? '-' }}</span>
+                                        <span>Perempuan: {{ $user->karyawan_tidak_tetap_perempuan ?? '-' }}</span>
+                                        <strong>Total: {{ $user->total_karyawan_tidak_tetap ?? '-' }}</strong>
+                                    </div>
+                                    <div class="text-center bg-primary text-white p-2 rounded mt-2">
+                                        <h6 class="mb-0 fw-bold">TOTAL KESELURUHAN: {{ $user->total_tenaga_kerja ?? '-' }}</h6>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Kapasitas Produksi</label>
+                                <label class="text-muted small fw-semibold text-uppercase">Kapasitas Produksi / Tahun</label>
                                 <p class="fw-semibold mb-0">{{ $user->kapasitas_produksi ?? '-' }}</p>
                             </div>
                         </div>
@@ -253,6 +311,25 @@
                             <div class="detail-item">
                                 <label class="text-muted small fw-semibold text-uppercase">Anggota Koperasi</label>
                                 <p class="fw-semibold mb-0">{{ $user->anggota_koperasi ?? '-' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="detail-item">
+                                <label class="text-muted small fw-semibold text-uppercase">Alamat Usaha</label>
+                                <div class="p-3 bg-light rounded-3">
+                                    <p class="fw-semibold mb-0">
+                                        {{ $user->alamat_usaha ?? '-' }}
+                                        @if($user->desa_usaha || $user->kecamatan_usaha || $user->kabupaten_usaha || $user->provinsi_usaha)
+                                            <br>
+                                            <small class="text-muted">
+                                                {{ $user->desa_usaha ? 'Desa/Kel: ' . $user->desa_usaha : '' }}
+                                                {{ $user->kecamatan_usaha ? ' | Kec: ' . $user->kecamatan_usaha : '' }}
+                                                {{ $user->kabupaten_usaha ? ' | Kab/Kota: ' . $user->kabupaten_usaha : '' }}
+                                                {{ $user->provinsi_usaha ? ' | Prov: ' . $user->provinsi_usaha : '' }}
+                                            </small>
+                                        @endif
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12">
@@ -269,7 +346,7 @@
                                             <strong>NPWP Usaha:</strong> {{ $user->npwp_usaha ?? '-' }}
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <strong>Modal Usaha:</strong> {{ $user->modal_usaha ?? '-' }}
+                                            <strong>Sumber Pendanaan / Modal:</strong> {{ $user->modal_usaha ?? '-' }}
                                             <br>
                                             <small class="text-muted">Rp {{ number_format($user->nilai_modal ?? 0, 0, ',', '.') }}</small>
                                         </div>
@@ -299,24 +376,149 @@
                                 <p class="fw-semibold mb-0">{{ $user->email_usaha ?? '-' }}</p>
                             </div>
                         </div>
+                        
+                        <!-- SALURAN PEMASARAN ONLINE -->
+                        <div class="col-12 mt-4">
+                            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-globe me-2"></i>SALURAN PEMASARAN ONLINE</h6>
+                        </div>
+
                         <div class="col-12 col-md-6">
-                            <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Website Usaha</label>
-                                <p class="fw-semibold mb-0">
+                            <div class="detail-item h-100 p-3 bg-light rounded border">
+                                <h6 class="fw-bold mb-3 border-bottom pb-2">Informasi Usaha Online</h6>
+                                
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Judul Usaha</label>
+                                    <span class="fw-bold text-dark">{{ $user->judul_usaha_online ?? '-' }}</span>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Website</label>
                                     @if($user->website_usaha)
-                                    <a href="{{ $user->website_usaha }}" target="_blank" class="text-primary">
-                                        <i class="bi bi-box-arrow-up-right me-1"></i> {{ Str::limit($user->website_usaha, 30) }}
-                                    </a>
+                                        <a href="{{ $user->website_usaha }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-link-45deg me-1"></i>Kunjungi Website
+                                        </a>
                                     @else
-                                    <span class="text-muted">-</span>
+                                        <span class="text-muted">-</span>
                                     @endif
-                                </p>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Facebook</label>
+                                    @if($user->facebook_usaha)
+                                        <a href="{{ $user->facebook_usaha }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-facebook me-1"></i>Facebook
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Instagram</label>
+                                    @if($user->instagram_usaha)
+                                        <a href="{{ $user->instagram_usaha }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-instagram me-1"></i>Instagram
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+
+                                <div class="mb-0">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">TikTok</label>
+                                    @if($user->tiktok_usaha)
+                                        <a href="{{ $user->tiktok_usaha }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-tiktok me-1"></i>TikTok
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="detail-item h-100 p-3 bg-light rounded border">
+                                <h6 class="fw-bold mb-3 border-bottom pb-2">Marketplace Yang Digunakan</h6>
+                                
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Shopee</label>
+                                    @if($user->shopee)
+                                        <a href="{{ $user->shopee }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-shop me-1"></i>Kunjungi Shopee
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Tokopedia</label>
+                                    @if($user->tokopedia)
+                                        <a href="{{ $user->tokopedia }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-shop me-1"></i>Kunjungi Tokopedia
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Lazada</label>
+                                    @if($user->lazada)
+                                        <a href="{{ $user->lazada }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-shop me-1"></i>Kunjungi Lazada
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Blibli</label>
+                                    @if($user->blibli)
+                                        <a href="{{ $user->blibli }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            <i class="bi bi-shop me-1"></i>Kunjungi Blibli
+                                        </a>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+
+                                <div class="mb-0">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Marketplace Lainnya</label>
+                                    @php
+                                        $mps = $user->marketplace_lainnya;
+                                    @endphp
+                                    @if(!empty($mps) && is_array($mps) && count($mps) > 0)
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach($mps as $mp)
+                                                <li>
+                                                    @if(!empty($mp['link']))
+                                                        <a href="{{ $mp['link'] }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                                            <i class="bi bi-link me-1"></i>{{ $mp['nama'] ?? 'Kunjungi Marketplace' }}
+                                                        </a>
+                                                    @else
+                                                        <span class="fw-bold">{{ $mp['nama'] ?? '-' }}</span>
+                                                    @endif
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
                                 <label class="text-muted small fw-semibold text-uppercase">Media Sosial</label>
-                                <p class="fw-semibold mb-0">{{ $user->medsos_usaha ?? '-' }}</p>
+                                <p class="fw-semibold mb-0">
+                                    Facebook: {{ $user->facebook_usaha ?? '-' }}<br>
+                                    Instagram: {{ $user->instagram_usaha ?? '-' }}<br>
+                                    TikTok: {{ $user->tiktok_usaha ?? '-' }}
+                                </p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">

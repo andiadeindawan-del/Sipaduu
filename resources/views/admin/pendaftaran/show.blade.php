@@ -332,18 +332,6 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="detail-item">
-                                        <label class="text-muted small fw-semibold text-uppercase">Sektor Usaha</label>
-                                        <p class="fw-semibold mb-0">{{ $registration->user->sektor_usaha ?? '-' }}</p>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="detail-item">
-                                        <label class="text-muted small fw-semibold text-uppercase">Bidang Usaha</label>
-                                        <p class="fw-semibold mb-0">{{ $registration->user->bidang_usaha ?? '-' }}</p>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Tanggal Pendirian</label>
                                         <p class="fw-semibold mb-0">{{ $registration->user->tanggal_berdiri ? \Carbon\Carbon::parse($registration->user->tanggal_berdiri)->format('d-m-Y') : '-' }}</p>
                                     </div>

@@ -78,6 +78,11 @@ class UserController extends Controller
             'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Hitung total karyawan
+        $validated['total_karyawan_tetap'] = ((int) ($validated['karyawan_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tetap_perempuan'] ?? 0));
+        $validated['total_karyawan_tidak_tetap'] = ((int) ($validated['karyawan_tidak_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tidak_tetap_perempuan'] ?? 0));
+        $validated['total_tenaga_kerja'] = $validated['total_karyawan_tetap'] + $validated['total_karyawan_tidak_tetap'];
+        
         $data = $validated;
         $data['password'] = Hash::make($validated['password']);
         $data['status']   = $validated['status'] ?? 'aktif';
@@ -125,15 +130,15 @@ class UserController extends Controller
             'jabatan'     => 'nullable|string|max:100',
             'no_telepon'  => 'nullable|string|max:20',
             
-            // Validasi file
-            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // Validasi file - Wajib jika belum ada
+            'foto'        => [$user->foto ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'npwp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'file_produk' => 'nullable|file|mimes:pdf,jpeg,png,jpg,doc,docx|max:5120',
+            'npwp_file' => [$user->npwp_file ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
+            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
             
             // Tambahan field untuk UMK
-            'status_pernikahan' => 'nullable|string|max:50',
+            'status_pernikahan' => 'required|string|in:Menikah,Belum Menikah,Cerai Hidup,Cerai Mati',
             'jenis_kelamin' => 'nullable|in:L,P',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
@@ -144,33 +149,49 @@ class UserController extends Controller
             'kecamatan' => 'nullable|string|max:100',
             'desa' => 'nullable|string|max:100',
             'alamat_lengkap' => 'nullable|string',
-            'kode_pos_domisili' => 'nullable|string|max:20',
-            'disabilitas' => 'nullable|string|max:100',
             
             'nama_usaha' => 'nullable|string|max:150',
-            'jabatan_usaha' => 'nullable|string|max:100',
+            'status_usaha' => 'required|string|in:Aktif,Tidak Aktif',
+            'bentuk_usaha' => 'required|string|in:Perorangan,PT Perorangan,UD,CV,PT,Koperasi',
+            'jabatan_usaha' => 'required|string|max:100',
             'merek_produk' => 'nullable|string|max:150',
-            'kode_pos_usaha' => 'nullable|string|max:20',
-            'sektor_usaha' => 'nullable|string|max:100',
-            'no_telepon_usaha' => 'nullable|string|max:20',
-            'bidang_usaha' => 'nullable|string|max:100',
-            'tanggal_berdiri' => 'nullable|date',
-            'npwp_usaha' => 'nullable|string|max:50',
-            'status_nib' => 'nullable|string|max:50',
+            'kbli_id' => 'required|array|min:1',
+            'kbli_id.*' => 'exists:kblis,id',
+            'kbli_utama' => 'required|exists:kblis,id',
+            'no_telepon_usaha' => 'required|string|max:20',
+            'tanggal_berdiri' => 'required|date',
+            'npwp_usaha' => 'required|string|max:50',
             'nib' => 'nullable|string|max:50',
-            'lama_nib' => 'nullable|string|max:50',
             'modal_usaha' => 'nullable|string|max:50',
             'nilai_modal' => 'nullable|numeric',
             'omzet_usaha' => 'nullable|string|max:50',
             'nilai_omzet' => 'nullable|numeric',
-            'jumlah_karyawan' => 'nullable|integer',
+            'karyawan_tetap_laki_laki' => 'required|integer|min:0',
+            'karyawan_tetap_perempuan' => 'required|integer|min:0',
+            'karyawan_tidak_tetap_laki_laki' => 'required|integer|min:0',
+            'karyawan_tidak_tetap_perempuan' => 'required|integer|min:0',
             'kapasitas_produksi' => 'nullable|string|max:100',
-            'anggota_koperasi' => 'nullable|string|max:100',
             
-            'email_usaha' => 'nullable|email|max:100',
-            'website_usaha' => 'nullable|string|max:100',
-            'medsos_usaha' => 'nullable|string',
-            'marketplace' => 'nullable|string',
+            'provinsi_usaha' => 'required|string|max:100',
+            'kabupaten_usaha' => 'required|string|max:100',
+            'kecamatan_usaha' => 'required|string|max:100',
+            'desa_usaha' => 'required|string|max:100',
+            'alamat_usaha' => 'required|string',
+            
+            'email_usaha' => 'required|email|max:100',
+            'judul_usaha_online' => 'nullable|string|max:255',
+            'website_usaha' => 'nullable|url|max:255',
+            'facebook_usaha' => 'nullable|url|max:255',
+            'instagram_usaha' => 'nullable|url|max:255',
+            'tiktok_usaha' => 'nullable|url|max:255',
+            'shopee' => 'nullable|url|max:255',
+            'tokopedia' => 'nullable|url|max:255',
+            'lazada' => 'nullable|url|max:255',
+            'blibli' => 'nullable|url|max:255',
+            'marketplace_lainnya_nama' => 'nullable|array',
+            'marketplace_lainnya_nama.*' => 'nullable|string|max:150',
+            'marketplace_lainnya_link' => 'nullable|array',
+            'marketplace_lainnya_link.*' => 'nullable|url|max:255',
             'pengadaan_barang' => 'nullable|string|max:100',
             'akses_kredit' => 'nullable|string|max:100',
             'tabungan' => 'nullable|string|max:100',
@@ -191,8 +212,14 @@ class UserController extends Controller
             'riwayat_pelatihan' => 'nullable|string|max:100',
             'jenis_pelatihan_diikuti' => 'nullable|string',
             'masukan_saran' => 'nullable|string',
+            'anggota_koperasi' => 'nullable|string|max:150',
         ]);
 
+        // Hitung total karyawan
+        $validated['total_karyawan_tetap'] = ((int) ($validated['karyawan_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tetap_perempuan'] ?? 0));
+        $validated['total_karyawan_tidak_tetap'] = ((int) ($validated['karyawan_tidak_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tidak_tetap_perempuan'] ?? 0));
+        $validated['total_tenaga_kerja'] = $validated['total_karyawan_tetap'] + $validated['total_karyawan_tidak_tetap'];
+        
         $data = $validated;
 
         if (!empty($validated['password'])) {
@@ -236,7 +263,53 @@ class UserController extends Controller
             $data['file_produk'] = $request->file('file_produk')->store('produk_files', 'public');
         }
 
+        if (isset($data['nama'])) {
+            $data['name'] = $data['nama'];
+        }
+
+        
+        // Mapping marketplace lainnya
+        $marketplaces = [];
+        if (isset($data['marketplace_lainnya_nama']) && is_array($data['marketplace_lainnya_nama'])) {
+            foreach ($data['marketplace_lainnya_nama'] as $index => $nama) {
+                $link = $data['marketplace_lainnya_link'][$index] ?? null;
+                if (!empty($nama) || !empty($link)) {
+                    $marketplaces[] = [
+                        'nama' => $nama,
+                        'link' => $link
+                    ];
+                }
+            }
+        }
+        $data['marketplace_lainnya'] = $marketplaces;
+        unset($data['marketplace_lainnya_nama']);
+        unset($data['marketplace_lainnya_link']);
+
         $user->update($data);
+
+        // Handle Multiple KBLI
+        if ($request->has('kbli_id')) {
+            $user->kblis()->delete();
+            $kbliIds = $request->input('kbli_id');
+            $utamaId = $request->input('kbli_utama');
+            
+            // make unique and validate against actual DB to prevent spoofing
+            $savedIds = [];
+            $validKblis = \App\Models\Kbli::whereIn('id', $kbliIds)->pluck('id')->toArray();
+
+            foreach ($kbliIds as $index => $kId) {
+                if (!empty($kId) && in_array($kId, $validKblis) && !in_array($kId, $savedIds)) {
+                    $user->kblis()->create([
+                        'kbli_id' => $kId,
+                        'is_utama' => ($kId == $utamaId) ? true : false,
+                    ]);
+                    $savedIds[] = $kId;
+                }
+            }
+        } elseif ($request->isMethod('put') || $request->isMethod('post')) {
+            $user->kblis()->delete();
+        }
+
 
         return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'User berhasil diperbarui.');

@@ -8,14 +8,7 @@
         <span class="page-icon"><i class="bi bi-calendar-event"></i></span>
         <div>
             <p class="eyebrow">Informasi</p>
-            <h1 class="h3 mb-0">Agenda</h1>
-        </div>
-    </div>
-    <div class="heading-actions">
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary btn-sm" onclick="window.print()">
-                <i class="bi bi-printer"></i> Cetak
-            </button>
+            <h1 class="h3 mb-0">Webiner</h1>
         </div>
     </div>
 </div>
@@ -83,53 +76,58 @@
         </div>
     </div>
 
-    <!-- Filter -->
-
-<div class="panel mb-3">
-    <div class="p-3">
-        <form action="{{ route('peserta.agenda.index') }}" method="GET" class="row g-3">
-            <div class="col-12 col-md-6">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" name="search" 
-                           value="{{ request('search') }}" 
-                           placeholder="Cari agenda...">
+    <!-- Filter (Diperkecil, Rapi, & Ikon Bawaan Dipertahankan) -->
+    <div class="panel mb-3">
+        <div class="panel-body p-3">
+            <form action="{{ route('peserta.agenda.index') }}" method="GET" class="row g-2 align-items-center">
+                <div class="col-12 col-md-8 col-lg-9">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" name="search" 
+                               value="{{ request('search') }}" 
+                               placeholder="Cari agenda...">
+                        @if(request('search'))
+                        <a href="{{ route('peserta.agenda.index', request()->except('search')) }}" class="btn btn-outline-secondary" title="Hapus teks pencarian">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                        @endif
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-3">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search"></i> Filter
-                </button>
-            </div>
-            <div class="col-12 col-md-3">
-                <a href="{{ route('peserta.agenda.index') }}" class="btn btn-outline-secondary w-100" title="Reset Filter">
-                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="d-flex gap-1 justify-content-start justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-sm flex-fill flex-md-grow-0 px-3" title="Terapkan Filter">
+                            <i class="bi bi-search me-1"></i> Filter
+                        </button>
+                        <a href="{{ route('peserta.agenda.index') }}" class="btn btn-outline-secondary btn-sm px-2" title="Reset Filter">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            @if(request('search'))
+            <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-1 flex-wrap">
+                    <small class="text-muted me-1"><i class="bi bi-filter-circle me-1"></i>Filter aktif:</small>
+                    <span class="badge bg-primary bg-opacity-10 text-primary fw-normal">
+                        <i class="bi bi-search me-1"></i> Cari: {{ request('search') }}
+                    </span>
+                </div>
+                <a href="{{ route('peserta.agenda.index') }}" class="small text-danger text-decoration-none">
+                    <i class="bi bi-x-circle me-1"></i>Hapus filter
                 </a>
             </div>
-        </form>
-    </div>
-    @if(request('search'))
-    <div class="p-2 px-3 bg-light border-top">
-        <small class="text-muted">
-            <i class="bi bi-filter-circle me-1"></i>
-            Filter aktif: 
-            @if(request('search'))
-                <span class="badge text-bg-primary">Cari: {{ request('search') }}</span>
             @endif
-            <a href="{{ route('peserta.agenda.index') }}" class="text-danger ms-2">
-                <i class="bi bi-x-circle"></i> Hapus filter
-            </a>
-        </small>
+        </div>
     </div>
-    @endif
-</div>
-```
 
     <!-- Agenda List -->
     <div class="panel">
         <div class="panel-header">
             <div>
-                <h5 class="section-title"><i class="bi bi-table"></i> Daftar Agenda</h5>
+                <h5 class="section-title"><i class="bi bi-table"></i> Daftar Webiner</h5>
                 <p class="text-muted small mb-0">Menampilkan {{ $agendas->firstItem() ?? 0 }} - {{ $agendas->lastItem() ?? 0 }} dari {{ $agendas->total() ?? 0 }} agenda</p>
             </div>
         </div>
@@ -158,7 +156,6 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ Str::limit($agenda->judul, 50) }}</p>
-                               
                             </div>
                         </td>
                         <td>
@@ -179,7 +176,6 @@
                                     @endif
                                 </span>
                                 <br>
-                             
                             </div>
                         </td>
                         <td>
@@ -293,10 +289,10 @@
     </div>
 
     <!-- Calendar View -->
-  <div class="panel mt-3">
+    <div class="panel mt-3">
         <div class="panel-header">
             <div>
-                <h5 class="section-title"><i class="bi bi-calendar3"></i> Kalender Agenda</h5>
+                <h5 class="section-title"><i class="bi bi-calendar3"></i> Kalender Webiner</h5>
             </div>
         </div>
         <div class="p-4">
@@ -383,9 +379,41 @@
     
     .panel {
         transition: transform 0.2s ease;
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        overflow: hidden;
     }
     .panel:hover {
         transform: translateY(-2px);
+    }
+
+    .form-control, .form-select {
+        border-color: #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4e9af1;
+        box-shadow: 0 0 0 3px rgba(78, 154, 241, 0.12);
+    }
+
+    .input-group-text {
+        border-color: #e2e8f0;
+        font-size: 0.85rem;
+    }
+
+    .badge.bg-primary.bg-opacity-10 {
+        background: rgba(78, 154, 241, 0.12) !important;
+        padding: 0.35rem 0.65rem;
+    }
+
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
     
     .table th {
