@@ -134,8 +134,10 @@ class UserController extends Controller
             'foto'        => [$user->foto ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'npwp_file' => [$user->npwp_file ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
-            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
+            'npwp_file' => [$user->npwp_file ? 'nullable' : 'required', 'array'],
+            'npwp_file.*' => ['file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
+            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'array'],
+            'file_produk.*' => ['file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
             
             // Tambahan field untuk UMK
             'status_pernikahan' => 'required|string|in:Menikah,Belum Menikah,Cerai Hidup,Cerai Mati',
@@ -191,7 +193,7 @@ class UserController extends Controller
             'marketplace_lainnya_nama' => 'nullable|array',
             'marketplace_lainnya_nama.*' => 'nullable|string|max:150',
             'marketplace_lainnya_link' => 'nullable|array',
-            'marketplace_lainnya_link.*' => 'nullable|url|max:255',
+            'marketplace_lainnya_link.*' => 'nullable|url|max:255', 'wilayah_pemasaran' => 'nullable|string|max:100',
             'pengadaan_barang' => 'nullable|string|max:100',
             'akses_kredit' => 'nullable|string|max:100',
             'tabungan' => 'nullable|string|max:100',
@@ -250,17 +252,33 @@ class UserController extends Controller
         }
 
         if ($request->hasFile('npwp_file')) {
-            if ($user->npwp_file && Storage::disk('public')->exists($user->npwp_file)) {
-                Storage::disk('public')->delete($user->npwp_file);
+            if (is_array($user->npwp_file)) {
+                foreach ($user->npwp_file as $oldFile) {
+                    if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
             }
-            $data['npwp_file'] = $request->file('npwp_file')->store('npwp_files', 'public');
+            $paths = [];
+            foreach ($request->file('npwp_file') as $file) {
+                $paths[] = $file->store('npwp_files', 'public');
+            }
+            $data['npwp_file'] = $paths;
         }
 
         if ($request->hasFile('file_produk')) {
-            if ($user->file_produk && Storage::disk('public')->exists($user->file_produk)) {
-                Storage::disk('public')->delete($user->file_produk);
+            if (is_array($user->file_produk)) {
+                foreach ($user->file_produk as $oldFile) {
+                    if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
             }
-            $data['file_produk'] = $request->file('file_produk')->store('produk_files', 'public');
+            $paths = [];
+            foreach ($request->file('file_produk') as $file) {
+                $paths[] = $file->store('produk_files', 'public');
+            }
+            $data['file_produk'] = $paths;
         }
 
         if (isset($data['nama'])) {

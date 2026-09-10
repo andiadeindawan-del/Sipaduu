@@ -424,7 +424,7 @@
                                     @endif
                                 </div>
 
-                                <div class="mb-0">
+                                <div class="mb-2">
                                     <label class="text-muted small fw-semibold text-uppercase d-block">TikTok</label>
                                     @if($user->tiktok_usaha)
                                         <a href="{{ $user->tiktok_usaha }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
@@ -433,6 +433,10 @@
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
+                                </div>
+                                <div class="mt-2">
+                                    <label class="text-muted small fw-semibold text-uppercase d-block">Wilayah Pemasaran</label>
+                                    <span class="fw-bold text-dark">{{ $user->wilayah_pemasaran ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -511,22 +515,7 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-6">
-                            <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Media Sosial</label>
-                                <p class="fw-semibold mb-0">
-                                    Facebook: {{ $user->facebook_usaha ?? '-' }}<br>
-                                    Instagram: {{ $user->instagram_usaha ?? '-' }}<br>
-                                    TikTok: {{ $user->tiktok_usaha ?? '-' }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="detail-item">
-                                <label class="text-muted small fw-semibold text-uppercase">Marketplace</label>
-                                <p class="fw-semibold mb-0">{{ $user->marketplace ?? '-' }}</p>
-                            </div>
-                        </div>
+                        
                         <div class="col-12 col-md-6">
                             <div class="detail-item">
                                 <label class="text-muted small fw-semibold text-uppercase">Pengadaan Barang/Jasa</label>
@@ -687,10 +676,14 @@
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="border rounded-3 p-3 h-100 bg-white">
                                 <label class="text-muted small fw-semibold text-uppercase d-block mb-2">NPWP</label>
-                                @if($user->npwp_file)
-                                    <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-primary w-100">
-                                        <i class="bi bi-file-earmark-pdf me-1"></i> Lihat / Download
-                                    </a>
+                                @if($user->npwp_file && is_array($user->npwp_file) && count($user->npwp_file) > 0)
+                                    <div class="d-flex flex-column gap-2">
+                                    @foreach($user->npwp_file as $idx => $file)
+                                        <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id, 'index' => $idx]) }}" target="_blank" class="btn btn-sm btn-outline-primary w-100 text-start">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> NPWP {{ $idx + 1 }}
+                                        </a>
+                                    @endforeach
+                                    </div>
                                 @else
                                     <span class="badge bg-secondary">Belum diupload</span>
                                 @endif
@@ -713,10 +706,14 @@
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="border rounded-3 p-3 h-100 bg-white">
                                 <label class="text-muted small fw-semibold text-uppercase d-block mb-2">File Produk (Katalog/Brosur)</label>
-                                @if($user->file_produk)
-                                    <a href="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-primary w-100">
-                                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Lihat / Download
-                                    </a>
+                                @if($user->file_produk && is_array($user->file_produk) && count($user->file_produk) > 0)
+                                    <div class="d-flex flex-column gap-2">
+                                    @foreach($user->file_produk as $idx => $file)
+                                        <a href="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id, 'index' => $idx]) }}" target="_blank" class="btn btn-sm btn-outline-primary w-100 text-start">
+                                            <i class="bi bi-file-earmark-arrow-down me-1"></i> File Produk {{ $idx + 1 }}
+                                        </a>
+                                    @endforeach
+                                    </div>
                                 @else
                                     <span class="badge bg-secondary">Belum diupload</span>
                                 @endif

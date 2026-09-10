@@ -1,0 +1,272 @@
+
+$(document).ready(function() {
+    
+    // === HIERARCHICAL KBLI LOGIC ===
+    let kbliIndex = 0;
+    const userKblis = {!! $user->kblis()->with('kbli')->get()->toJson() !!};
+    
+    function fetchCategories(selectElem, selectedValue = null) {
+        $.ajax({
+            url: '/api/kbli/categories',
+            method: 'GET',
+            success: function(res) {
+                selectElem.empty().append('<option value="">Pilih Kategori</option>');
+                res.forEach(item => {
+                    let selected = (selectedValue === item.kategori_kode) ? 'selected' : '';
+                    selectElem.append(`<option value="${item.kategori_kode}" ${selected}>${item.kategori_kode} - ${item.kategori_nama}</option>`);
+                });
+            }
+        });
+    }
+
+    function fetchGolongans(kategoriKode, selectElem, selectedValue = null) {
+        if (!kategoriKode) {
+            selectElem.empty().append('<option value="">Pilih Golongan</option>').prop('disabled', true);
+            return;
+        }
+        $.ajax({
+            url: '/api/kbli/golongans',
+            method: 'GET',
+            data: { kategori: kategoriKode },
+            success: function(res) {
+                selectElem.empty().append('<option value="">Pilih Golongan</option>').prop('disabled', false);
+                res.forEach(item => {
+                    let selected = (selectedValue === item.golongan_pokok_kode) ? 'selected' : '';
+                    selectElem.append(`<option value="${item.golongan_pokok_kode}" ${selected}>${item.golongan_pokok_kode} - ${item.golongan_pokok_nama}</option>`);
+                });
+            }
+        });
+    }
+
+    function addKbliRow(data = null) {
+        let isUtama = data ? data.is_utama : (kbliIndex === 0);
+        let id = kbliIndex++;
+        let labelUsaha = (id === 0) ? 'JENIS USAHA UTAMA' : 'USAHA LAINNYA #' + (id + 1);
+        
+        let html = `
+        <div class="card mb-3 kbli-row shadow-sm border-0" data-index="${id}">
+            <div class="card-header bg-light border-bottom-0 d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-primary"><i class="bi bi-tag-fill me-2"></i>${labelUsaha}</span>
+                ${id > 0 ? '<button type="button" class="btn btn-sm btn-outline-danger border-0 btn-remove-row"><i class="bi bi-trash"></i> Hapus</button>' : ''}
+            </div>
+            <div class="card-body bg-white border">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold small">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-select select-kategori" required>
+                            <option value="">Pilih Kategori</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold small">Golongan <span class="text-danger">*</span></label>
+                        <select class="form-select select-golongan" required disabled>
+                            <option value="">Pilih Golongan</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold small">KBLI / Kegiatan Usaha <span class="text-danger">*</span></label>
+                        <select class="form-control select-kbli" required disabled>
+                            ${data && data.kbli ? `<option value="${data.kbli.id}" selected>${data.kbli.kode} - ${data.kbli.judul}</option>` : '<option value="">Pilih KBLI...</option>'}
+                        </select>
+                        <input type="hidden" name="kbli_id[]" class="kbli-id-hidden" value="${data ? data.kbli_id : ''}">
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 bg-light rounded text-muted small uraian-box">
+                            ${data && data.kbli ? data.kbli.uraian : 'Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.'}
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input kbli-utama-radio" type="radio" name="kbli_utama" value="${data ? data.kbli_id : id}" id="utama_${id}" ${isUtama ? 'checked' : ''} required>
+                            <label class="form-check-label fw-bold text-dark" for="utama_${id}">
+                                â­ Jadikan KBLI Utama
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+        
+        let $row = $(html);
+        $('#kbli-repeater-container').append($row);
+        
+        let $selectKategori = $row.find('.select-kategori');
+        let $selectGolongan = $row.find('.select-golongan');
+        let $selectKbli = $row.find('.select-kbli');
+        let $uraianBox = $row.find('.uraian-box');
+        let $hiddenId = $row.find('.kbli-id-hidden');
+        let $radioUtama = $row.find('.kbli-utama-radio');
+        
+        // Fetch init categories
+        let initKat = data && data.kbli ? data.kbli.kategori_kode : null;
+        let initGol = data && data.kbli ? data.kbli.golongan_pokok_kode : null;
+        fetchCategories($selectKategori, initKat);
+        if (initKat) {
+            fetchGolongans(initKat, $selectGolongan, initGol);
+            $selectKbli.prop('disabled', false);
+        }
+
+        // Kategori Change Event
+        $selectKategori.on('change', function() {
+            let val = $(this).val();
+            $selectGolongan.empty().append('<option value="">Pilih Golongan</option>').prop('disabled', true);
+            $selectKbli.empty().prop('disabled', true);
+            $hiddenId.val('');
+            $radioUtama.val(id); // reset fallback
+            $uraianBox.html('Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.');
+            if (val) fetchGolongans(val, $selectGolongan);
+        });
+
+        // Golongan Change Event
+        $selectGolongan.on('change', function() {
+            let val = $(this).val();
+            $selectKbli.empty().prop('disabled', !val);
+            $hiddenId.val('');
+            $radioUtama.val(id);
+            $uraianBox.html('Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.');
+        });
+        
+        // Init Select2 for this row
+        $selectKbli.select2({
+            ajax: {
+                url: '/api/kbli/search',
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return { 
+                        q: params.term || '',
+                        kategori: $selectKategori.val(),
+                        golongan: $selectGolongan.val()
+                    };
+                },
+                processResults: function (res) {
+                    return { results: res };
+                }
+            },
+            placeholder: 'Pilih KBLI...',
+            minimumInputLength: 0,
+            templateResult: function (kbli) {
+                if (kbli.loading) return kbli.text;
+                return $(
+                    "<div class='p-1'>" +
+                    "<div class='fw-bold text-dark'>" + kbli.text + "</div>" +
+                    "<div class='small text-muted mt-1'>Uraian: " + (kbli.uraian || '-') + "</div>" +
+                    "</div>"
+                );
+            },
+            templateSelection: function (kbli) {
+                return kbli.text || kbli.id || 'Pilih KBLI...';
+            }
+        }).on('select2:select', function(e) {
+            let item = e.params.data;
+            $hiddenId.val(item.id);
+            $radioUtama.val(item.id); // set radio to actual ID
+            $uraianBox.html(`<strong>Uraian:</strong><br/>${item.uraian}`);
+        }).on('select2:clear', function() {
+            $hiddenId.val('');
+            $radioUtama.val(id);
+            $uraianBox.html('Pilih KBLI untuk melihat deskripsi uraian kegiatan usaha.');
+        });
+    }
+
+    // Initialize existing or empty row
+    if (userKblis && userKblis.length > 0) {
+        userKblis.forEach(function(uk) {
+            addKbliRow(uk);
+        });
+    } else {
+        addKbliRow();
+    }
+
+    $('#btn-add-usaha').on('click', function() {
+        addKbliRow();
+    });
+
+    $(document).on('click', '.btn-remove-row', function() {
+        var row = $(this).closest('.kbli-row');
+        var isUtama = row.find('.kbli-utama-radio').is(':checked');
+        row.remove();
+        
+        // Jika Utama dihapus, jadikan row pertama sebagai utama
+        if (isUtama && $('.kbli-row').length > 0) {
+            $('.kbli-row').first().find('.kbli-utama-radio').prop('checked', true);
+        }
+    });
+
+
+    // Handle hapus KBLI dari daftar
+    $(document).on('click', '.btn-remove-kbli', function() {
+        var card = $(this).closest('.kbli-selected-card');
+        var isUtama = card.find('.kbli-utama-radio').is(':checked');
+        card.remove();
+        
+        // Jika yang dihapus adalah KBLI Utama, otomatis pindahkan ke KBLI pertama (jika ada)
+        if (isUtama && $('.kbli-selected-card').length > 0) {
+            $('.kbli-selected-card').first().find('.kbli-utama-radio').prop('checked', true);
+        }
+    });
+    
+    // Multiple file uploads UI
+    $('#add-npwp-btn').on('click', function() {
+        $('#npwp-upload-container').append(`
+            <div class="input-group mb-2 file-row">
+                <input type="file" class="form-control" name="npwp_file[]" accept=".jpg,.jpeg,.png,.pdf">
+                <button class="btn btn-danger remove-file-btn" type="button"><i class="bi bi-trash"></i></button>
+            </div>
+        `);
+    });
+
+    $('#add-produk-btn').on('click', function() {
+        $('#produk-upload-container').append(`
+            <div class="input-group mb-2 file-row">
+                <input type="file" class="form-control" name="file_produk[]" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                <button class="btn btn-danger remove-file-btn" type="button"><i class="bi bi-trash"></i></button>
+            </div>
+        `);
+    });
+
+    $(document).on('click', '.remove-file-btn', function() {
+        $(this).closest('.file-row').remove();
+    });
+
+    // Add Marketplace Lainnya dynamically
+    $('#add-mp-btn').on('click', function() {
+        let html = `
+            <div class="row g-2 mb-2 mp-row">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" name="marketplace_lainnya_nama[]" placeholder="Nama Marketplace (cth: Bukalapak)">
+                </div>
+                <div class="col-md-6">
+                    <input type="url" class="form-control" name="marketplace_lainnya_link[]" placeholder="Link Marketplace (https://...)">
+                </div>
+                <div class="col-md-1 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+        `;
+        $('#marketplace-container').append(html);
+    });
+
+    $(document).on('click', '.remove-mp', function() {
+        $(this).closest('.mp-row').remove();
+    });
+
+    // Auto-calculate total karyawan
+    function calculateTotalKaryawan() {
+        var tetapL = parseInt($('#tetap_laki_laki').val()) || 0;
+        var tetapP = parseInt($('#tetap_perempuan').val()) || 0;
+        var totalTetap = tetapL + tetapP;
+        $('#total_tetap').val(totalTetap);
+
+        var tidakTetapL = parseInt($('#tidak_tetap_laki_laki').val()) || 0;
+        var tidakTetapP = parseInt($('#tidak_tetap_perempuan').val()) || 0;
+        var totalTidakTetap = tidakTetapL + tidakTetapP;
+        $('#total_tidak_tetap').val(totalTidakTetap);
+
+        var grandTotal = totalTetap + totalTidakTetap;
+        $('#grand_total').text(grandTotal);
+    }
+    
+    $('.karyawan-input').on('input', calculateTotalKaryawan);
+});

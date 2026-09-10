@@ -1,3 +1,4 @@
+
 @extends('layouts.peserta')
 
 @section('title', 'Profil Saya')
@@ -170,6 +171,7 @@
                         </ul>
 
                         <div class="tab-content" id="profileTabsContent">
+                            <!-- TAB DATA PRIBADI -->
                             <div class="tab-pane fade show active" id="pribadi" role="tabpanel">
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
@@ -279,9 +281,12 @@
                                 </div>
                             </div>
 
+                            <!-- TAB USAHA -->
                             <div class="tab-pane fade" id="usaha" role="tabpanel">
                                 <div class="row g-3">
-                                    <h6 class="fw-bold mb-2 border-bottom pb-2"><i class="bi bi-briefcase me-2"></i>USAHA <span class="text-danger">*</span></h6>
+                                    <div class="col-12">
+                                        <h6 class="fw-bold mb-2 border-bottom pb-2"><i class="bi bi-briefcase me-2"></i>USAHA <span class="text-danger">*</span></h6>
+                                    </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Nama Usaha <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="nama_usaha" value="{{ old('nama_usaha', $user->nama_usaha) }}" required>
@@ -447,132 +452,208 @@
                                 </div>
                             </div>
 
+                            <!-- TAB SALURAN PEMASARAN ONLINE -->
                             <div class="tab-pane fade" id="digital" role="tabpanel">
                                 <div class="row g-3">
-                                    <div class="col-12">
-                                        <h6 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-globe me-2"></i>SALURAN PEMASARAN ONLINE</h6>
-                                        <p class="text-muted small mb-3">Masukkan link media sosial / marketplace usaha Anda.</p>
-                                    </div>
-                                    
-                                    <!-- Website & Judul -->
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Judul Usaha Online <span class="text-muted">(Opsional)</span></label>
-                                        <input type="text" class="form-control" name="judul_usaha_online" value="{{ old('judul_usaha_online', $user->judul_usaha_online) }}" placeholder="Contoh: Toko Kue Andi">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Website Usaha <span class="text-muted">(Opsional)</span></label>
-                                        <input type="url" class="form-control" name="website_usaha" value="{{ old('website_usaha', $user->website_usaha) }}" placeholder="https://www.contoh.com">
-                                    </div>
-
-                                    <!-- Media Sosial -->
-                                    <div class="col-12 mt-2">
-                                        <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="bi bi-share me-2"></i>Media Sosial</h6>
-                                    </div>
-
-                                    <div class="col-12 col-md-4">
-                                        <label class="form-label fw-semibold">Facebook <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-facebook text-primary"></i></span>
-                                            <input type="url" class="form-control" name="facebook_usaha" value="{{ old('facebook_usaha', $user->facebook_usaha) }}" placeholder="https://facebook.com/contoh">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <label class="form-label fw-semibold">Instagram <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-instagram text-danger"></i></span>
-                                            <input type="url" class="form-control" name="instagram_usaha" value="{{ old('instagram_usaha', $user->instagram_usaha) }}" placeholder="https://instagram.com/contoh">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <label class="form-label fw-semibold">TikTok <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-tiktok text-dark"></i></span>
-                                            <input type="url" class="form-control" name="tiktok_usaha" value="{{ old('tiktok_usaha', $user->tiktok_usaha) }}" placeholder="https://tiktok.com/@contoh">
-                                        </div>
-                                    </div>
-
-                                    <!-- Marketplace -->
-                                    <div class="col-12 mt-3">
-                                        <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="bi bi-shop me-2"></i>Marketplace</h6>
-                                    </div>
-
-                                    <div class="col-12 col-md-3">
-                                        <label class="form-label fw-semibold">Shopee <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-shop text-warning"></i></span>
-                                            <input type="url" class="form-control" name="shopee" value="{{ old('shopee', $user->shopee) }}" placeholder="https://shopee.co.id/contoh">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                        <label class="form-label fw-semibold">Tokopedia <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-shop text-success"></i></span>
-                                            <input type="url" class="form-control" name="tokopedia" value="{{ old('tokopedia', $user->tokopedia) }}" placeholder="https://www.tokopedia.com/contoh">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                        <label class="form-label fw-semibold">Lazada <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-shop text-danger"></i></span>
-                                            <input type="url" class="form-control" name="lazada" value="{{ old('lazada', $user->lazada) }}" placeholder="https://www.lazada.co.id/shop/contoh">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                        <label class="form-label fw-semibold">Blibli <span class="text-muted">(Opsional)</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text"><i class="bi bi-shop text-info"></i></span>
-                                            <input type="url" class="form-control" name="blibli" value="{{ old('blibli', $user->blibli) }}" placeholder="https://www.blibli.com/merchant/contoh">
-                                        </div>
-                                    </div>
-
-                                    <!-- Marketplace Lainnya -->
-                                    <div class="col-12 mt-3">
-                                        <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="bi bi-plus-circle me-2"></i>Marketplace Lainnya</h6>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="marketplace-container">
-                                            @php
-                                                $oldM = old('marketplace_lainnya_nama');
-                                                $oldL = old('marketplace_lainnya_link');
-                                                $dbM = $user->marketplace_lainnya ?? [];
-                                            @endphp
-
-                                            @if($oldM && is_array($oldM))
-                                                @foreach($oldM as $idx => $n)
-                                                    <div class="row g-2 mb-2 mp-row">
-                                                        <div class="col-md-5">
-                                                            <input type="text" class="form-control" name="marketplace_lainnya_nama[]" value="{{ $n }}" placeholder="Nama Marketplace (cth: Bukalapak)">
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <input type="url" class="form-control" name="marketplace_lainnya_link[]" value="{{ $oldL[$idx] ?? '' }}" placeholder="Link Marketplace (https://...)">
-                                                        </div>
-                                                        <div class="col-md-1 d-flex align-items-center">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                                    <!-- INFORMASI USAHA ONLINE -->
+                                    <div class="col-12 mt-4">
+                                        <div class="card bg-light border-0 shadow-sm">
+                                            <div class="fw-bold mb-3 border-bottom pb-2">
+                                                <i class="bi bi-globe me-2"></i>INFORMASI USAHA ONLINE
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row g-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Judul Usaha <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="text" class="form-control" name="judul_usaha_online" value="{{ old('judul_usaha_online', $user->judul_usaha_online) }}" placeholder="Contoh: Toko Kue Andi">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label fw-semibold">Website Usaha <span class="text-muted">(Opsional)</span></label>
+                                                        <input type="url" class="form-control" name="website_usaha" value="{{ old('website_usaha', $user->website_usaha) }}" placeholder="https://www.contoh.com">
+                                                    </div>
+                                                    
+                                                    <!-- Media Sosial - Table Style -->
+                                                    <div class="col-12 mt-3">
+                                                        <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="bi bi-share me-2"></i>Media Sosial <span class="text-muted fw-normal">(Opsional)</span></h6>
+                                                        <p class="text-muted small mb-2">Masukkan URL media sosial usaha Anda.</p>
+                                                        
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered align-middle text-center small mb-2">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th style="width: 30%;">Platform</th>
+                                                                        <th style="width: 70%;">Link / URL <span class="text-muted fw-normal">(Opsional)</span></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-primary">
+                                                                            <i class="bi bi-facebook me-1"></i> Facebook
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="facebook_usaha" value="{{ old('facebook_usaha', $user->facebook_usaha) }}" placeholder="https://facebook.com/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-danger">
+                                                                            <i class="bi bi-instagram me-1"></i> Instagram
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="instagram_usaha" value="{{ old('instagram_usaha', $user->instagram_usaha) }}" placeholder="https://instagram.com/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-dark">
+                                                                            <i class="bi bi-tiktok me-1"></i> TikTok
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="tiktok_usaha" value="{{ old('tiktok_usaha', $user->tiktok_usaha) }}" placeholder="https://tiktok.com/@contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-secondary">
+                                                                            <i class="bi bi-youtube me-1"></i> YouTube
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="youtube_usaha" value="{{ old('youtube_usaha', $user->youtube_usaha) }}" placeholder="https://youtube.com/@contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-success">
+                                                                            <i class="bi bi-whatsapp me-1"></i> WhatsApp Business
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="whatsapp_usaha" value="{{ old('whatsapp_usaha', $user->whatsapp_usaha) }}" placeholder="https://wa.me/08123456789">
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                @endforeach
-                                            @elseif(!empty($dbM) && is_array($dbM))
-                                                @foreach($dbM as $item)
-                                                    <div class="row g-2 mb-2 mp-row">
-                                                        <div class="col-md-5">
-                                                            <input type="text" class="form-control" name="marketplace_lainnya_nama[]" value="{{ $item['nama'] ?? '' }}" placeholder="Nama Marketplace (cth: Bukalapak)">
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <input type="url" class="form-control" name="marketplace_lainnya_link[]" value="{{ $item['link'] ?? '' }}" placeholder="Link Marketplace (https://...)">
-                                                        </div>
-                                                        <div class="col-md-1 d-flex align-items-center">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+
+                                                    <!-- Marketplace - Table Style -->
+                                                    <div class="col-12 mt-3">
+                                                        <h6 class="fw-bold mb-2 border-bottom pb-1"><i class="bi bi-shop me-2"></i>Marketplace <span class="text-muted fw-normal">(Opsional)</span></h6>
+                                                        <p class="text-muted small mb-2">Masukkan link toko Anda di berbagai marketplace.</p>
+                                                        
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered align-middle text-center small mb-2">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th style="width: 30%;">Marketplace</th>
+                                                                        <th style="width: 70%;">Link / URL <span class="text-muted fw-normal">(Opsional)</span></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-warning">
+                                                                            <i class="bi bi-shop me-1"></i> Shopee
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="shopee" value="{{ old('shopee', $user->shopee) }}" placeholder="https://shopee.co.id/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-success">
+                                                                            <i class="bi bi-shop me-1"></i> Tokopedia
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="tokopedia" value="{{ old('tokopedia', $user->tokopedia) }}" placeholder="https://www.tokopedia.com/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-danger">
+                                                                            <i class="bi bi-shop me-1"></i> Lazada
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="lazada" value="{{ old('lazada', $user->lazada) }}" placeholder="https://www.lazada.co.id/shop/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-info">
+                                                                            <i class="bi bi-shop me-1"></i> Blibli
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="blibli" value="{{ old('blibli', $user->blibli) }}" placeholder="https://www.blibli.com/merchant/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-start fw-semibold text-secondary">
+                                                                            <i class="bi bi-shop me-1"></i> Bukalapak
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="url" class="form-control form-control-sm" name="bukalapak" value="{{ old('bukalapak', $user->bukalapak) }}" placeholder="https://www.bukalapak.com/contoh">
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                @endforeach
-                                            @endif
+
+                                                    <!-- Marketplace Lainnya -->
+                                                    <div class="col-12 mt-3 border-top pt-3">
+                                                        <label class="form-label fw-bold">Marketplace Lainnya <span class="text-muted fw-normal">(Opsional)</span></label>
+                                                        <div id="marketplace-container">
+                                                            @php
+                                                                $oldM = old('marketplace_lainnya_nama');
+                                                                $oldL = old('marketplace_lainnya_link');
+                                                                $dbM = $user->marketplace_lainnya ?? [];
+                                                            @endphp
+
+                                                            @if($oldM && is_array($oldM))
+                                                                @foreach($oldM as $idx => $n)
+                                                                    <div class="row g-2 mb-2 mp-row">
+                                                                        <div class="col-md-5">
+                                                                            <input type="text" class="form-control" name="marketplace_lainnya_nama[]" value="{{ $n }}" placeholder="Nama Marketplace (cth: Bukalapak)">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="url" class="form-control" name="marketplace_lainnya_link[]" value="{{ $oldL[$idx] ?? '' }}" placeholder="Link Marketplace (https://...)">
+                                                                        </div>
+                                                                        <div class="col-md-1 d-flex align-items-center">
+                                                                            <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @elseif(!empty($dbM) && is_array($dbM))
+                                                                @foreach($dbM as $item)
+                                                                    <div class="row g-2 mb-2 mp-row">
+                                                                        <div class="col-md-5">
+                                                                            <input type="text" class="form-control" name="marketplace_lainnya_nama[]" value="{{ $item['nama'] ?? '' }}" placeholder="Nama Marketplace (cth: Bukalapak)">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="url" class="form-control" name="marketplace_lainnya_link[]" value="{{ $item['link'] ?? '' }}" placeholder="Link Marketplace (https://...)">
+                                                                        </div>
+                                                                        <div class="col-md-1 d-flex align-items-center">
+                                                                            <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
+                                                        </div>
+                                                        <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-mp-btn"><i class="bi bi-plus-circle me-1"></i> Tambahkan Marketplace Lainnya</button>
+                                                    </div>
+
+                                                    <div class="col-12 mt-3">
+                                                        <label class="form-label fw-semibold">Wilayah Pemasaran <span class="text-muted">(Opsional)</span></label>
+                                                        <select class="form-select" name="wilayah_pemasaran">
+                                                            <option value="">Pilih Wilayah Pemasaran</option>
+                                                            <option value="Dalam Satu Kabupaten" {{ old('wilayah_pemasaran', $user->wilayah_pemasaran) == 'Dalam Satu Kabupaten' ? 'selected' : '' }}>Dalam Satu Kabupaten</option>
+                                                            <option value="Lintas Kabupaten" {{ old('wilayah_pemasaran', $user->wilayah_pemasaran) == 'Lintas Kabupaten' ? 'selected' : '' }}>Lintas Kabupaten</option>
+                                                            <option value="Lintas Provinsi" {{ old('wilayah_pemasaran', $user->wilayah_pemasaran) == 'Lintas Provinsi' ? 'selected' : '' }}>Lintas Provinsi</option>
+                                                            <option value="Nasional" {{ old('wilayah_pemasaran', $user->wilayah_pemasaran) == 'Nasional' ? 'selected' : '' }}>Nasional</option>
+                                                            <option value="Ekspor" {{ old('wilayah_pemasaran', $user->wilayah_pemasaran) == 'Ekspor' ? 'selected' : '' }}>Ekspor</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <button type="button" class="btn btn-outline-primary btn-sm mt-1" id="add-mp-btn"><i class="bi bi-plus-circle me-1"></i> Tambahkan Marketplace Lainnya</button>
                                     </div>
 
+                                    <!-- Informasi Operasional & Pemasaran -->
                                     <div class="col-12 mt-4">
                                         <h6 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-info-square me-2"></i>Informasi Operasional & Pemasaran</h6>
                                     </div>
+                                    
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Pengadaan Barang/Jasa <span class="text-muted">(Opsional)</span></label>
                                         <select class="form-select" name="pengadaan_barang">
@@ -640,6 +721,7 @@
                                 </div>
                             </div>
 
+                            <!-- TAB KEBUTUHAN PELATIHAN -->
                             <div class="tab-pane fade" id="tambahan" role="tabpanel">
                                 <div class="row g-3">
                                     <div class="col-12">
@@ -664,6 +746,7 @@
                                 </div>
                             </div>
 
+                            <!-- TAB DOKUMEN -->
                             <div class="tab-pane fade" id="dokumen" role="tabpanel">
                                 <div class="row g-4">
                                     <div class="col-12 col-md-6">
@@ -682,7 +765,7 @@
                                             </div>
                                         @endif
                                         <input type="file" class="form-control @error('ktp_file') is-invalid @enderror" name="ktp_file" accept=".jpg,.jpeg,.png,.pdf" {{ $user->ktp_file ? '' : 'required' }}>
-                                        <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB.</small>
+                                        <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB. (Bisa pilih lebih dari 1 file)</small>
                                         @error('ktp_file') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -701,25 +784,33 @@
                                             </div>
                                         @endif
                                         <input type="file" class="form-control @error('nib_file') is-invalid @enderror" name="nib_file" accept=".jpg,.jpeg,.png,.pdf">
-                                        <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB.</small>
+                                        <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB. (Bisa pilih lebih dari 1 file)</small>
                                         @error('nib_file') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Upload NPWP <span class="text-danger">*</span></label>
                                         <p class="text-muted small mb-1"><i class="bi bi-info-circle me-1"></i> Upload dokumen NPWP Anda.</p>
-                                        @if($user->npwp_file)
-                                            <div class="mb-3">
-                                                @php $ext = pathinfo($user->npwp_file, PATHINFO_EXTENSION); @endphp
-                                                @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
-                                                    <img src="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" alt="NPWP" class="img-thumbnail" style="max-height: 150px;">
-                                                @else
-                                                    <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                        <i class="bi bi-file-earmark-pdf"></i> Lihat Dokumen NPWP
-                                                    </a>
-                                                @endif
+                                        @if($user->npwp_file && is_array($user->npwp_file))
+                                            <div class="mb-3 d-flex flex-wrap gap-2">
+                                                @foreach($user->npwp_file as $idx => $file)
+                                                    @php $ext = pathinfo($file, PATHINFO_EXTENSION); @endphp
+                                                    @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
+                                                        <img src="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id, 'index' => $idx]) }}" alt="NPWP" class="img-thumbnail" style="max-height: 150px;">
+                                                    @else
+                                                        <a href="{{ route('profile.document', ['type' => 'npwp', 'userId' => $user->id, 'index' => $idx]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-file-earmark-pdf"></i> Dokumen NPWP {{ $idx + 1 }}
+                                                        </a>
+                                                    @endif
+                                                @endforeach
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('npwp_file') is-invalid @enderror" name="npwp_file" accept=".jpg,.jpeg,.png,.pdf" {{ $user->npwp_file ? '' : 'required' }}>
+                                        <div id="npwp-upload-container">
+                                            <div class="input-group mb-2">
+                                                <input type="file" class="form-control @error('npwp_file') is-invalid @enderror" name="npwp_file[]" accept=".jpg,.jpeg,.png,.pdf" {{ $user->npwp_file ? '' : 'required' }}>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary mb-2" id="add-npwp-btn"><i class="bi bi-plus-circle me-1"></i>Tambah Kolom File NPWP</button>
+                                        <br>
                                         <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB.</small>
                                         @error('npwp_file') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
@@ -737,14 +828,27 @@
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Upload File Produk <span class="text-danger">*</span></label>
                                         <p class="text-muted small mb-1"><i class="bi bi-info-circle me-1"></i> Upload katalog, brosur, atau dokumentasi produk Anda.</p>
-                                        @if($user->file_produk)
-                                            <div class="mb-3">
-                                                <a href="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-file-earmark-arrow-down"></i> Lihat/Download File Produk
-                                                </a>
+                                        @if($user->file_produk && is_array($user->file_produk))
+                                            <div class="mb-3 d-flex flex-wrap gap-2">
+                                                @foreach($user->file_produk as $idx => $file)
+                                                    @php $ext = pathinfo($file, PATHINFO_EXTENSION); @endphp
+                                                    @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
+                                                        <img src="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id, 'index' => $idx]) }}" alt="Produk" class="img-thumbnail" style="max-height: 150px;">
+                                                    @else
+                                                        <a href="{{ route('profile.document', ['type' => 'produk', 'userId' => $user->id, 'index' => $idx]) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-file-earmark-arrow-down"></i> File Produk {{ $idx + 1 }}
+                                                        </a>
+                                                    @endif
+                                                @endforeach
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('file_produk') is-invalid @enderror" name="file_produk" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" {{ $user->file_produk ? '' : 'required' }}>
+                                        <div id="produk-upload-container">
+                                            <div class="input-group mb-2">
+                                                <input type="file" class="form-control @error('file_produk') is-invalid @enderror" name="file_produk[]" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" {{ $user->file_produk ? '' : 'required' }}>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary mb-2" id="add-produk-btn"><i class="bi bi-plus-circle me-1"></i>Tambah Kolom File Produk</button>
+                                        <br>
                                         <small class="text-muted">Format: PDF, DOC, JPG, PNG. Maksimal 5MB.</small>
                                         @error('file_produk') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
@@ -1384,6 +1488,29 @@ $(document).ready(function() {
         if (isUtama && $('.kbli-row').length > 0) {
             $('.kbli-row').first().find('.kbli-utama-radio').prop('checked', true);
         }
+    });
+
+    // Multiple file uploads UI
+    $('#add-npwp-btn').on('click', function() {
+        $('#npwp-upload-container').append(`
+            <div class="input-group mb-2 file-row">
+                <input type="file" class="form-control" name="npwp_file[]" accept=".jpg,.jpeg,.png,.pdf">
+                <button class="btn btn-danger remove-file-btn" type="button"><i class="bi bi-trash"></i></button>
+            </div>
+        `);
+    });
+
+    $('#add-produk-btn').on('click', function() {
+        $('#produk-upload-container').append(`
+            <div class="input-group mb-2 file-row">
+                <input type="file" class="form-control" name="file_produk[]" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                <button class="btn btn-danger remove-file-btn" type="button"><i class="bi bi-trash"></i></button>
+            </div>
+        `);
+    });
+
+    $(document).on('click', '.remove-file-btn', function() {
+        $(this).closest('.file-row').remove();
     });
 
     // Add Marketplace Lainnya dynamically

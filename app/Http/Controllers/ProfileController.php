@@ -77,8 +77,10 @@ class ProfileController extends Controller
             'avatar' => [$user->foto ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'npwp_file' => [$user->npwp_file ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
-            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
+            'npwp_file' => [$user->npwp_file ? 'nullable' : 'required', 'array'],
+            'npwp_file.*' => ['file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
+            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'array'],
+            'file_produk.*' => ['file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
             
             // Tambahan field untuk UMK
             'status_pernikahan' => 'required|string|in:Menikah,Belum Menikah,Cerai Hidup,Cerai Mati',
@@ -134,7 +136,7 @@ class ProfileController extends Controller
             'marketplace_lainnya_nama' => 'nullable|array',
             'marketplace_lainnya_nama.*' => 'nullable|string|max:150',
             'marketplace_lainnya_link' => 'nullable|array',
-            'marketplace_lainnya_link.*' => 'nullable|url|max:255',
+            'marketplace_lainnya_link.*' => 'nullable|url|max:255', 'wilayah_pemasaran' => 'nullable|string|max:100',
             'pengadaan_barang' => 'nullable|string|max:150',
             'akses_kredit' => 'nullable|string|max:150',
             'tabungan' => 'nullable|string|max:150',
@@ -195,19 +197,36 @@ class ProfileController extends Controller
 
         // Handle NPWP upload
         if ($request->hasFile('npwp_file')) {
-            if ($user->npwp_file && Storage::disk('public')->exists($user->npwp_file)) {
-                Storage::disk('public')->delete($user->npwp_file);
+            if (is_array($user->npwp_file)) {
+                foreach ($user->npwp_file as $oldFile) {
+                    if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
             }
-            $validated['npwp_file'] = $request->file('npwp_file')->store('npwp_files', 'public');
+            $paths = [];
+            foreach ($request->file('npwp_file') as $file) {
+                $paths[] = $file->store('npwp_files', 'public');
+            }
+            $validated['npwp_file'] = $paths;
         }
 
         // Handle File Produk upload
         if ($request->hasFile('file_produk')) {
-            if ($user->file_produk && Storage::disk('public')->exists($user->file_produk)) {
-                Storage::disk('public')->delete($user->file_produk);
+            if (is_array($user->file_produk)) {
+                foreach ($user->file_produk as $oldFile) {
+                    if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
             }
-            $validated['file_produk'] = $request->file('file_produk')->store('produk_files', 'public');
+            $paths = [];
+            foreach ($request->file('file_produk') as $file) {
+                $paths[] = $file->store('produk_files', 'public');
+            }
+            $validated['file_produk'] = $paths;
         }
+
 
         // Check if email changed
         if ($user->email !== $validated['email']) {
@@ -218,6 +237,23 @@ class ProfileController extends Controller
         if (isset($validated['name'])) {
             $validated['nama'] = $validated['name'];
         }
+        
+        // Mapping marketplace lainnya
+        $marketplaces = [];
+        if (isset($validated['marketplace_lainnya_nama']) && is_array($validated['marketplace_lainnya_nama'])) {
+            foreach ($validated['marketplace_lainnya_nama'] as $index => $nama) {
+                $link = $validated['marketplace_lainnya_link'][$index] ?? null;
+                if (!empty($nama) || !empty($link)) {
+                    $marketplaces[] = [
+                        'nama' => $nama,
+                        'link' => $link
+                    ];
+                }
+            }
+        }
+        $validated['marketplace_lainnya'] = $marketplaces;
+        unset($validated['marketplace_lainnya_nama']);
+        unset($validated['marketplace_lainnya_link']);
 
         $user->update($validated);
 
@@ -364,6 +400,14 @@ class ProfileController extends Controller
         }
 
         $path = $targetUser->$column;
+
+        if (is_array($path)) {
+            $index = $request->query('index', 0);
+            if (!isset($path[$index])) {
+                abort(404, 'Document index not found.');
+            }
+            $path = $path[$index];
+        }
 
         if (!Storage::disk('public')->exists($path)) {
             abort(404, 'File not found on storage.');

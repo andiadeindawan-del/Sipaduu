@@ -56,7 +56,10 @@ class User extends Authenticatable
         'provinsi_usaha', 'kabupaten_usaha', 'kecamatan_usaha', 'desa_usaha', 'alamat_usaha',
 
         // Digitalisasi & Transformasi
-        'email_usaha', 'website_usaha', 'medsos_usaha', 'marketplace', 'facebook_usaha', 'instagram_usaha', 'tiktok_usaha', 'pengadaan_barang', 'akses_kredit',
+        'email_usaha', 'website_usaha',
+        // Digitalisasi & Pemasaran Baru
+        'judul_usaha_online', 'shopee', 'tokopedia', 'lazada', 'blibli', 'marketplace_lainnya', 'wilayah_pemasaran',
+ 'medsos_usaha', 'marketplace', 'facebook_usaha', 'instagram_usaha', 'tiktok_usaha', 'pengadaan_barang', 'akses_kredit',
         'tabungan', 'perizinan_usaha', 'sertifikasi_produk', 'jangkauan_pemasaran', 'lokasi_pemasaran',
         'status_ekspor', 'negara_ekspor', 'metode_ekspor', 'volume_ekspor', 'nilai_ekspor', 'pasok_bahan_baku', 'kemitraan',
 
@@ -76,7 +79,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', 'marketplace_lainnya' => 'array',
+            'password' => 'hashed', 'marketplace_lainnya' => 'array', 'npwp_file' => 'array', 'file_produk' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
