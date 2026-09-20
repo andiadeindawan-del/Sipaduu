@@ -181,37 +181,37 @@
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama', $user->nama) }}" required>
+                                        <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama', $user->nama) }}">
                                         @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', $user->email) }}" required>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', $user->email) }}">
                                         @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">NIK <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="nik" value="{{ old('nik', $user->nik) }}" required>
+                                        <input type="text" class="form-control" name="nik" value="{{ old('nik', $user->nik) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Nomor HP/Telepon <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="no_telepon" value="{{ old('no_telepon', $user->no_telepon) }}" required>
+                                        <input type="text" class="form-control" name="no_telepon" value="{{ old('no_telepon', $user->no_telepon) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Tempat Lahir <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir', $user->tempat_lahir) }}" required>
+                                        <input type="text" class="form-control" name="tempat_lahir" value="{{ old('tempat_lahir', $user->tempat_lahir) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Tanggal Lahir <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}" required>
+                                        <input type="date" class="form-control" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">NPWP Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="npwp_usaha" value="{{ old('npwp_usaha', $user->npwp_usaha) }}" required>
+                                        <label class="form-label fw-semibold">NPWP Usaha <span class="text-muted fw-normal">(Opsional)</span></label>
+                                        <input type="text" class="form-control" name="npwp_usaha" value="{{ old('npwp_usaha', $user->npwp_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="jenis_kelamin" required>
+                                        <select class="form-select" name="jenis_kelamin">
                                             <option value="">Pilih...</option>
                                             <option value="L" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
                                             <option value="P" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -219,7 +219,7 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('role') is-invalid @enderror" name="role" required>
+                                        <select class="form-select @error('role') is-invalid @enderror" name="role">
                                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                                             <option value="trainer" {{ old('role', $user->role) == 'trainer' ? 'selected' : '' }}>Trainer</option>
                                             <option value="peserta" {{ old('role', $user->role) == 'peserta' ? 'selected' : '' }}>Peserta</option>
@@ -228,7 +228,7 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Status Akun <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('status') is-invalid @enderror" name="status" required>
+                                        <select class="form-select @error('status') is-invalid @enderror" name="status">
                                             <option value="aktif" {{ old('status', $user->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
                                             <option value="nonaktif" {{ old('status', $user->status) == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                                         </select>
@@ -236,11 +236,11 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Agama <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="agama" value="{{ old('agama', $user->agama) }}" required>
+                                        <input type="text" class="form-control" name="agama" value="{{ old('agama', $user->agama) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Status Pernikahan <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="status_pernikahan" required>
+                                        <label class="form-label fw-semibold">Status Pernikahan <span class="text-muted fw-normal">(Opsional)</span></label>
+                                        <select class="form-select" name="status_pernikahan">
                                             <option value="">Pilih...</option>
                                             <option value="Belum Menikah" {{ old('status_pernikahan', $user->status_pernikahan) == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
                                             <option value="Menikah" {{ old('status_pernikahan', $user->status_pernikahan) == 'Menikah' ? 'selected' : '' }}>Menikah</option>
@@ -250,7 +250,7 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Pendidikan Terakhir <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="pendidikan_terakhir" required>
+                                        <select class="form-select" name="pendidikan_terakhir">
                                             <option value="">Pilih...</option>
                                             <option value="SD" {{ old('pendidikan_terakhir', $user->pendidikan_terakhir) == 'SD' ? 'selected' : '' }}>SD</option>
                                             <option value="SMP" {{ old('pendidikan_terakhir', $user->pendidikan_terakhir) == 'SMP' ? 'selected' : '' }}>SMP</option>
@@ -285,48 +285,54 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Provinsi <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" required>
+                                        <select class="form-select @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi">
                                             <option value="Sulawesi Barat">Sulawesi Barat</option>
                                         </select>
                                         @error('provinsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Kabupaten/Kota <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten" required>
+                                        <select class="form-select @error('kabupaten') is-invalid @enderror" id="kabupaten" name="kabupaten">
                                             <option value="">Pilih Kabupaten/Kota</option>
                                         </select>
                                         @error('kabupaten') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Kecamatan <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('kecamatan') is-invalid @enderror" id="kecamatan" name="kecamatan" required>
+                                        <select class="form-select @error('kecamatan') is-invalid @enderror" id="kecamatan" name="kecamatan">
                                             <option value="">Pilih Kecamatan</option>
                                         </select>
                                         @error('kecamatan') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Desa/Kelurahan <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('desa') is-invalid @enderror" id="desa" name="desa" required>
+                                        <select class="form-select @error('desa') is-invalid @enderror" id="desa" name="desa">
                                             <option value="">Pilih Desa/Kelurahan</option>
                                         </select>
                                         @error('desa') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Alamat Detail <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="alamat_lengkap" rows="2" placeholder="Nama Jalan, RT/RW, Dusun" required>{{ old('alamat_lengkap', $user->alamat_lengkap) }}</textarea>
+                                        <textarea class="form-control" name="alamat_lengkap" rows="2" placeholder="Nama Jalan, RT/RW, Dusun">{{ old('alamat_lengkap', $user->alamat_lengkap) }}</textarea>
                                     </div>
                                 </div>
-                            </div>
+                            
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div></div>
 
                             <!-- TAB USAHA -->
-                            <div class="tab-pane fade" id="usaha" role="tabpanel">
+
+                                <div class="tab-pane fade" id="usaha" role="tabpanel">
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <h6 class="fw-bold mb-2 border-bottom pb-2"><i class="bi bi-briefcase me-2"></i>USAHA <span class="text-danger">*</span></h6>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Nama Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="nama_usaha" value="{{ old('nama_usaha', $user->nama_usaha) }}" required>
+                                        <input type="text" class="form-control" name="nama_usaha" value="{{ old('nama_usaha', $user->nama_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">NIB <span class="text-muted">(Opsional)</span></label>
@@ -334,7 +340,7 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Status Usaha <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="status_usaha" required>
+                                        <select class="form-select" name="status_usaha">
                                             <option value="">-- Pilih --</option>
                                             <option value="Aktif" {{ old('status_usaha', $user->status_usaha) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
                                             <option value="Tidak Aktif" {{ old('status_usaha', $user->status_usaha) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
@@ -342,7 +348,7 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Bentuk Usaha <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="bentuk_usaha" required>
+                                        <select class="form-select" name="bentuk_usaha">
                                             <option value="">-- Pilih --</option>
                                             <option value="Perorangan" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'Perorangan' ? 'selected' : '' }}>Perorangan</option>
                                             <option value="PT Perorangan" {{ old('bentuk_usaha', $user->bentuk_usaha) == 'PT Perorangan' ? 'selected' : '' }}>PT Perorangan</option>
@@ -354,11 +360,11 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Tanggal Berdiri Usaha / Mulai Usaha <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" name="tanggal_berdiri" value="{{ old('tanggal_berdiri', $user->tanggal_berdiri) }}" required>
+                                        <input type="date" class="form-control" name="tanggal_berdiri" value="{{ old('tanggal_berdiri', $user->tanggal_berdiri) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Jabatan/Posisi <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="jabatan_usaha" value="{{ old('jabatan_usaha', $user->jabatan_usaha) }}" required>
+                                        <input type="text" class="form-control" name="jabatan_usaha" value="{{ old('jabatan_usaha', $user->jabatan_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Merek Dagang <span class="text-muted">(Opsional)</span></label>
@@ -370,31 +376,39 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Kontak Usaha (No. Telepon/HP) <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="no_telepon_usaha" value="{{ old('no_telepon_usaha', $user->no_telepon_usaha) }}" required>
+                                        <input type="text" class="form-control" name="no_telepon_usaha" value="{{ old('no_telepon_usaha', $user->no_telepon_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Email Usaha <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control" name="email_usaha" value="{{ old('email_usaha', $user->email_usaha) }}" required>
+                                        <input type="email" class="form-control" name="email_usaha" value="{{ old('email_usaha', $user->email_usaha) }}">
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Provinsi Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="provinsi_usaha" value="{{ old('provinsi_usaha', $user->provinsi_usaha) }}" required>
+                                        <select class="form-select @error('provinsi_usaha') is-invalid @enderror" id="provinsi_usaha" name="provinsi_usaha">
+<option value="Sulawesi Barat">Sulawesi Barat</option>
+</select>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Kabupaten/Kota Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="kabupaten_usaha" value="{{ old('kabupaten_usaha', $user->kabupaten_usaha) }}" required>
+                                        <select class="form-select @error('kabupaten_usaha') is-invalid @enderror" id="kabupaten_usaha" name="kabupaten_usaha">
+<option value="">Pilih Kabupaten/Kota</option>
+</select>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Kecamatan Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="kecamatan_usaha" value="{{ old('kecamatan_usaha', $user->kecamatan_usaha) }}" required>
+                                        <select class="form-select @error('kecamatan_usaha') is-invalid @enderror" id="kecamatan_usaha" name="kecamatan_usaha">
+<option value="">Pilih Kecamatan</option>
+</select>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Desa/Kelurahan Usaha <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="desa_usaha" value="{{ old('desa_usaha', $user->desa_usaha) }}" required>
+                                        <select class="form-select @error('desa_usaha') is-invalid @enderror" id="desa_usaha" name="desa_usaha">
+<option value="">Pilih Desa/Kelurahan</option>
+</select>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Alamat Lengkap Usaha <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="alamat_usaha" rows="2" required>{{ old('alamat_usaha', $user->alamat_usaha) }}</textarea>
+                                        <textarea class="form-control" name="alamat_usaha" rows="2">{{ old('alamat_usaha', $user->alamat_usaha) }}</textarea>
                                     </div>
 
                                     <div class="col-12 mt-4">
@@ -451,10 +465,10 @@
                                                     <tr>
                                                         <td class="text-start fw-semibold text-secondary">Karyawan Tetap</td>
                                                         <td>
-                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tetap_laki_laki" name="karyawan_tetap_laki_laki" value="{{ old('karyawan_tetap_laki_laki', $user->karyawan_tetap_laki_laki ?? 0) }}" min="0" step="1" required>
+                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tetap_laki_laki" name="karyawan_tetap_laki_laki" value="{{ old('karyawan_tetap_laki_laki', $user->karyawan_tetap_laki_laki ?? 0) }}" min="0" step="1">
                                                         </td>
                                                         <td>
-                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tetap_perempuan" name="karyawan_tetap_perempuan" value="{{ old('karyawan_tetap_perempuan', $user->karyawan_tetap_perempuan ?? 0) }}" min="0" step="1" required>
+                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tetap_perempuan" name="karyawan_tetap_perempuan" value="{{ old('karyawan_tetap_perempuan', $user->karyawan_tetap_perempuan ?? 0) }}" min="0" step="1">
                                                         </td>
                                                         <td>
                                                             <input type="number" class="form-control form-control-sm text-center bg-light fw-bold" id="total_tetap" readonly value="{{ old('total_karyawan_tetap', $user->total_karyawan_tetap ?? 0) }}">
@@ -463,10 +477,10 @@
                                                     <tr>
                                                         <td class="text-start fw-semibold text-secondary">Karyawan Tidak Tetap</td>
                                                         <td>
-                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tidak_tetap_laki_laki" name="karyawan_tidak_tetap_laki_laki" value="{{ old('karyawan_tidak_tetap_laki_laki', $user->karyawan_tidak_tetap_laki_laki ?? 0) }}" min="0" step="1" required>
+                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tidak_tetap_laki_laki" name="karyawan_tidak_tetap_laki_laki" value="{{ old('karyawan_tidak_tetap_laki_laki', $user->karyawan_tidak_tetap_laki_laki ?? 0) }}" min="0" step="1">
                                                         </td>
                                                         <td>
-                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tidak_tetap_perempuan" name="karyawan_tidak_tetap_perempuan" value="{{ old('karyawan_tidak_tetap_perempuan', $user->karyawan_tidak_tetap_perempuan ?? 0) }}" min="0" step="1" required>
+                                                            <input type="number" class="form-control form-control-sm text-center karyawan-input" id="tidak_tetap_perempuan" name="karyawan_tidak_tetap_perempuan" value="{{ old('karyawan_tidak_tetap_perempuan', $user->karyawan_tidak_tetap_perempuan ?? 0) }}" min="0" step="1">
                                                         </td>
                                                         <td>
                                                             <input type="number" class="form-control form-control-sm text-center bg-light fw-bold" id="total_tidak_tetap" readonly value="{{ old('total_karyawan_tidak_tetap', $user->total_karyawan_tidak_tetap ?? 0) }}">
@@ -487,10 +501,16 @@
                                         <input type="text" class="form-control" name="kapasitas_produksi" value="{{ old('kapasitas_produksi', $user->kapasitas_produksi) }}">
                                     </div>
                                 </div>
-                            </div>
+                            
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div></div>
 
                             <!-- TAB SALURAN PEMASARAN ONLINE -->
-                            <div class="tab-pane fade" id="digital" role="tabpanel">
+
+                                <div class="tab-pane fade" id="digital" role="tabpanel">
                                 <div class="row g-3">
                                     <!-- INFORMASI USAHA ONLINE -->
                                     <div class="col-12 mt-4">
@@ -756,10 +776,16 @@
                                         <input type="text" class="form-control" name="kemitraan" value="{{ old('kemitraan', $user->kemitraan) }}">
                                     </div>
                                 </div>
-                            </div>
+                            
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div></div>
 
                             <!-- TAB KEBUTUHAN PELATIHAN -->
-                            <div class="tab-pane fade" id="tambahan" role="tabpanel">
+
+                                <div class="tab-pane fade" id="tambahan" role="tabpanel">
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Permasalahan Usaha Saat Ini <span class="text-muted">(Opsional)</span></label>
@@ -785,10 +811,16 @@
                                         <input type="text" class="form-control" name="anggota_koperasi" placeholder="Nama koperasi jika menjadi anggota" value="{{ old('anggota_koperasi', $user->anggota_koperasi) }}">
                                     </div>
                                 </div>
-                            </div>
+                            
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div></div>
 
                             <!-- TAB DOKUMEN -->
-                            <div class="tab-pane fade" id="dokumen" role="tabpanel">
+
+                                <div class="tab-pane fade" id="dokumen" role="tabpanel">
                                 <div class="row g-4">
                                     <div class="col-12 col-md-6">
                                         <label class="form-label fw-semibold">Upload KTP <span class="text-danger">*</span></label>
@@ -829,7 +861,7 @@
                                         @error('nib_file') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label fw-semibold">Upload NPWP <span class="text-danger">*</span></label>
+                                        <label class="form-label fw-semibold">Upload NPWP <span class="text-muted fw-normal">(Opsional)</span></label>
                                         <p class="text-muted small mb-1"><i class="bi bi-info-circle me-1"></i> Upload dokumen NPWP Anda.</p>
                                         @if($user->npwp_file && is_array($user->npwp_file))
                                             <div class="mb-3 d-flex flex-wrap gap-2">
@@ -847,7 +879,7 @@
                                         @endif
                                         <div id="npwp-upload-container">
                                             <div class="input-group mb-2">
-                                                <input type="file" class="form-control @error('npwp_file') is-invalid @enderror" name="npwp_file[]" accept=".jpg,.jpeg,.png,.pdf" {{ $user->npwp_file ? '' : 'required' }}>
+                                                <input type="file" class="form-control @error('npwp_file') is-invalid @enderror" name="npwp_file[]" accept=".jpg,.jpeg,.png,.pdf">
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-sm btn-outline-secondary mb-2" id="add-npwp-btn"><i class="bi bi-plus-circle me-1"></i>Tambah Kolom File NPWP</button>
@@ -893,18 +925,16 @@
                                         <small class="text-muted">Format: PDF, DOC, JPG, PNG. Maksimal 5MB.</small>
                                         @error('file_produk') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
-                                </div>
+                                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div></div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="panel-footer bg-light p-4">
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-save me-1"></i> Simpan Perubahan
-                            </button>
-                        </div>
-                    </div>
+
                 </form>
             </div>
 
@@ -1325,6 +1355,83 @@
                 }
             }
         });
+    
+        // USAHA
+        const kabUsahaSelect = document.getElementById('kabupaten_usaha');
+        const kecUsahaSelect = document.getElementById('kecamatan_usaha');
+        const desaUsahaSelect = document.getElementById('desa_usaha');
+        
+        const oldKabUsaha = "{{ old('kabupaten_usaha', $user->kabupaten_usaha) }}";
+        const oldKecUsaha = "{{ old('kecamatan_usaha', $user->kecamatan_usaha) }}";
+        const oldDesaUsaha = "{{ old('desa_usaha', $user->desa_usaha) }}";
+
+        if(kabUsahaSelect) {
+            fetch('/data/wilayah-sulbar.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Make data available for dependent selects
+                    if(typeof wilayahData === 'undefined') {
+                        window.wilayahData = data;
+                    }
+                    kabUsahaSelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+                    data.forEach(kab => {
+                        const option = document.createElement('option');
+                        option.value = kab.name;
+                        option.textContent = kab.name;
+                        kabUsahaSelect.appendChild(option);
+                    });
+                    kabUsahaSelect.disabled = false;
+                    if (oldKabUsaha) {
+                        kabUsahaSelect.value = oldKabUsaha;
+                        kabUsahaSelect.dispatchEvent(new Event('change'));
+                    }
+                });
+
+            kabUsahaSelect.addEventListener('change', function() {
+                kecUsahaSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+                desaUsahaSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+                kecUsahaSelect.disabled = true;
+                desaUsahaSelect.disabled = true;
+
+                const selectedKab = (window.wilayahData || wilayahData).find(k => k.name === this.value);
+                if (selectedKab && selectedKab.kecamatan) {
+                    selectedKab.kecamatan.forEach(kec => {
+                        const option = document.createElement('option');
+                        option.value = kec.name;
+                        option.textContent = kec.name;
+                        kecUsahaSelect.appendChild(option);
+                    });
+                    kecUsahaSelect.disabled = false;
+                    if (oldKecUsaha && kecUsahaSelect.querySelector(`option[value="${oldKecUsaha}"]`)) {
+                        kecUsahaSelect.value = oldKecUsaha;
+                        kecUsahaSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+
+            kecUsahaSelect.addEventListener('change', function() {
+                desaUsahaSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+                desaUsahaSelect.disabled = true;
+
+                const selectedKab = (window.wilayahData || wilayahData).find(k => k.name === kabUsahaSelect.value);
+                if (selectedKab) {
+                    const selectedKec = selectedKab.kecamatan.find(k => k.name === this.value);
+                    if (selectedKec && selectedKec.desa) {
+                        selectedKec.desa.forEach(desa => {
+                            const option = document.createElement('option');
+                            option.value = desa.name;
+                            option.textContent = desa.name;
+                            desaUsahaSelect.appendChild(option);
+                        });
+                        desaUsahaSelect.disabled = false;
+                        if (oldDesaUsaha && desaUsahaSelect.querySelector(`option[value="${oldDesaUsaha}"]`)) {
+                            desaUsahaSelect.value = oldDesaUsaha;
+                        }
+                    }
+                }
+            });
+        }
+
     });
 </script>
 
@@ -1412,19 +1519,19 @@ $(document).ready(function() {
                 <div class="row g-2">
                     <div class="col-12 col-md-6">
                         <label class="form-label fw-semibold mb-1 small">Kategori <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-sm select-kategori" required>
+                        <select class="form-select form-select-sm select-kategori">
                             <option value="">Pilih Kategori</option>
                         </select>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label fw-semibold mb-1 small">Golongan <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-sm select-golongan" required disabled>
+                        <select class="form-select form-select-sm select-golongan" disabled>
                             <option value="">Pilih Golongan</option>
                         </select>
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold mb-1 small">KBLI / Kegiatan Usaha <span class="text-danger">*</span></label>
-                        <select class="form-control select-kbli" style="width: 100%;" required disabled>
+                        <select class="form-control select-kbli" style="width: 100%;" disabled>
                             ${data && data.kbli ? `<option value="${data.kbli.id}" selected>${data.kbli.kode} - ${data.kbli.judul}</option>` : '<option value="">Pilih KBLI...</option>'}
                         </select>
                         <input type="hidden" name="kbli_id[]" class="kbli-id-hidden" value="${data ? data.kbli_id : ''}">
@@ -1444,7 +1551,7 @@ $(document).ready(function() {
                     </div>
                     <div class="col-12 mt-2">
                         <div class="form-check">
-                            <input class="form-check-input kbli-utama-radio" type="radio" name="kbli_utama" value="${data ? data.kbli_id : id}" id="utama_${id}" ${isUtama ? 'checked' : ''} required>
+                            <input class="form-check-input kbli-utama-radio" type="radio" name="kbli_utama" value="${data ? data.kbli_id : id}" id="utama_${id}" ${isUtama ? 'checked' : ''}>
                             <label class="form-check-label fw-bold text-dark small" for="utama_${id}">
                                 ⭐ Jadikan KBLI Utama
                             </label>

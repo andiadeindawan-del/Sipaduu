@@ -11,8 +11,8 @@ p = prof_content.find('Status Kelengkapan Profil')
 start_idx = prof_content.rfind(start_marker, 0, p)
 
 if start_idx != -1:
-    end_marker = '<div class="panel mb-0">'
-    end_idx = prof_content.find(end_marker, start_idx)
+    # Find the next panel
+    end_idx = prof_content.find('<div class="panel ', p)
     
     if end_idx != -1:
         simplified_panel = """<div class="panel mb-4">

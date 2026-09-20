@@ -9,13 +9,12 @@ for view in views:
     with open(view, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # We want to replace exactly the corrupted strings:
-    # </select>kabupaten_usaha) }}">
-    # But it might be different, let's use a safe regex:
-    
-    content = re.sub(r'</select>.*?_usaha\)\s*}}\">', r'</select>', content)
+    content = content.replace(r"\'provinsi_usaha\'", "'provinsi_usaha'")
+    content = content.replace(r"\'kabupaten_usaha\'", "'kabupaten_usaha'")
+    content = content.replace(r"\'kecamatan_usaha\'", "'kecamatan_usaha'")
+    content = content.replace(r"\'desa_usaha\'", "'desa_usaha'")
     
     with open(view, 'w', encoding='utf-8') as f:
         f.write(content)
 
-print("Fixed HTML corruption")
+print("Fixed backslash escaping")
