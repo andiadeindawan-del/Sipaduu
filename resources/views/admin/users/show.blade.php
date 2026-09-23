@@ -635,6 +635,12 @@
                                 <p class="fw-semibold mb-0">{{ $user->masukan_saran ?? '-' }}</p>
                             </div>
                         </div>
+                        <div class="col-12 mt-3">
+                            <div class="detail-item">
+                                <label class="text-muted small fw-semibold text-uppercase">Anggota Koperasi</label>
+                                <p class="fw-semibold mb-0">{{ $user->anggota_koperasi ?? '-' }}</p>
+                            </div>
+                        </div>
                         <!-- File Produk moved to Dokumen Section -->
                     </div>
                 </div>

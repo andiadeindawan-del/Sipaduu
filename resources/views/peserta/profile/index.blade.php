@@ -233,6 +233,13 @@
 
                             <!-- TAB USAHA -->
 
+                                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div>
+
                                 <div class="tab-pane fade" id="usaha" role="tabpanel">
                                 <div class="row g-3">
                                     <div class="col-12">
@@ -417,6 +424,13 @@
                                     </div></div>
 
                             <!-- TAB SALURAN PEMASARAN ONLINE -->
+
+                                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div>
 
                                 <div class="tab-pane fade" id="digital" role="tabpanel">
                                 <div class="row g-3">
@@ -693,6 +707,13 @@
 
                             <!-- TAB KEBUTUHAN PELATIHAN -->
 
+                                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div>
+
                                 <div class="tab-pane fade" id="tambahan" role="tabpanel">
                                 <div class="row g-3">
                                     <div class="col-12">
@@ -714,6 +735,11 @@
                                         <p class="text-muted small mb-1"><i class="bi bi-info-circle me-1"></i> Berikan saran atau masukan untuk perbaikan program pelatihan.</p>
                                         <textarea class="form-control" name="masukan_saran" rows="3">{{ old('masukan_saran', $user->masukan_saran) }}</textarea>
                                     </div>
+                                    
+                                    <div class="col-12 mt-3">
+                                        <label class="form-label fw-semibold">Anggota Koperasi <span class="text-muted">(Opsional)</span></label>
+                                        <input type="text" class="form-control" name="anggota_koperasi" placeholder="Nama koperasi jika menjadi anggota" value="{{ old('anggota_koperasi', $user->anggota_koperasi) }}">
+
                                 </div>
                             
                                     <div class="mt-4 d-flex justify-content-end pb-3">
@@ -723,6 +749,13 @@
                                     </div></div>
 
                             <!-- TAB DOKUMEN -->
+
+                                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div>
 
                                 <div class="tab-pane fade" id="dokumen" role="tabpanel">
                                 <div class="row g-4">
@@ -839,6 +872,13 @@
                         </div>
                     </div>
 
+                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div>
+
                 </form>
             </div>
             
@@ -870,6 +910,13 @@
                                 <i class="bi bi-key me-1"></i> Update Password
                             </button>
                         </div>
+
+                
+                                    <div class="mt-4 d-flex justify-content-end pb-3">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                        </button>
+                                    </div>
 
                 </form>
                 </div>
@@ -1566,6 +1613,9 @@ $(document).ready(function() {
         $(this).closest('.file-row').remove();
     });
 
+    $(document).on('click', '.remove-mp', function() {
+        $(this).closest('.mp-row').remove();
+    });
     // Add Marketplace Lainnya dynamically
     $('#add-mp-btn').on('click', function() {
         let html = `
@@ -1577,7 +1627,7 @@ $(document).ready(function() {
                     <input type="url" class="form-control" name="marketplace_lainnya_link[]" placeholder="Link Marketplace (https://...)">
                 </div>
                 <div class="col-md-1 d-flex align-items-center">
-                    <button type="button" class="btn btn-outline-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm w-100 remove-mp"><i class="bi bi-trash"></i></button>
                 </div>
             </div>
         `;
