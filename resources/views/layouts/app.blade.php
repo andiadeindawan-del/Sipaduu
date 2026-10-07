@@ -659,14 +659,14 @@
                         <span class="nav-text">Laporan Pelatihan</span>
                     </a>
 
-                    <a href="{{ route('admin.reports.users') }}" class="nav-link {{ request()->routeIs('admin.reports.users') ? 'active' : '' }}">
+                    <a href="{{ route('admin.laporan.users') }}" class="nav-link {{ request()->routeIs('admin.laporan.users') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-person-lines-fill"></i></span>
                         <span class="nav-text">Laporan Peserta</span>
                     </a>
 
-                    <a href="{{ route('admin.reports.certificates') }}" class="nav-link {{ request()->routeIs('admin.reports.certificates') ? 'active' : '' }}">
+                    <a href="{{ route('admin.laporan.registrations') }}" class="nav-link {{ request()->routeIs('admin.laporan.registrations') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="bi bi-file-earmark-check"></i></span>
-                        <span class="nav-text">Laporan Sertifikat</span>
+                        <span class="nav-text">Laporan Pendaftaran</span>
                     </a>
 
                    
@@ -779,6 +779,7 @@
                 </nav>
 
                 <!-- Page Header -->
+                {{ $header ?? '' }}
                 @hasSection('header')
                     @yield('header')
                 @endif
@@ -805,7 +806,8 @@
                         </div>
                         @endif
 
-                        {{ $slot }}
+                        {{ $slot ?? '' }}
+                        @yield('content')
                     </div>
                 </main>
 

@@ -224,21 +224,13 @@
                                         <textarea class="form-control" name="alamat_lengkap" rows="2" placeholder="Nama Jalan, RT/RW, Dusun">{{ old('alamat_lengkap', $user->alamat_lengkap) }}</textarea>
                                     </div>
                                 </div>
-                            
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div></div>
-
+                                <div class="mt-4 d-flex justify-content-end pb-3">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                </div>
+                            </div>
                             <!-- TAB USAHA -->
-
-                                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
 
                                 <div class="tab-pane fade" id="usaha" role="tabpanel">
                                 <div class="row g-3">
@@ -416,21 +408,13 @@
                                         <input type="text" class="form-control" name="kapasitas_produksi" value="{{ old('kapasitas_produksi', $user->kapasitas_produksi) }}">
                                     </div>
                                 </div>
-                            
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div></div>
-
+                                <div class="mt-4 d-flex justify-content-end pb-3">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                </div>
+                            </div>
                             <!-- TAB SALURAN PEMASARAN ONLINE -->
-
-                                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
 
                                 <div class="tab-pane fade" id="digital" role="tabpanel">
                                 <div class="row g-3">
@@ -698,21 +682,13 @@
                                         <input type="text" class="form-control" name="kemitraan" value="{{ old('kemitraan', $user->kemitraan) }}">
                                     </div>
                                 </div>
-                            
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div></div>
-
+                                <div class="mt-4 d-flex justify-content-end pb-3">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                </div>
+                            </div>
                             <!-- TAB KEBUTUHAN PELATIHAN -->
-
-                                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
 
                                 <div class="tab-pane fade" id="tambahan" role="tabpanel">
                                 <div class="row g-3">
@@ -741,21 +717,14 @@
                                         <input type="text" class="form-control" name="anggota_koperasi" placeholder="Nama koperasi jika menjadi anggota" value="{{ old('anggota_koperasi', $user->anggota_koperasi) }}">
 
                                 </div>
-                            
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div></div>
-
+                                                            </div>
+<div class="mt-4 d-flex justify-content-end pb-3">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                </div>
+                            </div>
                             <!-- TAB DOKUMEN -->
-
-                                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
 
                                 <div class="tab-pane fade" id="dokumen" role="tabpanel">
                                 <div class="row g-4">
@@ -774,7 +743,7 @@
                                                 @endif
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('ktp_file') is-invalid @enderror" name="ktp_file" accept=".jpg,.jpeg,.png,.pdf" {{ $user->ktp_file ? '' : 'required' }}>
+                                        <input type="file" class="form-control @error('ktp_file') is-invalid @enderror" name="ktp_file" accept=".jpg,.jpeg,.png,.pdf">
                                         <small class="text-muted">Format: PDF, JPG, PNG. Maksimal 5MB. (Bisa pilih lebih dari 1 file)</small>
                                         @error('ktp_file') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
@@ -832,7 +801,7 @@
                                                 <img src="{{ asset('storage/' . $user->foto) }}" alt="Avatar" class="img-thumbnail" style="max-height: 100px;">
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control" name="avatar" accept="image/*" {{ $user->foto ? '' : 'required' }}>
+                                        <input type="file" class="form-control" name="avatar" accept="image/*">
                                         <small class="text-muted">Format: JPG, PNG, GIF. Maksimal 2MB.</small>
                                     </div>
                                     <div class="col-12">
@@ -854,37 +823,29 @@
                                         @endif
                                         <div id="produk-upload-container">
                                             <div class="input-group mb-2">
-                                                <input type="file" class="form-control @error('file_produk') is-invalid @enderror" name="file_produk[]" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" {{ $user->file_produk ? '' : 'required' }}>
+                                                <input type="file" class="form-control @error('file_produk') is-invalid @enderror" name="file_produk[]" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-sm btn-outline-secondary mb-2" id="add-produk-btn"><i class="bi bi-plus-circle me-1"></i>Tambah Kolom File Produk</button>
                                         <br>
                                         <small class="text-muted">Format: PDF, DOC, JPG, PNG. Maksimal 5MB.</small>
                                         @error('file_produk') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                    </div>
-                                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div></div>
                             </div>
                         </div>
+                                <div class="mt-4 d-flex justify-content-end pb-3">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                </div>
                     </div>
 
-                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
-
+                            </div>
                 </form>
             </div>
             
             <div class="panel">
                 <div class="panel-header">
-                    <h5 class="section-title"><i class="bi bi-shield-lock"></i> Ubah Password</h5>
+                    <h5 class="section-title"><i class="bi bi-shield-lock"></i> Ubah Password <span class="badge bg-secondary ms-2 fw-normal" style="font-size: 0.75rem;">Opsional</span></h5>
                     <p class="text-muted small mb-0">Ganti password untuk keamanan akun Anda.</p>
                 </div>
                 <div class="p-4">
@@ -893,15 +854,15 @@
                         @method('PUT')
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
-                                <label class="form-label fw-semibold">Password Saat Ini <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Password Saat Ini</label>
                                 <input type="password" class="form-control" name="current_password">
                             </div>
                             <div class="col-12 col-md-4">
-                                <label class="form-label fw-semibold">Password Baru <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Password Baru</label>
                                 <input type="password" class="form-control" name="password">
                             </div>
                             <div class="col-12 col-md-4">
-                                <label class="form-label fw-semibold">Konfirmasi Password <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">Konfirmasi Password</label>
                                 <input type="password" class="form-control" name="password_confirmation">
                             </div>
                         </div>
@@ -910,13 +871,6 @@
                                 <i class="bi bi-key me-1"></i> Update Password
                             </button>
                         </div>
-
-                
-                                    <div class="mt-4 d-flex justify-content-end pb-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-save me-1"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
 
                 </form>
                 </div>

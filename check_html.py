@@ -1,14 +1,18 @@
-
+import re
 from bs4 import BeautifulSoup
 
-with open("resources/views/admin/users/edit.blade.php", "r", encoding="utf-8") as f:
-    content = f.read()
+views = [
+    r'c:\laragon\www\SIPADUU\resources\views\peserta\profile\index.blade.php',
+    r'c:\laragon\www\SIPADUU\resources\views\admin\users\edit.blade.php'
+]
 
-soup = BeautifulSoup(content, "html.parser")
-forms = soup.find_all("form")
-for form in forms:
-    print(f"Form action: {form.get('action')}")
-    tabs = form.find_all("div", class_="tab-pane")
-    print(f"Tabs inside form: {len(tabs)}")
-    for tab in tabs:
-        print(f" - Tab: {tab.get('id')}")
+for view in views:
+    with open(view, 'r', encoding='utf-8') as f:
+        html = f.read()
+    
+    # We want to check if `id="dokumen"` exists and what it contains.
+    match = re.search(r'<div class="tab-pane fade" id="dokumen" role="tabpanel">', html)
+    if match:
+        print(f"Found dokumen in {view}")
+    else:
+        print(f"MISSING dokumen in {view}")

@@ -160,9 +160,11 @@
                         <!-- Status Badge -->
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <span class="badge 
-                                @if($training->isCompletedTraining() || $training->status == 'selesai') 
+                                @if($training->status == 'selesai') 
                                     badge-selesai
-                                @elseif($training->status == 'published' || $training->status == 'berjalan') 
+                                @elseif($training->status == 'published')
+                                    badge-published
+                                @elseif($training->status == 'berjalan') 
                                     badge-berjalan
                                 @else 
                                     badge-draft
@@ -171,9 +173,7 @@
                                 {{ $training->status_label }}
                             </span>
                             @if($training->isRegistered())
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i> Terdaftar
-                                </span>
+                                
                             @endif
                         </div>
 
@@ -241,9 +241,9 @@
                                 <i class="bi bi-eye me-1"></i> Lihat Detail
                             </a>
                             @if(!$training->isRegistered() && $training->status == 'published')
-                                @if($training->isCompletedTraining())
+                                @if($training->isPastTraining())
                                     <button class="btn btn-secondary btn-sm" disabled>
-                                        <i class="bi bi-check-circle"></i> Pelatihan Selesai
+                                        <i class="bi bi-clock-history"></i> Waktu Pendaftaran Berakhir
                                     </button>
                                 @else
                                     <form action="{{ route('peserta.trainings.enroll', $training->id) }}" method="POST">

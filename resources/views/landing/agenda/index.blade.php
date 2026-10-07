@@ -13,10 +13,7 @@
         <!-- Filter -->
         <div class="panel mb-4">
             <div class="panel-header">
-                <div>
-                    <h5 class="section-title"><i class="bi bi-funnel"></i> Filter Agenda</h5>
-                    <p class="text-muted small mb-0">Temukan agenda yang Anda cari.</p>
-                </div>
+                
             </div>
             <div class="p-3">
                 <form action="{{ route('landing.agenda.index') }}" method="GET" class="row g-3 align-items-end">

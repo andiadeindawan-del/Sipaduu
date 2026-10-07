@@ -136,7 +136,7 @@ class UserController extends Controller
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'npwp_file' => ['nullable', 'array'],
             'npwp_file.*' => ['file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
-            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'array'],
+            'file_produk' => ['nullable', 'array'],
             'file_produk.*' => ['file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
             
             // Tambahan field untuk UMK

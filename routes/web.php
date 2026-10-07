@@ -49,7 +49,7 @@ Route::get('/agenda/{id}', [LandingController::class, 'agendaShow'])->name('land
 // ============================================================
 // SERTIFIKAT VERIFICATION - PUBLIC
 // ============================================================
-Route::get('/sertifikat/verify/{nomor?}', [SertifikatController::class, 'verify'])->name('sertifikat.verify');
+Route::get('/sertifikat/verify/{nomor?}', [SertifikatController::class, 'verify'])->where('nomor', '.*')->name('sertifikat.verify');
 
 /*
 |--------------------------------------------------------------------------
@@ -335,6 +335,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // ============================================================
     // SERTIFIKAT MANAGEMENT
     // ============================================================
+    Route::get('sertifikat/menunggu', [SertifikatController::class, 'menunggu'])->name('sertifikat.menunggu');
+    Route::post('sertifikat/terbitkan-massal', [SertifikatController::class, 'terbitkanMassal'])->name('sertifikat.terbitkan-massal');
     Route::resource('sertifikat', SertifikatController::class);
     Route::get('sertifikat/{sertifikat}/download', [SertifikatController::class, 'download'])->name('sertifikat.download');
     Route::patch('sertifikat/{sertifikat}/status', [SertifikatController::class, 'changeStatus'])->name('sertifikat.status');

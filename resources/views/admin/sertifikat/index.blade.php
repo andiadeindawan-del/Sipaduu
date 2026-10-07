@@ -102,6 +102,10 @@
                 <p class="text-muted mb-0">Kelola semua sertifikat yang telah diterbitkan.</p>
             </div>
             <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('admin.sertifikat.menunggu') }}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-clock-history"></i> Menunggu Penerbitan
+                </a>
+                
                 <form action="{{ route('admin.sertifikat.index') }}" method="GET" class="d-flex gap-2">
                     <input class="form-control form-control-sm table-search" type="search" 
                            name="search" placeholder="Cari sertifikat..." 
@@ -110,9 +114,7 @@
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
-                <a href="{{ route('admin.sertifikat.create') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> Tambah
-                </a>
+                
             </div>
         </div>
         <div class="table-responsive">
@@ -203,9 +205,9 @@
                 <div class="text-muted">
                     <i class="bi bi-inbox fs-1 d-block mb-3"></i>
                     <p class="h5">Belum ada sertifikat</p>
-                    <p class="small">Mulai dengan menambahkan sertifikat baru</p>
-                    <a href="{{ route('admin.sertifikat.create') }}" class="btn btn-primary btn-sm mt-2">
-                        <i class="bi bi-plus-circle"></i> Tambah Sertifikat
+                    <p class="small">Mulai dengan mengecek peserta yang memenuhi syarat kelulusan.</p>
+                    <a href="{{ route('admin.sertifikat.menunggu') }}" class="btn btn-warning btn-sm mt-2">
+                        <i class="bi bi-clock-history"></i> Cek Menunggu Penerbitan
                     </a>
                 </div>
             </div>

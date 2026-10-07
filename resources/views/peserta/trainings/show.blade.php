@@ -301,9 +301,15 @@
                                         <span class="badge bg-secondary ms-2">{{ $materi->durasi }} menit</span>
                                         @endif
                                     </div>
-                                    <a href="{{ route('peserta.materi.show', $materi->id) }}" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-eye me-1"></i> Lihat
-                                    </a>
+                                    @if(isset($registration) && $registration->status == 'disetujui')
+                                        <a href="{{ route('peserta.materi.show', $materi->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye me-1"></i> Lihat
+                                        </a>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-secondary" disabled title="Menunggu persetujuan pendaftaran">
+                                            <i class="bi bi-lock me-1"></i> Terkunci
+                                        </button>
+                                    @endif
                                 </div>
                                 @endforeach
                             </div>
@@ -323,9 +329,15 @@
                                         {{ $quiz->judul }}
                                         <span class="badge bg-secondary ms-2">{{ $quiz->questions->count() }} soal</span>
                                     </div>
-                                    <a href="{{ route('peserta.quiz.show', $quiz->id) }}" class="btn btn-sm btn-success">
-                                        <i class="bi bi-play-circle me-1"></i> Kerjakan
-                                    </a>
+                                    @if(isset($registration) && $registration->status == 'disetujui')
+                                        <a href="{{ route('peserta.quiz.show', $quiz->id) }}" class="btn btn-sm btn-success">
+                                            <i class="bi bi-play-circle me-1"></i> Kerjakan
+                                        </a>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-secondary" disabled title="Menunggu persetujuan pendaftaran">
+                                            <i class="bi bi-lock me-1"></i> Terkunci
+                                        </button>
+                                    @endif
                                 </div>
                                 @endforeach
                             </div>
@@ -362,7 +374,7 @@
                                 <a href="{{ route('peserta.trainings.index') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left me-1"></i> Kembali
                                 </a>
-                                @if($isEnrolled ?? false)
+                                @if(isset($registration) && $registration->status == 'disetujui')
                                     <a href="{{ route('peserta.materi.index') }}" class="btn btn-primary">
                                         <i class="bi bi-book me-1"></i> Mulai Belajar
                                     </a>

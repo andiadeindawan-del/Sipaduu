@@ -514,16 +514,14 @@ class Training extends Model
 
     public function isCompletedTraining()
     {
-        if ($this->status === 'selesai') {
-            return true;
+        return $this->status === 'selesai';
+    }
+
+    public function isPastTraining()
+    {
+        if ($this->tanggal_selesai) {
+            return $this->tanggal_selesai < now()->startOfDay();
         }
-        
-        if ($this->status === 'published' || $this->status === 'berjalan') {
-            if ($this->tanggal_selesai) {
-                return $this->tanggal_selesai < now()->startOfDay();
-            }
-        }
-        
         return false;
     }
 

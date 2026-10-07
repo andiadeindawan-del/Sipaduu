@@ -258,6 +258,31 @@
                                         <p class="fw-semibold mb-0">{{ $registration->user->disabilitas ?? '-' }}</p>
                                     </div>
                                 </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Provinsi</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->provinsi ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Kabupaten/Kota</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->kabupaten ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Kecamatan</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->kecamatan ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Desa/Kelurahan</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->desa ?? "-" }}</p>
+                                    </div>
+                                </div>
                                 <div class="col-12">
                                     <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Alamat Domisili</label>
@@ -290,6 +315,37 @@
                                         </span>
                                     </div>
                                 </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Jenis Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->jenis_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Status Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->status_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Bentuk Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->bentuk_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Sektor Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->sektor_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Bidang Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->bidang_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
                                 <div class="col-12 col-md-6">
                                     <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Nama Usaha</label>
@@ -308,6 +364,31 @@
                                     <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Merek Produk</label>
                                         <p class="fw-semibold mb-0">{{ $registration->user->merek_produk ?? '-' }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Provinsi Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->provinsi_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Kabupaten Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->kabupaten_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Kecamatan Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->kecamatan_usaha ?? "-" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">Desa Usaha</label>
+                                        <p class="fw-semibold mb-0">{{ $registration->user->desa_usaha ?? "-" }}</p>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -384,12 +465,43 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="detail-item">
-                                        <label class="text-muted small fw-semibold text-uppercase">Jumlah Karyawan</label>
-                                        <p class="fw-semibold mb-0">{{ $registration->user->jumlah_karyawan ?? '-' }} orang</p>
+
+                                <div class="col-12 mt-3">
+                                    <h6 class="fw-bold text-secondary mb-2"><i class="bi bi-people-fill me-2"></i>Tenaga Kerja</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-sm text-center mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="text-start">Jenis Karyawan</th>
+                                                    <th>Laki-laki</th>
+                                                    <th>Perempuan</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-start fw-semibold text-secondary">Karyawan Tetap</td>
+                                                    <td>{{ $registration->user->karyawan_tetap_laki_laki ?? '0' }}</td>
+                                                    <td>{{ $registration->user->karyawan_tetap_perempuan ?? '0' }}</td>
+                                                    <td class="fw-bold bg-light">{{ $registration->user->total_karyawan_tetap ?? '0' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-start fw-semibold text-secondary">Karyawan Tidak Tetap</td>
+                                                    <td>{{ $registration->user->karyawan_tidak_tetap_laki_laki ?? '0' }}</td>
+                                                    <td>{{ $registration->user->karyawan_tidak_tetap_perempuan ?? '0' }}</td>
+                                                    <td class="fw-bold bg-light">{{ $registration->user->total_karyawan_tidak_tetap ?? '0' }}</td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot class="table-light">
+                                                <tr>
+                                                    <th colspan="3" class="text-end">TOTAL TENAGA KERJA:</th>
+                                                    <th class="fs-6 text-primary">{{ $registration->user->total_tenaga_kerja ?? '0' }} Orang</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
                                     </div>
                                 </div>
+
                                 <div class="col-12 col-md-6">
                                     <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Kapasitas Produksi</label>
@@ -402,6 +514,48 @@
                                         <p class="fw-semibold mb-0">{{ $registration->user->anggota_koperasi ?? '-' }}</p>
                                     </div>
                                 </div>
+                            
+                                <div class="col-12 mt-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="fw-bold text-secondary mb-0"><i class="bi bi-tag-fill me-2"></i>Daftar KBLI (Kegiatan Usaha)</h6>
+                                    </div>
+                                    @if($registration->user->kblis && $registration->user->kblis->count() > 0)
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover mb-0" style="font-size: 0.9rem;">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 15%;">Status</th>
+                                                    <th style="width: 15%;">Kode</th>
+                                                    <th style="width: 70%;">Judul & Uraian</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($registration->user->kblis as $userKbli)
+                                                <tr>
+                                                    <td>
+                                                        @if($userKbli->is_utama)
+                                                            <span class="badge bg-primary">KBLI Utama</span>
+                                                        @else
+                                                            <span class="badge bg-secondary">Usaha Lainnya</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="fw-bold">{{ $userKbli->kbli->kode ?? "-" }}</td>
+                                                    <td>
+                                                        <strong>{{ $userKbli->kbli->judul ?? "-" }}</strong>
+                                                        <div class="text-muted small mt-1">{{ $userKbli->kbli->uraian ?? "-" }}</div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @else
+                                    <div class="alert alert-light border fst-italic mb-0 text-muted">
+                                        Peserta belum menambahkan data KBLI.
+                                    </div>
+                                    @endif
+                                </div>
+
                             </div>
                         </div>
 
@@ -581,24 +735,9 @@
                                 <div class="col-12 col-md-6">
                                     <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Jenis Pelatihan Diikuti</label>
-                                        <p class="fw-semibold mb-0">{{ $registration->user->jenis_pelatihan_diikuti ?? '-' }}</p>
+                                        <p class="fw-semibold mb-0">{{ is_array($registration->user->jenis_pelatihan_diikuti) ? implode(', ', $registration->user->jenis_pelatihan_diikuti) : ($registration->user->jenis_pelatihan_diikuti ?? '-') }}</p>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="detail-item">
-                                        <label class="text-muted small fw-semibold text-uppercase">File Produk</label>
-                                        <p class="fw-semibold mb-0">
-                                            @if($registration->user->file_produk)
-                                                <a href="{{ asset('storage/' . $registration->user->file_produk) }}" target="_blank" class="text-primary">
-                                                    <i class="bi bi-paperclip me-1"></i> Lihat lampiran
-                                                </a>
-                                            @else
-                                                -
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="col-12">
+                                </div><div class="col-12">
                                     <div class="detail-item">
                                         <label class="text-muted small fw-semibold text-uppercase">Masukan / Saran</label>
                                         <p class="fw-semibold mb-0">{{ $registration->user->masukan_saran ?? '-' }}</p>
@@ -610,6 +749,57 @@
                         <!-- TAB: DOKUMEN -->
                         <div class="tab-pane fade" id="dokumen" role="tabpanel">
                             <div class="row g-3">
+
+                                <div class="col-12">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">NIB (Nomor Induk Berusaha)</label>
+                                        <p class="fw-semibold mb-0">
+                                            @if($registration->user->nib_file)
+                                                <a href="{{ asset('storage/' . (is_array($registration->user->nib_file) ? $registration->user->nib_file[0] : $registration->user->nib_file)) }}" target="_blank" class="text-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Dokumen
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">NPWP Usaha</label>
+                                        <p class="fw-semibold mb-0">
+                                            @if($registration->user->npwp_file)
+                                                <a href="{{ asset('storage/' . (is_array($registration->user->npwp_file) ? $registration->user->npwp_file[0] : $registration->user->npwp_file)) }}" target="_blank" class="text-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Dokumen
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="detail-item">
+                                        <label class="text-muted small fw-semibold text-uppercase">File Produk</label>
+                                        <p class="fw-semibold mb-0">
+                                            @if(is_array($registration->user->file_produk) && count($registration->user->file_produk) > 0)
+                                                @foreach($registration->user->file_produk as $file)
+                                                    <a href="{{ asset('storage/' . $file) }}" target="_blank" class="text-primary d-block mb-1">
+                                                        <i class="bi bi-paperclip me-1"></i> Lihat lampiran {{ $loop->iteration }}
+                                                    </a>
+                                                @endforeach
+                                            @elseif(is_string($registration->user->file_produk) && $registration->user->file_produk != '')
+                                                <a href="{{ asset('storage/' . $registration->user->file_produk) }}" target="_blank" class="text-primary">
+                                                    <i class="bi bi-paperclip me-1"></i> Lihat lampiran
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                                
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="fw-bold text-danger mb-0"><i class="bi bi-file-earmark-text me-2"></i>Dokumen Persyaratan: KTP</h6>

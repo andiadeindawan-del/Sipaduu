@@ -281,7 +281,7 @@
                             <div class="team-dot"></div>
                         </div>
                         <div class="team-name-box">
-                            <h6 class="team-name">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
+                            <h6 class="team-name">Farid Wajidi, S.Kom., MT</h6>
                             <span class="team-label">Dosen Pembimbing 1</span>
                         </div>
                     </div>
@@ -292,7 +292,7 @@
                             <div class="team-dot"></div>
                         </div>
                         <div class="team-name-box">
-                            <h6 class="team-name">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
+                            <h6 class="team-name">Ir. Irfan AP, S.T., M.M.T., CITSA,. C.PM., IPM</h6>
                             <span class="team-label">Dosen Pembimbing 2</span>
                         </div>
                     </div>
@@ -307,7 +307,7 @@
                             <div class="team-dot"></div>
                         </div>
                         <div class="team-name-box">
-                            <h6 class="team-name">Dr. A. ADE INDAWAN, S.Kom., MT</h6>
+                            <h6 class="team-name">Muh. Aswad, S.Kom</h6>
                             <span class="team-label">Pembimbing Lapangan</span>
                         </div>
                     </div>

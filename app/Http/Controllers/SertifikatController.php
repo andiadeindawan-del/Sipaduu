@@ -64,39 +64,63 @@ class SertifikatController extends Controller
         $user = auth()->user();
         $userId = $user->id;
 
-        $query = Sertifikat::with(['training'])
-            ->where('user_id', $userId);
+        $registrations = \App\Models\TrainingRegistration::with(['training'])
+            ->where('user_id', $userId)
+            ->where('status', 'disetujui')
+            ->get();
 
-        // Search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('nomor_sertifikat', 'like', "%$search%")
-                  ->orWhere('nama_sertifikat', 'like', "%$search%");
-            });
+        $trainingStatus = [];
+        $activeCertificates = 0;
+        $totalCertificates = 0;
+
+        foreach ($registrations as $reg) {
+            $training = $reg->training;
+            
+            $sertifikat = Sertifikat::where('training_id', $training->id)
+                ->where('user_id', $userId)
+                ->first();
+
+            if ($sertifikat) {
+                $totalCertificates++;
+                if ($sertifikat->status === 'aktif') {
+                    $activeCertificates++;
+                    $trainingStatus[] = [
+                        'training' => $training,
+                        'status_sertifikat' => 'sudah_terbit',
+                        'sertifikat' => $sertifikat
+                    ];
+                }
+                continue;
+            }
+
+            $passingStatus = $this->getUserPassingStatus($training->id, $userId);
+            
+            if (is_array($passingStatus['quizzes']) && count($passingStatus['quizzes']) === 0) {
+                continue; 
+            } else if ($passingStatus['quizzes'] instanceof \Illuminate\Support\Collection && $passingStatus['quizzes']->isEmpty()) {
+                continue;
+            }
+            
+            if ($passingStatus['passed']) {
+                $trainingStatus[] = [
+                    'training' => $training,
+                    'status_sertifikat' => 'menunggu_terbit',
+                    'passed_at' => $passingStatus['passed_at'],
+                    'final_score' => $passingStatus['final_score']
+                ];
+            } else {
+                $trainingStatus[] = [
+                    'training' => $training,
+                    'status_sertifikat' => 'belum_lulus',
+                    'quizzes' => $passingStatus['quizzes']
+                ];
+            }
         }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $sertifikats = $query->latest('tanggal_terbit')->paginate(12)->withQueryString();
-
-        // Statistics
-        $totalCertificates = Sertifikat::where('user_id', $userId)->count();
-        $activeCertificates = Sertifikat::where('user_id', $userId)
-            ->where('status', 'aktif')
-            ->count();
-        $expiredCertificates = Sertifikat::where('user_id', $userId)
-            ->where('status', 'expired')
-            ->count();
 
         return view('peserta.sertifikat.index', compact(
-            'sertifikats',
+            'trainingStatus',
             'totalCertificates',
-            'activeCertificates',
-            'expiredCertificates'
+            'activeCertificates'
         ));
     }
 
@@ -112,7 +136,16 @@ class SertifikatController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('peserta.sertifikat.show', compact('sertifikat'));
+        if ($sertifikat->status !== 'aktif') {
+            abort(403, 'Sertifikat tidak aktif.');
+        }
+        
+        $namaPeserta = $user->nama ?? $user->name;
+        $urlTemplate = $sertifikat->template_sertifikat ? '/storage/' . $sertifikat->template_sertifikat : null;
+        $urlTandaTangan = $sertifikat->tanda_tangan_digital ? '/storage/' . $sertifikat->tanda_tangan_digital : null;
+        $urlVerify = url('/sertifikat/verify/' . $sertifikat->nomor_sertifikat);
+
+        return view('peserta.sertifikat.show', compact('sertifikat', 'namaPeserta', 'urlTemplate', 'urlTandaTangan', 'urlVerify'));
     }
 
     /**
@@ -285,42 +318,18 @@ class SertifikatController extends Controller
     /**
      * Verify certificate by number (public).
      */
-    public function verify(Request $request)
+    public function verify(Request $request, $nomor = null)
     {
-        $request->validate([
-            'nomor_sertifikat' => 'required|string|exists:sertifikats,nomor_sertifikat'
-        ]);
+        $nomorSertifikat = $nomor ?? $request->nomor_sertifikat;
 
-        $sertifikat = Sertifikat::where('nomor_sertifikat', $request->nomor_sertifikat)
-            ->with(['user', 'training'])
-            ->first();
-
-        if (!$sertifikat) {
-            return response()->json([
-                'valid' => false,
-                'message' => 'Sertifikat tidak ditemukan.'
-            ], 404);
+        $sertifikat = null;
+        if ($nomorSertifikat) {
+            $sertifikat = Sertifikat::where('nomor_sertifikat', $nomorSertifikat)
+                ->with(['user', 'training'])
+                ->first();
         }
 
-        if ($sertifikat->status !== 'aktif') {
-            return response()->json([
-                'valid' => false,
-                'message' => 'Sertifikat tidak aktif atau sudah kadaluarsa.',
-                'status' => $sertifikat->status
-            ], 400);
-        }
-
-        return response()->json([
-            'valid' => true,
-            'data' => [
-                'nomor_sertifikat' => $sertifikat->nomor_sertifikat,
-                'nama_sertifikat' => $sertifikat->nama_sertifikat,
-                'nama_peserta' => $sertifikat->user->nama,
-                'nama_training' => $sertifikat->training?->judul ?? '-',
-                'tanggal_terbit' => $sertifikat->tanggal_terbit->format('d M Y'),
-                'penerbit' => $sertifikat->penerbit,
-            ]
-        ]);
+        return view('public.sertifikat.verify', compact('sertifikat', 'nomorSertifikat'));
     }
 
     /**
@@ -401,5 +410,216 @@ class SertifikatController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Tampilkan peserta yang menunggu penerbitan sertifikat.
+     */
+    public function menunggu(Request $request)
+    {
+        $trainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])->orderBy('judul')->get();
+        $participants = collect();
+        $trainingId = $request->training_id;
+
+        if ($trainingId) {
+            $enrolledUserIds = \Illuminate\Support\Facades\DB::table('training_registrations')
+                ->where('training_id', $trainingId)
+                ->where('status', 'disetujui')
+                ->pluck('user_id');
+
+            foreach ($enrolledUserIds as $userId) {
+                $passingStatus = $this->getUserPassingStatus($trainingId, $userId);
+                $hasCert = Sertifikat::where('training_id', $trainingId)->where('user_id', $userId)->exists();
+                
+                $user = User::find($userId);
+                if ($user) {
+                    if ($hasCert) {
+                        $user->status_sertifikat = 'Diterbitkan';
+                    } else if ($passingStatus['passed']) {
+                        $user->status_sertifikat = 'Layak Diterbitkan';
+                        $user->passed_at = $passingStatus['passed_at'] ?? now();
+                        $user->final_score = $passingStatus['final_score'] ?? 0;
+                    } else {
+                        $user->status_sertifikat = $passingStatus['reason'] ?? 'Belum memenuhi persyaratan';
+                    }
+                    $participants->push($user);
+                }
+            }
+        }
+
+        return view('admin.sertifikat.menunggu', compact('trainings', 'participants', 'trainingId'));
+    }
+
+    /**
+     * Terbitkan massal.
+     */
+    public function terbitkanMassal(Request $request)
+    {
+        $request->validate([
+            'training_id' => 'required|exists:trainings,id',
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id',
+            'template_sertifikat' => 'required|image|mimes:jpeg,png,jpg|max:4096',
+            'tanda_tangan' => 'required|image|mimes:png|max:1024',
+            'nama_penandatangan' => 'required|string',
+            'penerbit' => 'required|string',
+            'tanggal_terbit' => 'required|date',
+            'tanggal_berlaku_sampai' => 'nullable|date|after_or_equal:tanggal_terbit',
+            'deskripsi' => 'nullable|string',
+            'format_nomor' => 'required|string',
+            'nomor_awal' => 'required|integer|min:1',
+        ]);
+
+        $trainingId = $request->training_id;
+        $publishedQuizzes = \Illuminate\Support\Facades\DB::table('quizzes')->where('training_id', $trainingId)->where('status', 'published')->get();
+
+        if ($publishedQuizzes->isEmpty()) {
+            return redirect()->back()->with('error', 'Pelatihan ini tidak memiliki kuis aktif.');
+        }
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            foreach ($request->user_ids as $userId) {
+                $passingStatus = $this->getUserPassingStatus($trainingId, $userId);
+                
+                if (!$passingStatus['passed']) {
+                    throw new \Exception("Peserta dengan ID $userId belum lulus semua kuis.");
+                }
+
+                if (Sertifikat::where('training_id', $trainingId)->where('user_id', $userId)->exists()) {
+                    throw new \Exception("Peserta dengan ID $userId sudah memiliki sertifikat.");
+                }
+            }
+
+            // Generate and check numbers first
+            $nomors = [];
+            $currentNo = $request->nomor_awal;
+            $bulanRomawiArr = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+            $bulanRomawi = $bulanRomawiArr[date('n', strtotime($request->tanggal_terbit))];
+            $tahun = date('Y', strtotime($request->tanggal_terbit));
+
+            foreach ($request->user_ids as $userId) {
+                $nomor = str_replace(
+                    ['{no}', '{bulan_romawi}', '{tahun}'],
+                    [$currentNo, $bulanRomawi, $tahun],
+                    $request->format_nomor
+                );
+
+                if (Sertifikat::where('nomor_sertifikat', $nomor)->exists() || in_array($nomor, $nomors)) {
+                    throw new \Exception("Nomor sertifikat $nomor sudah digunakan atau bentrok. Transaksi dibatalkan.");
+                }
+                $nomors[$userId] = $nomor;
+                $currentNo++;
+            }
+
+            // Save files
+            $templatePath = $request->file('template_sertifikat')->store('templates', 'public');
+            $signaturePath = $request->file('tanda_tangan')->store('signatures', 'public');
+
+            $training = Training::find($trainingId);
+            $count = 0;
+            $startNo = null;
+            $endNo = null;
+
+            foreach ($request->user_ids as $userId) {
+                $nomor = $nomors[$userId];
+                if ($startNo === null) $startNo = $nomor;
+                $endNo = $nomor;
+
+                $sertifikat = Sertifikat::create([
+                    'user_id' => $userId,
+                    'training_id' => $trainingId,
+                    'nomor_sertifikat' => $nomor,
+                    'nama_sertifikat' => $training->judul,
+                    'deskripsi' => $request->deskripsi,
+                    'tanggal_terbit' => $request->tanggal_terbit,
+                    'tanggal_berlaku_sampai' => $request->tanggal_berlaku_sampai,
+                    'penerbit' => $request->penerbit,
+                    'tanda_tangan_digital' => $signaturePath,
+                    'template_sertifikat' => $templatePath,
+                    'nama_penandatangan' => $request->nama_penandatangan,
+                    'status' => 'aktif'
+                ]);
+
+                // Update training_participants
+                \Illuminate\Support\Facades\DB::table('training_participants')
+                    ->where('training_id', $trainingId)
+                    ->where('user_id', $userId)
+                    ->update(['certificate_id' => $sertifikat->id]);
+
+                $count++;
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('admin.sertifikat.menunggu')->with('success', "Berhasil menerbitkan $count sertifikat. (Range: $startNo - $endNo)");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    private function getUserPassingStatus($trainingId, $userId) {
+        $publishedQuizzes = \Illuminate\Support\Facades\DB::table('quizzes')
+            ->where('training_id', $trainingId)
+            ->where('status', 'published')
+            ->get();
+            
+        $hasAbsensi = \Illuminate\Support\Facades\DB::table('absensis')
+            ->where('training_id', $trainingId)
+            ->where('user_id', $userId)
+            ->where('status', 'hadir')
+            ->exists();
+
+        if (!$hasAbsensi) {
+            return ['passed' => false, 'quizzes' => collect(), 'reason' => 'Belum absensi'];
+        }
+
+        if ($publishedQuizzes->isEmpty()) {
+            return ['passed' => false, 'quizzes' => collect(), 'reason' => 'Kuis belum tersedia'];
+        }
+
+        $passedAll = true;
+        $totalScore = 0;
+        $lastAttemptDate = null;
+        $quizzesStatus = [];
+
+        foreach ($publishedQuizzes as $quiz) {
+            $attempts = \Illuminate\Support\Facades\DB::table('quiz_attempts')
+                ->where('quiz_id', $quiz->id)
+                ->where('user_id', $userId)
+                ->where('status', 'completed')
+                ->get();
+                
+            $bestScoreAttempt = $attempts->sortByDesc('score')->first();
+            
+            $hasPassed = $bestScoreAttempt && $bestScoreAttempt->score >= $quiz->passing_score;
+            if (!$hasPassed) {
+                $passedAll = false;
+            }
+
+            if ($bestScoreAttempt) {
+                $totalScore += $bestScoreAttempt->score;
+                if (!$lastAttemptDate || $bestScoreAttempt->completed_at > $lastAttemptDate) {
+                    $lastAttemptDate = $bestScoreAttempt->completed_at;
+                }
+            }
+            
+            $quizzesStatus[] = [
+                'quiz' => $quiz,
+                'passed' => $hasPassed,
+                'score' => $bestScoreAttempt ? $bestScoreAttempt->score : 0,
+            ];
+        }
+
+        if (!$passedAll) {
+            return ['passed' => false, 'quizzes' => $publishedQuizzes, 'reason' => 'Tidak lulus quiz'];
+        }
+
+        return [
+            'passed' => true,
+            'final_score' => $totalScore / $publishedQuizzes->count(),
+            'passed_at' => $lastAttemptDate,
+            'quizzes' => $quizzesStatus
+        ];
     }
 }

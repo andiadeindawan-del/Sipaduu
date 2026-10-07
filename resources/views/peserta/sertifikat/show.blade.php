@@ -1,463 +1,234 @@
 @extends('layouts.peserta')
 
-@section('title', 'Detail Sertifikat')
+@section('title', 'Sertifikat - ' . $sertifikat->nama_sertifikat)
 
 @section('header')
-<div class="page-heading">
+<div class="page-heading d-flex justify-content-between align-items-center">
     <div class="page-heading-copy">
-        <span class="page-icon"><i class="bi bi-award"></i></span>
+        <span class="page-icon"><i class="bi bi-award text-primary"></i></span>
         <div>
-            <p class="eyebrow">Sertifikat</p>
-            <h1 class="h3 mb-0">Detail Sertifikat</h1>
-            <p class="text-muted mb-0">Lihat informasi lengkap sertifikat Anda.</p>
+            <p class="eyebrow">Detail Sertifikat</p>
+            <h1 class="h3 mb-1">{{ $sertifikat->nama_sertifikat }}</h1>
+            <p class="text-muted mb-0">Tinjau dan unduh sertifikat kelulusan Anda.</p>
         </div>
     </div>
-    <div class="heading-actions">
+    <div class="heading-actions d-flex gap-2">
         <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
+            <i class="bi bi-arrow-left me-1"></i> Kembali
         </a>
+        <button id="downloadBtn" class="btn btn-primary btn-sm" disabled>
+            <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
+        </button>
     </div>
 </div>
 @endsection
 
 @section('content')
-<div class="container-fluid px-3 px-lg-4 py-4">
-    <div class="row">
-        <div class="col-12 col-lg-8 mx-auto">
-            <!-- Alert Messages -->
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
+<div class="container-fluid px-3 px-lg-4 pt-4">
 
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-circle me-2"></i>
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            <!-- Certificate Detail Card -->
-            <div class="certificate-detail-card">
-                <!-- Header -->
-                <div class="certificate-detail-header">
-                    <div class="certificate-detail-icon">
-                        <i class="bi bi-award-fill"></i>
-                    </div>
-                    <div class="certificate-detail-title">
-                        <h4 class="mb-1">{{ $sertifikat->judul ?? $sertifikat->nama_sertifikat }}</h4>
-                        <p class="text-muted small mb-0">
-                            <i class="bi bi-hash"></i> {{ $sertifikat->nomor_sertifikat }}
-                        </p>
-                    </div>
-                    <div class="certificate-detail-status">
-                        @if($sertifikat->status == 'aktif')
-                            <span class="badge badge-aktif">
-                                <i class="bi bi-check-circle-fill me-1"></i> Aktif
-                            </span>
-                        @elseif($sertifikat->status == 'expired')
-                            <span class="badge badge-expired">
-                                <i class="bi bi-clock-fill me-1"></i> Kadaluarsa
-                            </span>
-                        @elseif($sertifikat->status == 'revoked')
-                            <span class="badge badge-revoked">
-                                <i class="bi bi-x-circle-fill me-1"></i> Dicabut
-                            </span>
-                        @else
-                            <span class="badge badge-secondary">{{ ucfirst($sertifikat->status) }}</span>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Body -->
-                <div class="certificate-detail-body">
-                    <!-- Preview -->
-                    <div class="certificate-preview">
-                        <div class="certificate-preview-content">
-                            <div class="certificate-preview-icon">
-                                <i class="bi bi-award-fill"></i>
-                            </div>
-                            <div class="certificate-preview-info">
-                                <h5>{{ $sertifikat->judul ?? $sertifikat->nama_sertifikat }}</h5>
-                                <p class="text-muted small">
-                                    <i class="bi bi-person me-1"></i>
-                                    {{ auth()->user()->nama ?? auth()->user()->name }}
-                                </p>
-                                <p class="text-muted small">
-                                    <i class="bi bi-hash me-1"></i>
-                                    {{ $sertifikat->nomor_sertifikat }}
-                                </p>
-                                <p class="text-muted small">
-                                    <i class="bi bi-calendar-check me-1"></i>
-                                    Diterbitkan: {{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d F Y') : '-' }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Detail Info -->
-                    <div class="certificate-detail-info">
-                        <h6 class="fw-bold mb-3">
-                            <i class="bi bi-info-circle me-2 text-primary"></i>Informasi Sertifikat
-                        </h6>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="info-label">Penerbit</label>
-                                    <p class="info-value">{{ $sertifikat->penerbit ?? 'Dinas Koperindag Sulawesi Barat' }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="info-label">Status</label>
-                                    <p class="info-value">
-                                        @if($sertifikat->status == 'aktif')
-                                            <span class="badge badge-aktif">
-                                                <i class="bi bi-check-circle-fill me-1"></i> Aktif
-                                            </span>
-                                        @elseif($sertifikat->status == 'expired')
-                                            <span class="badge badge-expired">
-                                                <i class="bi bi-clock-fill me-1"></i> Kadaluarsa
-                                            </span>
-                                        @elseif($sertifikat->status == 'revoked')
-                                            <span class="badge badge-revoked">
-                                                <i class="bi bi-x-circle-fill me-1"></i> Dicabut
-                                            </span>
-                                        @else
-                                            <span class="badge badge-secondary">{{ ucfirst($sertifikat->status) }}</span>
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="info-label">Tanggal Terbit</label>
-                                    <p class="info-value">{{ $sertifikat->tanggal_terbit ? $sertifikat->tanggal_terbit->format('d F Y') : '-' }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="info-label">Berlaku Sampai</label>
-                                    <p class="info-value">{{ $sertifikat->tanggal_berlaku_sampai ? $sertifikat->tanggal_berlaku_sampai->format('d F Y') : 'Seumur Hidup' }}</p>
-                                </div>
-                            </div>
-                            @if($sertifikat->training)
-                            <div class="col-md-12">
-                                <div class="info-item">
-                                    <label class="info-label">Terkait Pelatihan</label>
-                                    <p class="info-value">{{ $sertifikat->training->judul }}</p>
-                                </div>
-                            </div>
-                            @endif
-                            @if($sertifikat->deskripsi)
-                            <div class="col-md-12">
-                                <div class="info-item">
-                                    <label class="info-label">Deskripsi</label>
-                                    <p class="info-value">{{ $sertifikat->deskripsi }}</p>
-                                </div>
-                            </div>
-                            @endif
-                            <div class="col-md-12">
-                                <div class="info-item">
-                                    <label class="info-label">Diberikan Kepada</label>
-                                    <p class="info-value">{{ auth()->user()->nama ?? auth()->user()->name }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="certificate-detail-actions">
-                        <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-1"></i> Kembali
-                        </a>
-                        @if($sertifikat->file_path && $sertifikat->status == 'aktif')
-                            <a href="{{ route('peserta.sertifikat.download', $sertifikat->id) }}" 
-                               class="btn btn-success" target="_blank">
-                                <i class="bi bi-download me-1"></i> Unduh Sertifikat
-                            </a>
-                        @endif
-                        @if($sertifikat->status == 'aktif' && !$sertifikat->file_path)
-                            <span class="btn btn-secondary disabled">
-                                <i class="bi bi-clock me-1"></i> Sertifikat Dalam Proses
-                            </span>
-                        @endif
-                        @if($sertifikat->status == 'aktif')
-                            <button class="btn btn-outline-primary" onclick="window.print()">
-                                <i class="bi bi-printer me-1"></i> Cetak
-                            </button>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- Share & Verify -->
-            <div class="certificate-extra">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="certificate-verify">
-                            <i class="bi bi-shield-check"></i>
-                            <div>
-                                <h6 class="mb-0 fw-semibold">Verifikasi Keaslian</h6>
-                                <p class="text-muted small mb-0">
-                                    Sertifikat ini dapat diverifikasi melalui sistem resmi kami.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="certificate-share">
-                            <i class="bi bi-share"></i>
-                            <div>
-                                <h6 class="mb-0 fw-semibold">Bagikan Sertifikat</h6>
-                                <p class="text-muted small mb-0">
-                                    Bagikan pencapaian Anda ke media sosial.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0 text-center bg-light" style="overflow-x: auto;">
+            <!-- Canvas responsif -->
+            <canvas id="certificateCanvas" class="img-fluid m-3" style="max-width: 100%; height: auto; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 4px;"></canvas>
         </div>
     </div>
 </div>
 
-@push('styles')
-<style>
-    /* ============================================================
-       CERTIFICATE DETAIL CARD
-    ============================================================ */
-    .certificate-detail-card {
-        background: #fff;
-        border-radius: 1rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,.06);
-        overflow: hidden;
-        border: 1px solid rgba(0,0,0,0.04);
+<!-- QRious Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('certificateCanvas');
+    const ctx = canvas.getContext('2d');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // Data Sertifikat
+    const certData = {
+        nama: "{!! addslashes($namaPeserta) !!}",
+        pelatihan: "{!! addslashes($sertifikat->nama_sertifikat) !!}",
+        nomor: "No: {!! addslashes($sertifikat->nomor_sertifikat) !!}",
+        tanggal: "Diterbitkan: {{ date('d F Y', strtotime($sertifikat->tanggal_terbit)) }}",
+        berlaku: "{{ $sertifikat->tanggal_berlaku_sampai ? 'Berlaku s.d: ' . date('d F Y', strtotime($sertifikat->tanggal_berlaku_sampai)) : '' }}",
+        penandatangan: "{!! addslashes($sertifikat->nama_penandatangan) !!}",
+        qrUrl: "{!! addslashes($urlVerify) !!}",
+        templateUrl: "{!! $urlTemplate !!}",
+        tandaTanganUrl: "{!! $urlTandaTangan !!}"
+    };
+
+    // Konfigurasi Render
+    const config = {
+        nama: { y: 650, font: 'bold 80px "Times New Roman"', color: '#333333', maxWidth: 1200 },
+        pelatihan: { y: 780, font: 'italic 45px Arial', color: '#555555', maxWidth: 1400 },
+        nomor: { y: 450, font: 'bold 30px Arial', color: '#777777' },
+        tanggal: { y: 880, font: '25px Arial', color: '#555555' },
+        berlaku: { y: 920, font: '25px Arial', color: '#555555' },
+        penandatangan: { y: 1150, font: 'bold 30px Arial', color: '#000000', xOffset: 550 }, // Dari tengah geser ke kanan
+        qr: { y: 980, xOffset: -550, size: 150 }, // Dari tengah geser ke kiri
+        tandaTangan: { y: 980, xOffset: 550, width: 250, height: 150 }
+    };
+
+    // Fungsi memuat gambar sebagai Promise
+    function loadImage(src) {
+        return new Promise((resolve, reject) => {
+            if (!src) return resolve(null);
+            const img = new Image();
+            img.crossOrigin = 'Anonymous'; // Mencegah tainted canvas jika domain sama tapi protokol berbeda
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error('Gagal memuat gambar: ' + src));
+            img.src = src;
+        });
     }
 
-    .certificate-detail-header {
-        padding: 1.25rem 1.5rem;
-        background: linear-gradient(135deg, #e8f4f8, #b8dce8);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        border-bottom: 1px solid rgba(0,0,0,0.04);
+    // Fungsi menggambar QR Code
+    function generateQRImage(url, size) {
+        return new Promise((resolve) => {
+            const qr = new QRious({
+                value: url,
+                size: size,
+                level: 'H'
+            });
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.src = qr.toDataURL('image/png');
+        });
     }
 
-    .certificate-detail-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        background: #fff;
-        color: #4e9af1;
-        box-shadow: 0 4px 15px rgba(78, 154, 241, 0.15);
-        flex-shrink: 0;
-    }
+    // Fungsi utama render
+    async function renderCertificate() {
+        try {
+            // Tunggu font selesai diload browser (opsional, tp disarankan)
+            if (document.fonts && document.fonts.ready) {
+                await document.fonts.ready;
+            }
 
-    .certificate-detail-title {
-        flex: 1;
-        min-width: 150px;
-    }
-    .certificate-detail-title h4 {
-        font-weight: 700;
-        color: #1a2236;
-    }
+            // Muat gambar secara paralel
+            const [templateImg, signatureImg, qrImg] = await Promise.all([
+                loadImage(certData.templateUrl),
+                loadImage(certData.tandaTanganUrl),
+                generateQRImage(certData.qrUrl, config.qr.size)
+            ]);
 
-    .certificate-detail-status {
-        margin-left: auto;
-    }
-    .certificate-detail-status .badge {
-        font-weight: 500;
-        padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
-        border-radius: 8px;
-    }
-    .badge-aktif {
-        background: #d4edda;
-        color: #155724;
-    }
-    .badge-expired {
-        background: #fff3cd;
-        color: #856404;
-    }
-    .badge-revoked {
-        background: #f8d7da;
-        color: #721c24;
-    }
+            if (!templateImg) {
+                throw new Error("Template sertifikat tidak ditemukan.");
+            }
 
-    .certificate-detail-body {
-        padding: 1.5rem;
-    }
+            // Atur ukuran canvas mengikuti template asli
+            const width = templateImg.width;
+            const height = templateImg.height;
+            canvas.width = width;
+            canvas.height = height;
 
-    /* ============================================================
-       PREVIEW
-    ============================================================ */
-    .certificate-preview {
-        background: linear-gradient(135deg, #f8fafc, #e8f4f8);
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        border: 2px dashed #d4e8f0;
-        position: relative;
-    }
-    .certificate-preview::before {
-        content: 'Preview';
-        position: absolute;
-        top: -10px;
-        left: 20px;
-        background: #fff;
-        padding: 0 10px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #8a93a3;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .certificate-preview-content {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-    .certificate-preview-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        background: linear-gradient(135deg, #4e9af1, #3a7bc8);
-        color: #fff;
-        flex-shrink: 0;
-        box-shadow: 0 8px 25px rgba(78, 154, 241, 0.2);
-    }
-    .certificate-preview-info h5 {
-        font-weight: 700;
-        color: #1a2236;
-        margin-bottom: 0.25rem;
-    }
-    .certificate-preview-info p {
-        margin-bottom: 0.1rem;
-    }
+            const centerX = width / 2;
 
-    /* ============================================================
-       INFO
-    ============================================================ */
-    .certificate-detail-info {
-        margin-bottom: 1.5rem;
-    }
-    .certificate-detail-info h6 {
-        color: #1a2236;
-    }
+            // 1. Gambar Template Background
+            ctx.drawImage(templateImg, 0, 0, width, height);
 
-    .info-item {
-        background: #f8fafc;
-        border-radius: 0.5rem;
-        padding: 0.6rem 0.8rem;
-        border: 1px solid #f0f0f0;
-    }
-    .info-label {
-        font-size: 0.7rem;
-        color: #8a93a3;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        display: block;
-        margin-bottom: 0.1rem;
-    }
-    .info-value {
-        font-weight: 500;
-        color: #1a2236;
-        margin-bottom: 0;
-        font-size: 0.9rem;
-    }
+            // 2. Gambar Teks (Centered)
+            ctx.textAlign = 'center';
 
-    /* ============================================================
-       ACTIONS
-    ============================================================ */
-    .certificate-detail-actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        padding-top: 1.25rem;
-        border-top: 1px solid #f0f0f0;
-    }
-    .certificate-detail-actions .btn {
-        border-radius: 8px;
-        padding: 0.5rem 1.25rem;
-        font-weight: 500;
-    }
+            // -- Nama Peserta (Auto Scale)
+            ctx.font = config.nama.font;
+            ctx.fillStyle = config.nama.color;
+            let currentNameFont = config.nama.font;
+            let nameWidth = ctx.measureText(certData.nama).width;
+            
+            // Jika terlalu panjang, perkecil font
+            if (nameWidth > config.nama.maxWidth) {
+                const scaleRatio = config.nama.maxWidth / nameWidth;
+                const newSize = Math.floor(80 * scaleRatio);
+                ctx.font = `bold ${newSize}px "Times New Roman"`;
+            }
+            ctx.fillText(certData.nama, centerX, config.nama.y);
 
-    /* ============================================================
-       EXTRA
-    ============================================================ */
-    .certificate-extra {
-        margin-top: 1.5rem;
-    }
-    .certificate-verify,
-    .certificate-share {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-        background: #fff;
-        border-radius: 0.75rem;
-        border: 1px solid rgba(0,0,0,0.04);
-        box-shadow: 0 1px 4px rgba(0,0,0,.06);
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-    .certificate-verify:hover,
-    .certificate-share:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-    .certificate-verify i,
-    .certificate-share i {
-        font-size: 1.5rem;
-        color: #4e9af1;
-        flex-shrink: 0;
-    }
+            // -- Nama Pelatihan
+            ctx.font = config.pelatihan.font;
+            ctx.fillStyle = config.pelatihan.color;
+            ctx.fillText(certData.pelatihan, centerX, config.pelatihan.y, config.pelatihan.maxWidth);
 
-    /* ============================================================
-       RESPONSIVE
-    ============================================================ */
-    @media (max-width: 768px) {
-        .certificate-detail-header {
-            flex-direction: column;
-            text-align: center;
-        }
-        .certificate-detail-status {
-            margin-left: 0;
-        }
-        .certificate-preview-content {
-            flex-direction: column;
-            text-align: center;
-        }
-        .certificate-detail-actions {
-            flex-direction: column;
-        }
-        .certificate-detail-actions .btn {
-            width: 100%;
-            justify-content: center;
-        }
-        .certificate-verify,
-        .certificate-share {
-            flex-direction: column;
-            text-align: center;
+            // -- Nomor Sertifikat
+            ctx.font = config.nomor.font;
+            ctx.fillStyle = config.nomor.color;
+            ctx.fillText(certData.nomor, centerX, config.nomor.y);
+
+            // -- Tanggal
+            ctx.font = config.tanggal.font;
+            ctx.fillStyle = config.tanggal.color;
+            ctx.fillText(certData.tanggal, centerX, config.tanggal.y);
+            
+            if (certData.berlaku) {
+                ctx.font = config.berlaku.font;
+                ctx.fillText(certData.berlaku, centerX, config.berlaku.y);
+            }
+
+            // 3. Gambar Tanda Tangan
+            const signatureX = centerX + config.tandaTangan.xOffset - (config.tandaTangan.width / 2);
+            if (signatureImg) {
+                // Menyesuaikan rasio aspek tanda tangan
+                const aspect = signatureImg.width / signatureImg.height;
+                let drawW = config.tandaTangan.width;
+                let drawH = drawW / aspect;
+                if (drawH > config.tandaTangan.height) {
+                    drawH = config.tandaTangan.height;
+                    drawW = drawH * aspect;
+                }
+                
+                // Centering tanda tangan di kotak bayangannya
+                const offsetX = signatureX + (config.tandaTangan.width - drawW) / 2;
+                const offsetY = config.tandaTangan.y + (config.tandaTangan.height - drawH) / 2;
+
+                ctx.drawImage(signatureImg, offsetX, offsetY, drawW, drawH);
+            }
+
+            // -- Nama Penandatangan
+            ctx.font = config.penandatangan.font;
+            ctx.fillStyle = config.penandatangan.color;
+            ctx.fillText(certData.penandatangan, centerX + config.penandatangan.xOffset, config.penandatangan.y);
+
+            // 4. Gambar QR Code
+            const qrX = centerX + config.qr.xOffset - (config.qr.size / 2);
+            ctx.drawImage(qrImg, qrX, config.qr.y, config.qr.size, config.qr.size);
+
+            // Enable tombol download
+            downloadBtn.disabled = false;
+            
+        } catch (error) {
+            console.error(error);
+            alert("Gagal memuat sertifikat. Pastikan template dan tanda tangan tersedia. Pesan: " + error.message);
         }
     }
-</style>
-@endpush
+
+    // Eksekusi render
+    renderCertificate();
+
+    // Setup tombol download
+    downloadBtn.addEventListener('click', function() {
+        try {
+            const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+            
+            // Mengatur jsPDF
+            const { jsPDF } = window.jspdf;
+            // Deteksi orientasi otomatis
+            const orientation = canvas.width > canvas.height ? 'l' : 'p';
+            
+            const pdf = new jsPDF({
+                orientation: orientation,
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
+            
+            pdf.addImage(dataUrl, 'JPEG', 0, 0, canvas.width, canvas.height);
+            
+            // Penamaan file sesuai nomor sertifikat
+            let safeName = certData.nomor.replace('No: ', '').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            pdf.save(`Sertifikat_${safeName}.pdf`);
+            
+        } catch (e) {
+            console.error(e);
+            alert('Tidak dapat membuat PDF. Pastikan browser mendukung jsPDF dan tidak ada masalah CORS.');
+        }
+    });
+});
+</script>
 @endsection

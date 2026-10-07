@@ -49,7 +49,7 @@ class User extends Authenticatable
         'pendidikan_terakhir', 'kode_pos_domisili', 'disabilitas', 'ktp_file',
 
         // Data Usaha UMK
-        'jabatan_usaha', 'merek_produk', 'kode_pos_usaha', 'sektor_usaha', 'no_telepon_usaha',
+        'status_usaha', 'bentuk_usaha', 'jabatan_usaha', 'merek_produk', 'kode_pos_usaha', 'sektor_usaha', 'no_telepon_usaha',
         'bidang_usaha', 'tanggal_berdiri', 'npwp_usaha', 'status_nib', 'lama_nib', 'modal_usaha',
         'nilai_modal', 'omzet_usaha', 'nilai_omzet', 'jumlah_karyawan', 'kapasitas_produksi', 'anggota_koperasi',
         'karyawan_tetap_laki_laki', 'karyawan_tetap_perempuan', 'total_karyawan_tetap', 'karyawan_tidak_tetap_laki_laki', 'karyawan_tidak_tetap_perempuan', 'total_karyawan_tidak_tetap', 'total_tenaga_kerja',
@@ -297,7 +297,6 @@ class User extends Authenticatable
                 'tanggal_lahir' => 'Tanggal Lahir',
                 'jenis_kelamin' => 'Jenis Kelamin',
                 'agama' => 'Agama',
-                'status_pernikahan' => 'Status Pernikahan',
                 'pendidikan_terakhir' => 'Pendidikan Terakhir',
                 'provinsi' => 'Provinsi',
                 'kabupaten' => 'Kabupaten/Kota',
@@ -313,13 +312,7 @@ class User extends Authenticatable
                 'status_usaha' => 'Status Usaha',
                 'bentuk_usaha' => 'Bentuk Usaha',
                 'jabatan_usaha' => 'Jabatan dalam Usaha',
-                'sektor_usaha' => 'Sektor Usaha',
-                'bidang_usaha' => 'Bidang Usaha',
-                'npwp_usaha' => 'Nomor NPWP',
                 'email_usaha' => 'Email Usaha',
-                'facebook_usaha' => 'Facebook Usaha',
-                'instagram_usaha' => 'Instagram Usaha',
-                'tiktok_usaha' => 'TikTok Usaha',
             ]
         ];
     }

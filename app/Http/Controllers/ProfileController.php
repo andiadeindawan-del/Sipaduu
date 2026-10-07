@@ -74,12 +74,12 @@ class ProfileController extends Controller
             'alamat_lengkap' => 'nullable|string',
             
             // Validasi file - Wajib jika belum ada
-            'avatar' => [$user->foto ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'npwp_file' => ['nullable', 'array'],
             'npwp_file.*' => ['file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'],
-            'file_produk' => [$user->file_produk ? 'nullable' : 'required', 'array'],
+            'file_produk' => ['nullable', 'array'],
             'file_produk.*' => ['file', 'mimes:pdf,jpeg,png,jpg,doc,docx', 'max:5120'],
             
             // Tambahan field untuk UMK

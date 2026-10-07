@@ -12,11 +12,6 @@
             <p class="text-muted mb-0">Kelola informasi profil dan akun Anda.</p>
         </div>
     </div>
-    <div class="heading-actions">
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
-        </a>
-    </div>
 </div>
 @endsection
 

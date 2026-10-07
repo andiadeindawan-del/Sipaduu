@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'training_id', 'nomor_sertifikat', 'nama_sertifikat', 'deskripsi', 'tanggal_terbit', 'tanggal_berlaku_sampai', 'penerbit', 'file_path', 'tanda_tangan_digital', 'catatan', 'status'])]
+#[Fillable(['user_id', 'training_id', 'nomor_sertifikat', 'nama_sertifikat', 'deskripsi', 'tanggal_terbit', 'tanggal_berlaku_sampai', 'penerbit', 'file_path', 'tanda_tangan_digital', 'catatan', 'status', 'template_sertifikat', 'nama_penandatangan'])]
 class Sertifikat extends Model
 {
     use HasFactory;
