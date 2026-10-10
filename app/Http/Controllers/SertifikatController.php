@@ -415,6 +415,33 @@ class SertifikatController extends Controller
     /**
      * Tampilkan peserta yang menunggu penerbitan sertifikat.
      */
+    public function getEligibleUsers($trainingId)
+    {
+        $enrolledUserIds = \Illuminate\Support\Facades\DB::table('training_registrations')
+            ->where('training_id', $trainingId)
+            ->where('status', 'disetujui')
+            ->pluck('user_id');
+
+        $eligibleUsers = [];
+        foreach ($enrolledUserIds as $userId) {
+            $passingStatus = $this->getUserPassingStatus($trainingId, $userId);
+            $hasCert = \App\Models\Sertifikat::where('training_id', $trainingId)->where('user_id', $userId)->exists();
+            
+            if (!$hasCert && $passingStatus['passed']) {
+                $user = \App\Models\User::find($userId);
+                if ($user) {
+                    $eligibleUsers[] = [
+                        'id' => $user->id,
+                        'nama' => $user->nama ?? $user->name,
+                        'email' => $user->email
+                    ];
+                }
+            }
+        }
+
+        return response()->json($eligibleUsers);
+    }
+
     public function menunggu(Request $request)
     {
         $trainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])->orderBy('judul')->get();
@@ -433,16 +460,12 @@ class SertifikatController extends Controller
                 
                 $user = User::find($userId);
                 if ($user) {
-                    if ($hasCert) {
-                        $user->status_sertifikat = 'Diterbitkan';
-                    } else if ($passingStatus['passed']) {
+                    if (!$hasCert && $passingStatus['passed']) {
                         $user->status_sertifikat = 'Layak Diterbitkan';
                         $user->passed_at = $passingStatus['passed_at'] ?? now();
                         $user->final_score = $passingStatus['final_score'] ?? 0;
-                    } else {
-                        $user->status_sertifikat = $passingStatus['reason'] ?? 'Belum memenuhi persyaratan';
+                        $participants->push($user);
                     }
-                    $participants->push($user);
                 }
             }
         }

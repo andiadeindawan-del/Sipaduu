@@ -337,6 +337,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // ============================================================
     Route::get('sertifikat/menunggu', [SertifikatController::class, 'menunggu'])->name('sertifikat.menunggu');
     Route::post('sertifikat/terbitkan-massal', [SertifikatController::class, 'terbitkanMassal'])->name('sertifikat.terbitkan-massal');
+    Route::get('sertifikat/eligible-users/{training}', [SertifikatController::class, 'getEligibleUsers'])->name('sertifikat.eligible-users');
     Route::resource('sertifikat', SertifikatController::class);
     Route::get('sertifikat/{sertifikat}/download', [SertifikatController::class, 'download'])->name('sertifikat.download');
     Route::patch('sertifikat/{sertifikat}/status', [SertifikatController::class, 'changeStatus'])->name('sertifikat.status');

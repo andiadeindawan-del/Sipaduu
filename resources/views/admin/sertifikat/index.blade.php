@@ -3,8 +3,9 @@
 @section('title', 'Kelola Sertifikat')
 
 @section('content')
-<div class="container-fluid px-4 py-4">
-    <div class="page-heading">
+<div class="container-fluid px-3 px-lg-4 py-4">
+    <!-- Page Heading -->
+    <div class="page-heading mb-4">
         <div class="page-heading-copy">
             <span class="page-icon"><i class="bi bi-award" aria-hidden="true"></i></span>
             <div>
@@ -16,7 +17,7 @@
     </div>
 
     <!-- Stats Grid -->
-    <section class="row g-3 mt-1" aria-label="Certificate summary">
+    <section class="row g-3 mb-4" aria-label="Certificate summary">
         <div class="col-12 col-sm-6 col-xl-3">
             <article class="metric-card metric-primary">
                 <div class="metric-top">
@@ -76,46 +77,43 @@
 
     <!-- Alert Messages -->
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-check-circle me-2"></i>
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
 
     @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-exclamation-circle me-2"></i>
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>
         {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif
 
     <!-- Certificates Table -->
-    <section class="panel mt-3">
+    <section class="panel">
         <div class="panel-header">
-            <div>
-                <h2 class="h5 mb-1 section-title">
-                    <i class="bi bi-table" aria-hidden="true"></i>
-                    <span>Daftar Sertifikat</span>
-                </h2>
-                <p class="text-muted mb-0">Kelola semua sertifikat yang telah diterbitkan.</p>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('admin.sertifikat.menunggu') }}" class="btn btn-warning btn-sm">
-                    <i class="bi bi-clock-history"></i> Menunggu Penerbitan
+            <!-- Kiri: Search -->
+            <form action="{{ route('admin.sertifikat.index') }}" method="GET" class="d-flex gap-2 panel-search">
+                <input class="form-control form-control-sm table-search" type="search" 
+                       name="search" placeholder="Cari sertifikat..." 
+                       aria-label="Search" value="{{ request('search') }}">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-search"></i>
+                </button>
+                @if(request('search'))
+                <a href="{{ route('admin.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-x-circle"></i>
                 </a>
-                
-                <form action="{{ route('admin.sertifikat.index') }}" method="GET" class="d-flex gap-2">
-                    <input class="form-control form-control-sm table-search" type="search" 
-                           name="search" placeholder="Cari sertifikat..." 
-                           aria-label="Search" value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
-                
-            </div>
+                @endif
+            </form>
+
+            <!-- Kanan: Tambah Sertifikat -->
+            <a href="{{ route('admin.sertifikat.create') }}" class="btn btn-primary btn-sm panel-add-btn">
+                <i class="bi bi-plus-circle me-1"></i> Tambah Sertifikat
+            </a>
         </div>
         <div class="table-responsive">
             @if(isset($sertifikats) && $sertifikats->count() > 0)
@@ -173,7 +171,7 @@
                                 {{ $status['label'] }}
                             </span>
                         </td>
-                        <td class="text-end">
+                        <td class="text-center">
                             <div class="btn-group btn-group-sm" role="group">
                                 <a href="{{ route('admin.sertifikat.show', $sertifikat->id) }}" 
                                    class="btn btn-info" title="Lihat">
@@ -205,9 +203,9 @@
                 <div class="text-muted">
                     <i class="bi bi-inbox fs-1 d-block mb-3"></i>
                     <p class="h5">Belum ada sertifikat</p>
-                    <p class="small">Mulai dengan mengecek peserta yang memenuhi syarat kelulusan.</p>
-                    <a href="{{ route('admin.sertifikat.menunggu') }}" class="btn btn-warning btn-sm mt-2">
-                        <i class="bi bi-clock-history"></i> Cek Menunggu Penerbitan
+                    <p class="small">Mulai dengan menambahkan sertifikat baru.</p>
+                    <a href="{{ route('admin.sertifikat.create') }}" class="btn btn-primary btn-sm mt-2">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah Sertifikat
                     </a>
                 </div>
             </div>
@@ -267,6 +265,53 @@
 
 @push('styles')
 <style>
+    /* ============================================================
+       PAGE HEADING
+    ============================================================ */
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        background: #fff;
+        border-radius: .75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .page-heading-copy {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .page-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #eaf1fd, #d4e4f7);
+        color: #4e9af1;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+    .eyebrow {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #8a93a3;
+        font-weight: 600;
+    }
+    .heading-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       METRIC CARDS
+    ============================================================ */
     .metric-card {
         background: #fff;
         border-radius: 0.75rem;
@@ -274,10 +319,11 @@
         box-shadow: 0 1px 4px rgba(0,0,0,.06);
         border-left: 4px solid transparent;
         height: 100%;
-        transition: transform 0.2s ease;
+        transition: all 0.2s ease;
     }
     .metric-card:hover {
         transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     }
     .metric-primary { border-left-color: #4e9af1; }
     .metric-success { border-left-color: #28c76f; }
@@ -313,32 +359,60 @@
         gap: .35rem;
     }
 
+    /* ============================================================
+       PANEL
+    ============================================================ */
     .panel {
         background: #fff;
         border-radius: .75rem;
         box-shadow: 0 1px 4px rgba(0,0,0,.06);
         overflow: hidden;
     }
+    .panel:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    }
+
+    /* Panel Header: Search kiri, Tambah kanan */
     .panel-header {
-        padding: .9rem 1.25rem;
-        border-bottom: 1px solid #f0f0f0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: .75rem;
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fafbfc;
     }
+
+    .panel-search {
+        flex: 1 1 auto;
+        max-width: 400px;
+    }
+
+    .panel-search .form-control {
+        min-width: 200px;
+    }
+
+    .panel-add-btn {
+        flex-shrink: 0;
+    }
+
     .section-title {
         display: flex;
         align-items: center;
         gap: .5rem;
         margin: 0;
         font-size: 1rem;
+        font-weight: 600;
+        color: #1a2236;
     }
     .section-title i {
         color: #4e9af1;
     }
 
+    /* ============================================================
+       TABLE
+    ============================================================ */
     .table th {
         font-weight: 600;
         font-size: .75rem;
@@ -346,30 +420,126 @@
         letter-spacing: .03em;
         color: #6c757d;
         border-bottom-width: 2px;
+        padding: .75rem 1rem;
+        background: #fafbfc;
     }
     .table td {
         vertical-align: middle;
+        padding: .75rem 1rem;
+        font-size: .875rem;
+    }
+    .table tbody tr {
+        transition: background 0.15s ease;
+    }
+    .table tbody tr:hover {
+        background: #f8fafc;
     }
     .table .badge {
         font-weight: 500;
-        padding: 0.3rem 0.7rem;
+        padding: 0.35rem 0.75rem;
         font-size: .75rem;
+        border-radius: 50px;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+    .btn-primary {
+        background: #4e9af1;
+        border-color: #4e9af1;
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background: #3a7bc8;
+        border-color: #3a7bc8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(78, 154, 241, 0.3);
+    }
+    .btn-outline-secondary {
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    .btn-outline-secondary:hover {
+        background: #e2e8f0;
+        border-color: #d5dce6;
     }
 
     .btn-group .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+        font-size: 0.8rem;
         border-radius: 6px;
         transition: all 0.2s ease;
     }
     .btn-group .btn:hover {
-        transform: scale(1.1);
+        transform: scale(1.08);
     }
 
-    .avatar-img {
-        width: 28px;
-        height: 28px;
-        object-fit: cover;
+    /* ============================================================
+       ALERT
+    ============================================================ */
+    .alert {
+        border-radius: 0.75rem;
+        border: none;
+        padding: 0.75rem 1rem;
+    }
+    .alert-success {
+        background: #ecfdf5;
+        color: #065f46;
+    }
+    .alert-danger {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+    .alert-warning {
+        background: #fffbeb;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+        .page-heading {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .page-heading-copy {
+            width: 100%;
+        }
+        .heading-actions {
+            width: 100%;
+        }
+        .heading-actions .btn {
+            width: 100%;
+        }
+        .panel-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .panel-search {
+            max-width: 100%;
+        }
+        .panel-search .form-control {
+            min-width: 0;
+        }
+        .panel-add-btn {
+            width: 100%;
+        }
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+        .table th,
+        .table td {
+            padding: 0.5rem 0.75rem;
+        }
     }
 </style>
 @endpush

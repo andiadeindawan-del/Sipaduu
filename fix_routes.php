@@ -1,9 +1,9 @@
 <?php
-$content = file_get_contents("resources/views/layouts/app.blade.php");
-$content = str_replace("route('admin.reports.users')", "route('admin.laporan.users')", $content);
-$content = str_replace("routeIs('admin.reports.users')", "routeIs('admin.laporan.users')", $content);
-$content = str_replace("route('admin.reports.certificates')", "route('admin.laporan.registrations')", $content);
-$content = str_replace("routeIs('admin.reports.certificates')", "routeIs('admin.laporan.registrations')", $content);
-$content = str_replace("Laporan Sertifikat", "Laporan Pendaftaran", $content);
-file_put_contents("resources/views/layouts/app.blade.php", $content);
+$content = file_get_contents("routes/web.php");
+
+$search = "Route::resource('sertifikat', SertifikatController::class);";
+$replace = "Route::get('sertifikat/eligible-users/{training}', [SertifikatController::class, 'getEligibleUsers'])->name('sertifikat.eligible-users');\n    Route::resource('sertifikat', SertifikatController::class);";
+
+$content = str_replace($search, $replace, $content);
+file_put_contents("routes/web.php", $content);
 echo "Done";
