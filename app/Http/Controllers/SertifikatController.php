@@ -70,20 +70,19 @@ class SertifikatController extends Controller
             ->get();
 
         $trainingStatus = [];
-        $activeCertificates = 0;
-        $totalCertificates = 0;
+        $processedCertificateIds = [];
 
         foreach ($registrations as $reg) {
             $training = $reg->training;
+            if (!$training) continue;
             
             $sertifikat = Sertifikat::where('training_id', $training->id)
                 ->where('user_id', $userId)
                 ->first();
 
             if ($sertifikat) {
-                $totalCertificates++;
+                $processedCertificateIds[] = $sertifikat->id;
                 if ($sertifikat->status === 'aktif') {
-                    $activeCertificates++;
                     $trainingStatus[] = [
                         'training' => $training,
                         'status_sertifikat' => 'sudah_terbit',
@@ -95,30 +94,58 @@ class SertifikatController extends Controller
 
             $passingStatus = $this->getUserPassingStatus($training->id, $userId);
             
-            if (is_array($passingStatus['quizzes']) && count($passingStatus['quizzes']) === 0) {
-                continue; 
-            } else if ($passingStatus['quizzes'] instanceof \Illuminate\Support\Collection && $passingStatus['quizzes']->isEmpty()) {
-                continue;
-            }
-            
             if ($passingStatus['passed']) {
                 $trainingStatus[] = [
                     'training' => $training,
                     'status_sertifikat' => 'menunggu_terbit',
-                    'passed_at' => $passingStatus['passed_at'],
-                    'final_score' => $passingStatus['final_score']
+                    'passed_at' => $passingStatus['passed_at'] ?? now(),
+                    'final_score' => $passingStatus['final_score'] ?? 0
                 ];
             } else {
                 $trainingStatus[] = [
                     'training' => $training,
                     'status_sertifikat' => 'belum_lulus',
-                    'quizzes' => $passingStatus['quizzes']
+                    'quizzes' => $passingStatus['quizzes'] ?? []
                 ];
             }
         }
 
+        // Cek jika ada sertifikat aktif milik user yang belum terdaftar via TrainingRegistration
+        $standaloneCertificates = Sertifikat::with('training')
+            ->where('user_id', $userId)
+            ->where('status', 'aktif')
+            ->whereNotIn('id', $processedCertificateIds)
+            ->get();
+
+        foreach ($standaloneCertificates as $standaloneCert) {
+            $trainingObj = $standaloneCert->training ?? (object)[
+                'id' => null,
+                'judul' => $standaloneCert->nama_sertifikat,
+                'gambar' => null
+            ];
+
+            $trainingStatus[] = [
+                'training' => $trainingObj,
+                'status_sertifikat' => 'sudah_terbit',
+                'sertifikat' => $standaloneCert
+            ];
+        }
+
+        // Metrik statistik untuk card di view
+        $totalPelatihan = count($trainingStatus);
+        $totalSertifikat = collect($trainingStatus)->where('status_sertifikat', 'sudah_terbit')->count();
+        $totalMenunggu = collect($trainingStatus)->where('status_sertifikat', 'menunggu_terbit')->count();
+        $totalBelumLulus = collect($trainingStatus)->where('status_sertifikat', 'belum_lulus')->count();
+
+        $totalCertificates = $totalSertifikat;
+        $activeCertificates = $totalSertifikat;
+
         return view('peserta.sertifikat.index', compact(
             'trainingStatus',
+            'totalPelatihan',
+            'totalSertifikat',
+            'totalMenunggu',
+            'totalBelumLulus',
             'totalCertificates',
             'activeCertificates'
         ));
@@ -141,11 +168,39 @@ class SertifikatController extends Controller
         }
         
         $namaPeserta = $user->nama ?? $user->name;
-        $urlTemplate = $sertifikat->template_sertifikat ? '/storage/' . $sertifikat->template_sertifikat : null;
-        $urlTandaTangan = $sertifikat->tanda_tangan_digital ? '/storage/' . $sertifikat->tanda_tangan_digital : null;
+        $urlTemplate = $sertifikat->template_sertifikat && Storage::disk('public')->exists($sertifikat->template_sertifikat) ? '/storage/' . $sertifikat->template_sertifikat : null;
+        $hasSignatureFile = !empty($sertifikat->tanda_tangan_digital) && Storage::disk('public')->exists($sertifikat->tanda_tangan_digital);
+        $urlTandaTangan = $hasSignatureFile ? '/storage/' . $sertifikat->tanda_tangan_digital : null;
         $urlVerify = url('/sertifikat/verify/' . $sertifikat->nomor_sertifikat);
 
-        return view('peserta.sertifikat.show', compact('sertifikat', 'namaPeserta', 'urlTemplate', 'urlTandaTangan', 'urlVerify'));
+        // Fallback nama penandatangan jika nama_penandatangan kosong tapi tanda_tangan_digital berisi string
+        $namaPenandatangan = $sertifikat->nama_penandatangan;
+        if (empty($namaPenandatangan) && !empty($sertifikat->tanda_tangan_digital) && !$hasSignatureFile) {
+            $namaPenandatangan = $sertifikat->tanda_tangan_digital;
+        }
+
+        // Cek file langsung jika diunggah manual (bukan canvas template)
+        $hasDirectFile = !empty($sertifikat->file_path) && Storage::disk('public')->exists($sertifikat->file_path);
+        $urlDirectFile = $hasDirectFile ? '/storage/' . $sertifikat->file_path : null;
+        $directExt = $hasDirectFile ? strtolower(pathinfo($sertifikat->file_path, PATHINFO_EXTENSION)) : null;
+        $isDirectImage = in_array($directExt, ['jpg', 'jpeg', 'png', 'webp']);
+        $isDirectPdf = $directExt === 'pdf';
+
+        $isCanvas = !empty($urlTemplate);
+
+        return view('peserta.sertifikat.show', compact(
+            'sertifikat',
+            'namaPeserta',
+            'namaPenandatangan',
+            'urlTemplate',
+            'urlTandaTangan',
+            'urlVerify',
+            'isCanvas',
+            'hasDirectFile',
+            'urlDirectFile',
+            'isDirectImage',
+            'isDirectPdf'
+        ));
     }
 
     /**
@@ -627,15 +682,20 @@ class SertifikatController extends Controller
                 }
             }
             
+            $bestScore = $bestScoreAttempt ? $bestScoreAttempt->score : 0;
             $quizzesStatus[] = [
                 'quiz' => $quiz,
                 'passed' => $hasPassed,
-                'score' => $bestScoreAttempt ? $bestScoreAttempt->score : 0,
+                'score' => $bestScore,
+                'best_score' => $bestScore,
+                'passing_score' => $quiz->passing_score,
+                'max_attempt' => $quiz->max_attempt ?? 3,
+                'attempts_count' => $attempts->count(),
             ];
         }
 
         if (!$passedAll) {
-            return ['passed' => false, 'quizzes' => $publishedQuizzes, 'reason' => 'Tidak lulus quiz'];
+            return ['passed' => false, 'quizzes' => $quizzesStatus, 'reason' => 'Tidak lulus quiz'];
         }
 
         return [

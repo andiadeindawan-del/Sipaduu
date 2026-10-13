@@ -327,8 +327,7 @@ class LandingController extends Controller
     public function agenda(Request $request)
     {
         $query = Agenda::with(['training', 'creator'])
-            ->where('status', 'published')
-            ->whereDate('tanggal', '>=', now());
+            ->whereIn('status', ['published', 'selesai', 'dibatalkan']);
 
         // Search
         if ($request->filled('search')) {
@@ -363,7 +362,7 @@ class LandingController extends Controller
     public function agendaShow($id)
     {
         $agenda = Agenda::with(['training', 'creator'])
-            ->where('status', 'published')
+            ->whereIn('status', ['published', 'selesai', 'dibatalkan'])
             ->findOrFail($id);
 
         return view('landing.agenda.show', compact('agenda'));

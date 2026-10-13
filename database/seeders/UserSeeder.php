@@ -17,12 +17,12 @@ class UserSeeder extends Seeder
         // ADMIN (1)
         // ============================================================
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'sipadugadislt3@gmail.com'],
             [
                 'nik' => '1234567890123456',
                 'nama' => 'Administrator',
                 'name' => 'Administrator',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('ade100304'),
                 'role' => 'admin',
                 'status' => 'aktif',
                 'no_telepon' => '081234567890',
@@ -107,12 +107,12 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        foreach ($trainers as $trainer) {
-            User::updateOrCreate(
-                ['email' => $trainer['email']],
-                $trainer
-            );
-        }
+        // foreach ($trainers as $trainer) {
+        //     User::updateOrCreate(
+        //         ['email' => $trainer['email']],
+        //         $trainer
+        //     );
+        // }
 
         // ============================================================
         // PARTICIPANTS (10)
@@ -280,20 +280,17 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        foreach ($participants as $participant) {
-            User::updateOrCreate(
-                ['email' => $participant['email']],
-                $participant
-            );
-        }
+        // foreach ($participants as $participant) {
+        //     User::updateOrCreate(
+        //         ['email' => $participant['email']],
+        //         $participant
+        //     );
+        // }
 
         // ============================================================
         // LOGGING
         // ============================================================
         $this->command->info('✅ User seeder berhasil dijalankan!');
         $this->command->info('📊 Total user: ' . User::count());
-        $this->command->info('👨‍💼 Admin: 1');
-        $this->command->info('👨‍🏫 Trainer: 5');
-        $this->command->info('👥 Peserta: 10');
     }
 }

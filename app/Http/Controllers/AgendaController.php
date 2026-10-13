@@ -76,12 +76,15 @@ class AgendaController extends Controller
         // PERBAIKAN: Gunakan registrations() dengan tabel training_registrations
         $trainingIds = Training::whereHas('registrations', function($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->whereIn('status', ['pending', 'registered', 'approved', 'completed']);
+                  ->whereIn('status', ['pending', 'disetujui', 'completed']);
         })->pluck('id');
 
         $query = Agenda::with(['training', 'creator'])
-            ->whereIn('training_id', $trainingIds)
-            ->orWhere('training_id', null);
+            ->where(function($q) use ($trainingIds) {
+                $q->whereIn('training_id', $trainingIds)
+                  ->orWhereNull('training_id');
+            })
+            ->whereIn('status', ['published', 'selesai', 'dibatalkan']);
 
         // Filter by type
         if ($request->filled('type')) {
@@ -129,14 +132,16 @@ class AgendaController extends Controller
      */
     public function pesertaShow($id)
     {
-        $agenda = Agenda::with(['training', 'creator'])->findOrFail($id);
+        $agenda = Agenda::with(['training', 'creator'])
+            ->whereIn('status', ['published', 'selesai', 'dibatalkan'])
+            ->findOrFail($id);
         
         $user = Auth::user();
         
         // PERBAIKAN: Gunakan registrations() dengan tabel training_registrations
         $trainingIds = Training::whereHas('registrations', function($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->whereIn('status', ['pending', 'registered', 'approved', 'completed']);
+                  ->whereIn('status', ['pending', 'disetujui', 'completed']);
         })->pluck('id');
 
         if ($agenda->training_id && !$trainingIds->contains($agenda->training_id)) {

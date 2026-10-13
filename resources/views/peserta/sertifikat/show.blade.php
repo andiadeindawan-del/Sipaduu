@@ -16,9 +16,15 @@
         <a href="{{ route('peserta.sertifikat.index') }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i> Kembali
         </a>
-        <button id="downloadBtn" class="btn btn-primary btn-sm" disabled>
-            <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
-        </button>
+        @if($isCanvas)
+            <button id="downloadBtn" class="btn btn-primary btn-sm" disabled>
+                <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
+            </button>
+        @elseif($hasDirectFile)
+            <a href="{{ route('peserta.sertifikat.download', $sertifikat->id) }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-download me-1"></i> Download {{ $isDirectPdf ? 'PDF' : 'Sertifikat' }}
+            </a>
+        @endif
     </div>
 </div>
 @endsection
@@ -26,14 +32,85 @@
 @section('content')
 <div class="container-fluid px-3 px-lg-4 pt-4">
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0 text-center bg-light" style="overflow-x: auto;">
-            <!-- Canvas responsif -->
-            <canvas id="certificateCanvas" class="img-fluid m-3" style="max-width: 100%; height: auto; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 4px;"></canvas>
+    @if($isCanvas)
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-0 text-center bg-light" style="overflow-x: auto;">
+                <!-- Canvas responsif -->
+                <canvas id="certificateCanvas" class="img-fluid m-3" style="max-width: 100%; height: auto; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 4px;"></canvas>
+            </div>
+        </div>
+    @elseif($hasDirectFile)
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-3 text-center bg-light" style="overflow-x: auto;">
+                @if($isDirectImage)
+                    <img src="{{ $urlDirectFile }}" alt="Sertifikat {{ $sertifikat->nama_sertifikat }}" 
+                         class="img-fluid rounded shadow-sm" style="max-width: 100%; max-height: 80vh; object-fit: contain;">
+                @elseif($isDirectPdf)
+                    <iframe src="{{ $urlDirectFile }}" class="w-100 rounded" style="height: 80vh; border: none;"></iframe>
+                @else
+                    <div class="py-5">
+                        <i class="bi bi-file-earmark-text text-primary fs-1 mb-3"></i>
+                        <h5>File Sertifikat Siap Diunduh</h5>
+                        <p class="text-muted">Format file tidak mendukung pratinjau langsung di browser.</p>
+                        <a href="{{ route('peserta.sertifikat.download', $sertifikat->id) }}" class="btn btn-primary">
+                            <i class="bi bi-download me-1"></i> Download File Sertifikat
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @else
+        <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+            <div>
+                <strong>File Sertifikat Belum Tersedia.</strong>
+                <p class="mb-0">File sertifikat atau template belum diunggah oleh administrator.</p>
+            </div>
+        </div>
+    @endif
+
+    <!-- Informasi Detail Sertifikat -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0 fw-bold"><i class="bi bi-info-circle text-primary me-2"></i>Informasi Sertifikat</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block">Nomor Sertifikat</span>
+                    <span class="fw-semibold text-dark">{{ $sertifikat->nomor_sertifikat }}</span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block">Penerbit</span>
+                    <span class="fw-semibold text-dark">{{ $sertifikat->penerbit }}</span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block">Tanggal Terbit</span>
+                    <span class="fw-semibold text-dark">{{ date('d F Y', strtotime($sertifikat->tanggal_terbit)) }}</span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block">Masa Berlaku</span>
+                    <span class="fw-semibold text-dark">{{ $sertifikat->tanggal_berlaku_sampai ? date('d F Y', strtotime($sertifikat->tanggal_berlaku_sampai)) : 'Seumur Hidup' }}</span>
+                </div>
+                @if(!empty($namaPenandatangan))
+                <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block">Penandatangan</span>
+                    <span class="fw-semibold text-dark">{{ $namaPenandatangan }}</span>
+                </div>
+                @endif
+                <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block">Verifikasi Sertifikat</span>
+                    <a href="{{ $urlVerify }}" target="_blank" class="text-primary text-decoration-none">
+                        <i class="bi bi-patch-check me-1"></i>Cek Validitas Sertifikat Online
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
 
+@if($isCanvas)
 <!-- QRious Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -51,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         nomor: "No: {!! addslashes($sertifikat->nomor_sertifikat) !!}",
         tanggal: "Diterbitkan: {{ date('d F Y', strtotime($sertifikat->tanggal_terbit)) }}",
         berlaku: "{{ $sertifikat->tanggal_berlaku_sampai ? 'Berlaku s.d: ' . date('d F Y', strtotime($sertifikat->tanggal_berlaku_sampai)) : '' }}",
-        penandatangan: "{!! addslashes($sertifikat->nama_penandatangan) !!}",
+        penandatangan: "{!! addslashes($namaPenandatangan ?? '') !!}",
         qrUrl: "{!! addslashes($urlVerify) !!}",
         templateUrl: "{!! $urlTemplate !!}",
         tandaTanganUrl: "{!! $urlTandaTangan !!}"
@@ -64,19 +141,26 @@ document.addEventListener('DOMContentLoaded', function() {
         nomor: { y: 450, font: 'bold 30px Arial', color: '#777777' },
         tanggal: { y: 880, font: '25px Arial', color: '#555555' },
         berlaku: { y: 920, font: '25px Arial', color: '#555555' },
-        penandatangan: { y: 1150, font: 'bold 30px Arial', color: '#000000', xOffset: 550 }, // Dari tengah geser ke kanan
-        qr: { y: 980, xOffset: -550, size: 150 }, // Dari tengah geser ke kiri
+        penandatangan: { y: 1150, font: 'bold 30px Arial', color: '#000000', xOffset: 550 },
+        qr: { y: 980, xOffset: -550, size: 150 },
         tandaTangan: { y: 980, xOffset: 550, width: 250, height: 150 }
     };
 
-    // Fungsi memuat gambar sebagai Promise
-    function loadImage(src) {
+    // Fungsi memuat gambar sebagai Promise (tidak hard-crash jika tanda tangan opsional gagal)
+    function loadImage(src, isRequired = false) {
         return new Promise((resolve, reject) => {
             if (!src) return resolve(null);
             const img = new Image();
-            img.crossOrigin = 'Anonymous'; // Mencegah tainted canvas jika domain sama tapi protokol berbeda
+            img.crossOrigin = 'Anonymous';
             img.onload = () => resolve(img);
-            img.onerror = () => reject(new Error('Gagal memuat gambar: ' + src));
+            img.onerror = () => {
+                if (isRequired) {
+                    reject(new Error('Gagal memuat template gambar: ' + src));
+                } else {
+                    console.warn('Gagal memuat gambar tanda tangan: ' + src);
+                    resolve(null);
+                }
+            };
             img.src = src;
         });
     }
@@ -98,15 +182,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fungsi utama render
     async function renderCertificate() {
         try {
-            // Tunggu font selesai diload browser (opsional, tp disarankan)
             if (document.fonts && document.fonts.ready) {
                 await document.fonts.ready;
             }
 
             // Muat gambar secara paralel
             const [templateImg, signatureImg, qrImg] = await Promise.all([
-                loadImage(certData.templateUrl),
-                loadImage(certData.tandaTanganUrl),
+                loadImage(certData.templateUrl, true),
+                loadImage(certData.tandaTanganUrl, false),
                 generateQRImage(certData.qrUrl, config.qr.size)
             ]);
 
@@ -120,27 +203,17 @@ document.addEventListener('DOMContentLoaded', function() {
             canvas.width = width;
             canvas.height = height;
 
-            const centerX = width / 2;
-
             // 1. Gambar Template Background
             ctx.drawImage(templateImg, 0, 0, width, height);
 
-            // 2. Gambar Teks (Centered)
+            // 2. Gambar Teks
             ctx.textAlign = 'center';
+            const centerX = width / 2;
 
-            // -- Nama Peserta (Auto Scale)
+            // -- Nama Peserta
             ctx.font = config.nama.font;
             ctx.fillStyle = config.nama.color;
-            let currentNameFont = config.nama.font;
-            let nameWidth = ctx.measureText(certData.nama).width;
-            
-            // Jika terlalu panjang, perkecil font
-            if (nameWidth > config.nama.maxWidth) {
-                const scaleRatio = config.nama.maxWidth / nameWidth;
-                const newSize = Math.floor(80 * scaleRatio);
-                ctx.font = `bold ${newSize}px "Times New Roman"`;
-            }
-            ctx.fillText(certData.nama, centerX, config.nama.y);
+            ctx.fillText(certData.nama, centerX, config.nama.y, config.nama.maxWidth);
 
             // -- Nama Pelatihan
             ctx.font = config.pelatihan.font;
@@ -165,7 +238,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // 3. Gambar Tanda Tangan
             const signatureX = centerX + config.tandaTangan.xOffset - (config.tandaTangan.width / 2);
             if (signatureImg) {
-                // Menyesuaikan rasio aspek tanda tangan
                 const aspect = signatureImg.width / signatureImg.height;
                 let drawW = config.tandaTangan.width;
                 let drawH = drawW / aspect;
@@ -174,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     drawW = drawH * aspect;
                 }
                 
-                // Centering tanda tangan di kotak bayangannya
                 const offsetX = signatureX + (config.tandaTangan.width - drawW) / 2;
                 const offsetY = config.tandaTangan.y + (config.tandaTangan.height - drawH) / 2;
 
@@ -182,9 +253,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // -- Nama Penandatangan
-            ctx.font = config.penandatangan.font;
-            ctx.fillStyle = config.penandatangan.color;
-            ctx.fillText(certData.penandatangan, centerX + config.penandatangan.xOffset, config.penandatangan.y);
+            if (certData.penandatangan) {
+                ctx.font = config.penandatangan.font;
+                ctx.fillStyle = config.penandatangan.color;
+                ctx.fillText(certData.penandatangan, centerX + config.penandatangan.xOffset, config.penandatangan.y);
+            }
 
             // 4. Gambar QR Code
             const qrX = centerX + config.qr.xOffset - (config.qr.size / 2);
@@ -195,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error(error);
-            alert("Gagal memuat sertifikat. Pastikan template dan tanda tangan tersedia. Pesan: " + error.message);
+            alert("Gagal memuat sertifikat. " + error.message);
         }
     }
 
@@ -206,10 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
     downloadBtn.addEventListener('click', function() {
         try {
             const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
-            
-            // Mengatur jsPDF
             const { jsPDF } = window.jspdf;
-            // Deteksi orientasi otomatis
             const orientation = canvas.width > canvas.height ? 'l' : 'p';
             
             const pdf = new jsPDF({
@@ -219,8 +289,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             pdf.addImage(dataUrl, 'JPEG', 0, 0, canvas.width, canvas.height);
-            
-            // Penamaan file sesuai nomor sertifikat
             let safeName = certData.nomor.replace('No: ', '').replace(/[^a-z0-9]/gi, '_').toLowerCase();
             pdf.save(`Sertifikat_${safeName}.pdf`);
             
@@ -231,4 +299,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+@endif
 @endsection

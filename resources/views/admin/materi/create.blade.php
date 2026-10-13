@@ -214,34 +214,8 @@
                                 </h6>
                             </div>
 
-                            <!-- Durasi, Max Attempt, Order -->
-                            <div class="col-12 col-md-4">
-                                <label for="durasi" class="form-label fw-semibold">
-                                    <i class="bi bi-clock me-1"></i> Durasi (menit)
-                                </label>
-                                <input type="number" class="form-control @error('durasi') is-invalid @enderror" 
-                                       id="durasi" name="durasi" value="{{ old('durasi') }}" 
-                                       placeholder="30" min="1">
-                                <small class="text-muted">Estimasi durasi membaca/menonton.</small>
-                                @error('durasi')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-12 col-md-4">
-                                <label for="max_attempt" class="form-label fw-semibold">
-                                    <i class="bi bi-arrow-repeat me-1"></i> Maksimal Percobaan <span class="text-danger">*</span>
-                                </label>
-                                <input type="number" class="form-control @error('max_attempt') is-invalid @enderror" 
-                                       id="max_attempt" name="max_attempt" value="{{ old('max_attempt', 3) }}" 
-                                       placeholder="3" min="1" max="10" required>
-                                <small class="text-muted">Jumlah maksimal percobaan quiz. Default: 3.</small>
-                                @error('max_attempt')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-12 col-md-4">
+                            <!-- Order -->
+                            <div class="col-12 col-md-6">
                                 <label for="order" class="form-label fw-semibold">
                                     <i class="bi bi-list-ol me-1"></i> Urutan
                                 </label>
@@ -255,7 +229,7 @@
                             </div>
 
                             <!-- Status -->
-                            <div class="col-12">
+                            <div class="col-12 col-md-6">
                                 <label for="status" class="form-label fw-semibold">
                                     <i class="bi bi-toggle-on me-1"></i> Status <span class="text-danger">*</span>
                                 </label>
@@ -810,27 +784,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================================
-    // DURASI VALIDATION
-    // ============================================================
-    const durasiInput = document.getElementById('durasi');
-    if (durasiInput) {
-        durasiInput.addEventListener('input', function() {
-            if (this.value < 0) this.value = 1;
-        });
-    }
-
-    // ============================================================
-    // MAX ATTEMPT VALIDATION
-    // ============================================================
-    const maxAttemptInput = document.getElementById('max_attempt');
-    if (maxAttemptInput) {
-        maxAttemptInput.addEventListener('input', function() {
-            if (this.value < 1) this.value = 1;
-            if (this.value > 10) this.value = 10;
-        });
-    }
-
-    // ============================================================
     // ORDER VALIDATION
     // ============================================================
     const orderInput = document.getElementById('order');
@@ -865,19 +818,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('⚠️ Silakan pilih Training terlebih dahulu.');
                 trainingSelect.focus();
                 return false;
-            }
-
-            // Validasi max_attempt
-            const maxAttempt = document.getElementById('max_attempt');
-            if (maxAttempt) {
-                const value = parseInt(maxAttempt.value);
-                if (isNaN(value) || value < 1 || value > 10) {
-                    e.preventDefault();
-                    maxAttempt.classList.add('is-invalid');
-                    alert('⚠️ Maksimal percobaan harus antara 1-10.');
-                    maxAttempt.focus();
-                    return false;
-                }
             }
 
             const files = fileInput ? fileInput.files.length : 0;

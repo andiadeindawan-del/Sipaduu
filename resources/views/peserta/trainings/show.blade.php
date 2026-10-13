@@ -50,6 +50,12 @@
             <div class="alert alert-warning mb-4" role="alert">
                 <h5 class="alert-heading fw-bold"><i class="bi bi-clock-history me-2"></i> Menunggu Verifikasi Admin</h5>
                 <p class="mb-0">Pendaftaran Anda sedang diproses dan menunggu verifikasi dari admin. Anda akan menerima notifikasi jika pendaftaran disetujui atau ditolak.</p>
+                @if($registration->alasan_penolakan)
+                <hr>
+                <p class="mb-0 small fw-bold text-dark">Catatan Penolakan Sebelumnya:</p>
+                <p class="mb-0 fst-italic text-dark">"{{ $registration->alasan_penolakan }}"</p>
+                <p class="mb-0 mt-2 small text-danger"><i class="bi bi-exclamation-triangle me-1"></i> Pastikan Anda sudah melengkapi <a href="{{ route('peserta.profile.index') }}" class="fw-bold text-danger text-decoration-underline">Profil Saya</a> atau syarat lainnya agar bisa diverifikasi.</p>
+                @endif
             </div>
             @endif
 

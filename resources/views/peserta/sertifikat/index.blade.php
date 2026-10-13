@@ -181,26 +181,27 @@
                                     </div>
                                 </div>
 
+                                @if(!empty($item['quizzes']) && count($item['quizzes']) > 0)
                                 <!-- Quiz Details -->
                                 <div class="quiz-details">
                                     @foreach($item['quizzes'] as $quizData)
                                         @php 
-                                            $sisa = max(0, $quizData['max_attempt'] - $quizData['attempts_count']);
-                                            $lulus = $quizData['best_score'] >= $quizData['passing_score'];
+                                            $sisa = max(0, ($quizData['max_attempt'] ?? 3) - ($quizData['attempts_count'] ?? 0));
+                                            $lulus = ($quizData['best_score'] ?? 0) >= ($quizData['passing_score'] ?? 0);
                                         @endphp
                                         <div class="quiz-item">
                                             <div class="quiz-header">
                                                 <span class="quiz-title">
                                                     <i class="bi bi-question-circle me-1"></i>
-                                                    {{ Str::limit($quizData['quiz']->judul, 30) }}
+                                                    {{ Str::limit($quizData['quiz']->judul ?? 'Kuis', 30) }}
                                                 </span>
                                                 <span class="badge {{ $lulus ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ $quizData['best_score'] }}
+                                                    {{ $quizData['best_score'] ?? 0 }}
                                                 </span>
                                             </div>
                                             <div class="quiz-info">
                                                 <small class="text-muted">
-                                                    Nilai minimum: <strong>{{ $quizData['passing_score'] }}</strong>
+                                                    Nilai minimum: <strong>{{ $quizData['passing_score'] ?? 0 }}</strong>
                                                 </small>
                                                 <small class="text-muted">
                                                     Sisa percobaan: 
@@ -212,13 +213,14 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                @endif
                             @endif
                         </div>
 
                         <!-- Card Footer -->
                         <div class="card-sertifikat-footer">
                             @if($status === 'sudah_terbit')
-                                <a href="{{ route('sertifikat.show', $item['sertifikat']->id) }}" 
+                                <a href="{{ route('peserta.sertifikat.show', $item['sertifikat']->id) }}" 
                                    class="btn btn-primary btn-sertifikat">
                                     <i class="bi bi-file-earmark-pdf me-1"></i> Lihat & Download PDF
                                 </a>
@@ -227,7 +229,7 @@
                                     <i class="bi bi-clock me-1"></i> Sedang Diproses
                                 </button>
                             @else
-                                <a href="{{ route('trainings.show', $training->id) }}" 
+                                <a href="{{ !empty($training->id) ? route('peserta.trainings.show', $training->id) : '#' }}" 
                                    class="btn btn-danger btn-sertifikat">
                                     <i class="bi bi-arrow-right-circle me-1"></i> Lanjutkan Pelatihan
                                 </a>
