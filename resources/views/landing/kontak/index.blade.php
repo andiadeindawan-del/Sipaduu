@@ -207,7 +207,7 @@
                                 <div>
                                     <span class="small">
                                         <strong>Gedung Gabungan Dinas (Gadis) Lantai 3</strong>
-                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1">Tepat Berhadapan dengan Dinas Kehutanan</span>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1"></span>
                                         <span class="text-muted d-block mt-1">
                                             Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat<br>
                                             Jalan Abdul Malik Pattana Endeng, Mamuju<br>
