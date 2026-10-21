@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin') — Sistem Pelatihan SDM</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo-sipadu-32.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-32.png')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo-sipadu-128.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-128.png')) }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -87,7 +89,7 @@
             letter-spacing: 0.5px;
         }
         #sidebar .brand .brand-highlight {
-            color: #6ab0f5;
+            color: #249B75;
         }
         #sidebar .brand .brand-subtitle {
             font-size: 0.55rem;
@@ -338,25 +340,26 @@
 <nav id="sidebar">
     <div class="sidebar-content">
         <!-- Brand -->
-        <a href="{{ route('admin.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.25rem; text-decoration: none;">
+        <a href="{{ route('admin.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.85rem 1.25rem; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.08);">
            @php
-                $logoPath = 'assets/images/logo koperindag 1.gif';
+                $logoPath = 'assets/images/logo-sipadu.png';
                 $logoExists = file_exists(public_path($logoPath));
             @endphp
             
             @if($logoExists)
-                <img src="{{ asset($logoPath) }}" 
-                     alt="Logo SIPADU" 
-                     style="height: 40px; width: auto; object-fit: contain;">
+                <div style="width: 42px; height: 42px; background: #ffffff; border-radius: 9px; padding: 3px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.25); flex-shrink: 0;">
+                    <img src="{{ asset($logoPath) }}?v={{ @filemtime(public_path($logoPath)) }}" 
+                         alt="Logo SIPADU" 
+                         style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
             @else
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4e9af1, #3a7bc8); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
+                <div style="width: 42px; height: 42px; background: #ffffff; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #0B1F4D; font-weight: 900; font-size: 1.15rem; flex-shrink: 0;">
                     S
                 </div>
             @endif
             
             <div class="brand-text">
-                <span class="brand-name">S I P <span class="brand-highlight">A D U</span></span>
-                <span class="brand-subtitle">Koperindag Sulbar</span>
+                <span class="brand-name" style="color: #ffffff !important; font-weight: 900; font-size: 1.35rem; letter-spacing: 1.5px; line-height: 1;">SIPADU</span>
             </div>
         </a>
 

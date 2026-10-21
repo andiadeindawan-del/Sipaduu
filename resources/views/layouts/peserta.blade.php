@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Peserta') — Sistem Pelatihan SDM</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo-sipadu-32.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-32.png')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo-sipadu-128.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-128.png')) }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -504,30 +506,25 @@
 <nav id="sidebar">
     <div class="sidebar-content">
         <!-- Brand -->
-         <a href="{{ route('peserta.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.25rem; text-decoration: none;">
+         <a href="{{ route('peserta.dashboard') }}" class="brand" style="display: flex; align-items: center; gap: 12px; padding: 0.85rem 1rem; text-decoration: none; border-bottom: 1px solid #e8edf5;">
            @php
-                $logoPath = 'assets/images/logo koperindag 1.gif';
+                $logoPath = 'assets/images/logo-sipadu.png';
                 $logoExists = file_exists(public_path($logoPath));
             @endphp
             
             @if($logoExists)
-                <img src="{{ asset($logoPath) }}" 
+                <img src="{{ asset($logoPath) }}?v={{ @filemtime(public_path($logoPath)) }}" 
                      alt="Logo SIPADU" 
-                     style="height: 40px; width: auto; object-fit: contain;">
+                     style="height: 42px; width: 42px; object-fit: contain; flex-shrink: 0;">
             @else
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4e9af1, #3a7bc8); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
+                <div style="width: 42px; height: 42px; background: #0B1F4D; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 900; font-size: 1.15rem; flex-shrink: 0;">
                     S
                 </div>
             @endif
             
-            <div style="display: flex; flex-direction: column; line-height: 1.1;">
-                <span style="font-weight: 800; color: #090909; font-size: 1.3rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    S I P <span style="color: #6ab0f5;">A D U</span>
-                </span>
-                <small style="font-size: 0.55rem; color: rgba(5, 5, 5, 0.5); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 1px;">
-                    Koperindag Sulbar
-                </small>
-            </div>
+            <span style="font-weight: 900; color: #0B1F4D !important; font-size: 1.35rem; letter-spacing: 1.5px; line-height: 1;">
+                SIPADU
+            </span>
         </a>
 
         <!-- ========================================================== -->

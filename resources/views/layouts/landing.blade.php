@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Beranda') — SIPADU</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo-sipadu-32.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-32.png')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo-sipadu-128.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-128.png')) }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -749,22 +751,22 @@
     <div class="container">
         <a class="navbar-brand" href="{{ route('landing.index') }}" style="display: flex; align-items: center; gap: 10px;">
             @php
-                $logoPath = 'assets/images/logo koperindag 1.gif';
+                $logoPath = 'assets/images/logo-sipadu.png';
                 $logoExists = file_exists(public_path($logoPath));
             @endphp
             
             @if($logoExists)
-                <img src="{{ asset($logoPath) }}" 
+                <img src="{{ asset($logoPath) }}?v={{ @filemtime(public_path($logoPath)) }}" 
                      alt="Logo SIPADU" 
-                     style="height: 40px; width: auto; object-fit: contain;">
+                     style="height: 46px; width: auto; object-fit: contain;">
             @else
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4e9af1, #3a7bc8); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
+                <div style="width: 44px; height: 44px; background: #17324D; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
                     S
                 </div>
             @endif
             
-            <span style="font-weight: 800; color: #1a2236; font-size: 1.2rem;">
-                S I P <span style="color: #4e9af1;">A D U</span>
+            <span style="font-weight: 900; color: #0B1F4D; font-size: 1.4rem; letter-spacing: 1.5px;">
+                SIPADU
             </span>
         </a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
@@ -855,8 +857,13 @@
     <div class="container">
        <div class="row g-4">
     <div class="col-md-4">
-        <h6><i class="bi bi-mortarboard-fill me-1"></i>SIPADU</h6>
-        <p class="small">Platform pelatihan dan pengembangan kompetensi sumber daya manusia perusahaan.</p>
+        <h6 class="d-flex align-items-center gap-2">
+            <div style="width: 32px; height: 32px; background: #ffffff; border-radius: 7px; padding: 2px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                <img src="{{ asset('assets/images/logo-sipadu.png') }}" alt="SIPADU" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <span style="font-weight: 800; color: #ffffff; letter-spacing: 1px; font-size: 1.15rem;">SIPADU</span>
+        </h6>
+        <p class="small">Sistem Pengembangan SDM Usaha &mdash; Dinas Koperasi, Usaha Kecil Menengah, Perindustrian dan Perdagangan Provinsi Sulawesi Barat.</p>
         <div class="social-icons mt-3 d-flex gap-2">
             <a href="https://www.facebook.com/koperindagsulbar" 
                target="_blank" 

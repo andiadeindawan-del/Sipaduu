@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SIPADU - Sistem Pengembangan SDM Usaha KOPERINDAG">
     <title>Masuk | SIPADU</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo-sipadu-32.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-32.png')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo-sipadu-128.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu-128.png')) }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -382,10 +384,9 @@
         <!-- ============================================================ -->
         <div class="brand-panel">
             <div class="brand-mark">
-                <img src="{{ asset('assets/images/logo koperindag 1.gif') }}" alt="Lambang Provinsi Sulawesi Barat" class="logo-img">
+                <img src="{{ asset('assets/images/logo-sipadu.png') }}?v={{ @filemtime(public_path('assets/images/logo-sipadu.png')) }}" alt="Logo SIPADU" class="logo-img">
                 <div class="mark-word">
                     <span class="name">SIPADU</span>
-                    <span class="agency">Dinas Koperindag Prov. Sulawesi Barat</span>
                 </div>
             </div>
 
