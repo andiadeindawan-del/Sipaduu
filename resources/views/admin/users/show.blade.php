@@ -41,8 +41,7 @@
                 <h5 class="fw-bold mb-1">{{ $user->nama ?? $user->name }}</h5>
                 <span class="badge 
                     @if($user->role === 'admin') badge-danger
-                    @elseif($user->role === 'trainer') badge-info
-                    @else badge-secondary
+                                        @else badge-secondary
                     @endif
                     mb-2 px-3 py-2 fs-6
                 ">
@@ -730,22 +729,6 @@
             </div>
             @endif
 
-            @if($user->isTrainer())
-            <!-- Training Diajar -->
-            <div class="panel mt-4">
-                <div class="panel-header">
-                    <h5 class="section-title"><i class="bi bi-journal-bookmark"></i> Training Diajar</h5>
-                </div>
-                <div class="p-4">
-                    @forelse($user->trainingDiajar as $t)
-                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                        <span class="fw-semibold">{{ $t->judul }}</span>
-                        <span class="badge 
-                            @if($t->status == 'published') badge-published
-                            @elseif($t->status == 'berjalan') badge-berjalan
-                            @elseif($t->status == 'selesai') badge-selesai
-                            @else badge-draft
-                            @endif
                         ">
                             <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
                             {{ ucfirst($t->status) }}

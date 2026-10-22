@@ -148,8 +148,7 @@
                                                         $audienceMap = [
                                                             'all' => '🌍 Semua',
                                                             'peserta' => '👤 Peserta',
-                                                            'trainer' => '👨‍🏫 Trainer',
-                                                            'admin' => '🛡️ Admin',
+                                                                                                                        'admin' => '🛡️ Admin',
                                                         ];
                                                     @endphp
                                                     {{ $audienceMap[$pengumuman->target_audience] ?? ucfirst($pengumuman->target_audience ?? 'All') }}

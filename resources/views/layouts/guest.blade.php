@@ -6,6 +6,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <link rel="icon" type="image/png" href="{{ asset('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png') }}?v={{ @filemtime(public_path('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png')) }}">
+        <link rel="apple-touch-icon" href="{{ asset('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png') }}?v={{ @filemtime(public_path('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png')) }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

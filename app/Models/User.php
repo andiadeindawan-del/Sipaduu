@@ -227,7 +227,6 @@ class User extends Authenticatable
     {
         $labels = [
             'admin' => 'Admin',
-            'trainer' => 'Trainer',
             'peserta' => 'Peserta',
         ];
         return $labels[$this->role] ?? $this->role;
@@ -237,7 +236,6 @@ class User extends Authenticatable
     {
         $classes = [
             'admin' => 'danger',
-            'trainer' => 'info',
             'peserta' => 'secondary',
         ];
         return $classes[$this->role] ?? 'secondary';
@@ -387,10 +385,6 @@ class User extends Authenticatable
         return $query->where('role', 'admin');
     }
 
-    public function scopeTrainer($query)
-    {
-        return $query->where('role', 'trainer');
-    }
 
     public function scopePeserta($query)
     {
@@ -417,10 +411,6 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function isTrainer(): bool
-    {
-        return $this->role === 'trainer';
-    }
 
     public function isPeserta(): bool
     {

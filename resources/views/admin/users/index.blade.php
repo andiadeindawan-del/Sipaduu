@@ -49,12 +49,12 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <article class="metric-card metric-warning">
                 <div class="metric-top">
-                    <span class="metric-label">Trainers</span>
-                    <span class="metric-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+                    <span class="metric-label">Peserta</span>
+                    <span class="metric-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
                 </div>
-                <div class="metric-value">{{ $trainerCount ?? 0 }}</div>
+                <div class="metric-value">{{ $pesertaCount ?? 0 }}</div>
                 <div class="metric-meta">
-                    <span class="text-warning">trainer aktif</span>
+                    <span class="text-warning">peserta terdaftar</span>
                     <span>di sistem</span>
                 </div>
             </article>

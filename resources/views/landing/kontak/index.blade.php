@@ -32,6 +32,7 @@
                                         <h6 class="fw-bold">Alamat</h6>
                                         <p class="text-muted small mb-0">
                                             <strong>Gedung Gabungan Dinas (Gadis) Lantai 3</strong><br>
+                                            <span class="text-primary fw-medium"><i class="bi bi-building me-1"></i>Gedung Beratap Kubah Abu-abu (Depan Dinas Kehutanan)</span><br>
                                             Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat<br>
                                             Jalan Abdul Malik Pattana Endeng<br>
                                             Mamuju, Sulawesi Barat 91511<br>
@@ -182,21 +183,21 @@
                 <h5 class="section-title">
                     <i class="bi bi-map me-2"></i> Lokasi Kami - Kantor Dinas Koperindag Sulawesi Barat
                 </h5>
-                <a href="https://www.google.com/maps/search/?api=1&query=Dinas+Kehutanan+Provinsi+Sulawesi+Barat+Mamuju" target="_blank" class="btn btn-sm btn-outline-primary">
+                <a href="https://www.google.com/maps?q=-2.665446,118.848026+(Dinas+Koperindag+Sulawesi+Barat+-+Gedung+Gadis)" target="_blank" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-box-arrow-up-right me-1"></i> Buka di Google Maps
                 </a>
             </div>
             <div class="p-0">
                 <div class="ratio ratio-21x9">
                     <iframe 
-                        src="https://maps.google.com/maps?q=Dinas+Kehutanan+Provinsi+Sulawesi+Barat,+Mamuju&hl=id&z=17&output=embed" 
+                        src="https://maps.google.com/maps?q=-2.665446,118.848026+(Kantor+Dinas+Koperindag+Sulawesi+Barat+-+Gedung+Gadis+Lantai+3)&hl=id&z=18&output=embed" 
                         width="100%" 
                         height="100%" 
                         style="border:0;" 
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade"
-                        title="Lokasi Kantor Dinas Koperindag Sulawesi Barat (Berhadapan dengan Kantor Dinas Kehutanan Provinsi Sulawesi Barat) - Gedung Gabungan Dinas (Gadis) Lantai 3, Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat, Jalan Abdul Malik Pattana Endeng, Mamuju">
+                        title="Lokasi Kantor Dinas Koperindag Sulawesi Barat - Gedung Gabungan Dinas (Gadis) Lantai 3 (Gedung Beratap Kubah Abu-abu, Berhadapan dengan Kantor Dinas Kehutanan), Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat, Jalan Abdul Malik Pattana Endeng, Mamuju">
                     </iframe>
                 </div>
                 <div class="p-3 bg-light">
@@ -207,11 +208,11 @@
                                 <div>
                                     <span class="small">
                                         <strong>Gedung Gabungan Dinas (Gadis) Lantai 3</strong>
-                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1"></span>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1">Gedung Kubah Abu-abu</span>
                                         <span class="text-muted d-block mt-1">
+                                            <i class="bi bi-info-circle me-1 text-primary"></i>Berhadapan langsung di depan Kantor Dinas Kehutanan<br>
                                             Kompleks Perkantoran Gubernur Provinsi Sulawesi Barat<br>
-                                            Jalan Abdul Malik Pattana Endeng, Mamuju<br>
-                                            Sulawesi Barat 91511
+                                            Jalan Abdul Malik Pattana Endeng, Mamuju, Sulawesi Barat 91511
                                         </span>
                                     </span>
                                 </div>

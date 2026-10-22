@@ -221,8 +221,7 @@
                                         <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
                                         <select class="form-select @error('role') is-invalid @enderror" name="role">
                                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                            <option value="trainer" {{ old('role', $user->role) == 'trainer' ? 'selected' : '' }}>Trainer</option>
-                                            <option value="peserta" {{ old('role', $user->role) == 'peserta' ? 'selected' : '' }}>Peserta</option>
+                                                                                        <option value="peserta" {{ old('role', $user->role) == 'peserta' ? 'selected' : '' }}>Peserta</option>
                                         </select>
                                         @error('role') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>

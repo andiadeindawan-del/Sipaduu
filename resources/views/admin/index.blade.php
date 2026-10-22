@@ -349,7 +349,7 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge {{ $user->role == 'admin' ? 'text-bg-danger' : ($user->role == 'trainer' ? 'text-bg-info' : 'text-bg-secondary') }}">
+                            <span class="badge {{ $user->role == 'admin' ? 'text-bg-danger' : 'text-bg-secondary' }}">
                                 {{ ucfirst($user->role ?? 'User') }}
                             </span>
                         </td>

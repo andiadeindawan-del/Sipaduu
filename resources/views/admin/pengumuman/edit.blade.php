@@ -247,8 +247,7 @@
                                                 id="target_audience" name="target_audience" required>
                                             <option value="all" {{ old('target_audience', $pengumuman->target_audience) == 'all' ? 'selected' : '' }}>🌍 Semua</option>
                                             <option value="peserta" {{ old('target_audience', $pengumuman->target_audience) == 'peserta' ? 'selected' : '' }}>👤 Peserta</option>
-                                            <option value="trainer" {{ old('target_audience', $pengumuman->target_audience) == 'trainer' ? 'selected' : '' }}>👨‍🏫 Trainer</option>
-                                            <option value="admin" {{ old('target_audience', $pengumuman->target_audience) == 'admin' ? 'selected' : '' }}>🛡️ Admin</option>
+                                                                                        <option value="admin" {{ old('target_audience', $pengumuman->target_audience) == 'admin' ? 'selected' : '' }}>🛡️ Admin</option>
                                         </select>
                                         @error('target_audience')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>

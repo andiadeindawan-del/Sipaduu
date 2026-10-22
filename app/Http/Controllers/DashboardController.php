@@ -24,7 +24,6 @@ class DashboardController extends Controller
 
         return match ($user->role) {
             'admin' => $this->adminDashboard(),
-            'trainer' => $this->trainerDashboard(),
             'peserta' => $this->pesertaDashboard(),
             default => $this->pesertaDashboard(),
         };
@@ -48,7 +47,6 @@ class DashboardController extends Controller
         // Status counts
         $activeUsers = User::where('status', 'aktif')->count();
         $inactiveUsers = User::where('status', 'nonaktif')->count();
-        $trainerCount = User::where('role', 'trainer')->count();
         $pesertaCount = User::where('role', 'peserta')->count();
 
         // Training status
@@ -177,7 +175,6 @@ class DashboardController extends Controller
             'averageQuizScore',
             'activeUsers',
             'inactiveUsers',
-            'trainerCount',
             'pesertaCount',
             'publishedTrainings',
             'draftTrainings',
@@ -203,53 +200,6 @@ class DashboardController extends Controller
             'recentCertificates',
             'chartLabels',
             'chartData'
-        ));
-    }
-
-    /**
-     * Trainer Dashboard.
-     */
-    public function trainerDashboard(): View
-    {
-        $user = auth()->user();
-        $trainerId = $user->id;
-
-        // Trainer's trainings
-        $totalTrainings = Training::where('trainer_id', $trainerId)->count();
-        $publishedTrainings = Training::where('trainer_id', $trainerId)
-            ->where('status', 'published')
-            ->count();
-        $completedTrainings = Training::where('trainer_id', $trainerId)
-            ->where('status', 'selesai')
-            ->count();
-
-        // Participants
-        $totalParticipants = Training::where('trainer_id', $trainerId)
-            ->withCount('participants')
-            ->get()
-            ->sum('participants_count');
-
-        // Upcoming trainings
-        $upcomingTrainings = Training::where('trainer_id', $trainerId)
-            ->where('status', 'published')
-            ->where('tanggal_mulai', '>=', now())
-            ->orderBy('tanggal_mulai', 'asc')
-            ->limit(5)
-            ->get();
-
-        // Recent trainings
-        $recentTrainings = Training::where('trainer_id', $trainerId)
-            ->latest()
-            ->limit(5)
-            ->get();
-
-        return view('peserta.index', compact(
-            'totalTrainings',
-            'publishedTrainings',
-            'completedTrainings',
-            'totalParticipants',
-            'upcomingTrainings',
-            'recentTrainings'
         ));
     }
 

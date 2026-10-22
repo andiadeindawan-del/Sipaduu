@@ -196,13 +196,13 @@ class LandingController extends Controller
         $totalTrainings = Training::whereIn('status', ['published', 'selesai', 'berjalan'])->count();
         $totalParticipants = User::where('role', 'peserta')->count();
         $totalCertificates = Sertifikat::count();
-        $totalInstructors = User::where('role', 'trainer')->count();
+        $totalMaterials = \App\Models\Materi::where('status', 'published')->count();
 
         return view('landing.tentang.index', compact(
             'totalTrainings',
             'totalParticipants',
             'totalCertificates',
-            'totalInstructors'
+            'totalMaterials'
         ));
     }
 

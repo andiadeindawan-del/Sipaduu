@@ -230,7 +230,7 @@
                                 <td>{{ $participant->nama ?? $participant->name }}</td>
                                 <td>{{ $participant->email }}</td>
                                 <td>
-                                    <span class="badge {{ $participant->role == 'admin' ? 'text-bg-danger' : ($participant->role == 'trainer' ? 'text-bg-info' : 'text-bg-secondary') }}">
+                                    <span class="badge {{ $participant->role == 'admin' ? 'text-bg-danger' : 'text-bg-secondary' }}">
                                         {{ ucfirst($participant->role ?? 'User') }}
                                     </span>
                                 </td>

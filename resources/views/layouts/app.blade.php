@@ -7,6 +7,8 @@
     <meta name="description" content="Sistem Pelatihan SDM - Administration Dashboard">
 
     <title>{{ config('app.name', 'SIPADU') }} - @yield('title', 'Admin')</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png') }}?v={{ @filemtime(public_path('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png') }}?v={{ @filemtime(public_path('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png')) }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -556,8 +558,8 @@
                 <!-- Brand -->
                 <div class="sidebar-header">
                     <a class="brand-mark" href="{{ route('admin.dashboard') }}">
-                        <span class="brand-icon">
-                            <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+                        <span class="brand-icon" style="background: #ffffff; padding: 3px;">
+                            <img src="{{ asset('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png') }}?v={{ @filemtime(public_path('assets/images/Lambang Pendidikan Sirkular Biru Hijau.png')) }}" alt="Logo SIPADU" style="width: 100%; height: 100%; object-fit: contain;">
                         </span>
                         <span class="brand-copy">
                             <span class="brand-title">S I P <span>A D U</span></span>

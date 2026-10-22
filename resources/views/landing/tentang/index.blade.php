@@ -182,9 +182,9 @@
             <div class="col-6 col-md-3">
                 <div class="bg-white p-4 rounded-4 shadow-sm border border-light">
                     <h3 class="text-info fw-bold mb-0" style="font-size: 2.5rem;">
-                        <span data-count="{{ $totalInstructors ?? 0 }}">0</span>+
+                        <span data-count="{{ $totalMaterials ?? 0 }}">0</span>+
                     </h3>
-                    <p class="text-muted small mb-0">Instruktur Profesional</p>
+                    <p class="text-muted small mb-0">Materi &amp; Modul</p>
                 </div>
             </div>
         </div>

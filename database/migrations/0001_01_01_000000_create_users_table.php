@@ -27,7 +27,7 @@ return new class extends Migration
             // ============================================================
             $table->string('nik', 30)->unique()->nullable();
             $table->string('nama', 100)->nullable();
-            $table->enum('role', ['admin', 'trainer', 'peserta'])->default('peserta');
+            $table->enum('role', ['admin', 'peserta'])->default('peserta');
 
             // ============================================================
             // CONTACT

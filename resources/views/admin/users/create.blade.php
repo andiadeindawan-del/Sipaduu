@@ -99,8 +99,7 @@
                                             id="role" name="role" required>
                                         <option value="">Pilih Role</option>
                                         <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                        <option value="trainer" {{ old('role') == 'trainer' ? 'selected' : '' }}>Trainer</option>
-                                        <option value="peserta" {{ old('role') == 'peserta' ? 'selected' : '' }}>Peserta</option>
+                                                                                <option value="peserta" {{ old('role') == 'peserta' ? 'selected' : '' }}>Peserta</option>
                                     </select>
                                 </div>
                                 @error('role')

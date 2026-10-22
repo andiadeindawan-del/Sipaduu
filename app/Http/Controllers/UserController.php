@@ -41,14 +41,16 @@ class UserController extends Controller
         $totalUsers    = User::count();
         $activeUsers   = User::where('status', 'aktif')->count();
         $inactiveUsers = User::where('status', 'nonaktif')->count();
-        $trainerCount  = User::where('role', 'trainer')->count();
+        $adminCount   = User::where('role', 'admin')->count();
+        $pesertaCount = User::where('role', 'peserta')->count();
 
         return view('admin.users.index', compact(
             'users',
             'totalUsers',
             'activeUsers',
             'inactiveUsers',
-            'trainerCount'
+            'adminCount',
+            'pesertaCount'
         ));
     }
 
@@ -70,7 +72,7 @@ class UserController extends Controller
             'nama'        => 'required|string|max:100',
             'email'       => 'required|email|max:100|unique:users',
             'password'    => 'required|string|min:8|confirmed',
-            'role'        => 'required|in:admin,trainer,peserta',
+            'role'        => 'required|in:admin,peserta',
             'status'      => 'nullable|in:aktif,nonaktif',
             'departemen'  => 'nullable|string|max:100',
             'jabatan'     => 'nullable|string|max:100',
@@ -124,7 +126,7 @@ class UserController extends Controller
             'nama'        => 'required|string|max:100',
             'email'       => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password'    => 'nullable|string|min:8|confirmed',
-            'role'        => 'required|in:admin,trainer,peserta',
+            'role'        => 'required|in:admin,peserta',
             'status'      => 'nullable|in:aktif,nonaktif',
             'departemen'  => 'nullable|string|max:100',
             'jabatan'     => 'nullable|string|max:100',
