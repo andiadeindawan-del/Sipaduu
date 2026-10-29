@@ -20,6 +20,7 @@ class User extends Authenticatable
         
         // Identity
         'nik',
+        'nik_hash',
         'nama',
         'role',
         
@@ -58,8 +59,8 @@ class User extends Authenticatable
         // Digitalisasi & Transformasi
         'email_usaha', 'website_usaha',
         // Digitalisasi & Pemasaran Baru
-        'judul_usaha_online', 'shopee', 'tokopedia', 'lazada', 'blibli', 'marketplace_lainnya', 'wilayah_pemasaran',
- 'medsos_usaha', 'marketplace', 'facebook_usaha', 'instagram_usaha', 'tiktok_usaha', 'pengadaan_barang', 'akses_kredit',
+        'judul_usaha_online', 'shopee', 'tokopedia', 'lazada', 'blibli', 'bukalapak', 'marketplace_lainnya', 'wilayah_pemasaran',
+ 'medsos_usaha', 'marketplace', 'facebook_usaha', 'instagram_usaha', 'tiktok_usaha', 'whatsapp_usaha', 'youtube_usaha', 'pengadaan_barang', 'akses_kredit',
         'tabungan', 'perizinan_usaha', 'sertifikasi_produk', 'jangkauan_pemasaran', 'lokasi_pemasaran',
         'status_ekspor', 'negara_ekspor', 'metode_ekspor', 'volume_ekspor', 'nilai_ekspor', 'pasok_bahan_baku', 'kemitraan',
 
@@ -79,7 +80,12 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', 'marketplace_lainnya' => 'array', 'npwp_file' => 'array', 'file_produk' => 'array',
+            'password' => 'hashed',
+            'nik' => 'encrypted',
+            'npwp_usaha' => 'encrypted',
+            'marketplace_lainnya' => 'array',
+            'npwp_file' => 'array',
+            'file_produk' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -88,6 +94,17 @@ class User extends Authenticatable
     // ============================================================
     // RELATIONSHIPS
     // ============================================================
+
+    protected static function booted(): void
+    {
+        static::saving(function ($user) {
+            if ($user->isDirty('nik')) {
+                $user->nik_hash = !empty($user->nik)
+                    ? hash_hmac('sha256', (string) $user->nik, (string) config('app.key'))
+                    : null;
+            }
+        });
+    }
 
     public function sertifikats()
     {
@@ -397,7 +414,7 @@ class User extends Authenticatable
             $q->where('nama', 'like', "%$search%")
               ->orWhere('name', 'like', "%$search%")
               ->orWhere('email', 'like', "%$search%")
-              ->orWhere('nik', 'like', "%$search%")
+              ->orWhere('nik_hash', hash_hmac('sha256', (string) $search, (string) config('app.key')))
               ->orWhere('no_telepon', 'like', "%$search%");
         });
     }

@@ -31,7 +31,17 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nik' => ['required', 'string', 'max:30', 'unique:users'],
+            'nik' => [
+                'required',
+                'string',
+                'max:30',
+                function ($attribute, $value, $fail) {
+                    $hash = hash_hmac('sha256', (string) $value, (string) config('app.key'));
+                    if (User::where('nik_hash', $hash)->exists()) {
+                        $fail('NIK sudah terdaftar dalam sistem.');
+                    }
+                },
+            ],
             'nama' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:100', 'unique:users'],
             'no_telepon' => ['required', 'string', 'max:20'],
@@ -53,6 +63,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'nik' => $request->nik,
             'nama' => $request->nama,
+            'name' => $request->nama,
             'email' => $request->email,
             'no_telepon' => $request->no_telepon,
             'nama_usaha' => $request->nama_usaha,

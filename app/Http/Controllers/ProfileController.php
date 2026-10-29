@@ -68,8 +68,21 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'nik' => 'nullable|string|max:50',
+            'nik' => [
+                'nullable',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) use ($user) {
+                    if (!empty($value)) {
+                        $hash = hash_hmac('sha256', (string) $value, (string) config('app.key'));
+                        if (User::where('nik_hash', $hash)->where('id', '!=', $user->id)->exists()) {
+                            $fail('NIK sudah digunakan oleh pengguna lain.');
+                        }
+                    }
+                },
+            ],
             'phone' => 'nullable|string|max:20',
+            'kontak' => 'nullable|string|max:20',
             'no_telepon' => 'nullable|string|max:20',
             'alamat_lengkap' => 'nullable|string',
             
@@ -129,10 +142,13 @@ class ProfileController extends Controller
             'facebook_usaha' => 'nullable|url|max:255',
             'instagram_usaha' => 'nullable|url|max:255',
             'tiktok_usaha' => 'nullable|url|max:255',
+            'whatsapp_usaha' => 'nullable|url|max:255',
+            'youtube_usaha' => 'nullable|url|max:255',
             'shopee' => 'nullable|url|max:255',
             'tokopedia' => 'nullable|url|max:255',
             'lazada' => 'nullable|url|max:255',
             'blibli' => 'nullable|url|max:255',
+            'bukalapak' => 'nullable|url|max:255',
             'marketplace_lainnya_nama' => 'nullable|array',
             'marketplace_lainnya_nama.*' => 'nullable|string|max:150',
             'marketplace_lainnya_link' => 'nullable|array',
@@ -168,6 +184,10 @@ class ProfileController extends Controller
         if (isset($validated['phone']) && !isset($validated['no_telepon'])) {
             $validated['no_telepon'] = $validated['phone'];
             unset($validated['phone']);
+        }
+        if (isset($validated['kontak']) && !isset($validated['no_telepon'])) {
+            $validated['no_telepon'] = $validated['kontak'];
+            unset($validated['kontak']);
         }
 
         // Handle avatar upload

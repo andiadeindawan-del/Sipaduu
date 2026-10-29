@@ -368,7 +368,7 @@ class DashboardController extends Controller
 
         $users = User::where('nama', 'like', "%{$query}%")
             ->orWhere('email', 'like', "%{$query}%")
-            ->orWhere('nik', 'like', "%{$query}%")
+            ->orWhere('nik_hash', hash_hmac('sha256', (string) $query, (string) config('app.key')))
             ->limit(5)
             ->get();
 

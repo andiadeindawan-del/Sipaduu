@@ -71,52 +71,6 @@
     <!-- Profile Completion Status -->
     @include('components.profile-completion', ['user' => auth()->user()])
 
-    
-
-    <!-- Progress Overview -->
-    @if($totalTrainings > 0)
-    <div class="panel mb-4 border-0 shadow-sm">
-        <div class="panel-header bg-light bg-opacity-50">
-            <h5 class="section-title"><i class="bi bi-graph-up-arrow" style="color: #6c757d;"></i> Progress Keseluruhan</h5>
-        </div>
-        <div class="p-4">
-            <div class="row g-4 align-items-center">
-                <div class="col-12 col-md-8">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small fw-semibold">Progress Belajar</span>
-                        <span class="fw-bold" style="color: {{ $progressColor }};">{{ $completedPercent }}%</span>
-                    </div>
-                    <div class="progress" style="height: 14px; background-color: #e9ecef; border-radius: 50px;">
-                        <div class="progress-bar" style="width: {{ $completedPercent }}%; border-radius: 50px; transition: width 1.5s ease; background: linear-gradient(90deg, {{ $progressColor }}, {{ $progressColor }}dd);"></div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2">
-                        <span class="text-muted small">
-                            <i class="bi bi-check-circle" style="color: #28c76f;"></i>
-                            Selesai: <strong>{{ $totalCertificates }}</strong> pelatihan
-                        </span>
-                        <span class="text-muted small">
-                            <i class="bi bi-clock" style="color: #ff9f43;"></i>
-                            Berjalan: <strong>{{ $totalTrainings - $totalCertificates }}</strong> pelatihan
-                        </span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-end">
-                        <span class="badge px-3 py-2 rounded-pill" style="font-size: 0.85rem; background: {{ $progressColor }}; color: #fff;">
-                            <i class="bi bi-check-circle me-1"></i> {{ $completedPercent }}% Selesai
-                        </span>
-                        @if($inProgressPercent > 0)
-                        <span class="badge px-3 py-2 rounded-pill" style="font-size: 0.85rem; background: #ff9f43; color: #fff;">
-                            <i class="bi bi-clock me-1"></i> {{ $inProgressPercent }}% Berjalan
-                        </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <!-- Metode Pembelajaran -->
     <div class="panel mb-4 border-0 shadow-sm">
         <div class="panel-header bg-light bg-opacity-50">

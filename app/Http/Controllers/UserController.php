@@ -22,7 +22,7 @@ class UserController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%$search%")
-                  ->orWhere('nik', 'like', "%$search%")
+                  ->orWhere('nik_hash', hash_hmac('sha256', (string) $search, (string) config('app.key')))
                   ->orWhere('email', 'like', "%$search%");
             });
         }
@@ -68,7 +68,17 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nik'         => 'required|string|max:30|unique:users',
+            'nik'         => [
+                'required',
+                'string',
+                'max:30',
+                function ($attribute, $value, $fail) {
+                    $hash = hash_hmac('sha256', (string) $value, (string) config('app.key'));
+                    if (User::where('nik_hash', $hash)->exists()) {
+                        $fail('NIK sudah terdaftar dalam sistem.');
+                    }
+                },
+            ],
             'nama'        => 'required|string|max:100',
             'email'       => 'required|email|max:100|unique:users',
             'password'    => 'required|string|min:8|confirmed',
@@ -122,7 +132,17 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'nik'         => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
+            'nik'         => [
+                'required',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) use ($user) {
+                    $hash = hash_hmac('sha256', (string) $value, (string) config('app.key'));
+                    if (User::where('nik_hash', $hash)->where('id', '!=', $user->id)->exists()) {
+                        $fail('NIK sudah digunakan oleh pengguna lain.');
+                    }
+                },
+            ],
             'nama'        => 'required|string|max:100',
             'email'       => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password'    => 'nullable|string|min:8|confirmed',
@@ -188,10 +208,13 @@ class UserController extends Controller
             'facebook_usaha' => 'nullable|url|max:255',
             'instagram_usaha' => 'nullable|url|max:255',
             'tiktok_usaha' => 'nullable|url|max:255',
+            'whatsapp_usaha' => 'nullable|url|max:255',
+            'youtube_usaha' => 'nullable|url|max:255',
             'shopee' => 'nullable|url|max:255',
             'tokopedia' => 'nullable|url|max:255',
             'lazada' => 'nullable|url|max:255',
             'blibli' => 'nullable|url|max:255',
+            'bukalapak' => 'nullable|url|max:255',
             'marketplace_lainnya_nama' => 'nullable|array',
             'marketplace_lainnya_nama.*' => 'nullable|string|max:150',
             'marketplace_lainnya_link' => 'nullable|array',
