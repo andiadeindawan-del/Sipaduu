@@ -16,7 +16,7 @@ class EmailVerificationPromptController extends Controller
     {
         return $request->user()->hasVerifiedEmail()
                     ? redirect()->intended(route('dashboard', absolute: false))
-                    : view('shared.auth.verify-email');
+                    : view('auth.verify-email');
     }
 }
 
