@@ -1,246 +1,481 @@
 @extends('layouts.landing')
 
-@section('title', 'Sistem Pelatihan SDM')
+@section('title', 'Portal Layanan Pelatihan SDM — SIPADU')
 
 @section('content')
+@php
+    // Query data pengumuman & webinar tanpa mengubah controller
+    $latestPengumuman = \App\Models\Pengumuman::published()
+        ->orderBy('is_pinned', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->take(3)
+        ->get();
+
+    $upcomingAgendas = \App\Models\Agenda::whereIn('status', ['published', 'selesai'])
+        ->orderBy('tanggal', 'desc')
+        ->take(3)
+        ->get();
+
+    $featuredTraining = (isset($popularTrainings) && $popularTrainings->count() > 0) ? $popularTrainings->first() : null;
+    $otherTrainings = (isset($popularTrainings) && $popularTrainings->count() > 1) ? $popularTrainings->slice(1, 4) : collect();
+@endphp
+
 <!-- ============================================================
-     HERO SECTION - DENGAN EFEK BLUR HALUS
+     1. HERO SECTION - MODERN WEB PORTAL HEADER (COMPACT)
 ============================================================ -->
-<section class="hero">
-    <!-- Background Blur -->
-    <div class="hero-bg-blur">
-        <div class="hero-bg-image" style="background-image: url('{{ asset('assets/images/pelatihan.jpg') }}');"></div>
-        <div class="hero-bg-gradient"></div>
+<section class="portal-hero">
+    <div class="portal-hero-bg">
+        <div class="portal-hero-img" style="background-image: url('{{ asset('assets/images/pelatihan.jpg') }}');"></div>
+        <div class="portal-hero-overlay"></div>
     </div>
 
-   
-    
-   <div class="container position-relative">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 text-center">
-            <h1 class="hero-title">
-                Sistem Pelatihan SDM Usaha<br>
-                <span class="">Dinas Koperasi UKM, Perindustrian dan Perdagangan Provinsi Sulawesi Barat</span>
-            </h1>
-            
-            <p class="hero-description">
-                Platform pelatihan online yang dirancang untuk mengembangkan 
-                kompetensi karyawan dengan materi terkini dan metode pembelajaran interaktif.
-            </p>
-
-            <!-- CTA Buttons -->
-            <div class="hero-actions justify-content-center">
-                <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-primary btn-lg hero-btn-primary">
-                    <i class="bi bi-journal-bookmark me-2"></i> Lihat Pelatihan
-                    <span class="btn-ripple"></span>
-                </a>
-                <a href="#features" class="btn btn-outline-light btn-lg hero-btn-outline">
-                    <i class="bi bi-arrow-down me-2"></i> Pelajari Lebih Lanjut
-                </a>
-            </div>
-
-            <!-- Stats -->
-            <div class="hero-stats justify-content-center">
-                <div class="stat-item">
-                    <div class="stat-number" data-count="{{ $totalParticipants ?? 0 }}">
-                        <span class="counter">0</span>
-                    </div>
-                    <div class="stat-label">
-                        <i class="bi bi-people-fill"></i> Peserta Aktif
-                    </div>
-                    <div class="stat-trend trend-up">
-                        <i class="bi bi-arrow-up-short"></i> 12% bulan ini
-                    </div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <div class="stat-number" data-count="{{ $totalTrainings ?? 0 }}">
-                        <span class="counter">0</span>
-                    </div>
-                    <div class="stat-label">
-                        <i class="bi bi-journal-bookmark-fill"></i> Pelatihan
-                    </div>
-                    <div class="stat-trend trend-up">
-                        <i class="bi bi-arrow-up-short"></i> 8% bulan ini
-                    </div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <div class="stat-number" data-count="{{ $totalCertificates ?? 0 }}">
-                        <span class="counter">0</span>
-                    </div>
-                    <div class="stat-label">
-                        <i class="bi bi-award-fill"></i> Sertifikat
-                    </div>
-                    <div class="stat-trend trend-up">
-                        <i class="bi bi-arrow-up-short"></i> 15% bulan ini
-                    </div>
-                </div>
-            </div>
-
-            <!-- Scroll Indicator -->
-            <div class="hero-scroll">
-                <a href="#features" class="scroll-btn">
-                    <span class="scroll-text">Scroll untuk menjelajahi</span>
-                    <span class="scroll-line">
-                        <span class="scroll-dot"></span>
+    <div class="container position-relative">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-12 col-xl-10 text-center">
+                <!-- Badges / Eyebrow -->
+                <div class="portal-hero-eyebrow d-inline-flex align-items-center gap-2 mb-3">
+                   
+                    <span class="portal-hero-instansi text-white-50 small">
+                        Dinas Koperasi UKM, Perindustrian dan Perdagangan Provinsi Sulawesi Barat
                     </span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-</section>
+                </div>
 
-<!-- ============================================================
-     FEATURES SECTION
-============================================================ -->
-<section id="features" class="section-pad">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="section-title">Mengapa Memilih Platform Kami?</h2>
-            <p class="section-subtitle">
-                Kami menyediakan solusi pelatihan lengkap untuk pengembangan SDM perusahaan Anda.
-            </p>
-        </div>
+                <!-- Hero Heading -->
+                <h1 class="portal-hero-title mb-2">
+                    Sistem Informasi Pengembangan SDM Usaha
+                </h1>
+                <p class="portal-hero-subtitle mx-auto mb-4">
+                    Pusat akselerasi kompetensi SDM usaha, kewirausahaan, dan standardisasi keahlian bagi tenaga kerja serta pelaku UMKM Sulawesi Barat.
+                </p>
 
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature text-center">
-                    <div class="icon icon-primary mx-auto">
-                        <i class="bi bi-mortarboard"></i>
-                    </div>
-                    <h5>Materi Terstruktur</h5>
-                    <p>Materi pelatihan disusun secara sistematis dan mudah dipahami oleh semua level karyawan.</p>
+                <!-- Search Bar Interaktif (Inspirasi Portal Microsoft Start) -->
+                <div class="portal-search-wrapper mx-auto mb-3">
+                    <form action="{{ route('landing.pelatihan.index') }}" method="GET" class="portal-search-form d-flex align-items-center">
+                        <span class="portal-search-icon">
+                            <i class="bi bi-search text-primary"></i>
+                        </span>
+                        <input type="text" 
+                               name="search" 
+                               class="form-control portal-search-input" 
+                               placeholder="Cari pelatihan, topik, atau kompetensi keahlian..." 
+                               value="{{ request('search') }}"
+                               aria-label="Cari pelatihan">
+                        <button type="submit" class="btn btn-primary portal-search-btn">
+                            <span class="d-none d-sm-inline">Cari Pelatihan</span>
+                            <i class="bi bi-arrow-right d-sm-none"></i>
+                        </button>
+                    </form>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature text-center">
-                    <div class="icon icon-success mx-auto">
-                        <i class="bi bi-person-video"></i>
-                    </div>
-                    <h5>Pembelajaran Interaktif</h5>
-                    <p>Metode pembelajaran interaktif dengan video, kuis, dan studi kasus untuk pemahaman maksimal.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature text-center">
-                    <div class="icon icon-warning mx-auto">
-                        <i class="bi bi-award"></i>
-                    </div>
-                    <h5>Sertifikat Resmi</h5>
-                    <p>Dapatkan sertifikat resmi setelah menyelesaikan pelatihan sebagai bukti kompetensi.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature text-center">
-                    <div class="icon icon-danger mx-auto">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-                    <h5>Akses 24/7</h5>
-                    <p>Belajar kapan saja dan di mana saja dengan akses 24 jam penuh dari berbagai perangkat.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature text-center">
-                    <div class="icon icon-info mx-auto">
-                        <i class="bi bi-bar-chart-line"></i>
-                    </div>
-                    <h5>Tracking Progress</h5>
-                    <p>Pantau perkembangan belajar karyawan dengan fitur tracking progress yang akurat.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card-feature text-center">
-                    <div class="icon icon-purple mx-auto">
-                        <i class="bi bi-people"></i>
-                    </div>
-                    <h5>Instruktur Berpengalaman</h5>
-                    <p>Dibimbing oleh instruktur profesional dengan pengalaman di bidangnya masing-masing.</p>
+
+                <!-- Trending / Quick Keywords -->
+                <div class="portal-search-tags d-flex align-items-center justify-content-center flex-wrap gap-2 text-white-50 small">
+                    <span class="fw-semibold text-white"><i class="bi bi-fire text-warning me-1"></i> Populer:</span>
+                    <a href="{{ route('landing.pelatihan.index', ['search' => 'Batik']) }}" class="portal-tag-pill">Pembuatan Batik</a>
+                    <a href="{{ route('landing.pelatihan.index', ['search' => 'Keuangan']) }}" class="portal-tag-pill">Manajemen Keuangan</a>
+                    <a href="{{ route('landing.pelatihan.index', ['search' => 'Wirausaha']) }}" class="portal-tag-pill">Kewirausahaan Baru</a>
+                    <a href="{{ route('landing.pelatihan.index', ['search' => 'Pemasaran']) }}" class="portal-tag-pill">Digital Marketing</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ============================================================
-     POPULAR TRAININGS SECTION
-============================================================ -->
-<section class="section-pad">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="section-title">Pelatihan Paling Populer</h2>
-                <p class="section-subtitle text-start">Pelatihan yang paling banyak diikuti oleh peserta.</p>
-            </div>
-            <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-outline-primary">
-                Lihat Semua <i class="bi bi-chevron-right ms-1"></i>
-            </a>
-        </div>
 
-        <div class="row g-4">
-            @if(isset($popularTrainings) && $popularTrainings->count() > 0)
-                @foreach($popularTrainings as $training)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card-feature p-0 overflow-hidden">
-                        @if($training->gambar)
-                        <img src="{{ asset('storage/' . $training->gambar) }}" 
-                             alt="{{ $training->judul }}" 
-                             class="img-fluid w-100" 
-                             style="height: 200px; object-fit: cover;">
-                        @else
-                        <div style="height: 200px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 3rem;">
-                            <i class="bi bi-journal-bookmark"></i>
+<!-- ============================================================
+     3. PORTAL METRICS STRIP (Statistik Sistem Terintegrasi)
+============================================================ -->
+<section class="portal-stats-section py-4">
+    <div class="container">
+        <div class="portal-stats-container p-3 p-md-4 rounded-4 shadow-sm bg-white border">
+            <div class="row align-items-center g-3 text-center">
+                <!-- Stat 1: Peserta Aktif -->
+                <div class="col-6 col-lg-3">
+                    <div class="portal-stat-box">
+                        <div class="portal-stat-icon text-primary mb-1">
+                            <i class="bi bi-people-fill"></i>
                         </div>
-                        @endif
-                        <div class="p-3">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="fw-bold mb-0">{{ $training->judul }}</h5>
-                                <span class="badge bg-warning text-dark">
-                                    <i class="bi bi-star-fill me-1"></i>{{ number_format($training->rating ?? 4.5, 1) }}
+                        <div class="portal-stat-number" data-count="{{ $totalParticipants ?? 0 }}">
+                            <span class="counter">0</span>
+                        </div>
+                        <div class="portal-stat-label">Peserta Terdaftar</div>
+                    </div>
+                </div>
+
+                <!-- Stat 2: Pelatihan -->
+                <div class="col-6 col-lg-3">
+                    <div class="portal-stat-box border-start-lg">
+                        <div class="portal-stat-icon text-warning mb-1">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                        </div>
+                        <div class="portal-stat-number" data-count="{{ $totalTrainings ?? 0 }}">
+                            <span class="counter">0</span>
+                        </div>
+                        <div class="portal-stat-label">Program Pelatihan</div>
+                    </div>
+                </div>
+
+                <!-- Stat 3: Sertifikat -->
+                <div class="col-6 col-lg-3">
+                    <div class="portal-stat-box border-start-lg">
+                        <div class="portal-stat-icon text-success mb-1">
+                            <i class="bi bi-award-fill"></i>
+                        </div>
+                        <div class="portal-stat-number" data-count="{{ $totalCertificates ?? 0 }}">
+                            <span class="counter">0</span>
+                        </div>
+                        <div class="portal-stat-label">Sertifikat Terbit</div>
+                    </div>
+                </div>
+
+                <!-- Stat 4: Materi & Modul -->
+                <div class="col-6 col-lg-3">
+                    <div class="portal-stat-box border-start-lg">
+                        <div class="portal-stat-icon text-info mb-1">
+                            <i class="bi bi-file-earmark-slides-fill"></i>
+                        </div>
+                        <div class="portal-stat-number" data-count="{{ $totalMateri ?? 0 }}">
+                            <span class="counter">0</span>
+                        </div>
+                        <div class="portal-stat-label">Modul &amp; Materi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     4. MAIN PORTAL CONTENT (Multi-Column Grid ala Microsoft Start)
+============================================================ -->
+<section class="portal-content-section pb-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- ============================================================
+                 KOLOM KIRI: MAIN FEED (PELATIHAN & PENGUMUMAN) - 8 Kolom
+            ============================================================ -->
+            <div class="col-12 col-lg-8">
+                <!-- Section Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="portal-section-badge bg-primary"></span>
+                        <h4 class="portal-section-title mb-0">Pelatihan Unggulan &amp; Terbaru</h4>
+                    </div>
+                    <a href="{{ route('landing.pelatihan.index') }}" class="portal-link-all">
+                        Semua Pelatihan <i class="bi bi-chevron-right ms-1"></i>
+                    </a>
+                </div>
+
+                <!-- 4.1 HEADLINE CARD: Pelatihan Sorotan Teratas -->
+                @if($featuredTraining)
+                <div class="portal-featured-card mb-4 rounded-4 overflow-hidden shadow-sm border bg-white">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-6 position-relative">
+                            @if($featuredTraining->gambar)
+                                <img src="{{ asset('storage/' . $featuredTraining->gambar) }}" 
+                                     alt="{{ $featuredTraining->judul }}" 
+                                     class="portal-featured-img img-fluid w-100">
+                            @else
+                                <div class="portal-featured-placeholder d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-journal-bookmark fs-1 text-muted"></i>
+                                </div>
+                            @endif
+                            <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 px-3 py-1.5 shadow-sm rounded-pill fw-bold">
+                                <i class="bi bi-star-fill me-1"></i> Pelatihan Unggulan
+                            </span>
+                        </div>
+                        <div class="col-md-6 p-4">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1">
+                                    {{ $featuredTraining->kategori->nama ?? 'Umum' }}
+                                </span>
+                                <span class="badge bg-secondary-subtle text-secondary rounded-pill px-2.5 py-1 text-uppercase">
+                                    {{ $featuredTraining->tipe ?? 'Online' }}
                                 </span>
                             </div>
-                            <p class="text-muted small">{{ Str::limit($training->deskripsi ?? '', 100) }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-3 text-muted small">
-                                    <span><i class="bi bi-clock me-1"></i>{{ $training->durasi ?? '-' }} jam</span>
-                                    <span><i class="bi bi-people me-1"></i>{{ $training->participants_count ?? 0 }}</span>
+                            <h5 class="fw-bold text-dark mb-2 line-clamp-2">
+                                <a href="{{ route('landing.pelatihan.detail', $featuredTraining->id) }}" class="text-decoration-none text-dark hover-primary">
+                                    {{ $featuredTraining->judul }}
+                                </a>
+                            </h5>
+                            <p class="text-muted small mb-3 line-clamp-3">
+                                {{ Str::limit(strip_tags($featuredTraining->deskripsi), 130) }}
+                            </p>
+                            <div class="d-flex align-items-center gap-3 text-muted small mb-3">
+                                <span><i class="bi bi-clock text-primary me-1"></i> {{ $featuredTraining->durasi ?? '-' }} Jam</span>
+                                <span><i class="bi bi-people text-success me-1"></i> {{ $featuredTraining->participants_count ?? 0 }} Peserta</span>
+                                <span><i class="bi bi-award text-warning me-1"></i> Bersertifikat</span>
+                            </div>
+                            <a href="{{ route('landing.pelatihan.detail', $featuredTraining->id) }}" class="btn btn-primary w-100 fw-semibold rounded-3 py-2">
+                                Detail &amp; Pendaftaran <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- 4.2 GRID PELATIHAN LAINNYA (2 Kolom Kartu) -->
+                @if($otherTrainings->count() > 0)
+                <div class="row g-3 mb-4">
+                    @foreach($otherTrainings as $training)
+                    <div class="col-12 col-md-6">
+                        <div class="portal-grid-card h-100 rounded-4 overflow-hidden shadow-sm border bg-white d-flex flex-column">
+                            <div class="position-relative">
+                                @if($training->gambar)
+                                    <img src="{{ asset('storage/' . $training->gambar) }}" 
+                                         alt="{{ $training->judul }}" 
+                                         class="portal-grid-img w-100">
+                                @else
+                                    <div class="portal-grid-placeholder d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-journal-bookmark fs-2 text-muted"></i>
+                                    </div>
+                                @endif
+                                <div class="position-absolute bottom-0 start-0 m-2.5">
+                                    <span class="badge bg-dark bg-opacity-75 text-white rounded-pill px-2.5 py-1 small">
+                                        {{ $training->kategori->nama ?? 'Umum' }}
+                                    </span>
                                 </div>
-                                <a href="{{ route('landing.pelatihan.detail', $training->id) }}" class="btn btn-sm btn-primary">
-                                    Detail <i class="bi bi-arrow-right ms-1"></i>
+                            </div>
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <h6 class="fw-bold mb-2 line-clamp-2">
+                                    <a href="{{ route('landing.pelatihan.detail', $training->id) }}" class="text-decoration-none text-dark hover-primary">
+                                        {{ $training->judul }}
+                                    </a>
+                                </h6>
+                                <p class="text-muted small mb-3 line-clamp-2 flex-grow-1">
+                                    {{ Str::limit(strip_tags($training->deskripsi), 80) }}
+                                </p>
+                                <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+                                    <div class="small text-muted">
+                                        <i class="bi bi-people text-primary me-1"></i> {{ $training->participants_count ?? 0 }} Peserta
+                                    </div>
+                                    <a href="{{ route('landing.pelatihan.detail', $training->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        Lihat <i class="bi bi-chevron-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                <!-- 4.3 FEED PENGUMUMAN RESMI (Notice Board Section) -->
+                <div class="portal-announcements-block mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="portal-section-badge bg-danger"></span>
+                            <h4 class="portal-section-title mb-0">Pengumuman &amp; Informasi Resmi</h4>
+                        </div>
+                        <a href="{{ route('landing.pengumuman.index') }}" class="portal-link-all">
+                            Lihat Semua <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="portal-announcement-list bg-white rounded-4 border shadow-sm p-3">
+                        @forelse($latestPengumuman as $pengumuman)
+                        <div class="portal-announcement-item d-flex align-items-start gap-3 p-3 rounded-3 {{ !$loop->last ? 'border-bottom' : '' }}">
+                            <div class="portal-announcement-icon flex-shrink-0 {{ $pengumuman->is_pinned ? 'bg-danger text-white' : 'bg-primary-subtle text-primary' }}">
+                                <i class="bi {{ $pengumuman->is_pinned ? 'bi-pin-angle-fill' : 'bi-megaphone' }}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                    @if($pengumuman->is_pinned)
+                                        <span class="badge bg-danger text-white rounded-pill px-2 py-0.5" style="font-size: 0.7rem;">PENTING</span>
+                                    @endif
+                                    <span class="badge bg-light text-dark border rounded-pill px-2 py-0.5" style="font-size: 0.7rem;">
+                                        {{ ucfirst($pengumuman->jenis_pengumuman ?? 'Umum') }}
+                                    </span>
+                                    <span class="text-muted small" style="font-size: 0.75rem;">
+                                        <i class="bi bi-calendar3 me-1"></i> {{ $pengumuman->created_at ? $pengumuman->created_at->format('d M Y') : '-' }}
+                                    </span>
+                                </div>
+                                <h6 class="fw-bold mb-1">
+                                    <a href="{{ route('landing.pengumuman.show', $pengumuman->id) }}" class="text-decoration-none text-dark hover-primary">
+                                        {{ $pengumuman->judul }}
+                                    </a>
+                                </h6>
+                                <p class="text-muted small mb-0 line-clamp-2">
+                                    {{ Str::limit(strip_tags($pengumuman->konten ?? $pengumuman->deskripsi), 120) }}
+                                </p>
+                            </div>
+                            <div class="flex-shrink-0 align-self-center d-none d-sm-block">
+                                <a href="{{ route('landing.pengumuman.show', $pengumuman->id) }}" class="btn btn-sm btn-light border rounded-circle" title="Baca Pengumuman">
+                                    <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
                         </div>
+                        @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-bell-slash fs-2 d-block mb-2"></i>
+                            <p class="small mb-0">Belum ada pengumuman resmi terbaru saat ini.</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
-                @endforeach
-            @else
-                <div class="col-12 text-center">
-                    <p class="text-muted">Belum ada pelatihan populer.</p>
+            </div>
+
+            <!-- ============================================================
+                 KOLOM KANAN: SIDEBAR WIDGETS (WEBINAR, CEK SERTIFIKAT, FITUR) - 4 Kolom
+            ============================================================ -->
+            <div class="col-12 col-lg-4">
+                <!-- WIDGET 1: JADWAL WEBINAR & AGENDA (Event Calendar Widget) -->
+                <div class="portal-widget card rounded-4 border shadow-sm mb-4 bg-white overflow-hidden">
+                    <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-calendar-event text-primary fs-5"></i>
+                            <h6 class="fw-bold mb-0 text-dark">Webinar &amp; Agenda</h6>
+                        </div>
+                        <a href="{{ route('landing.agenda.index') }}" class="portal-link-all small">
+                            Semua <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                    <div class="card-body p-3">
+                        @forelse($upcomingAgendas as $agenda)
+                        <div class="portal-agenda-item d-flex gap-3 align-items-start {{ !$loop->last ? 'mb-3 pb-3 border-bottom' : '' }}">
+                            <div class="portal-calendar-badge flex-shrink-0 text-center rounded-3 p-1.5 bg-primary bg-opacity-10 border border-primary-subtle">
+                                <span class="d-block fw-bold text-primary fs-5 lh-1">
+                                    {{ $agenda->tanggal ? $agenda->tanggal->format('d') : '-' }}
+                                </span>
+                                <small class="text-uppercase text-muted fw-semibold" style="font-size: 0.65rem;">
+                                    {{ $agenda->tanggal ? $agenda->tanggal->format('M') : '-' }}
+                                </small>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-1.5 mb-1">
+                                    <span class="badge {{ $agenda->tipe === 'online' ? 'bg-info-subtle text-info' : 'bg-success-subtle text-success' }} rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                        {{ ucfirst($agenda->tipe ?? 'Online') }}
+                                    </span>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        <i class="bi bi-clock me-1"></i>{{ $agenda->jam_mulai ? date('H:i', strtotime($agenda->jam_mulai)) : '-' }} WITA
+                                    </small>
+                                </div>
+                                <h6 class="fw-semibold mb-1 small line-clamp-2">
+                                    <a href="{{ route('landing.agenda.show', $agenda->id) }}" class="text-decoration-none text-dark hover-primary">
+                                        {{ $agenda->judul }}
+                                    </a>
+                                </h6>
+                                <div class="text-muted small" style="font-size: 0.75rem;">
+                                    <i class="bi bi-geo-alt me-1 text-danger"></i> {{ Str::limit($agenda->lokasi ?? 'Online via Meeting', 28) }}
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-calendar-x fs-2 d-block mb-1"></i>
+                            <p class="small mb-0">Belum ada agenda webinar mendatang.</p>
+                        </div>
+                        @endforelse
+                    </div>
                 </div>
-            @endif
+
+              
+
+                <!-- WIDGET 3: FASILITAS & KEUNGGULAN (Features Mini Cards) -->
+                <div class="portal-widget card rounded-4 border shadow-sm mb-4 bg-white">
+                    <div class="card-header bg-white border-bottom p-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-stars text-warning fs-5"></i>
+                            <h6 class="fw-bold mb-0 text-dark">Standar Mutu SIPADU</h6>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="portal-mini-icon bg-primary-subtle text-primary rounded-3 flex-shrink-0">
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 small">Kurikulum Berstandar</h6>
+                                    <small class="text-muted">Materi terstruktur dan aplikatif untuk UMKM.</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="portal-mini-icon bg-success-subtle text-success rounded-3 flex-shrink-0">
+                                    <i class="bi bi-patch-check-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 small">Sertifikasi Resmi</h6>
+                                    <small class="text-muted">Sertifikat ber-barcode terverifikasi online.</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="portal-mini-icon bg-warning-subtle text-warning rounded-3 flex-shrink-0">
+                                    <i class="bi bi-person-video3"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 small">Instruktur Ahli</h6>
+                                    <small class="text-muted">Dibimbing langsung oleh praktisi berpengalaman.</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="portal-mini-icon bg-info-subtle text-info rounded-3 flex-shrink-0">
+                                    <i class="bi bi-phone-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 small">Akses Mudah &amp; 24/7</h6>
+                                    <small class="text-muted">Bisa diakses dari smartphone, tablet, maupun PC.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET 4: INFORMASI KONTAK & KANTOR -->
+                <div class="portal-widget card rounded-4 border shadow-sm bg-white p-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-building text-primary fs-5"></i>
+                        <h6 class="fw-bold mb-0 text-dark">Pusat Layanan SDM Usaha</h6>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Dinas Koperasi, UKM, Perindustrian &amp; Perdagangan Provinsi Sulawesi Barat
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li class="mb-1"><i class="bi bi-geo-alt text-danger me-2"></i> Mamuju, Sulawesi Barat</li>
+                        <li class="mb-1"><i class="bi bi-telephone text-success me-2"></i> 0822-9194-7554</li>
+                        <li class="mb-1"><i class="bi bi-envelope text-primary me-2"></i> andiadeindawan@gmail.com</li>
+                    </ul>
+                    <a href="{{ route('landing.kontak.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill w-100">
+                        Hubungi Layanan Support
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
+
+
 <!-- ============================================================
-     CTA SECTION
+     6. CALL TO ACTION (CTA) BANNER (Penutup Modern)
 ============================================================ -->
-<section class="section-pad">
+<section class="portal-cta-section py-5">
     <div class="container">
-        <div class="cta-section p-5 text-center">
-            <h2 class="mb-3">Siap Tingkatkan Kompetensi Tim Anda?</h2>
-            <p class="mx-auto" style="max-width: 600px;">
-                Bergabunglah dengan ribuan perusahaan yang telah mempercayakan 
-                pengembangan SDM mereka kepada kami.
-            </p>
-            <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
-                <a href="{{ route('register') }}" class="btn btn-primary btn-lg px-5">
-                    <i class="bi bi-person-plus me-2"></i> Daftar Sekarang
-                </a>
-                <a href="{{ route('landing.pelatihan.index') }}" class="btn btn-outline-light btn-lg px-5">
-                    <i class="bi bi-journal-bookmark me-2"></i> Lihat Pelatihan
-                </a>
+        <div class="portal-cta-box rounded-4 p-4 p-md-5 text-center text-white position-relative overflow-hidden shadow">
+            <div class="position-relative z-1" style="max-width: 650px; margin: 0 auto;">
+                <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold mb-3">
+                    <i class="bi bi-lightning-charge-fill"></i> Siap Naik Kelas Bersama SIPADU?
+                </span>
+                <h2 class="fw-bold mb-3 text-white">Daftarkan Diri &amp; Tingkatkan Keterampilan Usaha Anda Sekarang</h2>
+                <p class="text-white-50 mb-4 small">
+                    Akses puluhan modul kejuruan, ikuti webinar eksklusif, dan dapatkan sertifikat resmi dari Dinas Koperasi &amp; UKM Provinsi Sulawesi Barat.
+                </p>
+                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                    @auth
+                        <a href="{{ auth()->user()->role === 'peserta' ? route('peserta.dashboard') : route('admin.dashboard') }}" class="btn btn-warning btn-lg text-dark fw-bold px-4 py-2.5 rounded-pill shadow-sm">
+                            <i class="bi bi-speedometer2 me-1"></i> Buka Dashboard Saya
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}" class="btn btn-warning btn-lg text-dark fw-bold px-4 py-2.5 rounded-pill shadow-sm">
+                            <i class="bi bi-person-plus-fill me-1"></i> Daftar Akun Peserta
+                        </a>
+                        <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg fw-semibold px-4 py-2.5 rounded-pill">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Masuk Akun
+                        </a>
+                    @endauth
+                </div>
             </div>
         </div>
     </div>
@@ -249,339 +484,345 @@
 @push('styles')
 <style>
     /* ============================================================
-       HERO BACKGROUND BLUR - HALUS & JELAS
+       SCOPED CSS UNTUK HALAMAN PORTAL BERANDA (PREFIX: .portal-*)
+       Aman dan tidak bertabrakan dengan CSS layouts.landing
     ============================================================ */
-    .hero-bg-blur {
+
+    /* 1. HERO COMPACT SECTION */
+    .portal-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 3.5rem 0 3rem;
+        background: #0f172a;
+        color: #fff;
+    }
+    .portal-hero-bg {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0; width: 100%; height: 100%;
         overflow: hidden;
         z-index: 0;
     }
-    .hero-bg-image {
-        width: 100%;
-        height: 100%;
+    .portal-hero-img {
+        width: 100%; height: 100%;
         background-size: cover;
         background-position: center;
-        filter: blur(4px) brightness(0.5) saturate(1.1);
-        transform: scale(1.05);
-        transition: filter 0.8s ease;
+        filter: blur(2.5px) brightness(0.62) saturate(1.15) contrast(1.05);
+        transform: scale(1.03);
     }
-    .hero-bg-overlay {
+    .portal-hero-overlay {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, 
-            rgba(15, 23, 36, 0.75) 0%, 
-            rgba(26, 34, 54, 0.6) 30%, 
-            rgba(42, 54, 84, 0.5) 60%, 
-            rgba(15, 23, 36, 0.70) 100%
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(180deg, 
+            rgba(15, 23, 42, 0.65) 0%, 
+            rgba(15, 23, 42, 0.52) 45%, 
+            rgba(15, 23, 42, 0.80) 100%
         );
-        z-index: 1;
     }
-    .hero-bg-gradient {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(ellipse at 50% 50%, 
-            rgba(78, 154, 241, 0.05) 0%, 
-            transparent 70%
-        );
-        z-index: 2;
-    }
-
-    /* ============================================================
-       HERO CONTAINER
-    ============================================================ */
-    .hero {
-        position: relative;
-        overflow: hidden;
-        min-height: 650px;
-        display: flex;
-        align-items: center;
-        background: transparent;
-        padding: 6rem 0 4rem;
-    }
-    .hero .container {
-        position: relative;
-        z-index: 3;
-    }
-
-    /* ============================================================
-       HERO SHAPES
-    ============================================================ */
-    .hero-shapes {
-        z-index: 1;
-    }
-
-    /* ============================================================
-       HERO TITLE
-    ============================================================ */
-    .hero-title {
+    .portal-hero-title {
         font-weight: 800;
-        font-size: 3.5rem;
-        line-height: 1.15;
-        color: #fff;
-        margin-bottom: 1.25rem;
+        font-size: 2.35rem;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        color: #ffffff;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
     }
-    .hero-title .highlight {
-        background: linear-gradient(135deg, #6ab0f5, #4e9af1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        position: relative;
-    }
-    .hero-title .highlight::after {
-        content: '';
-        position: absolute;
-        bottom: -4px;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background: linear-gradient(90deg, #4e9af1, transparent);
-        border-radius: 2px;
-    }
-
-    /* ============================================================
-       HERO DESCRIPTION
-    ============================================================ */
-    .hero-description {
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 1.2rem;
-        max-width: 650px;
-        margin: 0 auto 2rem;
-        line-height: 1.8;
-    }
-
-    /* ============================================================
-       HERO ACTIONS
-    ============================================================ */
-    .hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 3rem;
-    }
-    .hero-btn-primary {
-        padding: 0.85rem 2.8rem;
-        font-weight: 600;
-        border-radius: 50px;
-        background: linear-gradient(135deg, #4e9af1, #3a7bc8);
-        border: none;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    .hero-btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(78, 154, 241, 0.4);
-    }
-    .hero-btn-primary .btn-ripple {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
-    }
-    .hero-btn-primary:hover .btn-ripple {
-        width: 300px;
-        height: 300px;
-    }
-    .hero-btn-outline {
-        padding: 0.85rem 2.8rem;
-        font-weight: 600;
-        border-radius: 50px;
-        border: 2px solid rgba(255,255,255,0.25);
-        transition: all 0.3s ease;
-    }
-    .hero-btn-outline:hover {
-        background: rgba(255,255,255,0.1);
-        border-color: #4e9af1;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(78, 154, 241, 0.2);
-    }
-
-    /* ============================================================
-       HERO STATS
-    ============================================================ */
-    .hero-stats {
-        display: flex;
-        align-items: center;
-        gap: 2.5rem;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255,255,255,0.08);
-        margin-bottom: 2rem;
-    }
-    .stat-item {
-        flex: 1;
-        max-width: 200px;
-    }
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #6ab0f5, #4e9af1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        line-height: 1;
-    }
-    .stat-number .counter {
-        -webkit-text-fill-color: transparent;
-    }
-    .stat-label {
-        color: rgba(255,255,255,0.6);
-        font-size: 0.85rem;
-        font-weight: 500;
-        margin-top: 0.25rem;
-    }
-    .stat-label i {
-        color: #4e9af1;
-        margin-right: 0.25rem;
-    }
-    .stat-trend {
-        font-size: 0.7rem;
-        font-weight: 600;
-        margin-top: 0.25rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.15rem;
-    }
-    .trend-up {
-        color: #28c76f;
-    }
-    .trend-up i {
+    .portal-hero-subtitle {
         font-size: 1rem;
-    }
-    .stat-divider {
-        width: 1px;
-        height: 50px;
-        background: rgba(255,255,255,0.1);
+        color: rgba(255, 255, 255, 0.92);
+        max-width: 680px;
+        line-height: 1.6;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
     }
 
-    /* ============================================================
-       SCROLL INDICATOR
-    ============================================================ */
-    .hero-scroll {
-        margin-top: 1rem;
+    /* SEARCH BAR */
+    .portal-search-wrapper {
+        max-width: 640px;
     }
-    .scroll-btn {
-        display: inline-flex;
-        flex-direction: column;
+    .portal-search-form {
+        background: #ffffff;
+        border-radius: 50px;
+        padding: 6px 8px 6px 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+    .portal-search-icon {
+        font-size: 1.15rem;
+        margin-right: 10px;
+        display: flex;
         align-items: center;
-        gap: 0.5rem;
-        color: rgba(255,255,255,0.4);
+    }
+    .portal-search-input {
+        border: none !important;
+        box-shadow: none !important;
+        font-size: 0.95rem;
+        color: #1e293b;
+        padding: 8px 4px;
+        background: transparent;
+    }
+    .portal-search-input::placeholder {
+        color: #94a3b8;
+    }
+    .portal-search-btn {
+        border-radius: 50px;
+        padding: 9px 24px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        background: linear-gradient(135deg, #4e9af1 0%, #2563eb 100%);
+        border: none;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+    }
+    .portal-search-btn:hover {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        transform: translateY(-1px);
+    }
+    .portal-tag-pill {
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
-        transition: color 0.3s ease;
-        cursor: pointer;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 3px 12px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(4px);
     }
-    .scroll-btn:hover {
-        color: rgba(255,255,255,0.8);
+    .portal-tag-pill:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: #fff;
+        transform: translateY(-1px);
     }
-    .scroll-text {
-        font-size: 0.75rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-    .scroll-line {
-        display: block;
-        width: 1px;
-        height: 40px;
-        background: rgba(255,255,255,0.15);
+
+    /* 2. SHORTCUTS BAR (MICROSOFT START APPS STYLE) */
+    .portal-shortcuts-bar {
+        margin-top: -24px;
         position: relative;
+        z-index: 10;
+    }
+    .portal-shortcuts-wrapper {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 14px 16px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+    .portal-shortcut-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #1e293b;
+        background: #f8fafc;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+    .portal-shortcut-card:hover {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    .portal-shortcut-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+    .portal-shortcut-icon.icon-blue   { background: #eff6ff; color: #3b82f6; }
+    .portal-shortcut-icon.icon-red    { background: #fef2f2; color: #ef4444; }
+    .portal-shortcut-icon.icon-cyan   { background: #ecfeff; color: #06b6d4; }
+    .portal-shortcut-icon.icon-amber  { background: #fffbeb; color: #f59e0b; }
+    .portal-shortcut-icon.icon-purple { background: #faf5ff; color: #a855f7; }
+    .portal-shortcut-icon.icon-green  { background: #f0fdf4; color: #22c55e; }
+    .portal-shortcut-title {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        line-height: 1.2;
+        color: #0f172a;
+    }
+    .portal-shortcut-desc {
+        display: block;
+        font-size: 0.7rem;
+        color: #64748b;
+    }
+
+    /* 3. PORTAL STATS */
+    .portal-stats-container {
+        border-color: #e2e8f0 !important;
+    }
+    .portal-stat-icon {
+        font-size: 1.6rem;
+    }
+    .portal-stat-number {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+    .portal-stat-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-top: 4px;
+    }
+
+    /* 4. MAIN CONTENT & CARDS */
+    .portal-section-badge {
+        width: 4px;
+        height: 22px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+    .portal-section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .portal-link-all {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #3b82f6;
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+    .portal-link-all:hover {
+        color: #1d4ed8;
+    }
+
+    /* FEATURED HEADLINE CARD */
+    .portal-featured-card {
+        border-color: #e2e8f0 !important;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .portal-featured-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+        transform: translateY(-2px);
+    }
+    .portal-featured-img {
+        height: 270px;
+        object-fit: cover;
+    }
+    .portal-featured-placeholder {
+        height: 270px;
+        background: #f1f5f9;
+    }
+
+    /* GRID CARDS */
+    .portal-grid-card {
+        border-color: #e2e8f0 !important;
+        transition: all 0.2s ease;
+    }
+    .portal-grid-card:hover {
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07) !important;
+        transform: translateY(-2px);
+    }
+    .portal-grid-img {
+        height: 165px;
+        object-fit: cover;
+    }
+    .portal-grid-placeholder {
+        height: 165px;
+        background: #f1f5f9;
+    }
+
+    /* ANNOUNCEMENTS NOTICE BOARD */
+    .portal-announcement-list {
+        border-color: #e2e8f0 !important;
+    }
+    .portal-announcement-item {
+        transition: background 0.15s ease;
+    }
+    .portal-announcement-item:hover {
+        background: #f8fafc;
+    }
+    .portal-announcement-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+    }
+
+    /* SIDEBAR WIDGETS */
+    .portal-widget {
+        border-color: #e2e8f0 !important;
+    }
+    .portal-calendar-badge {
+        width: 48px;
+        height: 52px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .portal-mini-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    /* TESTIMONIALS & CTA */
+    .portal-testimonials-section {
+        background: #ffffff;
+    }
+    .portal-testimonial-card {
+        border-color: #e2e8f0 !important;
+    }
+    .portal-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 0.95rem;
+    }
+    .portal-cta-box {
+        background: linear-gradient(135deg, #0B1F4D 0%, #1e3a8a 100%);
+    }
+
+    /* UTILITY CLASSES */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    .scroll-dot {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 3px;
-        height: 12px;
-        background: #4e9af1;
-        border-radius: 2px;
-        animation: scroll-down 1.8s ease-in-out infinite;
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .hover-primary:hover {
+        color: #2563eb !important;
     }
 
-    @keyframes scroll-down {
-        0% { top: -20%; opacity: 1; }
-        100% { top: 100%; opacity: 0; }
-    }
-
-    /* ============================================================
-       RESPONSIVE
-    ============================================================ */
-    @media (max-width: 991.98px) {
-        .hero {
-            padding: 4rem 0;
-            min-height: auto;
-        }
-        .hero-title {
-            font-size: 2.5rem;
-        }
-        .hero-description {
-            font-size: 1rem;
-            max-width: 100%;
-        }
-        .hero-stats {
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-        }
-        .stat-divider {
-            display: none;
-        }
-        .stat-item {
-            flex: 0 0 auto;
-            min-width: 120px;
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 2rem;
-        }
-        .hero-bg-image {
-            filter: blur(6px) brightness(0.45);
-        }
-        .hero-scroll {
-            display: none;
+    @media (min-width: 992px) {
+        .border-start-lg {
+            border-left: 1px solid #e2e8f0;
         }
     }
 
-    @media (max-width: 576px) {
-        .hero-title {
-            font-size: 1.8rem;
+    @media (max-width: 768px) {
+        .portal-hero {
+            padding: 2.5rem 0 2rem;
         }
-        .hero-actions {
-            flex-direction: column;
-            align-items: center;
+        .portal-hero-title {
+            font-size: 1.65rem;
         }
-        .hero-btn-primary,
-        .hero-btn-outline {
-            width: 100%;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
+        .portal-featured-img,
+        .portal-featured-placeholder {
+            height: 200px;
         }
-        .hero-stats {
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .stat-item {
-            min-width: unset;
-            width: 100%;
-        }
-        .stat-number {
-            font-size: 1.6rem;
+        .portal-stat-number {
+            font-size: 1.5rem;
         }
     }
 </style>
@@ -591,28 +832,30 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
-    // COUNTER ANIMATION
+    // ANIMASI COUNTER ANGKA STATISTIK BERANDA
     // ============================================================
     const counters = document.querySelectorAll('[data-count]');
     
     function animateCounter(element) {
         const target = parseInt(element.getAttribute('data-count'));
-        if (target === 0) {
-            element.textContent = '0';
+        const counterSpan = element.querySelector('.counter') || element;
+        
+        if (isNaN(target) || target === 0) {
+            counterSpan.textContent = '0';
             return;
         }
         
-        const duration = 2000;
+        const duration = 1800;
         const step = Math.max(1, target / (duration / 16));
         let current = 0;
         
         const update = () => {
             current += step;
             if (current < target) {
-                element.textContent = Math.floor(current);
+                counterSpan.textContent = Math.floor(current);
                 requestAnimationFrame(update);
             } else {
-                element.textContent = target;
+                counterSpan.textContent = target;
             }
         };
         
@@ -627,51 +870,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.3 });
 
         counters.forEach(counter => observer.observe(counter));
     } else {
         counters.forEach(counter => animateCounter(counter));
     }
-
-    // ============================================================
-    // HERO STATS COUNTER
-    // ============================================================
-    const heroStats = document.querySelectorAll('.hero-stats .stat .number');
-    heroStats.forEach(stat => {
-        if (stat.hasAttribute('data-count')) {
-            const target = parseInt(stat.getAttribute('data-count'));
-            if (target === 0) {
-                stat.textContent = '0';
-                return;
-            }
-            
-            const duration = 2000;
-            const step = Math.max(1, target / (duration / 16));
-            let current = 0;
-            
-            const update = () => {
-                current += step;
-                if (current < target) {
-                    stat.textContent = Math.floor(current);
-                    requestAnimationFrame(update);
-                } else {
-                    stat.textContent = target;
-                }
-            };
-            
-            const heroObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        update();
-                        heroObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-            
-            heroObserver.observe(stat);
-        }
-    });
 });
 </script>
 @endpush

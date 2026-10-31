@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +62,26 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information (Admin & Peserta).
      */
+    /**
+     * Display the user's profile form for PEMATERI.
+     */
+    public function pemateriEdit(Request $request): View
+    {
+        $user = $request->user();
+        
+        $myTrainingIds = \App\Models\Training::where('trainer_id', $user->id)->pluck('id');
+        $totalTrainings = \App\Models\Training::where('trainer_id', $user->id)->count();
+        $totalMateris = \App\Models\Materi::whereIn('training_id', $myTrainingIds)->count();
+        $totalQuizzes = \App\Models\Quiz::whereIn('training_id', $myTrainingIds)->count();
+        
+        return view('pemateri.profile.index', compact(
+            'user',
+            'totalTrainings',
+            'totalMateris',
+            'totalQuizzes'
+        ));
+    }
+
     public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
@@ -84,6 +105,8 @@ class ProfileController extends Controller
             'phone' => 'nullable|string|max:20',
             'kontak' => 'nullable|string|max:20',
             'no_telepon' => 'nullable|string|max:20',
+            'departemen' => 'nullable|string|max:100',
+            'jabatan' => 'nullable|string|max:100',
             'alamat_lengkap' => 'nullable|string',
             
             // Validasi file - Wajib jika belum ada
@@ -175,11 +198,13 @@ class ProfileController extends Controller
             'anggota_koperasi' => 'nullable|string|max:150',
         ]);
 
-        // Auto kalkulasi total karyawan
-        $validated['total_karyawan_tetap'] = ((int) ($validated['karyawan_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tetap_perempuan'] ?? 0));
-        $validated['total_karyawan_tidak_tetap'] = ((int) ($validated['karyawan_tidak_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tidak_tetap_perempuan'] ?? 0));
-        $validated['total_tenaga_kerja'] = $validated['total_karyawan_tetap'] + $validated['total_karyawan_tidak_tetap'];
-        
+        // Auto kalkulasi total karyawan (khusus peserta)
+        if ($user->role === 'peserta') {
+            $validated['total_karyawan_tetap'] = ((int) ($validated['karyawan_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tetap_perempuan'] ?? 0));
+            $validated['total_karyawan_tidak_tetap'] = ((int) ($validated['karyawan_tidak_tetap_laki_laki'] ?? 0)) + ((int) ($validated['karyawan_tidak_tetap_perempuan'] ?? 0));
+            $validated['total_tenaga_kerja'] = $validated['total_karyawan_tetap'] + $validated['total_karyawan_tidak_tetap'];
+        }
+
         // Support untuk form yang lama mengirim phone bukan no_telepon
         if (isset($validated['phone']) && !isset($validated['no_telepon'])) {
             $validated['no_telepon'] = $validated['phone'];
@@ -303,6 +328,8 @@ class ProfileController extends Controller
 
         if ($user->role === 'admin') {
             return redirect()->route('admin.profile.edit')->with('success', '✅ Profil berhasil diperbarui.');
+        } elseif ($user->role === 'pemateri') {
+            return redirect()->route('pemateri.profile.index')->with('success', '✅ Profil berhasil diperbarui.');
         }
 
         return redirect()->route('peserta.profile.index')->with('success', '✅ Profil berhasil diperbarui.');
@@ -333,6 +360,9 @@ class ProfileController extends Controller
         if ($user->role === 'admin') {
             return redirect()->route('admin.profile.edit')
                             ->with('success', '✅ Password berhasil diubah.');
+        } elseif ($user->role === 'pemateri') {
+            return redirect()->route('pemateri.profile.index')
+                            ->with('success', '✅ Password berhasil diubah.');
         }
 
         return redirect()->route('peserta.profile.index')
@@ -362,6 +392,9 @@ class ProfileController extends Controller
         if ($user->role === 'admin') {
             return redirect()->route('admin.profile.edit')
                             ->with('success', '✅ Foto profil berhasil diperbarui.');
+        } elseif ($user->role === 'pemateri') {
+            return redirect()->route('pemateri.profile.index')
+                            ->with('success', '✅ Foto profil berhasil diperbarui.');
         }
 
         return redirect()->route('peserta.profile.index')
@@ -384,6 +417,9 @@ class ProfileController extends Controller
         // Redirect based on user role
         if ($user->role === 'admin') {
             return redirect()->route('admin.profile.edit')
+                            ->with('success', '✅ Foto profil berhasil dihapus.');
+        } elseif ($user->role === 'pemateri') {
+            return redirect()->route('pemateri.profile.index')
                             ->with('success', '✅ Foto profil berhasil dihapus.');
         }
 

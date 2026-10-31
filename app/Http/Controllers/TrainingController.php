@@ -326,7 +326,7 @@ class TrainingController extends Controller
     public function create()
     {
         $kategoris = Kategori::all();
-        $trainers = collect();
+        $trainers = User::where('role', 'pemateri')->orderBy('nama')->orderBy('name')->get();
         
         return view('admin.trainings.create', compact('kategoris', 'trainers'));
     }
@@ -383,7 +383,7 @@ class TrainingController extends Controller
     public function edit(Training $training)
     {
         $kategoris = Kategori::all();
-        $trainers = collect();
+        $trainers = User::where('role', 'pemateri')->orderBy('nama')->orderBy('name')->get();
         
         return view('admin.trainings.edit', compact('training', 'kategoris', 'trainers'));
     }

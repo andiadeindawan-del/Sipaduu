@@ -13,7 +13,14 @@
                 <i class="bi bi-exclamation-circle-fill me-2"></i> Profil Belum Lengkap
             </span>
             <div class="mt-2">
-                <a href="{{ route('peserta.profile.index') }}" class="btn btn-danger px-4 py-2 fw-semibold shadow-sm">
+                @php
+                    $profileRoute = match(auth()->user()->role ?? 'peserta') {
+                        'admin' => route('admin.profile.edit'),
+                        'pemateri' => route('pemateri.profile.index'),
+                        default => route('peserta.profile.index'),
+                    };
+                @endphp
+                <a href="{{ $profileRoute }}" class="btn btn-danger px-4 py-2 fw-semibold shadow-sm">
                     Lengkapi Sekarang
                 </a>
             </div>

@@ -18,12 +18,13 @@ class DashboardController extends Controller
     /**
      * Display the dashboard based on user role.
      */
-    public function index(): View
+    public function index()
     {
         $user = auth()->user();
 
         return match ($user->role) {
             'admin' => $this->adminDashboard(),
+            'pemateri' => redirect()->route('pemateri.dashboard'),
             'peserta' => $this->pesertaDashboard(),
             default => $this->pesertaDashboard(),
         };

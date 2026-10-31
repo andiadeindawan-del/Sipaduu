@@ -1,20 +1,42 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail User')
+@section('title', 'Detail User - ' . ($user->nama ?? $user->name ?? 'User'))
 
 @section('header')
 <div class="page-heading d-flex justify-content-between align-items-center">
     <div class="page-heading-copy">
-        <span class="page-icon"><i class="bi bi-person" aria-hidden="true"></i></span>
+        <span class="page-icon">
+            @if($user->role === 'pemateri')
+                <i class="bi bi-person-video3" style="color: #6f42c1;"></i>
+            @elseif($user->role === 'admin')
+                <i class="bi bi-shield-lock" style="color: #dc3545;"></i>
+            @else
+                <i class="bi bi-person text-primary"></i>
+            @endif
+        </span>
         <div>
-            <p class="eyebrow mb-1">Management</p>
+            <p class="eyebrow mb-1">
+                @if($user->role === 'pemateri')
+                    Manajemen Pengguna &bull; Detail Pemateri
+                @elseif($user->role === 'admin')
+                    Manajemen Pengguna &bull; Detail Administrator
+                @else
+                    Manajemen Pengguna &bull; Detail Peserta UMK
+                @endif
+            </p>
             <h1 class="h3 mb-1">{{ $user->nama ?? $user->name }}</h1>
-            <p class="text-muted mb-0">{{ $user->email }}</p>
+            <p class="text-muted mb-0">
+                @if($user->role === 'pemateri')
+                    Instruktur & Pengajar Resmi Pelatihan SDM
+                @else
+                    {{ $user->email }}
+                @endif
+            </p>
         </div>
     </div>
     <div class="heading-actions d-flex gap-2">
-        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning btn-sm">
-            <i class="bi bi-pencil"></i> Edit
+        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning btn-sm fw-semibold text-dark">
+            <i class="bi bi-pencil"></i> Edit Profil
         </a>
         <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left"></i> Kembali
@@ -25,6 +47,9 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
+    @if($user->role === 'pemateri')
+        @include('admin.users.partials.show-pemateri')
+    @else
     <div class="row g-4">
         <!-- Sidebar Profile -->
         <div class="col-lg-4">
@@ -39,15 +64,19 @@
                 </div>
                 @endif
                 <h5 class="fw-bold mb-1">{{ $user->nama ?? $user->name }}</h5>
-                <span class="badge 
-                    @if($user->role === 'admin') badge-danger
-                                        @else badge-secondary
-                    @endif
-                    mb-2 px-3 py-2 fs-6
-                ">
-                    <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
-                    {{ ucfirst($user->role) }}
-                </span>
+                @if($user->role === 'pemateri')
+                    <span class="badge mb-2 px-3 py-2 fs-6 shadow-sm" style="background-color: #6f42c1; color: #fff; border-radius: 20px;">
+                        <i class="bi bi-person-video3 me-1"></i> Pemateri
+                    </span>
+                @elseif($user->role === 'admin')
+                    <span class="badge badge-danger mb-2 px-3 py-2 fs-6 shadow-sm" style="border-radius: 20px;">
+                        <i class="bi bi-shield-lock me-1"></i> Administrator
+                    </span>
+                @else
+                    <span class="badge bg-primary text-white mb-2 px-3 py-2 fs-6 shadow-sm" style="border-radius: 20px;">
+                        <i class="bi bi-person-badge me-1"></i> Peserta UMK
+                    </span>
+                @endif
                 <div>
                     <span class="badge 
                         @if($user->status === 'aktif') badge-success
@@ -729,6 +758,22 @@
             </div>
             @endif
 
+            @if($user->isPemateri() || $user->role === 'pemateri' || $user->role === 'trainer')
+            <!-- Training Diajar -->
+            <div class="panel mt-4">
+                <div class="panel-header">
+                    <h5 class="section-title"><i class="bi bi-journal-bookmark"></i> Training Diajar</h5>
+                </div>
+                <div class="p-4">
+                    @forelse($user->trainingDiajar as $t)
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="fw-semibold">{{ $t->judul }}</span>
+                        <span class="badge 
+                            @if($t->status == 'published' || $t->status == 'aktif') badge-success
+                            @elseif($t->status == 'selesai') badge-info
+                            @elseif($t->status == 'dibatalkan') badge-danger
+                            @else badge-secondary
+                            @endif
                         ">
                             <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
                             {{ ucfirst($t->status) }}
@@ -770,6 +815,7 @@
             @endif
         </div>
     </div>
+    @endif
 </div>
 
 @push('styles')

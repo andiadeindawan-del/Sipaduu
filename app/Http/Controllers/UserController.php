@@ -42,6 +42,7 @@ class UserController extends Controller
         $activeUsers   = User::where('status', 'aktif')->count();
         $inactiveUsers = User::where('status', 'nonaktif')->count();
         $adminCount   = User::where('role', 'admin')->count();
+        $pemateriCount = User::where('role', 'pemateri')->count();
         $pesertaCount = User::where('role', 'peserta')->count();
 
         return view('admin.users.index', compact(
@@ -50,6 +51,7 @@ class UserController extends Controller
             'activeUsers',
             'inactiveUsers',
             'adminCount',
+            'pemateriCount',
             'pesertaCount'
         ));
     }
@@ -82,7 +84,7 @@ class UserController extends Controller
             'nama'        => 'required|string|max:100',
             'email'       => 'required|email|max:100|unique:users',
             'password'    => 'required|string|min:8|confirmed',
-            'role'        => 'required|in:admin,peserta',
+            'role'        => 'required|in:admin,peserta,pemateri',
             'status'      => 'nullable|in:aktif,nonaktif',
             'departemen'  => 'nullable|string|max:100',
             'jabatan'     => 'nullable|string|max:100',
@@ -114,7 +116,13 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load(['trainingDiajar', 'trainingDiikuti']);
+        $user->load([
+            'trainingDiajar.materis',
+            'trainingDiajar.quizzes.questions',
+            'trainingDiajar.dokumentasis',
+            'trainingDiajar.registrations',
+            'trainingDiikuti',
+        ]);
         return view('admin.users.show', compact('user'));
     }
 
@@ -146,14 +154,14 @@ class UserController extends Controller
             'nama'        => 'required|string|max:100',
             'email'       => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password'    => 'nullable|string|min:8|confirmed',
-            'role'        => 'required|in:admin,peserta',
+            'role'        => 'required|in:admin,peserta,pemateri',
             'status'      => 'nullable|in:aktif,nonaktif',
             'departemen'  => 'nullable|string|max:100',
             'jabatan'     => 'nullable|string|max:100',
             'no_telepon'  => 'nullable|string|max:20',
             
             // Validasi file - Wajib jika belum ada
-            'foto'        => [$user->foto ? 'nullable' : 'required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ktp_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'nib_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'npwp_file' => ['nullable', 'array'],

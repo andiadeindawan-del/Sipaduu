@@ -80,6 +80,26 @@
                                 @enderror
                             </div>
 
+                            <!-- Pemateri / Trainer -->
+                            <div class="col-12 col-md-6">
+                                <label for="trainer_id" class="form-label fw-semibold">
+                                    <i class="bi bi-person-badge me-1"></i> Pemateri / Trainer
+                                </label>
+                                <select class="form-select @error('trainer_id') is-invalid @enderror" 
+                                        id="trainer_id" name="trainer_id">
+                                    <option value="">-- Pilih Pemateri (Opsional) --</option>
+                                    @foreach($trainers ?? [] as $trainer)
+                                    <option value="{{ $trainer->id }}" {{ old('trainer_id', $training->trainer_id) == $trainer->id ? 'selected' : '' }}>
+                                        {{ $trainer->nama ?? $trainer->name }} ({{ $trainer->email }})
+                                    </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Pilih akun pemateri yang ditugaskan mengampu pelatihan ini.</small>
+                                @error('trainer_id')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Deskripsi -->
                             <div class="col-12">
                                 <label for="deskripsi" class="form-label fw-semibold">

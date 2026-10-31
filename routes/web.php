@@ -22,6 +22,15 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyQuestionController;
+use App\Http\Controllers\PemateriController;
+use App\Http\Controllers\PemateriTrainingController;
+use App\Http\Controllers\PemateriMateriController;
+use App\Http\Controllers\PemateriQuizController;
+use App\Http\Controllers\PemateriQuizQuestionController;
+use App\Http\Controllers\PemateriSurveyController;
+use App\Http\Controllers\PemateriSurveyQuestionController;
+use App\Http\Controllers\PemateriDokumentasiController;
+use App\Http\Controllers\PemateriAbsensiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -189,6 +198,74 @@ Route::middleware(['auth', 'verified'])->prefix('peserta')->name('peserta.')->gr
     Route::get('/survey', [PesertaController::class, 'survey'])->name('survey.index');
     Route::get('/survey/{survey}', [PesertaController::class, 'surveyShow'])->name('survey.show');
     Route::post('/survey/{survey}/submit', [PesertaController::class, 'surveySubmit'])->name('survey.submit');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Pemateri Area
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'pemateri'])->prefix('pemateri')->name('pemateri.')->group(function () {
+    // Dashboard Pemateri
+    Route::get('/dashboard', [PemateriController::class, 'index'])->name('dashboard');
+
+    // Profile Pemateri
+    Route::get('/profile', [ProfileController::class, 'pemateriEdit'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+    Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
+
+    // Training (Pilih Pelatihan)
+    Route::get('/trainings', [PemateriTrainingController::class, 'index'])->name('trainings.index');
+    Route::get('/trainings/{training}', [PemateriTrainingController::class, 'show'])->name('trainings.show');
+
+    // Materi (Upload & Kelola Materi)
+    Route::resource('materi', PemateriMateriController::class);
+    Route::get('materi/{materi}/download/{index?}', [PemateriMateriController::class, 'download'])->name('materi.download');
+    Route::get('materi/{materi}/preview/{index?}', [PemateriMateriController::class, 'preview'])->name('materi.preview');
+
+    // Quiz (Tambah & Kelola Kuis)
+    Route::resource('quiz', PemateriQuizController::class);
+    Route::get('quiz/{quiz}/attempt/{attempt}', [PemateriQuizController::class, 'showAttempt'])->name('quiz.attempt.show');
+
+    // Quiz Questions
+    Route::prefix('quiz/{quiz}/questions')->name('quiz.questions.')->group(function () {
+        Route::get('/', [PemateriQuizQuestionController::class, 'index'])->name('index');
+        Route::get('/create', [PemateriQuizQuestionController::class, 'create'])->name('create');
+        Route::post('/', [PemateriQuizQuestionController::class, 'store'])->name('store');
+        Route::get('/{question}/edit', [PemateriQuizQuestionController::class, 'edit'])->name('edit');
+        Route::put('/{question}', [PemateriQuizQuestionController::class, 'update'])->name('update');
+        Route::delete('/{question}', [PemateriQuizQuestionController::class, 'destroy'])->name('destroy');
+    });
+
+    // Survey (Tambah & Kelola Survey)
+    Route::resource('survey', PemateriSurveyController::class);
+
+    // Survey Questions
+    Route::prefix('surveys/{survey}/questions')->name('survey.questions.')->group(function () {
+        Route::get('/', [PemateriSurveyQuestionController::class, 'index'])->name('index');
+        Route::get('/create', [PemateriSurveyQuestionController::class, 'create'])->name('create');
+        Route::post('/', [PemateriSurveyQuestionController::class, 'store'])->name('store');
+        Route::get('/{question}', [PemateriSurveyQuestionController::class, 'show'])->name('show');
+        Route::get('/{question}/edit', [PemateriSurveyQuestionController::class, 'edit'])->name('edit');
+        Route::put('/{question}', [PemateriSurveyQuestionController::class, 'update'])->name('update');
+        Route::delete('/{question}', [PemateriSurveyQuestionController::class, 'destroy'])->name('destroy');
+    });
+
+    // Dokumentasi (Upload & Kelola Dokumentasi)
+    Route::resource('dokumentasi', PemateriDokumentasiController::class);
+
+    // Presensi & QR Code Sesi Absen
+    Route::prefix('absen')->name('absen.')->group(function () {
+        Route::get('/', [PemateriAbsensiController::class, 'index'])->name('index');
+        Route::get('/{training}/session', [PemateriAbsensiController::class, 'session'])->name('session');
+        Route::post('/{training}/start', [PemateriAbsensiController::class, 'startSession'])->name('start');
+        Route::post('/{training}/stop', [PemateriAbsensiController::class, 'stopSession'])->name('stop');
+        Route::post('/{training}/mark-present', [PemateriAbsensiController::class, 'markPresent'])->name('mark-present');
+        Route::post('/{training}/mark-all', [PemateriAbsensiController::class, 'markAllPresent'])->name('mark-all');
+        Route::get('/{training}/export', [PemateriAbsensiController::class, 'export'])->name('export');
+    });
 });
 
 /*

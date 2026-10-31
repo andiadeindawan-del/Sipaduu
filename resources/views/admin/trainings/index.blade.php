@@ -120,6 +120,11 @@
                         <td>
                             <div>
                                 <p class="fw-semibold mb-0">{{ $training->judul }}</p>
+                                @if($training->trainer)
+                                    <small class="text-primary"><i class="bi bi-person-badge me-1"></i>{{ $training->trainer->nama ?? $training->trainer->name }}</small>
+                                @else
+                                    <small class="text-muted"><i class="bi bi-person-x me-1"></i>Belum ada pemateri</small>
+                                @endif
                             </div>
                         </td>
                         <td>

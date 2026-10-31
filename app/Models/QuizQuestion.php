@@ -35,7 +35,6 @@ class QuizQuestion extends Model
     // CASTS
     // ============================================================
     protected $casts = [
-        'points' => 'integer',
         'nilai' => 'integer',
         'score' => 'integer',
         'order' => 'integer',
@@ -298,12 +297,16 @@ class QuizQuestion extends Model
     /**
      * Set points (auto convert from legacy values)
      */
+    public function getPointsAttribute()
+    {
+        return $this->score ?? $this->nilai ?? 1;
+    }
+
     public function setPointsAttribute($value)
     {
-        $this->attributes['points'] = $value;
-        // Juga set legacy fields untuk kompatibilitas
-        $this->attributes['nilai'] = $value;
-        $this->attributes['score'] = $value;
+        // Set actual database columns
+        $this->attributes['nilai'] = (int) $value;
+        $this->attributes['score'] = (int) $value;
     }
 
     /**

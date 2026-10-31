@@ -178,14 +178,20 @@ class QuizAttempt extends Model
             return '-';
         }
 
-        $minutes = $this->started_at->diffInMinutes($this->completed_at);
-        $hours = floor($minutes / 60);
-        $remainingMinutes = $minutes % 60;
+        $seconds = $this->started_at->diffInSeconds($this->completed_at);
+        if ($seconds < 60) {
+            return "{$seconds} detik";
+        }
+
+        $minutes = (int) floor($seconds / 60);
+        $remainingSeconds = (int) ($seconds % 60);
+        $hours = (int) floor($minutes / 60);
+        $remainingMinutes = (int) ($minutes % 60);
 
         if ($hours > 0) {
             return "{$hours} jam {$remainingMinutes} menit";
         }
-        return "{$minutes} menit";
+        return "{$minutes} menit" . ($remainingSeconds > 0 ? " {$remainingSeconds} dtk" : "");
     }
 
     /**

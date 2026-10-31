@@ -244,6 +244,7 @@ class User extends Authenticatable
     {
         $labels = [
             'admin' => 'Admin',
+            'pemateri' => 'Pemateri',
             'peserta' => 'Peserta',
         ];
         return $labels[$this->role] ?? $this->role;
@@ -253,6 +254,7 @@ class User extends Authenticatable
     {
         $classes = [
             'admin' => 'danger',
+            'pemateri' => 'info',
             'peserta' => 'secondary',
         ];
         return $classes[$this->role] ?? 'secondary';
@@ -303,6 +305,19 @@ class User extends Authenticatable
 
     // Define required fields in one place
     public function getRequiredProfilFields()
+    {
+        if ($this->role === 'admin' || $this->role === 'pemateri') {
+            return [
+                'Akun' => [
+                    'name' => 'Nama Lengkap',
+                    'email' => 'Email',
+                ]
+            ];
+        }
+        return $this->getPesertaRequiredFields();
+    }
+
+    public function getPesertaRequiredFields()
     {
         return [
             'Pribadi' => [
@@ -403,6 +418,11 @@ class User extends Authenticatable
     }
 
 
+    public function scopePemateri($query)
+    {
+        return $query->where('role', 'pemateri');
+    }
+
     public function scopePeserta($query)
     {
         return $query->where('role', 'peserta');
@@ -428,6 +448,16 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+
+    public function isPemateri(): bool
+    {
+        return $this->role === 'pemateri';
+    }
+
+    public function isTrainer(): bool
+    {
+        return $this->role === 'pemateri' || $this->role === 'trainer';
+    }
 
     public function isPeserta(): bool
     {

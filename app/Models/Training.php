@@ -58,7 +58,8 @@ class Training extends Model
         'duration_in_days',
         'is_ongoing',
         'is_upcoming',
-        'is_completed_training'
+        'is_completed_training',
+        'is_finished'
     ];
 
     // ============================================================
@@ -118,6 +119,11 @@ class Training extends Model
     public function dokumentasis()
     {
         return $this->hasMany(Dokumentasi::class);
+    }
+
+    public function surveys()
+    {
+        return $this->hasMany(Survey::class);
     }
 
     // ============================================================
@@ -210,7 +216,7 @@ class Training extends Model
 
     public function getStatusLabelAttribute()
     {
-        if ($this->isCompletedTraining()) {
+        if ($this->isFinished()) {
             return 'Selesai';
         }
 
@@ -226,15 +232,15 @@ class Training extends Model
 
     public function getStatusBadgeAttribute()
     {
-        if ($this->isCompletedTraining()) {
-            return 'badge bg-info';
+        if ($this->isFinished()) {
+            return 'badge bg-secondary';
         }
 
         $classes = [
             'draft' => 'badge bg-secondary',
             'published' => 'badge bg-success',
             'berjalan' => 'badge bg-warning',
-            'selesai' => 'badge bg-info',
+            'selesai' => 'badge bg-secondary',
             'dibatalkan' => 'badge bg-danger'
         ];
         return $classes[$this->status] ?? 'badge bg-secondary';
@@ -344,6 +350,11 @@ class Training extends Model
     public function getIsCompletedTrainingAttribute()
     {
         return $this->isCompletedTraining();
+    }
+
+    public function getIsFinishedAttribute()
+    {
+        return $this->isFinished();
     }
 
     // ============================================================
@@ -515,6 +526,22 @@ class Training extends Model
     public function isCompletedTraining()
     {
         return $this->status === 'selesai';
+    }
+
+    /**
+     * Cek apakah pelatihan sudah selesai (status 'selesai' atau tanggal selesai sudah lewat)
+     */
+    public function isFinished(): bool
+    {
+        if ($this->status === 'selesai') {
+            return true;
+        }
+
+        if ($this->tanggal_selesai && $this->tanggal_selesai < now()) {
+            return true;
+        }
+
+        return false;
     }
 
     public function isPastTraining()
