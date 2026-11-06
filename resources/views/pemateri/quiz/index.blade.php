@@ -295,17 +295,17 @@
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ route('pemateri.quiz.show', $quiz) }}" class="btn btn-outline-primary" title="Detail Kuis &amp; Hasil Peserta">
-                                                <i class="bi bi-eye"></i> Detail
+                                                <i class="bi bi-eye"></i> 
                                             </a>
                                             @if(!($quiz->training && $quiz->training->isFinished()))
                                                 <a href="{{ route('pemateri.quiz.edit', $quiz) }}" class="btn btn-outline-warning text-dark" title="Edit Pengaturan Kuis">
-                                                    <i class="bi bi-pencil"></i>
+                                                    <i class="bi bi-pencil"></i> 
                                                 </a>
                                                 <form action="{{ route('pemateri.quiz.destroy', $quiz) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kuis ini beserta semua pertanyaannya?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-outline-danger" title="Hapus">
-                                                        <i class="bi bi-trash"></i>
+                                                        <i class="bi bi-trash"></i> 
                                                     </button>
                                                 </form>
                                             @else
